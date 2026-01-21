@@ -14,7 +14,7 @@ AmazingData.login(
     port=0,
 )
 
-local_path = r"C:\Users\15207\AmazingData"
+local_path = r"C:\Users\admin\AmazingData"
 info_data_object = AmazingData.InfoData()
 base_data_object = AmazingData.BaseData()
 calendar = base_data_object.get_calendar()
