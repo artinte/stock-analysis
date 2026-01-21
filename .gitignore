@@ -1,3 +1,7 @@
+
+# 私有配置
+private_config.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
