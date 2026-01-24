@@ -4,7 +4,7 @@ from company_financials import CompanyFinancials
 
 
 class StockDetail:
-    def __init__(self, name, code):
+    def __init__(self, code, name=""):
         self.name = name
         self.code = code
         self.update_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

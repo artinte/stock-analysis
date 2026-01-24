@@ -1,4 +1,5 @@
 import AmazingData
+from gateways.data_manager import DataManager
 import watchlists
 import utils
 from dotenv import dotenv_values
@@ -14,6 +15,25 @@ DAYS_TO_FETCH = 15  # 需要获取最近 15 个交易日的数据
 
 def main():
     config = dotenv_values("private_config.txt")
+
+    dm = DataManager(provider_name="yinhe")
+
+    if dm.start(config):
+        try:
+            # 获取股票对象
+            symbol = "600519.SH"
+            stock = dm.get_stock(symbol)
+
+            print(f"代码: {stock.code}")
+            # print(f"价格: {stock.price}") # 此时取决于 fetch 内部是否填充了数据
+
+        finally:
+            dm.stop()
+    else:
+        print("DataManager 启动失败，请检查配置或网络。")
+
+    quit()
+
     try:
         # --- 2. 登录 AmazingData ---
         AmazingData.login(

@@ -23,6 +23,7 @@ class AmazingDataGateway(BrokerGateway):
                 port=int(config["port"]),
             )
             self._is_connected = True
+            print("登录成功")
             return True
         except ValueError:
             print("[错误] 端口格式无效，请检查配置。")
@@ -36,7 +37,6 @@ class AmazingDataGateway(BrokerGateway):
             raise ConnectionError("请先执行 login() 成功后再获取数据")
 
         stock = StockDetail(code=symbol)
-
         return stock
 
     def logout(self):
