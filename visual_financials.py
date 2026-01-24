@@ -1,10 +1,11 @@
+import datetime
 import AmazingData
 from dotenv import dotenv_values
 from stock_detail import StockDetail
 from company_financials import AllCompanyFinancials
 import mplfinance
 import pandas
-from matplotlib import pyplot, font_manager
+from matplotlib import pyplot, font_manager, transforms
 
 TARGET_CODE = "001389.SZ"
 STOCK_NAME = "广合科技"
@@ -94,29 +95,29 @@ plot_df.columns = ["Open", "High", "Low", "Close", "Volume"]
 mc = mplfinance.make_marketcolors(
     up="red", down="green", edge="inherit", wick="inherit", volume="in"
 )
-s = mplfinance.make_mpf_style(marketcolors=mc, gridstyle="--", y_on_right=True)
+# s = mplfinance.make_mpf_style(marketcolors=mc, gridstyle="--", y_on_right=True)
 
 mav_periods = (5, 10, 20, 60)
 
-pyplot.rcParams["font.sans-serif"] = ["SimHei"]
-pyplot.rcParams["axes.unicode_minus"] = False
+# pyplot.rcParams["font.sans-serif"] = ["SimHei"]
+# pyplot.rcParams["axes.unicode_minus"] = False
 
-mplfinance.plot(
-    plot_df,
-    type="candle",  # 蜡烛图
-    style=mplfinance.make_mpf_style(
-        marketcolors=mc, base_mpf_style="binance", rc={"font.family": "SimHei"}
-    ),
-    title=f"\nK-Line: {STOCK_NAME} ({TARGET_CODE})",
-    ylabel="Price",
-    datetime_format="%Y-%m-%d",
-    volume=False,  # 不显示成交量
-    mav=mav_periods,  # 移动平均线
-    figsize=(14, 8),  # 图像大小
-    tight_layout=True,
-    show_nontrading=False,  # 隐藏非交易日（周末/节假日）
-    scale_padding={"left": 0.3, "top": 1.0, "right": 0.95, "bottom": 1.0},
-)
+# mplfinance.plot(
+#     plot_df,
+#     type="candle",  # 蜡烛图
+#     style=mplfinance.make_mpf_style(
+#         marketcolors=mc, base_mpf_style="binance", rc={"font.family": "SimHei"}
+#     ),
+#     title=f"\nK-Line: {STOCK_NAME} ({TARGET_CODE})",
+#     ylabel="Price",
+#     datetime_format="%Y-%m-%d",
+#     volume=False,  # 不显示成交量
+#     mav=mav_periods,  # 移动平均线
+#     figsize=(14, 8),  # 图像大小
+#     tight_layout=True,
+#     show_nontrading=False,  # 隐藏非交易日（周末/节假日）
+#     scale_padding={"left": 0.3, "top": 1.0, "right": 0.95, "bottom": 1.0},
+# )
 
 import numpy as np
 
@@ -209,44 +210,49 @@ fig, axlist = mplfinance.plot(
     ylabel="Price",
     datetime_format="%Y-%m-%d",
     mav=mav_periods,
-    figsize=(14, 10),
-    panel_ratios=(6, 3),
-    tight_layout=False,
+    figsize=(13, 10),
+    tight_layout=True,
     show_nontrading=False,
     returnfig=True,
 )
 
+
 # --- 3. 手动精修标题 (解决太靠上的问题) ---
 # y=0.96 让标题在顶部留有呼吸感，fontsize=18 适配 14x10 的大图
+current_date = datetime.datetime.now().strftime("%Y-%m-%d")
 fig.suptitle(
-    f"{STOCK_NAME} ({TARGET_CODE}) PE-TTM 走势及均值分析",
+    f"{STOCK_NAME} ({TARGET_CODE}) PE-TTM 走势及均值分析 [{current_date}]",
     fontsize=20,
     fontweight="bold",
-    y=0.85,
+    y=0.9,
 )
 
-# --- 4. 解决布局及间距问题 ---
-# top=0.92：压缩顶部白边，主图直接贴近标题下方
-# left=0.06：给坐标轴留出适度空间，防止数字被切
-# hspace=0.02：极致缩小主图(K线)与副图(PE)之间的空隙
-pyplot.subplots_adjust(left=0.06, right=0.97, top=0.92, bottom=0.06, hspace=0.02)
-
 # --- 5. 在副图上标注平均 PE 数值 (增加背景框，更美观) ---
+offset = transforms.ScaledTranslation(0, 10/72, fig.dpi_scale_trans)
+trans = axlist[2].get_yaxis_transform() + offset
+
+# 2. 绘制文字
 axlist[2].text(
-    0.01,
-    avg_pe_val,
+    0.01, 
+    avg_pe_val, 
     f" 平均 PE: {avg_pe_val:.2f} ",
-    color="blue",
-    fontsize=14,
+    color="white",
+    fontsize=13,
     fontweight="bold",
-    transform=axlist[2].get_yaxis_transform(),
-    va="bottom",  # 确保在虚线上面
+    transform=trans,          # 使用我们定义的带偏移的变换
+    va="bottom", 
     ha="left",
+    bbox=dict(
+        facecolor='#4169E1',  # 皇家蓝
+        alpha=0.9, 
+        edgecolor='none', 
+        boxstyle='round,pad=0.4' # 增加 pad 让框体更圆润，也变相拉开了文字与线的距离
+    )
 )
 
 # --- 6. 细节美化：主副图网格线微调 ---
 for ax in [axlist[0], axlist[2]]:
-    ax.grid(True, linestyle="--", alpha=0.4)
+    ax.grid(True, linestyle="--", alpha=0.5)
 
 #
 pyplot.show()
