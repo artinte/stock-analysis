@@ -1,4 +1,5 @@
 import AmazingData
+from dotenv import dotenv_values
 from stock_detail import StockDetail
 from company_financials import AllCompanyFinancials
 import mplfinance
@@ -8,15 +9,16 @@ from matplotlib import pyplot, font_manager
 TARGET_CODE = "001389.SZ"
 STOCK_NAME = "广合科技"
 
-
+config = dotenv_values("private_config.txt")
+# A. 环境登录与初始化
 AmazingData.login(
-    username="",
-    password="",
-    host="",
-    port=0,
+    username=config["username"],
+    password=config["password"],
+    host=config["host"],
+    port=int(config["port"]),
 )
+local_path = config["local_path"]
 
-local_path = r"C:\Users\admin\AmazingData"
 info_data_object = AmazingData.InfoData()
 base_data_object = AmazingData.BaseData()
 calendar = base_data_object.get_calendar()
@@ -61,21 +63,15 @@ fin_obj = next(
     (f for f in AllCompanyFinancials if f.ticker and f.ticker in stock_instance.code),
     None,
 )
-print(stock_instance.code)
-print(fin_obj)
-
-if fin_obj:
-    stock_instance.calculate_pe(fin_obj)
-
 
 lookback = 180
 begin_date = calendar[-lookback]
 kline_data = market_data_object.query_kline(
-    code_list=[stock_instance.code],
+    code_list=[TARGET_CODE],
     begin_date=begin_date,
     end_date=calendar[-1],
     period=AmazingData.constant.Period.day.value,
-)[stock_instance.code]
+)[TARGET_CODE]
 
 stock_instance.calculate_moving_averages(kline_data)
 stock_instance.calculate_volume_ratio(kline_data)
@@ -196,43 +192,61 @@ apds = [
     ),
 ]
 
-# 统一风格设置
+# --- 1. 样式定义 (保留你的中文支持配置) ---
 s = mplfinance.make_mpf_style(
     base_mpf_style="binance",
     marketcolors=mc,
     rc={"font.family": "SimHei", "axes.unicode_minus": False},
 )
 
-# 最终绘图
+# --- 2. 最终绘图 ---
 fig, axlist = mplfinance.plot(
     plot_df,
     type="candle",
     style=s,
     addplot=apds,
-    title=f"{STOCK_NAME} ({TARGET_CODE}) PE-TTM 走势及均值分析",
+    # 移除内部 title，改用下方 suptitle 以获得更好位置控制
     ylabel="Price",
     datetime_format="%Y-%m-%d",
     mav=mav_periods,
     figsize=(14, 10),
     panel_ratios=(6, 3),
-    tight_layout=False,  # 必须设为 False 才能手动调整间距
+    tight_layout=False,
     show_nontrading=False,
     returnfig=True,
 )
 
-# --- 4. 解决布局偏右问题 ---
-# 通过 subplots_adjust 强行把左边距拉回，解决图像整体偏右的情况
-# left=0.08 占据左边 8% 的空间（减少白边），right=0.92 占据右边
-pyplot.subplots_adjust(left=0.08, right=0.92, top=0.92, bottom=0.08, hspace=0.1)
-
-# 在副图上标注平均 PE 的数值
-axlist[2].text(
-    0,
-    avg_pe_val,
-    f" Avg:{avg_pe_val:.2f}",
-    color="blue",
-    transform=axlist[2].get_yaxis_transform(),
+# --- 3. 手动精修标题 (解决太靠上的问题) ---
+# y=0.96 让标题在顶部留有呼吸感，fontsize=18 适配 14x10 的大图
+fig.suptitle(
+    f"{STOCK_NAME} ({TARGET_CODE}) PE-TTM 走势及均值分析",
+    fontsize=20,
+    fontweight="bold",
+    y=0.85,
 )
 
+# --- 4. 解决布局及间距问题 ---
+# top=0.92：压缩顶部白边，主图直接贴近标题下方
+# left=0.06：给坐标轴留出适度空间，防止数字被切
+# hspace=0.02：极致缩小主图(K线)与副图(PE)之间的空隙
+pyplot.subplots_adjust(left=0.06, right=0.97, top=0.92, bottom=0.06, hspace=0.02)
 
+# --- 5. 在副图上标注平均 PE 数值 (增加背景框，更美观) ---
+axlist[2].text(
+    0.01,
+    avg_pe_val,
+    f" 平均 PE: {avg_pe_val:.2f} ",
+    color="blue",
+    fontsize=14,
+    fontweight="bold",
+    transform=axlist[2].get_yaxis_transform(),
+    va="bottom",  # 确保在虚线上面
+    ha="left",
+)
+
+# --- 6. 细节美化：主副图网格线微调 ---
+for ax in [axlist[0], axlist[2]]:
+    ax.grid(True, linestyle="--", alpha=0.4)
+
+#
 pyplot.show()

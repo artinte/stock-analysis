@@ -68,6 +68,7 @@
 import math
 import datetime
 import akshare as ak
+from dotenv import dotenv_values
 import pandas as pd
 import numpy as np
 import AmazingData
@@ -197,14 +198,15 @@ def format_watchlists(watch_dict):
 # 2. 主执行程序：遍历自选股池
 # ==========================================
 if __name__ == "__main__":
+    config = dotenv_values("private_config.txt")
     # A. 环境登录与初始化
     AmazingData.login(
-        username="",
-        password="",
-        host="",
-        port=0,
+        username=config["username"],
+        password=config["password"],
+        host=config["host"],
+        port=int(config["port"]),
     )
-    local_path = r"C:\Users\admin\AmazingData"
+    local_path = config["local_path"]
     info_data_obj = AmazingData.InfoData()
     base_data_obj = AmazingData.BaseData()
     calendar = base_data_obj.get_calendar()
@@ -221,8 +223,8 @@ if __name__ == "__main__":
     )
     print("-" * 100)
 
-    items = [(row.Index, row.symbol) for row in code_infos.itertuples()]
-    # items = format_watchlists(Watchlists)
+    # items = [(row.Index, row.symbol) for row in code_infos.itertuples()]
+    items = format_watchlists(Watchlists)
     for code, name in items:
         # 过滤出沪深主板的数据
         if not code.startswith(("60", "00")):

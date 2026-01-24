@@ -130,7 +130,7 @@ AllCompanyFinancials = [
     ),
     CompanyFinancials(
         company_name="广合科技",
-        ticker="001389",
+        ticker="001389.SZ",
         financial_data={
             # 2023
             "2023-Q4": {"revenue": 2678270258.07, "operating_profit": 414685735.07},

@@ -307,7 +307,7 @@ class StockDetail:
         工厂方法：从解析后的字典/DataFrame 行中创建实例
         data_dict 格式类似: {'code': '600460.SH', 'open': 27.63, ...}
         """
-        instance = cls(name, data_dict["code"])
+        instance = cls(data_dict["code"], name)
 
         instance.open = data_dict["open"]
         instance.high = data_dict["high"]
