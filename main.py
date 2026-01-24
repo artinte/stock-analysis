@@ -1,8 +1,8 @@
 import AmazingData
 import watchlists
 import utils
+from dotenv import dotenv_values
 
-# --- 1. 定义常量和参数 ---
 converted_code = "603893.SH"  # 目标股票代码
 DAYS_TO_FETCH = 15  # 需要获取最近 15 个交易日的数据
 
@@ -13,13 +13,14 @@ DAYS_TO_FETCH = 15  # 需要获取最近 15 个交易日的数据
 
 
 def main():
+    config = dotenv_values("private_config.txt")
     try:
         # --- 2. 登录 AmazingData ---
         AmazingData.login(
-            username="",
-            password="",
-            host="",
-            port=0,
+            username=config["username"],
+            password=config["password"],
+            host=config["host"],
+            port=int(config["port"]),
         )
         print("AmazingData 登录成功。")
 
