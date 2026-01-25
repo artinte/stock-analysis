@@ -1,4 +1,8 @@
+from datetime import datetime
+from typing import List, Optional
+from models import kline
 from gateways.amazing_data_gateway import AmazingDataGateway
+from models.constants import Interval
 
 # 这里可以导入其他网关，比如 from gateways.tdx_gateway import TdxGateway
 
@@ -21,6 +25,32 @@ class DataManager:
     def start(self, config: dict) -> bool:
         """统一的启动入口"""
         return self.gateway.login(config)
+
+    def get_kline(
+        self,
+        symbol: str,
+        interval: Interval = Interval.MINUTE_1,
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
+        limit: int = 1000,
+    ) -> List[kline.Kline]:
+        """
+        统一获取 K 线入口
+        :param symbol: 证券代码
+        :param interval: K线周期 (1m, 5m, 1d等)
+        :param start_time: 开始时间
+        :param end_time: 结束时间
+        :param limit: 获取条数
+        :return: Kline 对象列表
+        """
+        raw_data = self.gateway.fetch_kline(
+            symbol=symbol,
+            interval=interval,
+            start_time=start_time,
+            end_time=end_time,
+            limit=limit,
+        )
+        return raw_data
 
     def get_stock(self, symbol: str):
         """统一的取数入口"""
