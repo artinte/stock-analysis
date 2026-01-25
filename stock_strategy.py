@@ -66,16 +66,14 @@
 """
 
 import math
-import datetime
 import akshare as ak
 from dotenv import dotenv_values
 import pandas as pd
 import numpy as np
 import AmazingData
-from polars import datetime
 from stock_detail import StockDetail
 from watchlists import Watchlists
-
+from datetime import datetime
 
 # ==========================================
 # 1. 策略引擎核心类：对接 StockDetail 属性
@@ -323,7 +321,7 @@ if __name__ == "__main__":
         print("=" * 80)
         print(report_df.to_string(index=False))
 
-        today_str = datetime.datetime.now().strftime("%Y%m%d_%H%M")
+        today_str = datetime.now().strftime("%Y%m%d_%H%M")
         file_name = f"量化选股结果_{today_str}.xlsx"
 
         try:
