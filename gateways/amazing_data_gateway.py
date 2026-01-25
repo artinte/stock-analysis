@@ -54,7 +54,7 @@ class AmazingDataGateway(BrokerGateway):
         interval: Interval,
         start_time: Optional[datetime] = None,
         end_time: Optional[datetime] = None,
-        limit: int = 1000,
+        limit: int = 10000,
     ) -> List[Kline]:
         """
         实现获取 K 线数据的逻辑
