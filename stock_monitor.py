@@ -1,4 +1,5 @@
 import AmazingData
+from dotenv import dotenv_values
 from stock_detail import StockDetail
 from company_financials import AllCompanyFinancials
 
@@ -7,14 +8,14 @@ STOCK_NAME = "北方华创"
 # TARGET_CODE = "600460.SH"
 # STOCK_NAME = "士兰微"
 
+config = dotenv_values("private_config.txt")
 AmazingData.login(
-    username="",
-    password="",
-    host="",
-    port=0,
+    username=config["username"],
+    password=config["password"],
+    host=config["host"],
+    port=int(config["port"]),
 )
 
-local_path = r"C:\Users\admin\AmazingData"
 info_data_object = AmazingData.InfoData()
 base_data_object = AmazingData.BaseData()
 calendar = base_data_object.get_calendar()
@@ -40,7 +41,7 @@ else:
 
 
 equity_structure = info_data_object.get_equity_structure(
-    [TARGET_CODE], local_path=local_path, is_local=False
+    [TARGET_CODE], local_path=config["local_path"], is_local=False
 )
 
 # 获取总市值
@@ -55,16 +56,16 @@ if not equity_structure.empty:
 stock_instance.update_equity(total_share, float_share)
 
 # 计算静态市盈率、动态市盈率、市盈 (TTM)
-fin_obj = next(
-    (f for f in AllCompanyFinancials if f.ticker and f.ticker in stock_instance.code),
-    None,
-)
-if fin_obj:
-    stock_instance.calculate_pe_from_financials(fin_obj)
+# fin_obj = next(
+#     (f for f in AllCompanyFinancials if f.ticker and f.ticker in stock_instance.code),
+#     None,
+# )
+# if fin_obj:
+#     stock_instance.calculate_pe_from_financials(fin_obj)
 
 raw_income_dict = info_data_object.get_income(
     code_list=[TARGET_CODE],
-    local_path=local_path,
+    local_path=config["local_path"],
     is_local=False,
     begin_date="20220101",
     end_date=calendar[-1],
