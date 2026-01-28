@@ -274,10 +274,18 @@ if __name__ == "__main__":
             growth = stock_instance.profit_growth_rate
             pe = stock_instance.pe_ttm
 
-            # 获取行业数据
-            short_code = code.split(".")[0]
-            stock_info = ak.stock_individual_info_em(symbol=short_code)
-            industry = stock_info[stock_info["item"] == "行业"]["value"].values[0]
+            industry = "未知"
+            try:
+                # 获取行业数据
+                short_code = code.split(".")[0]
+                stock_info = ak.stock_individual_info_em(symbol=short_code)
+                
+                if not stock_info.empty:
+                    industry = stock_info[stock_info["item"] == "行业"]["value"].values[0]
+                else:
+                    continue
+            except Exception:
+                pass
 
             if math.isnan(growth) or math.isnan(pe):
                 continue
