@@ -1,6 +1,8 @@
 
 # 私有配置
 private_config.txt
+.xlsx
+.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

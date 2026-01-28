@@ -65,6 +65,21 @@
     动态置换（Rolling Rebalance）： 每周五收盘后运行一次代码。
 """
 
+"""
+1. 不要买整个行业趋势向下走的，即使个股非常便宜，因为大势已去，便宜无用。
+2. 不要买估值高但增长乏力的股票，增长才是王道，估值只是锦上添花。
+3. 不要买财务报表有问题的公司，比如利润质量差、现金流为负、负债率高等。
+4. 不要买股东结构混乱的公司，比如大股东频繁变动、股东人数剧增等。
+5. 不要买技术面破位的股票，比如跌破重要均线、成交量萎缩等。
+6. 不要买市场情绪极端的股票，比如过度炒作、舆论负面等。
+7. 不要买流动性差的股票，比如成交量低、换手率低等。
+8. 不要买你不了解的行业或公司，投资要有基本的认知和判断。
+9. 不要盲目跟风买热门股票，热门不等于好，热点易变。
+10. 不要频繁交易，保持耐心和纪律，等待最佳买入时机。
+
+"""
+
+
 import math
 import akshare as ak
 from dotenv import dotenv_values
@@ -74,6 +89,7 @@ import AmazingData
 from stock_detail import StockDetail
 from watchlists import Watchlists
 from datetime import datetime
+from etf_list import securities_etf_components
 
 # ==========================================
 # 1. 策略引擎核心类：对接 StockDetail 属性
@@ -222,7 +238,8 @@ if __name__ == "__main__":
     print("-" * 100)
 
     # items = [(row.Index, row.symbol) for row in code_infos.itertuples()]
-    items = format_watchlists(Watchlists)
+    # items = format_watchlists(Watchlists)
+    items = format_watchlists(securities_etf_components)
     for code, name in items:
         # 过滤出沪深主板的数据
         if not code.startswith(("60", "00")):
