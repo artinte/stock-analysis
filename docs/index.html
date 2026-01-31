@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>财富指引 - 零基础股票实战教学平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --primary-gold: #b89765; --deep-blue: #1a2a3a; }
+        body { background-color: #fdfdfd; color: #333; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+        
+        /* 导航优化 */
+        .navbar { background-color: var(--deep-blue) !important; }
+        .nav-link { font-weight: 500; transition: 0.3s; }
+        .nav-link:hover { color: var(--primary-gold) !important; }
+
+        /* 文章区块样式 */
+        .article-card { border: none; border-bottom: 1px solid #eee; border-radius: 0; transition: 0.3s; }
+        .article-card:hover { background-color: #fafafa; }
+        .article-category { color: var(--primary-gold); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; }
+        .article-title { font-size: 1.4rem; font-weight: 600; color: #222; text-decoration: none; }
+        .article-title:hover { color: #000; }
+        
+        /* 侧边栏及特色区块 */
+        .sidebar-box { background: #f8f9fa; border-left: 4px solid var(--primary-gold); padding: 1.5rem; }
+        .k-line-preview { background: #111; color: #00ff00; padding: 10px; font-family: monospace; font-size: 12px; border-radius: 4px; }
+        
+        footer { background: #1a2a3a; color: #8899a6; padding: 3rem 0; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <header class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <span class="fs-3 fw-bold">理财专栏</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-white" href="#tutorial">教学基地</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#experience">实战经验</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#news">每日要闻</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-outline-warning ms-lg-3 px-3" href="#">关于我</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <section class="py-5 border-bottom bg-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-5 fw-bold mb-3">授人以鱼，不如授人以渔</h1>
+                    <p class="lead text-muted">这里不推荐个股，只分享看透市场的逻辑。从认识第一根 K 线开始，构建属于你自己的交易系统。</p>
+                </div>
+                <div class="col-lg-4 text-center d-none d-lg-block">
+                    <div class="p-4 border rounded shadow-sm bg-light">
+                        <h6>核心公式库</h6>
+                        <div class="text-start small mt-3">
+                            <code>市盈率 (PE) = 市值 / 净利润</code><br>
+                            <code>换手率 = 成交量 / 流通总股数</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="container my-5">
+        <div class="row g-5">
+            
+            <div class="col-lg-8">
+                <h4 class="mb-4 fw-bold">最新动态</h4>
+                
+                <article class="article-card py-4">
+                    <span class="article-category">今日要闻 • 2026-01-31</span>
+                    <h2 class="mt-2"><a href="#" class="article-title">美联储最新议息会议解读：对A股流动性的潜在影响</a></h2>
+                    <p class="text-muted mt-2">宏观环境是所有技术面分析的前提。本文深度解析利率调整如何影响白马股的估值溢价，以及普通投资者如何对冲货币风险...</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <a href="#" class="btn btn-link p-0 text-decoration-none fw-bold">继续阅读 →</a>
+                        <span class="badge bg-light text-dark">#宏观分析</span>
+                    </div>
+                </article>
+
+                <article class="article-card py-4">
+                    <span class="article-category">基础教学 • 2026-01-28</span>
+                    <h2 class="mt-2"><a href="#" class="article-title">手把手教你看懂 K 线：从单根形态到组合趋势</a></h2>
+                    <p class="text-muted mt-2">十字星代表多空博弈，大阳线预示多头占优。理解每一根蜡烛背后的情绪波动，是掌握盘面语言的第一步。本节课详细介绍 12 种核心 K 线组合...</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <a href="#" class="btn btn-link p-0 text-decoration-none fw-bold">进入课堂 →</a>
+                        <span class="badge bg-light text-dark">#K线基础</span>
+                    </div>
+                </article>
+                
+
+                <article class="article-card py-4">
+                    <span class="article-category">实战经验 • 2026-01-25</span>
+                    <h2 class="mt-2"><a href="#" class="article-title">新手最容易犯的三个错误：为什么你一买就跌？</a></h2>
+                    <p class="text-muted mt-2">追涨杀跌、满仓操作、不设止损。这三个“交易杀手”在过去十年里消灭了无数账户。分享我从 5 万到 100 万的心路历程与避坑指南...</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <a href="#" class="btn btn-link p-0 text-decoration-none fw-bold">阅读全文 →</a>
+                        <span class="badge bg-light text-dark">#投资心态</span>
+                    </div>
+                </article>
+
+                <nav class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled"><a class="page-link" href="#">上一页</a></li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">下一页</a></li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="col-lg-4">
+                
+                <div class="sidebar-box mb-4 shadow-sm bg-white">
+                    <h5 class="fw-bold mb-3">零基础学习路径</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 small">
+                            <span class="text-primary me-2">01</span> 基础名词：什么是除权除息？
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 small">
+                            <span class="text-primary me-2">02</span> 看盘技巧：五档盘口怎么看？
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 small">
+                            <span class="text-primary me-2">03</span> 指标入门：MACD 与 RSI 的应用
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action border-0 px-0 small">
+                            <span class="text-primary me-2">04</span> 财务分析：手把手教你读懂年报
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">交易成本速算器</h5>
+                        <p class="text-muted small">快速估算你的佣金与印花税</p>
+                        <div class="mb-2">
+                            <input type="number" class="form-control form-control-sm" placeholder="买入单价">
+                        </div>
+                        <div class="mb-3">
+                            <input type="number" class="form-control form-control-sm" placeholder="成交数量">
+                        </div>
+                        <button class="btn btn-dark btn-sm w-100">开始计算</button>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-dark text-white rounded shadow-sm">
+                    <p class="fst-italic mb-0 small">“投资的第一条准则是不要赔钱；第二条准则是永远不要忘记第一条。”</p>
+                    <footer class="blockquote-footer mt-2 text-warning mb-0">沃伦·巴菲特</footer>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container text-center">
+            <div class="mb-4">
+                <a href="#" class="text-white-50 mx-2 text-decoration-none">教学视频</a>
+                <a href="#" class="text-white-50 mx-2 text-decoration-none">量化模型</a>
+                <a href="#" class="text-white-50 mx-2 text-decoration-none">加入社群</a>
+            </div>
+            <p class="mb-1">© 2026 股票学习实战基地 - 为普通投资者赋能</p>
+            <p class="small text-secondary">声明：本站所有内容仅作为学习分享，不构成任何买卖建议。股市有风险，入市需谨慎。</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

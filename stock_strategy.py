@@ -81,6 +81,7 @@
 
 
 import math
+import random
 import akshare as ak
 from dotenv import dotenv_values
 import pandas as pd
@@ -237,9 +238,10 @@ if __name__ == "__main__":
     )
     print("-" * 100)
 
-    # items = [(row.Index, row.symbol) for row in code_infos.itertuples()]
+    items = [(row.Index, row.symbol) for row in code_infos.itertuples()]
     # items = format_watchlists(Watchlists)
-    items = format_watchlists(securities_etf_components)
+    # items = format_watchlists(securities_etf_components)
+    random.shuffle(items)
     for code, name in items:
         # 过滤出沪深主板的数据
         if not code.startswith(("60", "00")):
