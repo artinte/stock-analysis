@@ -1,7 +1,7 @@
 import AmazingData
 from gateways.data_manager import DataManager
 import watchlists
-import utils
+import utils_func
 from dotenv import dotenv_values
 
 converted_code = "603893.SH"  # 目标股票代码
@@ -62,7 +62,7 @@ def main():
 
         # for name, code in watchlists.Watchlists.items():
         for name, code in {"瑞芯微": "001389"}.items():
-            converted_code = utils.add_exchange_suffix(code)
+            converted_code = utils_func.add_exchange_suffix(code)
             print(
                 f"正在查询股票 {converted_code} 从 {begin_date} 到 {end_date} 的日线数据..."
             )

@@ -4,7 +4,7 @@ from gateways.broker_gateway import BrokerGateway
 from models.constants import Interval
 from models.kline import Kline
 from stock_detail import StockDetail
-from utils import add_exchange_suffix
+from utils_func import add_exchange_suffix
 import AmazingData
 
 
