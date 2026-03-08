@@ -107,7 +107,28 @@
                     <li><p>\(EMA_{t-1}\)：代表前一天的平均值（这是它“记忆”的来源）。</p></li>
                     <li><p>\(\alpha\)：平滑系数 (Smoothing Factor) ，它决定了新数据的权重。计算公式为 \(\alpha = \frac{2}{N + 1}\)，其中 \(N\) 是周期长度（如 14）。</p></li>
                 </ul>
-                
+
+                <p>可以来看一个简单的例子，假设计算一个 3 日的 EMA，此时的平滑系数 \(\alpha = \frac{2}{3 + 1} = 0.5\)。假设股票连续四天的收盘价分别为 \(115, 112, 110, 114\) 元。</p>
+                <p>第一天的 EMA（初始值）通常设定为当天的价格：</p>
+                <div class="highlight-math" style="text-align: center; overflow-x: auto;">
+                    \(EMA_1 = 115\)
+                </div>
+                <p>第二天的 EMA 计算如下：</p>
+                <div class="highlight-math" style="text-align: center; overflow-x: auto;">
+                    \(EMA_2 = 0.5 \cdot 112 + (1 - 0.5) \cdot 115 = 113.5\)
+                </div>
+                <p>第三天的 EMA 计算如下：</p>
+                <div class="highlight-math" style="text-align: center; overflow-x: auto;">
+                    \(EMA_3 = 0.5 \cdot 110 + (1 - 0.5) \cdot 113.5 = 111.75\)
+                </div>
+                <p>第四天的 EMA 计算如下：</p>
+                <div class="highlight-math" style="text-align: center; overflow-x: auto;">
+                    \(EMA_4 = 0.5 \cdot 114 + (1 - 0.5) \cdot 111.75 = 112.875\)
+                </div>
+                <p>如果使用普通均线的话，对应的价格分别为 \(115, 113.5, 112.33, 112.0\) 元。通过计算可以发现在 Day 4 价格反弹时，EMA 因为给了当天价格 50% 的权重，数值立刻从 111.75 升至 112.875（反弹了 1.125）。</p>
+                <p>对比普通均线，MA 只从 112.33 变动到 112（甚至还在微跌，因为由于它还在消化第一天 115 元的高价，反应迟钝）。</p>
+
+
                 <h5>2.1.1 RSI（相对强弱指数）的定义</h5>
 
                 <p>相对强弱指数（Relative Strength Index，简称 RSI）是由威尔斯·威尔德（J. Welles Wilder）于 1978 年创制的一种动量震荡指标。在金融工程与技术分析领域，RSI 被广泛用于衡量资产价格波动的速度与变化幅度，从而判定市场内部力量的超买或超卖状态。</p>
