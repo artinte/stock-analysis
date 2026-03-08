@@ -41,6 +41,41 @@ def calculate_rsi(data, window=14):
     return 100 - (100 / (1 + rs))
 
 
+def plot_stock_analysis(df, title_suffix=""):
+    """
+    通用的绘图复用函数
+    :param df: 必须包含 'c' (收盘价) 和 'rsi' 列的 DataFrame
+    """
+    # 剔除 NaN 保证绘图连续性
+    plot_df = df.dropna(subset=["rsi"])
+    
+    if plot_df.empty:
+        print("数据量不足以计算 RSI，无法绘图。")
+        return
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+
+    # 1. 绘制价格曲线
+    ax1.plot(plot_df.index, plot_df["c"], color="blue", marker="o", markersize=4, label="Price (Close)")
+    ax1.set_title(f"{STOCK_CODE} {title_suffix} (Ref: 2026-03)")
+    ax1.set_ylabel("Price")
+    ax1.legend()
+    ax1.grid(True, linestyle="--", alpha=0.5)
+
+    # 2. 绘制 RSI 曲线
+    ax2.plot(plot_df.index, plot_df["rsi"], color="red", label="RSI (14)")
+    ax2.axhline(30, color="green", linestyle="--", label="Oversold (30)")
+    ax2.axhline(70, color="orange", linestyle="--", label="Overbought (70)")
+    ax2.set_ylim(0, 100)
+    ax2.set_ylabel("RSI Value")
+    ax2.set_title("RSI Indicator (Bottom Confirmation)")
+    ax2.legend()
+    ax2.grid(True, linestyle="--", alpha=0.5)
+
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == "__main__":
     config = dotenv_values("private_config.txt")
     dm = DataManager(provider_name="yinhe")
@@ -68,38 +103,7 @@ if __name__ == "__main__":
             # 3. 计算 RSI (注意传入 df["c"])
             df["rsi"] = calculate_rsi(df["c"], 14)
 
-            # --- 关键：剔除 NaN 方便绘图 ---
-            plot_df = df.dropna(subset=["rsi"])
-
-            # 4. 绘图：确保所有 Key 都叫 "c" 和 "rsi"
-            fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
-
-            # 绘制价格 (用你的 "c")
-            ax1.plot(
-                plot_df.index,
-                plot_df["c"],
-                color="blue",
-                marker="o",
-                label="Price (Close)",
-            )
-            ax1.set_title(f"{STOCK_CODE} Price Trend (2026-03-06)")
-            ax1.legend()
-            ax1.grid(True, linestyle="--", alpha=0.5)
-
-            # 绘制 RSI
-            ax2.plot(plot_df.index, plot_df["rsi"], color="red", label="RSI (14)")
-            ax2.axhline(30, color="green", linestyle="--", label="Oversold (30)")
-            ax2.axhline(70, color="orange", linestyle="--", label="Overbought (70)")
-            ax2.set_title("RSI Indicator")
-            ax2.legend()
-            ax2.grid(True, linestyle="--", alpha=0.5)
-
-            plt.tight_layout()
-
-            # 5. 在 VS Code 中保存并显示
-            # plt.savefig("rsi_result.png")
-            # print("\n>>> 图片已保存为 rsi_result.png，请在左侧文件栏查看！")
-            plt.show()
+            plot_stock_analysis(df, "Live Data")
         finally:
             dm.stop()
     else:
