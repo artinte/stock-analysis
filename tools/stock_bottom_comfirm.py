@@ -1,8 +1,9 @@
-from matplotlib import pyplot as plt
 import pandas
-from datetime import datetime, timedelta
 
+from matplotlib import pyplot as plt
+from datetime import datetime, timedelta
 from dotenv import dotenv_values
+
 from gateways.data_manager import DataManager
 from models.constants import Interval
 
@@ -102,6 +103,10 @@ if __name__ == "__main__":
 
             # 3. 计算 RSI (注意传入 df["c"])
             df["rsi"] = calculate_rsi(df["c"], 14)
+
+            # 4. 计算双底结构
+
+            # 5. 站上 20 日均线
 
             plot_stock_analysis(df, "Live Data")
         finally:
