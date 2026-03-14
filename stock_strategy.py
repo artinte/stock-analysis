@@ -243,9 +243,6 @@ if __name__ == "__main__":
     # items = format_watchlists(securities_etf_components)
     random.shuffle(items)
     for code, name in items:
-        # 过滤出沪深主板的数据
-        if not code.startswith(("60", "00")):
-            continue
         try:
             # 1. 获取历史K线
             kline_dict = market_data_obj.query_kline(
