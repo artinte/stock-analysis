@@ -45,7 +45,7 @@ def calculate_rsi(data, window=14):
 def plot_stock_analysis(df, title_suffix=""):
     """
     通用的绘图复用函数
-    :param df: 必须包含 'c' (收盘价) 和 'rsi' 列的 DataFrame
+    :param df: 必须包含 'c', 'rsi', 'buy_signal' 列的 DataFrame
     """
     # 剔除 NaN 保证绘图连续性
     plot_df = df.dropna(subset=["rsi"])
@@ -57,13 +57,21 @@ def plot_stock_analysis(df, title_suffix=""):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
 
     # 1. 绘制价格曲线
-    ax1.plot(plot_df.index, plot_df["c"], color="blue", marker="o", markersize=4, label="Price (Close)")
+    ax1.plot(plot_df.index, plot_df["c"], color="blue", marker="o", markersize=4, label="Price (Close)", alpha=0.6)
+    
+    # 仅在价格图中标注买入信号点
+    if 'buy_signal' in plot_df.columns:
+        signals = plot_df[plot_df['buy_signal'] == True]
+        if not signals.empty:
+            ax1.scatter(signals.index, signals['c'], color="red", marker="^", s=150, 
+                        edgecolors='black', label="BUY SIGNAL", zorder=5)
+
     ax1.set_title(f"{STOCK_CODE} {title_suffix} (Ref: 2026-03)")
     ax1.set_ylabel("Price")
     ax1.legend()
     ax1.grid(True, linestyle="--", alpha=0.5)
 
-    # 2. 绘制 RSI 曲线
+    # 2. 绘制 RSI 曲线（纯净版，不带标记）
     ax2.plot(plot_df.index, plot_df["rsi"], color="red", label="RSI (14)")
     ax2.axhline(30, color="green", linestyle="--", label="Oversold (30)")
     ax2.axhline(70, color="orange", linestyle="--", label="Overbought (70)")
@@ -87,7 +95,7 @@ if __name__ == "__main__":
             klines = dm.get_kline(
                 STOCK_CODE,
                 Interval.DAY_1,
-                datetime.now() - timedelta(days=90),
+                datetime.now() - timedelta(days=180),
                 datetime.now(),
             )
 
@@ -105,16 +113,16 @@ if __name__ == "__main__":
             df['rsi'] = calculate_rsi(df["c"], 14)
             df['ma20'] = df['c'].rolling(window=20).mean()
 
-            # 1. 探底素材：今天是否跌破 30
-            df['today_is_below_30'] = df['rsi'] < 30
+            # 1. 探底素材：今天是否跌破 42
+            df['today_is_below_42'] = df['rsi'] < 42
 
-            # 2. 状态延伸：过去 20 天内，是否有任何一天跌破过 30？
+            # 2. 状态延伸：过去 20 天内，是否有任何一天跌破过 42？
             # 解决你担心的“今天不是底”的问题，只要近期探过底就行
-            df['in_bottom_area'] = df['today_is_below_30'].rolling(window=20).max().astype(bool)
+            df['in_bottom_area'] = df['today_is_below_42'].rolling(window=30).max().astype(bool)
             
             # 3. 计算双底结构 (识别两个独立的探底动作)
-            # 只有当 RSI 从 >30 掉到 <30 的那一瞬间，才算一次“探底脉冲”
-            df['bottom_pulse'] = (df['today_is_below_30'] & (df['today_is_below_30'].shift(1) == False))
+            # 只有当 RSI 从 >42 掉到 <42 的那一瞬间，才算一次“探底脉冲”
+            df['bottom_pulse'] = (df['today_is_below_42'] & (df['today_is_below_42'].shift(1) == False))
             # 统计过去 60 天内这种脉冲出现了几次
             df['bottom_count'] = df['bottom_pulse'].rolling(window=60).sum()
 
@@ -125,10 +133,10 @@ if __name__ == "__main__":
             # 条件：1.近期探过底 + 2.有双底背景 + 3.今天站上均线 + 4.动能回升(RSI>45)
             df['buy_signal'] = (
                 df['in_bottom_area'] & 
-                (df['bottom_count'] >= 2) & 
-                df['is_above_ma20'] & 
-                (df['rsi'] > 45)
+                df['is_above_ma20'] &
+                (df['rsi'] < 50)
             )
+            print(df['buy_signal'])
 
             plot_stock_analysis(df, "Live Data")
         finally:
