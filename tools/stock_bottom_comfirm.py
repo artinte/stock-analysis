@@ -26,7 +26,7 @@ python -m tools.stock_bottom_comfirm
 """
 
 
-STOCK_CODE = "000988.SZ"
+STOCK_CODE = "001389.SZ"
 
 # 计算 RSI 指标的函数
 def calculate_rsi(data, window=14):
@@ -109,32 +109,33 @@ if __name__ == "__main__":
 
             print(df["c"].to_list())
             
-            # --- 核心逻辑计算 ---
             df['rsi'] = calculate_rsi(df["c"], 14)
             df['ma20'] = df['c'].rolling(window=20).mean()
-
-            # 1. 探底素材：今天是否跌破 42
-            df['today_is_below_42'] = df['rsi'] < 42
-
-            # 2. 状态延伸：过去 20 天内，是否有任何一天跌破过 42？
-            # 解决你担心的“今天不是底”的问题，只要近期探过底就行
-            df['in_bottom_area'] = df['today_is_below_42'].rolling(window=30).max().astype(bool)
             
-            # 3. 计算双底结构 (识别两个独立的探底动作)
-            # 只有当 RSI 从 >42 掉到 <42 的那一瞬间，才算一次“探底脉冲”
-            df['bottom_pulse'] = (df['today_is_below_42'] & (df['today_is_below_42'].shift(1) == False))
-            # 统计过去 60 天内这种脉冲出现了几次
-            df['bottom_count'] = df['bottom_pulse'].rolling(window=60).sum()
+            # 1. 跌幅背景：半年内（120天）最高点到最低点跌幅 > 30%
+            # 计算滚动最高价
+            df['h_6m'] = df['c'].rolling(window=120, min_periods=1).max()
+            # 计算相对于最高点的跌幅 (最高 - 当前) / 当前 >= 30%
+            df['max_drawdown_check'] = (df['h_6m'] - df['c']) / df['c'] >= 0.30
+            # 状态记忆：过去 60 天内只要达标过一次 30% 跌幅，背景就成立
+            df['had_deep_drop'] = df['max_drawdown_check'].rolling(window=60).max().astype(bool)
+
+            # 2. 探底素材：今天是否跌破 40
+            df['today_is_below_40'] = df['rsi'] < 40
+
+            # 3. 状态延伸：过去 30 天内，是否有任何一天跌破过 40
+            df['in_bottom_area'] = df['today_is_below_40'].rolling(window=30).max().astype(bool)
 
             # 4. 顺风车条件：当前站上 20 日均线
             df['is_above_ma20'] = df['c'] > df['ma20']
-            
-            # 5. 最终组合逻辑
-            # 条件：1.近期探过底 + 2.有双底背景 + 3.今天站上均线 + 4.动能回升(RSI>45)
+
+            # 5. 最终组合逻辑 (严格执行你的 RSI < 50 要求)
             df['buy_signal'] = (
-                df['in_bottom_area'] & 
-                df['is_above_ma20'] &
-                (df['rsi'] < 50)
+                df['had_deep_drop'] &           # 条件 A: 半年内跌得够深 (30%)
+                df['in_bottom_area'] &          # 条件 B: 近期 RSI 探过底
+                df['is_above_ma20'] &           # 条件 C: 今天站上 20 日线
+                (df['rsi'] < 50) &              # 条件 D: 动能还未过热 (重点！)
+                (df['rsi'] > 40)                # 条件 E: 动能已在回暖
             )
             print(df['buy_signal'])
 
