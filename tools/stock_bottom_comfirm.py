@@ -1,3 +1,4 @@
+import random
 import pandas
 
 from matplotlib import pyplot as plt
@@ -6,6 +7,7 @@ from dotenv import dotenv_values
 
 from gateways.data_manager import DataManager
 from models.constants import Interval
+from watchlists import Watchlists
 
 
 """
@@ -26,7 +28,7 @@ python -m tools.stock_bottom_comfirm
 """
 
 
-STOCK_CODE = "601985.SH"
+STOCK_CODE = "601985"
 
 plt.rcParams["font.sans-serif"] = [
     "SimHei",
@@ -90,7 +92,7 @@ def plot_stock_analysis(df, title_suffix=""):
                 zorder=5,
             )
 
-    ax1.set_title(f"{STOCK_CODE} {title_suffix} (Ref: 2026-03)")
+    ax1.set_title(f"{code} {title_suffix} (Ref: 2026-03)")
     ax1.set_ylabel("Price")
     ax1.legend()
     ax1.grid(True, linestyle="--", alpha=0.5)
@@ -113,64 +115,68 @@ if __name__ == "__main__":
     config = dotenv_values("private_config.txt")
     dm = DataManager(provider_name="yinhe")
 
+    items = list(Watchlists.items())
+    random.shuffle(items)
+
     if dm.start(config):
         try:
-            # 1. 获取 10 年数据
-            klines = dm.get_kline(
-                STOCK_CODE,
-                Interval.DAY_1,
-                datetime.now() - timedelta(days=180),
-                datetime.now(),
-            )
+            for _, code in items:
+                # 1. 获取 10 年数据
+                klines = dm.get_kline(
+                    code,
+                    Interval.DAY_1,
+                    datetime.now() - timedelta(days=180),
+                    datetime.now(),
+                )
 
-            # 2. 特征工程 & 查杀 NaN
-            df = pandas.DataFrame(
-                [
-                    {"o": k.open, "h": k.high, "l": k.low, "c": k.close, "v": k.volume}
-                    for k in klines
-                ]
-            )
-            
-            security_name = dm.get_stock_name(STOCK_CODE)
-            print(f"正在分析 {STOCK_CODE} ({security_name}) 的数据...")
+                # 2. 特征工程 & 查杀 NaN
+                df = pandas.DataFrame(
+                    [
+                        {"o": k.open, "h": k.high, "l": k.low, "c": k.close, "v": k.volume}
+                        for k in klines
+                    ]
+                )
+                
+                security_name = dm.get_stock_name(code)
+                print(f"正在分析 {code} ({security_name}) 的数据...")
 
-            print(df["c"].to_list())
+                print(df["c"].to_list())
 
-            df["rsi"] = calculate_rsi(df["c"], 14)
-            df["ma20"] = df["c"].rolling(window=20).mean()
+                df["rsi"] = calculate_rsi(df["c"], 14)
+                df["ma20"] = df["c"].rolling(window=20).mean()
 
-            # 1. 跌幅背景：半年内（120天）最高点到最低点跌幅 > 30%
-            # 计算滚动最高价
-            df["h_6m"] = df["c"].rolling(window=120, min_periods=1).max()
-            # 计算相对于最高点的跌幅 (最高 - 当前) / 当前 >= 30%
-            df["max_drawdown_check"] = (df["h_6m"] - df["c"]) / df["c"] >= 0.30
-            # 状态记忆：过去 60 天内只要达标过一次 30% 跌幅，背景就成立
-            df["had_deep_drop"] = (
-                df["max_drawdown_check"].rolling(window=60).max().astype(bool)
-            )
+                # 1. 跌幅背景：半年内（120天）最高点到最低点跌幅 > 30%
+                # 计算滚动最高价
+                df["h_6m"] = df["c"].rolling(window=120, min_periods=1).max()
+                # 计算相对于最高点的跌幅 (最高 - 当前) / 当前 >= 30%
+                df["max_drawdown_check"] = (df["h_6m"] - df["c"]) / df["c"] >= 0.30
+                # 状态记忆：过去 60 天内只要达标过一次 30% 跌幅，背景就成立
+                df["had_deep_drop"] = (
+                    df["max_drawdown_check"].rolling(window=60).max().astype(bool)
+                )
 
-            # 2. 探底素材：今天是否跌破 40
-            df["today_is_below_40"] = df["rsi"] < 40
+                # 2. 探底素材：今天是否跌破 40
+                df["today_is_below_40"] = df["rsi"] < 40
 
-            # 3. 状态延伸：过去 30 天内，是否有任何一天跌破过 40
-            df["in_bottom_area"] = (
-                df["today_is_below_40"].rolling(window=30).max().astype(bool)
-            )
+                # 3. 状态延伸：过去 30 天内，是否有任何一天跌破过 40
+                df["in_bottom_area"] = (
+                    df["today_is_below_40"].rolling(window=30).max().astype(bool)
+                )
 
-            # 4. 顺风车条件：当前站上 20 日均线
-            df["is_above_ma20"] = df["c"] > df["ma20"]
+                # 4. 顺风车条件：当前站上 20 日均线
+                df["is_above_ma20"] = df["c"] > df["ma20"]
 
-            # 5. 最终组合逻辑 (严格执行你的 RSI < 50 要求)
-            df["buy_signal"] = (
-                df["had_deep_drop"]  # 条件 A: 半年内跌得够深 (30%)
-                & df["in_bottom_area"]  # 条件 B: 近期 RSI 探过底
-                & df["is_above_ma20"]  # 条件 C: 今天站上 20 日线
-                & (df["rsi"] < 50)  # 条件 D: 动能还未过热 (重点！)
-                & (df["rsi"] > 40)  # 条件 E: 动能已在回暖
-            )
-            print(df["buy_signal"])
+                # 5. 最终组合逻辑 (严格执行你的 RSI < 50 要求)
+                df["buy_signal"] = (
+                    df["had_deep_drop"]  # 条件 A: 半年内跌得够深 (30%)
+                    & df["in_bottom_area"]  # 条件 B: 近期 RSI 探过底
+                    & df["is_above_ma20"]  # 条件 C: 今天站上 20 日线
+                    & (df["rsi"] < 50)  # 条件 D: 动能还未过热 (重点！)
+                    & (df["rsi"] > 40)  # 条件 E: 动能已在回暖
+                )
+                print(df["buy_signal"])
 
-            plot_stock_analysis(df, security_name)
+                plot_stock_analysis(df, security_name)
         finally:
             dm.stop()
     else:
