@@ -88,17 +88,17 @@ class AmazingDataGateway(BrokerGateway):
             kline_dict = self.market_data.query_kline(
                 [code], period=period, begin_date=int(begin_str), end_date=int(end_str)
             )
-            
+
             df = kline_dict.get(code)
 
             # 检查数据是否存在
-            if df is None or (hasattr(df, 'empty') and df.empty):
+            if df is None or (hasattr(df, "empty") and df.empty):
                 print(f"DEBUG: {code} 无返回数据")
                 return []
 
             # --- 关键：将 DataFrame 转化为字典列表，这样 item 才是每一行的数据字典 ---
-            if hasattr(df, 'to_dict'):
-                raw_bars = df.to_dict('records')
+            if hasattr(df, "to_dict"):
+                raw_bars = df.to_dict("records")
             else:
                 raw_bars = df
 
@@ -115,7 +115,7 @@ class AmazingDataGateway(BrokerGateway):
         for item in raw_bars:
             try:
                 t_time = item.get("kline_time")
-                if hasattr(t_time, 'to_pydatetime'):
+                if hasattr(t_time, "to_pydatetime"):
                     t_time = t_time.to_pydatetime()
                 klines.append(
                     Kline(
@@ -141,6 +141,31 @@ class AmazingDataGateway(BrokerGateway):
 
         stock = StockDetail(code=symbol)
         return stock
+
+    def fetch_stock_name(self, symbol):
+        # 1. 格式化代码
+        formatted_symbol = symbol if "." in symbol else add_exchange_suffix(symbol)
+
+        try:
+            # 2. 传入列表获取基础数据
+            stock_basic = self.info_data.get_stock_basic([formatted_symbol])
+
+            # 3. 处理返回结果
+            # 如果返回的是 DataFrame (常见情况)
+            if hasattr(stock_basic, "empty"):
+                if not stock_basic.empty:
+                    # 假设返回的行索引或第一行就是我们要的数据
+                    return stock_basic["SECURITY_NAME"].iloc[0]
+
+            # 如果返回的是 List[Dict]
+            elif isinstance(stock_basic, list) and len(stock_basic) > 0:
+                return stock_basic[0].get("SECURITY_NAME", "未知名称")
+
+            return "未知名称"
+
+        except Exception as e:
+            print(f"DEBUG: 获取失败 {formatted_symbol}, 错误: {e}")
+            return "获取失败"
 
     def logout(self):
         if self._is_connected:

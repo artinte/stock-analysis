@@ -56,6 +56,10 @@ class DataManager:
         """统一的取数入口"""
         return self.gateway.fetch_market_data(symbol)
 
+    def get_stock_name(self, symbol: str) -> str:
+        """获取股票名称"""
+        return self.gateway.fetch_stock_name(symbol)
+
     def stop(self):
         """统一的关闭入口"""
         self.gateway.logout()

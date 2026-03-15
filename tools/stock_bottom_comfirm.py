@@ -26,7 +26,15 @@ python -m tools.stock_bottom_comfirm
 """
 
 
-STOCK_CODE = "001389.SZ"
+STOCK_CODE = "601985.SH"
+
+plt.rcParams["font.sans-serif"] = [
+    "SimHei",
+    "Microsoft YaHei",
+    "Arial Unicode MS",
+]  # 适配 Windows/Mac/Linux
+plt.rcParams["axes.unicode_minus"] = False  # 解决负号显示为方块的问题
+
 
 # 计算 RSI 指标的函数
 def calculate_rsi(data, window=14):
@@ -49,7 +57,7 @@ def plot_stock_analysis(df, title_suffix=""):
     """
     # 剔除 NaN 保证绘图连续性
     plot_df = df.dropna(subset=["rsi"])
-    
+
     if plot_df.empty:
         print("数据量不足以计算 RSI，无法绘图。")
         return
@@ -57,14 +65,30 @@ def plot_stock_analysis(df, title_suffix=""):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
 
     # 1. 绘制价格曲线
-    ax1.plot(plot_df.index, plot_df["c"], color="blue", marker="o", markersize=4, label="Price (Close)", alpha=0.6)
-    
+    ax1.plot(
+        plot_df.index,
+        plot_df["c"],
+        color="blue",
+        marker="o",
+        markersize=4,
+        label="Price (Close)",
+        alpha=0.6,
+    )
+
     # 仅在价格图中标注买入信号点
-    if 'buy_signal' in plot_df.columns:
-        signals = plot_df[plot_df['buy_signal'] == True]
+    if "buy_signal" in plot_df.columns:
+        signals = plot_df[plot_df["buy_signal"] == True]
         if not signals.empty:
-            ax1.scatter(signals.index, signals['c'], color="red", marker="^", s=150, 
-                        edgecolors='black', label="BUY SIGNAL", zorder=5)
+            ax1.scatter(
+                signals.index,
+                signals["c"],
+                color="red",
+                marker="^",
+                s=150,
+                edgecolors="black",
+                label="BUY SIGNAL",
+                zorder=5,
+            )
 
     ax1.set_title(f"{STOCK_CODE} {title_suffix} (Ref: 2026-03)")
     ax1.set_ylabel("Price")
@@ -106,40 +130,47 @@ if __name__ == "__main__":
                     for k in klines
                 ]
             )
+            
+            security_name = dm.get_stock_name(STOCK_CODE)
+            print(f"正在分析 {STOCK_CODE} ({security_name}) 的数据...")
 
             print(df["c"].to_list())
-            
-            df['rsi'] = calculate_rsi(df["c"], 14)
-            df['ma20'] = df['c'].rolling(window=20).mean()
-            
+
+            df["rsi"] = calculate_rsi(df["c"], 14)
+            df["ma20"] = df["c"].rolling(window=20).mean()
+
             # 1. 跌幅背景：半年内（120天）最高点到最低点跌幅 > 30%
             # 计算滚动最高价
-            df['h_6m'] = df['c'].rolling(window=120, min_periods=1).max()
+            df["h_6m"] = df["c"].rolling(window=120, min_periods=1).max()
             # 计算相对于最高点的跌幅 (最高 - 当前) / 当前 >= 30%
-            df['max_drawdown_check'] = (df['h_6m'] - df['c']) / df['c'] >= 0.30
+            df["max_drawdown_check"] = (df["h_6m"] - df["c"]) / df["c"] >= 0.30
             # 状态记忆：过去 60 天内只要达标过一次 30% 跌幅，背景就成立
-            df['had_deep_drop'] = df['max_drawdown_check'].rolling(window=60).max().astype(bool)
+            df["had_deep_drop"] = (
+                df["max_drawdown_check"].rolling(window=60).max().astype(bool)
+            )
 
             # 2. 探底素材：今天是否跌破 40
-            df['today_is_below_40'] = df['rsi'] < 40
+            df["today_is_below_40"] = df["rsi"] < 40
 
             # 3. 状态延伸：过去 30 天内，是否有任何一天跌破过 40
-            df['in_bottom_area'] = df['today_is_below_40'].rolling(window=30).max().astype(bool)
+            df["in_bottom_area"] = (
+                df["today_is_below_40"].rolling(window=30).max().astype(bool)
+            )
 
             # 4. 顺风车条件：当前站上 20 日均线
-            df['is_above_ma20'] = df['c'] > df['ma20']
+            df["is_above_ma20"] = df["c"] > df["ma20"]
 
             # 5. 最终组合逻辑 (严格执行你的 RSI < 50 要求)
-            df['buy_signal'] = (
-                df['had_deep_drop'] &           # 条件 A: 半年内跌得够深 (30%)
-                df['in_bottom_area'] &          # 条件 B: 近期 RSI 探过底
-                df['is_above_ma20'] &           # 条件 C: 今天站上 20 日线
-                (df['rsi'] < 50) &              # 条件 D: 动能还未过热 (重点！)
-                (df['rsi'] > 40)                # 条件 E: 动能已在回暖
+            df["buy_signal"] = (
+                df["had_deep_drop"]  # 条件 A: 半年内跌得够深 (30%)
+                & df["in_bottom_area"]  # 条件 B: 近期 RSI 探过底
+                & df["is_above_ma20"]  # 条件 C: 今天站上 20 日线
+                & (df["rsi"] < 50)  # 条件 D: 动能还未过热 (重点！)
+                & (df["rsi"] > 40)  # 条件 E: 动能已在回暖
             )
-            print(df['buy_signal'])
+            print(df["buy_signal"])
 
-            plot_stock_analysis(df, "Live Data")
+            plot_stock_analysis(df, security_name)
         finally:
             dm.stop()
     else:
@@ -185,12 +216,9 @@ if __name__ == "__main__":
             28.93,
             28.88,
         ]
-        
+
         dates = pandas.date_range(end=datetime.now(), periods=len(close_prices))
         df = pandas.DataFrame({"c": close_prices}, index=dates)
         df["rsi"] = calculate_rsi(df["c"], 14)
         print(df[["c", "rsi"]].to_string())
         plot_df = df.dropna(subset=["rsi"])
-        
-        
-        
