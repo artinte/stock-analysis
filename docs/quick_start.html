@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="laptop_coding_48.png" type="image/png">
+    <title>Article Template</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" rel="stylesheet">
+    <link href="article_style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 left-sidebar">
+
+            </nav>
+
+            <main class="col-md-8 content">
+                <h2 class="custom-title">快速预览</h2>
+                <p class="title-subtext">Getting Started with Distributed RPC Framework</p>
+                <p style="color: #a0a0a0;">Created Date: 2025-07-07</p>
+
+                <p>This tutorial uses two simple examples to demonstrate how to build distributed training with the torch.distributed.rpc package which was first introduced as an experimental feature in PyTorch v1.4. Source code of the two examples can be found in PyTorch examples.</p>
+
+                <p>Previous tutorials, Getting Started With Distributed Data Parallel and Writing Distributed Applications With PyTorch, described DistributedDataParallel which supports a specific training paradigm where the model is replicated across multiple processes and each process handles a split of the input data.</p>
+
+                <p>Sometimes, you might run into scenarios that require different training paradigms. For example:</p>
+
+                <ol>
+                    <li><p>In reinforcement learning, it might be relatively expensive to acquire training data from environments while the model itself can be quite small. In this case, it might be useful to spawn multiple observers running in parallel and share a single agent. In this case, the agent takes care of the training locally, but the application would still need libraries to send and receive data between observers and the trainer.</p></li>
+                    <li><p>Your model might be too large to fit in GPUs on a single machine, and hence would need a library to help split the model onto multiple machines. Or you might be implementing a parameter server training framework, where model parameters and trainers live on different machines.</p></li>
+                </ol>
+
+                <p>The torch.distributed.rpc package can help with the above scenarios. In case 1, RPC and RRef allow sending data from one worker to another while easily referencing remote data objects. In case 2, distributed autograd and distributed optimizer make executing backward pass and optimizer step as if it is local training.</p>
+
+                <p>In the next two sections, we will demonstrate APIs of torch.distributed.rpc using a reinforcement learning example and a language model example. Please note, this tutorial does not aim at building the most accurate or efficient models to solve given problems, instead, the main goal here is to show how to use the torch.distributed.rpc package to build distributed training applications.</p>
+
+                <h3>14.5.1 Distributed Reinforcement Learning using RPC and RRef</h3>
+
+                <p>This section describes steps to build a toy distributed reinforcement learning model using RPC to solve CartPole-v1 from OpenAI Gym. The policy code is mostly borrowed from the existing single-thread example as shown below. We will skip details of the Policy design, and focus on RPC usages.</p>
+
+                <p>We are ready to present the observer. In this example, each observer creates its own environment, and waits for the agent’s command to run an episode. In each episode, one observer loops at most n_steps iterations, and in each iteration, it uses RPC to pass its environment state to the agent and gets an action back. Then it applies that action to its environment, and gets the reward and the next state from the environment.</p>
+
+                <p>After that, the observer uses another RPC to report the reward to the agent. Again, please note that, this is obviously not the most efficient observer implementation. For example, one simple optimization could be packing current state and last reward in one RPC to reduce the communication overhead. However, the goal is to demonstrate RPC API instead of building the best solver for CartPole. So, let’s keep the logic simple and the two steps explicit in this example.</p>
+
+                <h3>14.5.2 Distributed RNN using Distributed Autograd and Distributed Optimizer</h3>
+                <p>In this section, we use an RNN model to show how to build distributed model parallel training with the RPC API. The example RNN model is very small and can easily fit into a single GPU, but we still divide its layers onto two different workers to demonstrate the idea. Developer can apply the similar techniques to distribute much larger models across multiple devices and machines.</p>
+                <p>The RNN model design is borrowed from the word language model in PyTorch example repository, which contains three main components, an embedding table, an LSTM layer, and a decoder. The code below wraps the embedding table and the decoder into sub-modules, so that their constructors can be passed to the RPC API. In the EmbeddingTable sub-module, we intentionally put the Embedding layer on GPU to cover the use case. In v1.4, RPC always creates CPU tensor arguments or return values on the destination worker. If the function takes a GPU tensor, you need to move it to the proper device explicitly.</p>
+                
+                <div class="navigation">
+                    <a href="device_mesh.html">Prev: 14.4 Device Mesh</a>
+                    <a href="graph_foundation.html">Next: 15.1 Graph Foundation</a>
+                </div>
+            </main>
+
+            <aside class="col-md-2 right-sidebar">
+                <h5><a href="index.html#section14">Distributed Training</a></h5>
+                <ul id="dynamic-sidebar" class="nav flex-column">
+                </ul>
+            </aside>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="article_script.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+</body>
+
+</html>

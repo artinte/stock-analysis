@@ -25,8 +25,8 @@ from models.constants import Interval
 python -m tools.stock_bottom_comfirm
 """
 
-STOCK_CODE = "600460.SH"
 
+STOCK_CODE = "000988.SZ"
 
 # 计算 RSI 指标的函数
 def calculate_rsi(data, window=14):
@@ -87,7 +87,7 @@ if __name__ == "__main__":
             klines = dm.get_kline(
                 STOCK_CODE,
                 Interval.DAY_1,
-                datetime.now() - timedelta(days=60),
+                datetime.now() - timedelta(days=90),
                 datetime.now(),
             )
 
@@ -100,13 +100,35 @@ if __name__ == "__main__":
             )
 
             print(df["c"].to_list())
+            
+            # --- 核心逻辑计算 ---
+            df['rsi'] = calculate_rsi(df["c"], 14)
+            df['ma20'] = df['c'].rolling(window=20).mean()
 
-            # 3. 计算 RSI (注意传入 df["c"])
-            df["rsi"] = calculate_rsi(df["c"], 14)
+            # 1. 探底素材：今天是否跌破 30
+            df['today_is_below_30'] = df['rsi'] < 30
 
-            # 4. 计算双底结构
+            # 2. 状态延伸：过去 20 天内，是否有任何一天跌破过 30？
+            # 解决你担心的“今天不是底”的问题，只要近期探过底就行
+            df['in_bottom_area'] = df['today_is_below_30'].rolling(window=20).max().astype(bool)
+            
+            # 3. 计算双底结构 (识别两个独立的探底动作)
+            # 只有当 RSI 从 >30 掉到 <30 的那一瞬间，才算一次“探底脉冲”
+            df['bottom_pulse'] = (df['today_is_below_30'] & (df['today_is_below_30'].shift(1) == False))
+            # 统计过去 60 天内这种脉冲出现了几次
+            df['bottom_count'] = df['bottom_pulse'].rolling(window=60).sum()
 
-            # 5. 站上 20 日均线
+            # 4. 顺风车条件：当前站上 20 日均线
+            df['is_above_ma20'] = df['c'] > df['ma20']
+            
+            # 5. 最终组合逻辑
+            # 条件：1.近期探过底 + 2.有双底背景 + 3.今天站上均线 + 4.动能回升(RSI>45)
+            df['buy_signal'] = (
+                df['in_bottom_area'] & 
+                (df['bottom_count'] >= 2) & 
+                df['is_above_ma20'] & 
+                (df['rsi'] > 45)
+            )
 
             plot_stock_analysis(df, "Live Data")
         finally:
