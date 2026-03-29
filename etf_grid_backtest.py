@@ -1,5 +1,8 @@
+from datetime import datetime, timedelta
+
 from dotenv import dotenv_values
 from gateways.data_manager import DataManager
+from models.constants import Interval
 import requests
 import pandas as pd
 from io import BytesIO
@@ -134,8 +137,16 @@ def get_a500_components(url):
 
         # 自动识别列名（取包含代码、名称、权重的列）
         target_cols = {
-            "code": [c for c in df.columns if "成份券代码" in str(c) or "Constituent Code" in str(c)][0],
-            "name": [c for c in df.columns if "成份券名称" in str(c) or "Constituent Name" in str(c)][0],
+            "code": [
+                c
+                for c in df.columns
+                if "成份券代码" in str(c) or "Constituent Code" in str(c)
+            ][0],
+            "name": [
+                c
+                for c in df.columns
+                if "成份券名称" in str(c) or "Constituent Name" in str(c)
+            ][0],
             "weight": [c for c in df.columns if "权重" in str(c) or "Weight" in str(c)][
                 0
             ],
@@ -156,6 +167,96 @@ def get_a500_components(url):
         return None
 
 
+MIN_HOLDING = 15000  # 最低底仓
+MAX_HOLDING = 150000  # 最高持仓上限
+GRID_SIZE = 2000  # 单笔网格大小
+BUY_THRESHOLD = 0.0056  # 买入间距 0.56%
+SELL_THRESHOLD = 0.0059  # 卖出间距 0.59%
+
+
+def run_high_freq_backtest(df, initial_pos=32000):
+    current_pos = initial_pos
+    cash_balance = 0
+    # 基准价随动：初始取第一行的开盘价
+    last_executed_price = df.iloc[0]["open"]
+    
+    trade_log = []
+
+    for _, row in df.iterrows():
+        p_high = row["high"]
+        p_low = row["low"]
+        p_time = row["time"]
+        
+        executed = False
+        
+        # 1. 检查卖出逻辑 (向上看)
+        target_sell = last_executed_price * (1 + SELL_THRESHOLD)
+        if p_high >= target_sell:
+            if current_pos >= (MIN_HOLDING + GRID_SIZE):
+                # 触发倍投卖出判定
+                if p_high >= last_executed_price * (1 + SELL_THRESHOLD * 2):
+                    sell_size = GRID_SIZE * 2
+                    actual_price = last_executed_price * (1 + SELL_THRESHOLD * 2)
+                else:
+                    sell_size = GRID_SIZE
+                    actual_price = target_sell
+                
+                sell_size = min(sell_size, current_pos - MIN_HOLDING)
+                if sell_size > 0:
+                    current_pos -= sell_size
+                    cash_balance += sell_size * actual_price
+                    last_executed_price = actual_price # 基点随动更新
+                    trade_log.append({
+                        "time": p_time, "type": "SELL", "price": round(actual_price, 4), 
+                        "pos": current_pos, "size": sell_size
+                    })
+                    executed = True
+
+        # 2. 如果没卖出，检查买入逻辑 (向下看)
+        if not executed:
+            target_buy = last_executed_price * (1 - BUY_THRESHOLD)
+            if p_low <= target_buy:
+                if current_pos <= (MAX_HOLDING - GRID_SIZE):
+                    # 触发倍投买入判定
+                    if p_low <= last_executed_price * (1 - BUY_THRESHOLD * 2):
+                        buy_size = GRID_SIZE * 2
+                        actual_price = last_executed_price * (1 - BUY_THRESHOLD * 2)
+                    else:
+                        buy_size = GRID_SIZE
+                        actual_price = target_buy
+                    
+                    buy_size = min(buy_size, MAX_HOLDING - current_pos)
+                    if buy_size > 0:
+                        current_pos += buy_size
+                        cash_balance -= buy_size * actual_price
+                        last_executed_price = actual_price # 基点随动更新
+                        trade_log.append({
+                            "time": p_time, "type": "BUY", "price": round(actual_price, 4), 
+                            "pos": current_pos, "size": buy_size
+                        })
+
+    # --- 结算逻辑 (关键修改点) ---
+    final_price = df.iloc[-1]["close"]
+    start_price = df.iloc[0]["open"]
+    
+    # A. 初始投入总额 (基准)
+    initial_value = initial_pos * start_price
+    
+    # B. 方案1：死拿不动 (Benchmark)
+    hold_final_value = initial_pos * final_price
+    hold_pnl = hold_final_value - initial_value  # <-- 返回值 5: h_pnl
+    
+    # C. 方案2：网格策略
+    strategy_final_value = cash_balance + (current_pos * final_price) # <-- 返回值 2: final_val
+    strategy_pnl = strategy_final_value - initial_value             # <-- 返回值 4: s_pnl
+    
+    # D. 超额收益 (Alpha)
+    extra_profit = strategy_final_value - hold_final_value          # <-- 返回值 3: extra
+
+    # 严格按顺序返回 5 个值
+    return pd.DataFrame(trade_log), strategy_final_value, extra_profit, strategy_pnl, hold_pnl
+
+
 def main():
     config = dotenv_values("private_config.txt")
     dm = DataManager(provider_name="yinhe")
@@ -163,17 +264,113 @@ def main():
     if dm.start(config):
         try:
             a500_df = get_a500_components(A500_URL)
-            if a500_df is not None:
-                print("中证A500成分股及权重：")
-                print(a500_df.head(10))  # 打印前10行预览
+            
+            print("\n正在分段拉取 1 分钟线数据进行回测...")
+            all_dfs = []
+            end_dt = datetime.now()
+            start_dt = end_dt - timedelta(days=30)
+            
+            curr_dt = start_dt
+            while curr_dt <= end_dt:
+                if curr_dt.weekday() < 5:
+                    day_start = curr_dt.replace(hour=9, minute=0, second=0, microsecond=0)
+                    day_end = curr_dt.replace(hour=15, minute=5, second=0, microsecond=0)
+                    
+                    result = dm.get_kline("159361.SZ", Interval.MINUTE_1, day_start, day_end)
+                    klines, _ = result if isinstance(result, tuple) else (result, "OK")
+                    
+                    if klines and isinstance(klines, list):
+                        # --- 核心改进：直接在这里处理时间戳，避免后面变 NaT ---
+                        data_list = []
+                        for k in klines:
+                            # 尝试获取时间戳，如果 k.datetime 不行，尝试 k.date_time 或转字符串
+                            t = getattr(k, 'datetime', None)
+                            if t is None: t = getattr(k, 'date_time', None)
+                            
+                            data_list.append({
+                                "time": t,
+                                "open": k.open, 
+                                "high": k.high, 
+                                "low": k.low, 
+                                "close": k.close
+                            })
+                        
+                        day_df = pd.DataFrame(data_list)
+                        if not day_df.empty:
+                            all_dfs.append(day_df)
+                            print(f"日期 {curr_dt.date()} 数据抓取成功: {len(day_df)} 行")
+                
+                curr_dt += timedelta(days=1)
+
+            # --- 关键修正：鲁棒性合并逻辑 ---
+            if not all_dfs:
+                print("未能获取到任何数据。")
+                return
+
+            # 1. 先纵向拼接所有数据
+            full_df = pd.concat(all_dfs, ignore_index=True)
+            
+            # 2. 检查 time 列是否有数据。如果是 None，尝试填充一个模拟时间防止去重失败
+            if full_df['time'].isnull().all():
+                print("⚠️ 警告：无法从接口获取 time 字段，正在生成模拟时间序列...")
+                # 仅作为保底逻辑：如果接口没给时间，我们按行生成
+                full_df['time'] = pd.date_range(start=start_dt, periods=len(full_df), freq='min')
             else:
-                print("未能获取到有效的成分股数据。")
+                # 3. 强制转换并过滤掉无法转换的坏行
+                full_df['time'] = pd.to_datetime(full_df['time'], errors='coerce')
+                full_df = full_df.dropna(subset=['time']) 
+
+            # 4. 执行去重和排序
+            full_df = full_df.drop_duplicates(subset=['time']).sort_values('time').reset_index(drop=True)
+            
+            print(f"\n✅ 全量数据拼装成功，共 {len(full_df)} 行")
+            
+            if len(full_df) < 100:
+                print("数据量依然异常，请检查接口返回的对象属性：", full_df.head())
+                return
+
+            if not full_df.empty:
+                # --- 计算市场实际跌幅 ---
+                p_start = full_df.iloc[0]["open"]
+                p_end = full_df.iloc[-1]["close"]
+                market_change_pct = (p_end - p_start) / p_start * 100
+                hold_pnl = 32000 * (p_end - p_start)
+
+                # --- 运行回测 ---
+                trades, final_val, extra, s_pnl, h_pnl = run_high_freq_backtest(full_df, initial_pos=32000)
+
+                print("\n" + "="*45)
+                print("【中证A500 市场真实数据分析】")
+                print(f"统计区间: {start_dt.date()} -> {end_dt.date()}")
+                print(f"实际统计天数：{len(full_df) // 242} 天 (每个交易日约 242 分钟线数据)")
+                print(f"期初价格: {p_start:.4f} | 期末价格: {p_end:.4f}")
+                print(f"📉 市场实际涨跌: {market_change_pct:.2f}%")
+                print(f"💡 如果死拿不动，你会亏损: {hold_pnl:.2f} 元")
+                
+                print("\n【网格成交详细统计】")
+                if not trades.empty:
+                    buy_count = len(trades[trades['type'] == 'BUY'])
+                    sell_count = len(trades[trades['type'] == 'SELL'])
+                    print(f"✅ 总计成交: {len(trades)} 次")
+                    print(f"   - 买入 (补仓): {buy_count} 次")
+                    print(f"   - 卖出 (止盈): {sell_count} 次")
+                    print(f"期初持仓股数: 32000 股")
+                    print(f"期末持仓股数: {trades.iloc[-1]['pos']} 股")
+                else:
+                    print("❌ 警告：回测期间 [成交次数为 0]！")
+                    print(f"原因分析：A500 波动太小，从未达到你设置的 {BUY_THRESHOLD*100:.2f}% 阈值。")
+                    
+                print("\n【策略盈亏对比】")
+                print(f"网格策略总盈亏: {s_pnl:.2f} 元")
+                print(f"网格超额贡献: {extra:.2f} 元")
+                print("="*45)
 
         except Exception as e:
-            print("数据获取失败：", e)
+            print(f"运行异常: {e}")
+            import traceback
+            traceback.print_exc()
         finally:
             dm.stop()
-
 
 if __name__ == "__main__":
     main()
