@@ -1,5 +1,8 @@
 from dotenv import dotenv_values
 from gateways.data_manager import DataManager
+import requests
+import pandas as pd
+from io import BytesIO
 
 """
 中证A500指数：https://www.csindex.com.cn/#/indices/family/detail?indexCode=000510
@@ -7,9 +10,9 @@ from gateways.data_manager import DataManager
 本ETF主要研究中证A500指数，它从各行业选取市值较大、流动性较好的500只证券作为指数样本，以反映各行业最具代表性上市公司证券的整体表现。
 
 从2026年3月27日来看，中证A500不是一只适合长期定投的ETF，近五年的年化收益为 -0.44%，意味着你五年前的今天投进去100万，至今仍然亏损 4400 元。
-这就是股票市场的残酷现实，你不断没挣钱，还要承担有段时间 20% 以上的损失。
+这就是股票市场的残酷现实，你不仅没挣钱，还要承担有些时间 20% 以上的损失。
 
-所以必须要改变策略，要学会低吸高抛，在价格较低的时候买入，在价格较高的时候卖出，才能在这个市场中生存下来。
+所以必须要改变策略，要学会低吸高抛，在价格较低的时候买入，在价格较高的时候卖出，才能在这个市场中生存下来。以下是基于低吸高抛的动态底仓与高频网格实战策略：
 
 中证 A500 指数：动态底仓与高频网格实战策略
 
@@ -40,13 +43,15 @@ from gateways.data_manager import DataManager
 2. 网格参数设定
 执行标的：中证 A500 ETF（如易方达、广发等流动性极佳的品种）。
 
-单笔金额：2,000 元（小步慢跑，降低单次博弈风险）。
+单笔金额：2000 股（以目前 1.2 元单价来看，大概要投入 2400 元，小步慢跑，降低单次博弈风险）。
 
 买入间距：0.56%（下跌触发）。
 
 卖出间距：0.59%（上涨触发）。
 
 实战频率：目标日均成交 4 次（2 买 2 卖）。
+
+
 
 三、 收益预测与逻辑对冲
 
@@ -102,13 +107,68 @@ from gateways.data_manager import DataManager
 """
 
 
+A500_URL = "https://oss-ch.csindex.com.cn/static/html/csindex/public/uploads/file/autofile/closeweight/000510closeweight.xls"
+
+
+def get_a500_components(url):
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+
+    try:
+        # 1. 直接从网络读取到内存
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status()
+        file_content = BytesIO(response.content)
+
+        # 2. 常规读取逻辑：先尝试 Excel，失败则尝试 HTML
+        try:
+            df = pd.read_excel(file_content)
+        except Exception:
+            # 中证官网文件经常是 HTML 伪装的 .xls
+            df = pd.read_html(file_content)[0]
+
+        # 3. 标准化清洗 (提取核心列)
+        # 注意：中证文件的列名通常是：'成份券代码', '成份券名称', '权重(%)'
+        # 或者是英文：'Constituent Code', 'Constituent Name', 'Weight(%)'
+
+        # 自动识别列名（取包含代码、名称、权重的列）
+        target_cols = {
+            "code": [c for c in df.columns if "成份券代码" in str(c) or "Constituent Code" in str(c)][0],
+            "name": [c for c in df.columns if "成份券名称" in str(c) or "Constituent Name" in str(c)][0],
+            "weight": [c for c in df.columns if "权重" in str(c) or "Weight" in str(c)][
+                0
+            ],
+        }
+
+        result = df[
+            [target_cols["code"], target_cols["name"], target_cols["weight"]]
+        ].copy()
+        result.columns = ["Stock_Code", "Stock_Name", "Weight_Percent"]
+
+        # 4. 代码补全 (如 1 变为 000001)
+        result["Stock_Code"] = result["Stock_Code"].astype(str).str.zfill(6)
+
+        return result
+
+    except Exception as e:
+        print(f"提取失败: {e}")
+        return None
+
+
 def main():
     config = dotenv_values("private_config.txt")
     dm = DataManager(provider_name="yinhe")
-    
+
     if dm.start(config):
         try:
-            pass
+            a500_df = get_a500_components(A500_URL)
+            if a500_df is not None:
+                print("中证A500成分股及权重：")
+                print(a500_df.head(10))  # 打印前10行预览
+            else:
+                print("未能获取到有效的成分股数据。")
+
         except Exception as e:
             print("数据获取失败：", e)
         finally:
