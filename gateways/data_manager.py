@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List, Optional
+from gateways.pe_type import PEType
 from models import kline
 from gateways.amazing_data_gateway import AmazingDataGateway
 from models.constants import Interval
@@ -59,6 +60,16 @@ class DataManager:
     def get_stock_name(self, symbol: str) -> str:
         """获取股票名称"""
         return self.gateway.fetch_stock_name(symbol)
+    
+    def get_pe(self, symbol: str, pe_type: PEType = PEType.TTM) -> float:
+        """
+        获取指定类型的市盈率
+        :param symbol: 股票代码 (如 '000510.SH')
+        :param pe_type: PE类型，默认为 TTM
+        :return: 市盈率数值
+        """
+        # 在内部网关调用时传递类型参数
+        return self.gateway.fetch_pe(symbol, pe_type=pe_type.value)
 
     def stop(self):
         """统一的关闭入口"""

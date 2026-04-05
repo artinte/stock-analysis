@@ -166,6 +166,16 @@ class AmazingDataGateway(BrokerGateway):
         except Exception as e:
             print(f"DEBUG: 获取失败 {formatted_symbol}, 错误: {e}")
             return "获取失败"
+        
+    def fetch_pe(self, symbol: str, pe_type: str) -> float:
+        if not self._is_connected:
+            raise ConnectionError("请先执行 login() 成功后再获取数据")
+
+        formatted_symbol = symbol if "." in symbol else add_exchange_suffix(symbol)
+
+        # TODO: 这里需要根据 AmazingData 的接口文档来实现正确的调用方式
+        return 0.0
+
 
     def logout(self):
         if self._is_connected:
