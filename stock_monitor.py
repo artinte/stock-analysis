@@ -71,7 +71,7 @@ raw_income_dict = info_data_object.get_income(
     end_date=calendar[-1],
 )
 stock_instance.calculate_pe(raw_income_dict)
-
+stock_instance.calculate_ps(raw_income_dict)
 
 # 计算 60日，30日，20日，10日，5日，3日股价均值
 lookback = 100

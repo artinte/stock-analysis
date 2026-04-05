@@ -29,6 +29,13 @@ class StockDetail:
         self.pe_dynamic = 0.0
         # 静态市盈率：总市值 / 上一年度(2024全年)净利润。反映过去。
         self.pe_static = 0.0
+        
+        # 市销率 TTM：总市值 / 最近12个月(滚动)营业收入
+        # 专门对付那些“利润暂时很低甚至亏损，但营收规模巨大且稳定”的公司。
+        self.ps = 0.0
+        
+        # 市净率：总市值 / 净资产（通常按每股净资产 * 总股本计算）。反映账面价值。
+        self.pb = 0.0
 
         self.profit_growth_rate = 0.0  # 利润增长率 (%)
 
@@ -233,6 +240,72 @@ class StockDetail:
 
         except Exception as e:
             print(f"计算出错: {e}")
+            
+    def calculate_ps(self, financials_dict: dict):
+        """
+        计算市销率 (PS) 
+        采用与 PE 计算一致的回溯逻辑，确保营收(Revenue)与利润(Profit)数据口径同步
+        """
+        if not hasattr(self, "total_cap") or self.total_cap <= 0:
+            return
+
+        df = financials_dict.get(self.code)
+        if df is None or df.empty:
+            return
+
+        # 1. 定义字段（与 PE 计算保持一致）
+        REVENUE_FIELD = "TOT_OPERA_REV"  # 营业总收入
+        PERIOD_FIELD = "REPORTING_PERIOD"
+        revenue_data = df.set_index(df[PERIOD_FIELD].astype(str))[REVENUE_FIELD].to_dict()
+
+        # 2. 获取回溯的时间点
+        now = datetime.datetime.now()
+        q_map = {1: "0331", 2: "0630", 3: "0930", 4: "1231"}
+        target_period = None
+        q_num = 0
+
+        # 这里复用 PE 的回溯逻辑
+        for i in range(1, 7):
+            dt = now - datetime.timedelta(days=i * 90)
+            for q in [4, 3, 2, 1]:
+                period_key = f"{dt.year}{q_map[q]}"
+                if period_key in revenue_data and not pandas.isna(revenue_data[period_key]):
+                    target_period = period_key
+                    q_num = q
+                    break
+            if target_period:
+                break
+
+        if not target_period:
+            return
+
+        try:
+            current_report_year = int(target_period[:4])
+            base_year = current_report_year - 1
+            
+            # A. 提取核心营收数值
+            curr_rev_cum = revenue_data.get(target_period, 0)       # 本期累计 (如 2025Q3)
+            last_full_rev = revenue_data.get(f"{base_year}1231", 0) # 去年全年 (如 2024Q4)
+            prev_rev_cum = revenue_data.get(f"{base_year}{q_map[q_num]}", 0) # 去年同期 (如 2024Q3)
+
+            # B. 计算 PS (TTM)
+            # TTM营收 = 本期累计营收 + (去年全年营收 - 去年同期累计营收)
+            # 这种算法能剔除季节性因素，得到真实的滚动 12 个月收入
+            rev_ttm_yuan = curr_rev_cum + (last_full_rev - prev_rev_cum)
+
+            if rev_ttm_yuan > 0:
+                # 市销率 = 总市值 / (TTM营收 / 1e8)
+                self.ps = round(self.total_cap / (rev_ttm_yuan / 1e8), 2)
+            else:
+                self.ps = float("nan")
+
+            # C. 顺带更新 StockDetail 中的静态属性（可选）
+            # 如果你想增加一个 ps_static，可以使用 last_full_rev 进行计算
+            # self.ps_static = round(self.total_cap / (last_full_rev / 1e8), 2)
+
+        except Exception as e:
+            print(f"[{self.code}] 计算 PS 出错: {e}")
+        
 
     def update_equity(self, total_share_raw, float_share_raw):
         """
@@ -393,6 +466,10 @@ class StockDetail:
             print(
                 f"PE(TTM): {self.pe_ttm:<8} PE(静态): {self.pe_static:<8} PE(动态): {self.pe_dynamic}"
             )
+            
+        ps_val = getattr(self, "ps", 0.0)
+        pb_val = getattr(self, "pb", 0.0)
+        print(f"市销率(PS): {ps_val:<10} | 市净率(PB): {pb_val}")
 
         print(f"成交量: {int(self.volume)} 股")
         print(f"成交额: {round(self.amount / 1e8, 2)} 亿元")
