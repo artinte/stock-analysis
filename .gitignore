@@ -1,5 +1,6 @@
 
 # 私有配置
+temp/
 private_config.txt
 *.xlsx
 *.csv
