@@ -194,14 +194,17 @@ def get_a500_components(url):
         return None
 
 
-MIN_HOLDING = 15000  # 最低底仓
-MAX_HOLDING = 150000  # 最高持仓上限
+MIN_HOLDING = 25000  # 最低底仓
+MAX_HOLDING = 250000  # 最高持仓上限
+INIT_POS = 54000  # 初始持仓
 GRID_SIZE = 4000  # 单笔网格大小
+GRID_SIZE_BUY = 4200  # 买入时的网格大小（增强版）
+GRID_SIZE_SELL = 4000  # 卖出时的网格大小（增强版）
 BUY_THRESHOLD = 0.0056  # 买入间距 0.56%
 SELL_THRESHOLD = 0.0059  # 卖出间距 0.59%
 
 
-def run_high_freq_backtest(df, initial_pos=32000):
+def run_high_freq_backtest(df, initial_pos=54000):
     current_pos = initial_pos
     cash_balance = 0
     # 基准价随动：初始取第一行的开盘价
