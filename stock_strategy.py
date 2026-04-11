@@ -79,7 +79,6 @@
 
 """
 
-
 import math
 import random
 import akshare as ak
@@ -109,6 +108,14 @@ class StrategyEngine:
 
     def calculate_indicators(self):
         """12个原子级指标评分逻辑"""
+        # --- 最小改动：PS 市销率硬约束 ---
+        if hasattr(self.s, 'total_revenue') and self.s.total_revenue > 0:
+            ps_val = self.s.total_cap / self.s.total_revenue
+            self.s.ps_ratio = ps_val
+            self.scores["I_PS"] = 1 if ps_val < 3 else -100 
+        else:
+            self.scores["I_PS"] = -100
+
         # --- A. 价格与趋势 ---
         # I1: BIAS回归 (当日收盘在MA10下方，且20日乖离率在1.5%以内)
         # 修正逻辑：使之严格符合文档中的 1.5% 细节
@@ -151,10 +158,10 @@ class StrategyEngine:
         self.scores["I4"] = 1 if y_ret > 0.15 and abs(m_ret) < 0.1 else 0
 
         # --- C. 估值与成长 ---
-        # I5: 前瞻 PEG（核心逻辑：利润增长 > 15% 且 PEG < 0.8）
+        # I5: 前瞻 PEG（核心逻辑：放宽至只要增长且 PEG < 0.8）
         growth = self.s.profit_growth_rate  # 刚才在 StockDetail 中算出的增长率
         pe = self.s.pe_ttm
-        if growth > 15 and pe > 0:  # 满足你说的“利润需要增长 15%”
+        if growth > 0 and pe > 0:  
             peg = pe / growth
             self.scores["I5"] = 1 if peg < 0.8 else 0
         else:
@@ -188,6 +195,11 @@ class StrategyEngine:
     def get_final_decision(self):
         """执行退化机制评价"""
         self.calculate_indicators()
+        
+        # 最小改动：如果 PS 过滤未通过，返回负分
+        if self.scores.get("I_PS", 0) < 0:
+            return "PS过高(剔除)", -100
+
         total_score = sum(self.scores.values())
         ma60 = self.s.ma_dict.get("MA60", 0)
 
@@ -306,12 +318,18 @@ if __name__ == "__main__":
             if math.isnan(growth) or math.isnan(pe):
                 continue
 
-            if growth < 20:
+            # --- 最小改动点：PS 硬过滤 ---
+            ps_ratio = stock_instance.total_cap / stock_instance.total_revenue if stock_instance.total_revenue > 0 else 999
+            if ps_ratio >= 3:
                 continue
 
             # 4. 运行策略引擎进行评分
             engine = StrategyEngine(stock_instance, df_k, info_data_obj, local_path)
             decision_text, score_val = engine.get_final_decision()
+            
+            # 如果得分包含硬过滤的负分，则跳过
+            if score_val < 0:
+                continue
 
             change_pct = ((stock_instance.price / stock_instance.last_close) - 1) * 100
             print(
