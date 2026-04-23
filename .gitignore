@@ -4,6 +4,8 @@ temp/
 private_config.txt
 *.xlsx
 *.csv
+output/
+*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
