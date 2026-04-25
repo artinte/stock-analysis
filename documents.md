@@ -29,3 +29,5 @@
 
 [中国畜牧业协会](https://www.caaa.cn/html/fw/market/slyl/)  
 查看饲料原料（氨基酸）价格
+
+[中国光伏行业协会](https://www.chinapv.org.cn/)
