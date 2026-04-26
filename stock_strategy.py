@@ -320,7 +320,8 @@ if __name__ == "__main__":
 
             # --- 最小改动点：PS 硬过滤 ---
             ps_ratio = stock_instance.total_cap / stock_instance.total_revenue if stock_instance.total_revenue > 0 else 999
-            if ps_ratio >= 3:
+            # ps 太低也可能是因为公司流水高，没有什么护城河
+            if ps_ratio >= 5:
                 continue
 
             # 4. 运行策略引擎进行评分
