@@ -17,4 +17,6 @@
 
 [中国光伏行业协会](https://www.chinapv.org.cn/)
 
-[中国工程机械工业协会]()
+[中国工程机械工业协会](http://www.cncma.org/)
+
+[人民币汇率](https://zh.tradingeconomics.com/china/currency)
