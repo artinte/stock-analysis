@@ -28,7 +28,7 @@ python -m tools.stock_bottom_comfirm
 """
 
 
-STOCK_CODE = "601985"
+STOCK_CODE = "000157"
 
 plt.rcParams["font.sans-serif"] = [
     "SimHei",
@@ -115,8 +115,9 @@ if __name__ == "__main__":
     config = dotenv_values("private_config.txt")
     dm = DataManager(provider_name="yinhe")
 
-    items = list(Watchlists.items())
-    random.shuffle(items)
+    # items = list(Watchlists.items())
+    # random.shuffle(items)
+    items = list({"中联重科": "000157"}.items())
 
     if dm.start(config):
         try:
