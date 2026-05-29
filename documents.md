@@ -26,3 +26,7 @@
 [中证指数](https://www.csindex.com.cn/)
 
 [中证A500指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=000510)
+
+[中证科技50指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=931380)
+
+[中证芯片产业指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=H30007)
