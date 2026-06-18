@@ -30,3 +30,7 @@
 [中证科技50指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=931380)
 
 [中证芯片产业指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=H30007)
+
+[中证科创创业50指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=931643)
+
+[中证人工智能主题指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=930713)
