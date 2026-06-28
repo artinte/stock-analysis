@@ -34,3 +34,5 @@
 [中证科创创业50指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=931643)
 
 [中证人工智能主题指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=930713)
+
+[中证卫星产业指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=931594)
