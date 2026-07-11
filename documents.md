@@ -66,3 +66,14 @@
 中证机器人指数选取系统方案商、数字化车间与生产线系统集成商、自动化设备制造商、自动化零部件商以及其它机器人相关上市公司证券作为指数样本，以反映上市公司中机器人相关证券的整体表现。
 
 [中证500机械制造指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=930684)
+
+[国证成长100指数](https://www.cnindex.com.cn/module/index-detail.html?act_menu=1&indexCode=980080)
+
+国证成长100指数反映沪深北交易所成长风格突出的上市公司证券价格变化情况
+
+[中证500信息技术指数 (H30257)](https://www.csindex.com.cn/#/indices/family/detail?indexCode=H30257)
+
+[中证电子指数](https://www.csindex.com.cn/#/indices/family/detail?indexCode=930652)
+
+中证电子指数选取涉及半导体、电脑与外围设备生产、电子设备和消费电子生产等业务的上市公司证券作为样本，以反映电子类相关上市公司整体表现。
+
