@@ -103,11 +103,13 @@ def download_csindex_industry_data():
             return None
 
 
-def get_csindex_industry_data():
+def get_csindex_industry_data(force_update=False):
     """外部调用核心入口函数。
 
-    检查今日数据是否存在，存在则直接加载，不存在则下载后加载。
-    返回: pandas.DataFrame 结构体
+    参数:
+        force_update (bool): 是否强制重新下载。默认为 False。
+    返回:
+        pandas.DataFrame 结构体
     """
     today_str = datetime.datetime.now().strftime("%Y%m%d")
 
@@ -115,34 +117,39 @@ def get_csindex_industry_data():
     current_dir = os.getcwd()
     expected_file = None
 
-    # 遍历当前目录，看有没有名字里带今天日期且是 xlsx 的文件
     for file in os.listdir(current_dir):
         if today_str in file and file.endswith(".xlsx"):
             expected_file = os.path.join(current_dir, file)
             break
 
-    # 判断并读取/下载
-    if expected_file and os.path.exists(expected_file):
+    # 2. 判断并读取/下载（增加 force_update 的逻辑判断）
+    if expected_file and os.path.exists(expected_file) and not force_update:
         print(f"检测到今日数据已存在本地: {expected_file}，直接加载...")
-        # 2. 用 with 语句临时忽略 openpyxl 的特定 UserWarning
+
         with warnings.catch_warnings():
             warnings.filterwarnings(
                 "ignore", category=UserWarning, module="openpyxl"
             )
             df = pd.read_excel(expected_file)
+
         return df
     else:
-        print("本地未检测到今日数据，开始启动线上下载...")
+        if force_update:
+            print("已触发 [强制更新]，跳过本地缓存，开始启动线上下载...")
+        else:
+            print("本地未检测到今日数据，开始启动线上下载...")
+
         file_path = download_csindex_industry_data()
 
         if file_path and os.path.exists(file_path):
             print("下载完成，开始转换成 Pandas DataFrame...")
-            # 用 with 语句临时忽略 openpyxl 的特定 UserWarning
+
             with warnings.catch_warnings():
                 warnings.filterwarnings(
                     "ignore", category=UserWarning, module="openpyxl"
                 )
                 df = pd.read_excel(file_path)
+
             return df
         else:
             raise FileNotFoundError(
