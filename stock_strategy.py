@@ -86,6 +86,7 @@ from dotenv import dotenv_values
 import pandas as pd
 import numpy as np
 import AmazingData
+from download_csindex import get_csindex_industry_data
 from stock_detail import StockDetail
 from watchlists import Watchlists
 from datetime import datetime
@@ -220,7 +221,6 @@ def format_watchlists(watch_dict):
         formatted.append((full_code, name))
     return formatted
 
-
 # ==========================================
 # 2. 主执行程序：遍历自选股池
 # ==========================================
@@ -241,6 +241,9 @@ if __name__ == "__main__":
 
     code_infos = base_data_obj.get_code_info()
     final_results = []
+    
+    # 加载行业
+    df_industry = get_csindex_industry_data()
 
     print("\n>>> 开始运行策略引擎遍历自选股池...\n")
 
@@ -304,15 +307,23 @@ if __name__ == "__main__":
 
             industry = "未知"
             try:
-                # 获取行业数据
-                short_code = code.split(".")[0]
-                stock_info = ak.stock_individual_info_em(symbol=short_code)
-                
-                if not stock_info.empty:
-                    industry = stock_info[stock_info["item"] == "行业"]["value"].values[0]
+                # 1. 提取纯数字代码，并强制转换为 6 位字符串补零格式（例如: '000001'）
+                short_code = code.split(".")[0].zfill(6)
+
+                # 2. 从之前下载的 df 数据（假设你的 DataFrame 变量名叫 df_industry）中匹配证券代码
+                # 注意：这里的 df_industry 就是你之前通过 get_csindex_industry_data() 获取到的结构体
+                match_data = df_industry[df_industry["证券代码"].astype(str) == short_code]
+
+                if not match_data.empty:
+                    # 3. 获取行业名称（量化中常用“中证二级行业分类简称”，可根据需要替换为三级或四级）
+                    industry = match_data["中证二级行业分类简称"].values[0]
                 else:
+                    # 如果中证数据里找不到这只股票（可能是退市或刚上市新股），可以按你原逻辑跳过或标记未知
                     continue
-            except Exception:
+
+            except Exception as e:
+                # 调试时可以打印错误看看，策略上线后可以保持 silent
+                # print(f"匹配行业时出错: {e}")
                 pass
 
             if math.isnan(growth) or math.isnan(pe):
