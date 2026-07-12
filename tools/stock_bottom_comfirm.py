@@ -8,6 +8,7 @@ from dotenv import dotenv_values
 from gateways.data_manager import DataManager
 from models.constants import Interval
 from watchlists import Watchlists
+from download_csindex import get_csindex_industry_data
 
 
 """
@@ -92,7 +93,7 @@ def plot_stock_analysis(df, title_suffix=""):
                 zorder=5,
             )
 
-    ax1.set_title(f"{code} {title_suffix} (Ref: 2026-03)")
+    ax1.set_title(f"{code} | {title_suffix}", fontsize=10)
     ax1.set_ylabel("Price")
     ax1.legend()
     ax1.grid(True, linestyle="--", alpha=0.5)
@@ -114,10 +115,13 @@ def plot_stock_analysis(df, title_suffix=""):
 if __name__ == "__main__":
     config = dotenv_values("private_config.txt")
     dm = DataManager(provider_name="yinhe")
+    
+    # 加载行业
+    df_industry = get_csindex_industry_data()
 
-    # items = list(Watchlists.items())
+    items = list(Watchlists.items())
     # random.shuffle(items)
-    items = list({"中联重科": "000157"}.items())
+    # items = list({"中联重科": "000157"}.items())
 
     if dm.start(config):
         try:
@@ -140,6 +144,17 @@ if __name__ == "__main__":
                 
                 security_name = dm.get_stock_name(code)
                 print(f"正在分析 {code} ({security_name}) 的数据...")
+                
+                # 【新增】本地快速检索行业
+                short_code = code.split(".")[0].zfill(6)
+                match = df_industry[df_industry["证券代码"].astype(str) == short_code]
+                industry_info = "未知行业"
+                if not match.empty:
+                    # 组合二、三、四级分类，用“ > ”连接
+                    i2 = match["中证二级行业分类简称"].values[0]
+                    i3 = match["中证三级行业分类简称"].values[0]
+                    i4 = match["中证四级行业分类简称"].values[0]
+                    industry_info = f"{i2} > {i3} > {i4}"
 
                 print(df["c"].to_list())
 
@@ -177,7 +192,7 @@ if __name__ == "__main__":
                 )
                 print(df["buy_signal"])
 
-                plot_stock_analysis(df, security_name)
+                plot_stock_analysis(df, f"{security_name} ({industry_info})")
         finally:
             dm.stop()
     else:
