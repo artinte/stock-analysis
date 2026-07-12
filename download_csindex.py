@@ -1,5 +1,8 @@
 import os
 import time
+import datetime
+import warnings
+import pandas as pd
 from playwright.sync_api import sync_playwright
 
 """
@@ -34,6 +37,10 @@ from playwright.sync_api import sync_playwright
 
 
 def download_csindex_industry_data():
+    """自动化下载中证行业数据，并返回保存的文件绝对路径。
+
+    如果下载失败，返回 None。
+    """
     target_url = (
         "https://www.csindex.com.cn/#/dataService/industryClassification"
     )
@@ -46,8 +53,6 @@ def download_csindex_industry_data():
         )
         page = context.new_page()
 
-        # 【优化 1】：将等待条件从 "networkidle" 改为 "domcontentloaded"（只等网页骨架加载完）
-        # 同时手动设置一个稍微宽松点的整体加载超时时间（45秒）
         print(f"正在打开网页: {target_url}")
         try:
             page.goto(
@@ -56,23 +61,20 @@ def download_csindex_industry_data():
         except Exception as e:
             print(f"网页基础加载遇到警告（不影响后续操作）: {e}")
 
-        # 【优化 2】：给页面一个硬性的缓冲时间，让 JavaScript 把表格里的动态数据渲染出来
         print("等待数据表格加载...")
         time.sleep(5)
 
-        # 定位“导出数据”按钮
         export_btn_selector = "button:has-text('导出数据')"
 
         print("正在定位 [导出数据] 按钮...")
         try:
-            # 按钮最多等 15 秒
             page.wait_for_selector(export_btn_selector, timeout=15000)
         except Exception:
             print(
-                "错误：页面虽然打开了，但等了 15 秒都没看到 [导出数据] 按钮，可能页面正在加载中或结构变了。"
+                "错误：页面虽然打开了，但等了 15 秒都没看到 [导出数据] 按钮。"
             )
             browser.close()
-            return
+            return None
 
         print("点击导出按钮，正在拦截并下载 Excel 文件...")
         try:
@@ -80,19 +82,80 @@ def download_csindex_industry_data():
                 page.click(export_btn_selector)
 
             download = download_info.value
-            filename = download.suggested_filename
-            if not filename:
-                filename = f"中证行业分类数据_{int(time.time())}.xlsx"
+            today_str = datetime.datetime.now().strftime("%Y%m%d")
+
+            suggested_name = download.suggested_filename
+            if suggested_name:
+                name_part, ext_part = os.path.splitext(suggested_name)
+                filename = f"{name_part}_{today_str}{ext_part}"
+            else:
+                filename = f"中证行业分类数据_{today_str}.xlsx"
 
             save_path = os.path.join(os.getcwd(), filename)
             download.save_as(save_path)
             print(f"🎉 自动化爬取成功！文件已保存至: {save_path}")
+            browser.close()
+            return save_path  # 【改动】成功后返回文件路径
 
         except Exception as e:
             print(f"下载文件时遭遇错误: {e}")
+            browser.close()
+            return None
 
-        browser.close()
+
+def get_csindex_industry_data():
+    """外部调用核心入口函数。
+
+    检查今日数据是否存在，存在则直接加载，不存在则下载后加载。
+    返回: pandas.DataFrame 结构体
+    """
+    today_str = datetime.datetime.now().strftime("%Y%m%d")
+
+    # 1. 在当前目录下，寻找包含今天日期的 .xlsx 文件
+    current_dir = os.getcwd()
+    expected_file = None
+
+    # 遍历当前目录，看有没有名字里带今天日期且是 xlsx 的文件
+    for file in os.listdir(current_dir):
+        if today_str in file and file.endswith(".xlsx"):
+            expected_file = os.path.join(current_dir, file)
+            break
+
+    # 判断并读取/下载
+    if expected_file and os.path.exists(expected_file):
+        print(f"检测到今日数据已存在本地: {expected_file}，直接加载...")
+        # 2. 用 with 语句临时忽略 openpyxl 的特定 UserWarning
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore", category=UserWarning, module="openpyxl"
+            )
+            df = pd.read_excel(expected_file)
+        return df
+    else:
+        print("本地未检测到今日数据，开始启动线上下载...")
+        file_path = download_csindex_industry_data()
+
+        if file_path and os.path.exists(file_path):
+            print("下载完成，开始转换成 Pandas DataFrame...")
+            # 用 with 语句临时忽略 openpyxl 的特定 UserWarning
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore", category=UserWarning, module="openpyxl"
+                )
+                df = pd.read_excel(file_path)
+            return df
+        else:
+            raise FileNotFoundError(
+                "未能成功下载中证行业分类数据，无法转换为 DataFrame。"
+            )
 
 
+# 测试当前文件运行情况
 if __name__ == "__main__":
-    download_csindex_industry_data()
+    try:
+        df_data = get_csindex_industry_data()
+        print("\n--- 成功获取数据前 5 行预览 ---")
+        print(df_data.head())
+        print(f"数据总行数: {len(df_data)}")
+    except Exception as ex:
+        print(f"运行失败: {ex}")
