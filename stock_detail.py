@@ -157,7 +157,6 @@ class StockDetail:
         q_num = 0
         # 搜索范围扩大，确保能抓到去年的三季报或中报
         for i in range(1, 7):
-            check_month = now.month - i * 3
             # 简单的年月回溯逻辑
             dt = now - datetime.timedelta(days=i * 90)
             # 构造可能的四个季度末

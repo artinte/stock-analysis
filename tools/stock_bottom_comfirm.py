@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from dotenv import dotenv_values
 
 from gateways.data_manager import DataManager
+from gateways.pe_type import PEType
 from models.constants import Interval
 from watchlists import Watchlists
 from download_csindex import get_csindex_industry_data
@@ -190,9 +191,13 @@ if __name__ == "__main__":
                     & (df["rsi"] < 50)  # 条件 D: 动能还未过热 (重点！)
                     & (df["rsi"] > 40)  # 条件 E: 动能已在回暖
                 )
-                print(df["buy_signal"])
 
-                plot_stock_analysis(df, f"{security_name} ({industry_info})")
+                # 6. 获取 PE 数据
+                pe_value = dm.get_pe(code, pe_type=PEType.TTM)
+                print(f"{code} ({security_name}) 的当前 PE (TTM) 为: {pe_value}")
+                
+                if pe_value < 50:
+                    plot_stock_analysis(df, f"{security_name} ({industry_info})")
         finally:
             dm.stop()
     else:
