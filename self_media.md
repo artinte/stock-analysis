@@ -23,4 +23,9 @@
 
 [Impulse Space](https://www.impulsespace.com/)
 
+[长鑫存储](https://www.cxmt.com/)
+
+[寒武纪](https://www.cambricon.com/)
+
+[北方华创](https://www.naura.com/)
 
