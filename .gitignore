@@ -3,6 +3,7 @@
 temp/
 private_config.txt
 *.xlsx
+*.xls
 *.csv
 output/
 *.png
