@@ -71,8 +71,7 @@ async def fetch_cctv_finance_news():
                 # 规则 3：过滤标题太短或通用导航词
                 if (
                     len(clean_title) < 6
-                    or clean_title
-                    in ["更多", "详细", "点击查看"]
+                    or clean_title in ["更多", "详细", "点击查看"]
                     or clean_title.startswith("http")
                 ):
                     continue
@@ -196,15 +195,10 @@ async def fetch_hot_topics_from_eastmoney():
             await browser.close()
 
 
-NEWS_SOURCES = {
-    "中华人民共和国商务部-政策发布-外贸管理": "https://wms.mofcom.gov.cn/zcfb/wmgl/index.html"
-}
-
-
 async def fetch_mofcom_news_like_human():
     """使用自动化浏览器，完全模拟人类访问商务部官网抓取政策"""
-    target_url = NEWS_SOURCES["中华人民共和国商务部-政策发布-外贸管理"]
-    print(f"🕵️  正在启动自动化浏览器，模拟人类访问：{target_url}")
+    url = "https://wms.mofcom.gov.cn/zcfb/wmgl/index.html"
+    print(f"🕵️  正在访问 中华人民共和国商务部-政策发布-外贸管理：{url}")
 
     collected_articles = []
     async with async_playwright() as p:
@@ -217,7 +211,7 @@ async def fetch_mofcom_news_like_human():
 
         try:
             print("🔗 正在导航至目标网页...")
-            await page.goto(target_url, timeout=30000)
+            await page.goto(url, timeout=30000)
 
             print("⏳ 正在等待网页内部 JavaScript 执行以加载最新数据...")
             await page.wait_for_selector(".listCon", timeout=15000)
