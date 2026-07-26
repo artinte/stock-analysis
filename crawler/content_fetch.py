@@ -1,8 +1,114 @@
 from playwright.async_api import async_playwright
-
-
 from urllib.parse import urljoin
 from playwright.async_api import async_playwright
+
+
+async def fetch_cctv_finance_news():
+    url = "https://finance.cctv.com/"
+    print(f"🕵️  正在精准抓取央视财经核心新闻：{url}")
+
+    collected_articles = []
+
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            viewport={"width": 1280, "height": 800},
+        )
+        page = await context.new_page()
+
+        try:
+            print("🔗 正在导航至央视财经首页...")
+            await page.goto(url, wait_until="domcontentloaded", timeout=30000)
+
+            print("⏳ 正在等待新闻区块加载...")
+            # 1. 核心改变：避开全页 a 标签，精准限定在财经主要内容区/列表区
+            content_area = page.locator(
+                ".content, .list, .con_left, #page_body, .text_box"
+            )
+            await content_area.first.wait_for(state="visible", timeout=15000)
+
+            # 向下滚动 600px 避开顶栏干扰，并触发懒加载
+            await page.evaluate("window.scrollBy(0, 600)")
+            await page.wait_for_timeout(1000)
+
+            # 2. 提取内容区域内的所有新闻链接
+            links_locator = page.locator(
+                '.content a, .list a, .con_left a, .text_box a, a[href*="ARTI"]'
+            )
+            count = await links_locator.count()
+            print(f"👀 找到 {count} 个候选文章节点...")
+
+            for i in range(count):
+                item = links_locator.nth(i)
+                title = (await item.inner_text()).strip()
+                href = await item.get_attribute("href")
+
+                if not href or not title:
+                    continue
+
+                full_url = urljoin(url, href)
+                clean_title = title.replace("\n", " ").strip()
+
+                # ---------------- 🛡️ 核心过滤逻辑 ----------------
+                # 规则 1（硬核特征）：央视网真实新闻页面的 URL 必须包含 "ARTI" 或 "202" (年份)
+                if "ARTI" not in full_url and "/202" not in full_url:
+                    continue
+
+                # 规则 2（黑名单）：彻底踢掉顶栏/多语言/App/专题
+                blacklist = [
+                    "rmlx",
+                    "app.cctv",
+                    "english.cctv",
+                    "worldcup",
+                    "passport",
+                    "mn.cctv",
+                    "live",
+                ]
+                if any(k in full_url for k in blacklist):
+                    continue
+
+                # 规则 3：过滤标题太短或通用导航词
+                if (
+                    len(clean_title) < 6
+                    or clean_title
+                    in ["更多", "详细", "点击查看"]
+                    or clean_title.startswith("http")
+                ):
+                    continue
+                # ------------------------------------------------
+
+                collected_articles.append(
+                    {
+                        "category": "央视财经",
+                        "title": clean_title,
+                        "link": full_url,
+                    }
+                )
+
+            # 标题去重
+            seen = set()
+            unique_articles = []
+            for art in collected_articles:
+                if art["title"] not in seen:
+                    seen.add(art["title"])
+                    unique_articles.append(art)
+
+            print(
+                f"✅ 成功清洗！获取到 {len(unique_articles)} 条真正的央视财经新闻。\n"
+            )
+
+            for idx, art in enumerate(unique_articles[:5], 1):
+                print(f"{idx}. {art['title']}")
+                print(f"   🔗 {art['link']}\n")
+
+            return unique_articles
+
+        except Exception as e:
+            print(f"❌ 抓取失败: {e}")
+            return []
+        finally:
+            await browser.close()
 
 
 async def fetch_hot_topics_from_eastmoney():
