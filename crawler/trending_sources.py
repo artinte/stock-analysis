@@ -28,7 +28,7 @@ TRENDING_SOURCES = {
     "集微网-集成电路与硬科技独家内幕": "https://www.laoyaoba.com/",
     "半导体行业观察-全球芯片供应链研究": "http://www.semiinsights.com/",
     # ==================== 三、A股/美股实时高频情绪风向标（雪球爆款、股吧异动、热搜） ====================
-    "东方财富网-今日爆款热帖": "https://guba.eastmoney.com/default_9.html",
+    "东方财富网-热门话题": "https://gubatopic.eastmoney.com/",
     "雪球网-今日热门讨论榜": "https://xueqiu.com/today",
     "新浪财经-7x24小时全球直播流": "https://finance.sina.com.cn/7x24/",
     "华尔街见闻-实时全球大事件快讯": "https://wallstreetcn.com/live/global",
