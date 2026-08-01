@@ -1,33 +1,58 @@
-import os
 import asyncio
+from core.browser import browser_manager
+from pipelines.deduplicate import DeduplicatePipeline
+from pipelines.summarizer import XueqiuArticlePipeline  # 导入管道
+from spiders.cctv_finance import CCTVFinanceSpider
+from spiders.eastmoney_topic import EastMoneyTopicSpider
+from spiders.mofcom_policy import MOFCOMPolicySpider
 
-import content_fetch
-from data_generate import generate_xueqiu_article
+SPIDERS = [
+    CCTVFinanceSpider(),
+    EastMoneyTopicSpider(),
+    MOFCOMPolicySpider(),
+]
 
 
-# ==================== 主运行逻辑 ====================
+async def run_spider(spider, semaphore: asyncio.Semaphore):
+    async with semaphore:
+        return await spider.run()
+
+
 async def main():
-    mofcom_news = await content_fetch.fetch_mofcom_news_like_human()
+    await browser_manager.start()
+    semaphore = asyncio.Semaphore(3)
 
-    if mofcom_news:
-        xueqiu_post = generate_xueqiu_article(mofcom_news)
+    try:
+        print("🚀 开始并行抓取任务...\n")
+        tasks = [run_spider(spider, semaphore) for spider in SPIDERS]
+        results = await asyncio.gather(*tasks)
 
-        if xueqiu_post:
-            print(
-                "\n" + "🔥" * 10 + " 本地 AI 生成的雪球深度分析长文 " + "🔥" * 10 + "\n"
-            )
-            print(xueqiu_post)
-            print("\n" + "=" * 50)
+        # 1. 压平抓取结果
+        raw_items = [item for sublist in results for item in sublist]
 
-            output_filename = "xueqiu_local_output.txt"
-            output_dir = os.path.join(os.getcwd(), "output")
-            os.makedirs(output_dir, exist_ok=True)
-            output_file = os.path.join(output_dir, output_filename)
-            with open(output_file, "w", encoding="utf-8") as f:
-                f.write(xueqiu_post)
-            print(f"🎉 本地实验大成功！文章已完美保存至本地：{output_file}")
-    else:
-        print("❌ 实验未能完成：未能从官网捕获到有效政策标题。")
+        # 2. 管道 1：去重清洗
+        dedup_pipeline = DeduplicatePipeline()
+        cleaned_items = dedup_pipeline.process(raw_items)
+
+        print(
+            f"\n🎉 抓取与清洗完成！共获取 {len(cleaned_items)} 条有效数据（原始 {len(raw_items)} 条）\n"
+        )
+
+        # 3. 管道 2：可筛选特定来源（如商务部），或直接全量丢给 AI 总结
+        # mofcom_news = [
+        #     item for item in cleaned_items if item.source_name == "商务部官网"
+        # ]
+
+        # 如果抓到了商务部政策就只分析商务部，没有的话用全量新闻，避免打空包
+        # target_news = mofcom_news if mofcom_news else cleaned_items
+        target_news = cleaned_items
+        ai_pipeline = XueqiuArticlePipeline(
+            output_filename="xueqiu_local_output.txt"
+        )
+        ai_pipeline.process(target_news)
+
+    finally:
+        await browser_manager.stop()
 
 
 if __name__ == "__main__":
