@@ -1,4 +1,6 @@
 import asyncio
+import os
+from datetime import datetime
 from core.browser import browser_manager
 from pipelines.deduplicate import DeduplicatePipeline
 from pipelines.summarizer import XueqiuArticlePipeline  # 导入管道
@@ -44,9 +46,16 @@ async def main():
         # target_news = mofcom_news if mofcom_news else cleaned_items
         target_news = cleaned_items
         print_fetched_articles(target_news)
-        save_raw_articles_to_txt(target_news, output_file="output/raw_fetched_articles.txt")
+
+        output_dir = os.path.join(os.getcwd(), "output")
+        os.makedirs(output_dir, exist_ok=True)
+        date_suffix = datetime.now().strftime("%Y%m%d")
+        output_file = os.path.join(
+            output_dir, f"raw_fetched_articles_{date_suffix}.txt"
+        )
+        save_raw_articles_to_txt(target_news, output_file=output_file)
         ai_pipeline = XueqiuArticlePipeline(
-            output_filename="xueqiu_local_output.txt"
+            output_filename=f"raw_fetched_articles_{date_suffix}.txt"
         )
         ai_pipeline.process(target_news)
 
