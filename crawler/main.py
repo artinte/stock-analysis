@@ -34,10 +34,6 @@ async def main():
         dedup_pipeline = DeduplicatePipeline()
         cleaned_items = dedup_pipeline.process(raw_items)
 
-        print(
-            f"\n🎉 抓取与清洗完成！共获取 {len(cleaned_items)} 条有效数据（原始 {len(raw_items)} 条）\n"
-        )
-
         # 3. 管道 2：可筛选特定来源（如商务部），或直接全量丢给 AI 总结
         # mofcom_news = [
         #     item for item in cleaned_items if item.source_name == "商务部官网"
@@ -46,6 +42,7 @@ async def main():
         # 如果抓到了商务部政策就只分析商务部，没有的话用全量新闻，避免打空包
         # target_news = mofcom_news if mofcom_news else cleaned_items
         target_news = cleaned_items
+        print(target_news)
         ai_pipeline = XueqiuArticlePipeline(
             output_filename="xueqiu_local_output.txt"
         )
