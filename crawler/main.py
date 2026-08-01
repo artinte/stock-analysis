@@ -55,7 +55,7 @@ async def main():
         )
         save_raw_articles_to_txt(target_news, output_file=output_file)
         ai_pipeline = XueqiuArticlePipeline(
-            output_filename=f"raw_fetched_articles_{date_suffix}.txt"
+            output_filename=f"xueqiu_local_output_{date_suffix}.txt"
         )
         ai_pipeline.process(target_news)
 

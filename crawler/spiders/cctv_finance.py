@@ -56,7 +56,51 @@ class CCTVFinanceSpider(BaseSpider):
             ):
                 continue
 
-            summary = (await item.get_attribute("title") or "").strip()
+            detail_page = await page.context.new_page()
+            content = ""
+            try:
+                # 1. 打开详情页（只等待 DOM 加载完即可，速度快）
+                await detail_page.goto(full_url, wait_until="domcontentloaded", timeout=12000)
+
+                # 2. 直接拿正文区域的文本
+                # 央视网正文唯一核心节点：#content_area
+                content = await detail_page.locator("#content_area").inner_text(timeout=3000)
+                content = content.strip()
+            except Exception:
+                # 兜底方案：如果 DOM 还没加载完，直接读央视网全局变量 cntText
+                try:
+                    content = await detail_page.evaluate("window.cntText || ''")
+                    content = content.strip()
+                except Exception:
+                    content = ""
+            finally:
+                await detail_page.close()
+
+            # 智能提取摘要（过滤署名 + 限制最低 40 字符）
+            summary = ""
+            if content:
+                paragraphs = [p.strip() for p in content.split("\n") if p.strip()]
+                valid_parts = []
+                
+                for p in paragraphs:
+                    # 规则 A：跳过短于 25 字且包含署名词汇的行
+                    is_reporter_tag = len(p) < 25 and any(k in p for k in ["记者", "讯", "电", "消息", "编辑", "来源"])
+                    if is_reporter_tag:
+                        continue
+                    
+                    # 规则 B：累加有效段落，直到满足最低 40 字符要求
+                    valid_parts.append(p)
+                    combined_text = " ".join(valid_parts)
+                    
+                    if len(combined_text) >= 40:
+                        summary = combined_text
+                        break
+                
+                # 兜底：如果整篇文章实在太短无法凑满 40 字，直接用全文
+                if not summary:
+                    summary = content
+            else:
+                summary = title
 
             items.append(
                 ArticleItem(
@@ -64,6 +108,7 @@ class CCTVFinanceSpider(BaseSpider):
                     title=title,
                     url=full_url,
                     summary=summary if summary != title else "",
+                    content=content,
                     category="核心新闻",
                 )
             )
