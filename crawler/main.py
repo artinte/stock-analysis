@@ -5,6 +5,7 @@ from pipelines.summarizer import XueqiuArticlePipeline  # 导入管道
 from spiders.cctv_finance import CCTVFinanceSpider
 from spiders.eastmoney_topic import EastMoneyTopicSpider
 from spiders.mofcom_policy import MOFCOMPolicySpider
+from utils.data_printer import print_fetched_articles, save_raw_articles_to_txt
 
 SPIDERS = [
     CCTVFinanceSpider(),
@@ -42,7 +43,8 @@ async def main():
         # 如果抓到了商务部政策就只分析商务部，没有的话用全量新闻，避免打空包
         # target_news = mofcom_news if mofcom_news else cleaned_items
         target_news = cleaned_items
-        print(target_news)
+        print_fetched_articles(target_news)
+        save_raw_articles_to_txt(target_news, output_file="output/raw_fetched_articles.txt")
         ai_pipeline = XueqiuArticlePipeline(
             output_filename="xueqiu_local_output.txt"
         )
