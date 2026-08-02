@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+from datetime import datetime
 
 # 加载 .env 环境变量文件
 load_dotenv()
@@ -87,7 +88,11 @@ class WechatNotificationPipeline:
 if __name__ == "__main__":
     # 示例 1: 直接使用推送类
     bot = WechatWebhookNotifier()
-    bot.send_text("这是一条来自 Python 爬虫类的测试消息 🚀")
+    # 获取当前时间并格式化（例如：2026-08-02 20:15:30）
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # 将时间拼接到测试消息中
+    bot.send_text(f"这是一条来自 Python 爬虫类的测试消息 🚀 \n[{now_str}]")
 
     # 示例 2: 模拟爬虫管道调用
     pipeline = WechatNotificationPipeline()
