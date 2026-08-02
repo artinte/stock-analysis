@@ -9,7 +9,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-COOKIE_FILE = "xueqiu_cookies.json"
+
+COOKIE_FILE = os.path.join("temp", "xueqiu_cookies.json")
 
 def get_driver():
     options = webdriver.ChromeOptions()
