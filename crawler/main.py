@@ -3,7 +3,8 @@ import os
 from datetime import datetime
 from core.browser import browser_manager
 from pipelines.deduplicate import DeduplicatePipeline
-from pipelines.summarizer import XueqiuArticlePipeline  # 导入管道
+from pipelines.article_summary import XueqiuArticlePipeline  # 导入管道
+from pipelines.content_summary import ContentSummaryPipeline  # 导入管道
 from spiders.cctv_finance import CCTVFinanceSpider
 from spiders.eastmoney_topic import EastMoneyTopicSpider
 from spiders.mofcom_policy import MOFCOMPolicySpider
@@ -45,6 +46,10 @@ async def main():
         # 如果抓到了商务部政策就只分析商务部，没有的话用全量新闻，避免打空包
         # target_news = mofcom_news if mofcom_news else cleaned_items
         target_news = cleaned_items
+        
+        summary_pipeline = ContentSummaryPipeline(concurrency_limit=5)  # 设置并发限制为 5
+        target_news = await summary_pipeline.process_async(target_news)
+ 
         print_fetched_articles(target_news)
 
         output_dir = os.path.join(os.getcwd(), "output")
