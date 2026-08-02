@@ -39,6 +39,16 @@ class ContentSummaryPipeline:
     async def _process_single_item(self, item: Any) -> Any:
         """单个 Item 的处理逻辑（带信号量控制并发）"""
         async with self.semaphore:
+            # 已存在摘要，直接跳过 AI
+            existing_summary = (
+                item.get("summary")
+                if isinstance(item, dict)
+                else getattr(item, "summary", None)
+            )
+
+            if existing_summary:
+                return item
+
             # 兼容 dict 和 对象 两种数据类型获取 content
             content = getattr(item, "content", None) or (
                 item.get("content") if isinstance(item, dict) else ""

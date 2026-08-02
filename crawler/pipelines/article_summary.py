@@ -84,7 +84,7 @@ def generate_xueqiu_article(news_list: List[Any]) -> str:
         return None
 
 
-class XueqiuArticlePipeline:
+class ArticleGeneratePipeline:
     """雪球深度分析与本地落盘管道"""
 
     def __init__(self, output_filename: str = "xueqiu_local_output.txt"):
@@ -95,9 +95,9 @@ class XueqiuArticlePipeline:
             print("❌ 实验未能完成：未能捕获到有效新闻素材。")
             return
 
-        xueqiu_post = generate_xueqiu_article(news_list)
+        post_generated = generate_xueqiu_article(news_list)
 
-        if xueqiu_post:
+        if post_generated:
             print(
                 "\n"
                 + "🔥" * 10
@@ -105,7 +105,7 @@ class XueqiuArticlePipeline:
                 + "🔥" * 10
                 + "\n"
             )
-            print(xueqiu_post)
+            print(post_generated)
             print("\n" + "=" * 50)
 
             output_dir = os.path.join(os.getcwd(), "output")
@@ -113,6 +113,8 @@ class XueqiuArticlePipeline:
             output_file = os.path.join(output_dir, self.output_filename)
 
             with open(output_file, "w", encoding="utf-8") as f:
-                f.write(xueqiu_post)
+                f.write(post_generated)
 
             print(f"🎉 本地实验大成功！文章已完美保存至本地：{output_file}")
+            
+        return post_generated

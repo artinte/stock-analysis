@@ -5,12 +5,14 @@ import subprocess
 import time
 from datetime import datetime
 from core.browser import browser_manager
-from pipelines.deduplicate import DeduplicatePipeline
-from pipelines.article_summary import XueqiuArticlePipeline  # 导入管道
-from pipelines.content_summary import ContentSummaryPipeline  # 导入管道
 from spiders.cctv_finance import CCTVFinanceSpider
 from spiders.eastmoney_topic import EastMoneyTopicSpider
 from spiders.mofcom_policy import MOFCOMPolicySpider
+from pipelines.deduplicate import DeduplicatePipeline
+from pipelines.article_summary import ArticleGeneratePipeline
+from pipelines.content_summary import ContentSummaryPipeline
+from pipelines.content_publisher import ContentPublisherPipeline
+
 from utils.data_printer import print_fetched_articles, save_raw_articles_to_txt
 
 SPIDERS = [
@@ -109,10 +111,17 @@ async def main():
             output_dir, f"raw_fetched_articles_{date_suffix}.txt"
         )
         save_raw_articles_to_txt(target_news, output_file=output_file)
-        ai_pipeline = XueqiuArticlePipeline(
-            output_filename=f"xueqiu_local_output_{date_suffix}.txt"
+        
+        # 生成
+        ai_pipeline = ArticleGeneratePipeline(
+            output_filename=f"local_output_{date_suffix}.txt"
         )
-        ai_pipeline.process(target_news)
+        content_generated = ai_pipeline.process(target_news)
+
+        # 发布
+        publisher = ContentPublisherPipeline()
+
+        publisher.publish(content_generated)
 
     finally:
         await browser_manager.stop()
