@@ -1,12 +1,2 @@
 
-crawler
-   ↓
-filter
-   ↓
-summary
-   ↓
-generator
-   ↓
-publisher
-   ↓
-notification
+sources -> crawler -> filter/process -> summary -> generator -> publisher/notification
