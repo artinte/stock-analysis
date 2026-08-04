@@ -86,7 +86,7 @@ from dotenv import dotenv_values
 import pandas as pd
 import numpy as np
 import AmazingData
-from download_csindex import get_csindex_industry_data
+from utils.download_industry_data import get_csindex_industry_data
 from stock_detail import StockDetail
 from watchlists import Watchlists
 from datetime import datetime

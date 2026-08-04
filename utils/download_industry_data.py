@@ -36,14 +36,12 @@ from playwright.sync_api import sync_playwright
 """
 
 
-def download_csindex_industry_data():
+def download_csindex_industry_data(download_dir=os.getcwd()):
     """自动化下载中证行业数据，并返回保存的文件绝对路径。
 
     如果下载失败，返回 None。
     """
-    target_url = (
-        "https://www.csindex.com.cn/#/dataService/industryClassification"
-    )
+    target_url = "https://www.csindex.com.cn/#/dataService/industryClassification"
 
     with sync_playwright() as p:
         print("正在启动自动化浏览器...")
@@ -55,9 +53,7 @@ def download_csindex_industry_data():
 
         print(f"正在打开网页: {target_url}")
         try:
-            page.goto(
-                target_url, wait_until="domcontentloaded", timeout=45000
-            )
+            page.goto(target_url, wait_until="domcontentloaded", timeout=45000)
         except Exception as e:
             print(f"网页基础加载遇到警告（不影响后续操作）: {e}")
 
@@ -70,9 +66,7 @@ def download_csindex_industry_data():
         try:
             page.wait_for_selector(export_btn_selector, timeout=15000)
         except Exception:
-            print(
-                "错误：页面虽然打开了，但等了 15 秒都没看到 [导出数据] 按钮。"
-            )
+            print("错误：页面虽然打开了，但等了 15 秒都没看到 [导出数据] 按钮。")
             browser.close()
             return None
 
@@ -91,7 +85,7 @@ def download_csindex_industry_data():
             else:
                 filename = f"中证行业分类数据_{today_str}.xlsx"
 
-            save_path = os.path.join(os.getcwd(), filename)
+            save_path = os.path.join(download_dir, filename)
             download.save_as(save_path)
             print(f"🎉 自动化爬取成功！文件已保存至: {save_path}")
             browser.close()
@@ -103,10 +97,11 @@ def download_csindex_industry_data():
             return None
 
 
-def get_csindex_industry_data(force_update=False):
+def get_csindex_industry_data(download_dir=os.getcwd(), force_update=False):
     """外部调用核心入口函数。
 
     参数:
+        download_dir (str): 下载文件的保存目录。默认为当前目录。
         force_update (bool): 是否强制重新下载。默认为 False。
     返回:
         pandas.DataFrame 结构体
@@ -114,12 +109,11 @@ def get_csindex_industry_data(force_update=False):
     today_str = datetime.datetime.now().strftime("%Y%m%d")
 
     # 1. 在当前目录下，寻找包含今天日期的 .xlsx 文件
-    current_dir = os.getcwd()
     expected_file = None
 
-    for file in os.listdir(current_dir):
+    for file in os.listdir(download_dir):
         if today_str in file and file.endswith(".xlsx"):
-            expected_file = os.path.join(current_dir, file)
+            expected_file = os.path.join(download_dir, file)
             break
 
     # 2. 判断并读取/下载（增加 force_update 的逻辑判断）
@@ -127,9 +121,7 @@ def get_csindex_industry_data(force_update=False):
         print(f"检测到今日数据已存在本地: {expected_file}，直接加载...")
 
         with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore", category=UserWarning, module="openpyxl"
-            )
+            warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
             df = pd.read_excel(expected_file)
 
         return df

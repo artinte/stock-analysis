@@ -9,7 +9,7 @@ from gateways.data_manager import DataManager
 from gateways.pe_type import PEType
 from models.constants import Interval
 from watchlists import Watchlists
-from download_csindex import get_csindex_industry_data
+from utils.download_csindex import get_csindex_industry_data
 
 
 """
