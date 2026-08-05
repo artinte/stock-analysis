@@ -110,7 +110,9 @@ class StockQueryResult:
     def __repr__(self) -> str:
         if self._df.empty:
             return "<StockQueryResult: 空数据>"
-        show_cols = [c for c in ["code", "name", "l2", "l3"] if c in self._df.columns]
+        show_cols = [
+            c for c in ["code", "name", "l1", "l2", "l3", "l4"] if c in self._df.columns
+        ]
         return self._df[show_cols].to_string(index=False)
 
 
