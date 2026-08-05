@@ -1,14 +1,218 @@
-import sys
+import asyncio
+import logging
 import ctypes
 import platform
 import threading
-import json
 import re
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext, filedialog
+from typing import Any, Callable, Dict, List
 import pandas as pd
 import numpy as np
 import yfinance as yf
+
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+# ============================================================================
+# 1. MCP 统一协议接口与数据结构
+# ============================================================================
+class MCPToolDefinition:
+    """MCP 工具标准声明 (符合 MCP Protocol Specification)"""
+
+    def __init__(self, name: str, description: str, input_schema: dict):
+        self.name = name
+        self.description = description
+        self.input_schema = input_schema
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "description": self.description,
+            "inputSchema": self.input_schema,
+        }
+
+
+# ============================================================================
+# 2. 核心路由管理器：MCPClientRouter (解耦与扩展的核心)
+# ============================================================================
+class MCPClientRouter:
+    """
+    MCP 客户端路由核心：
+    - 管理所有的 Tool 注册
+    - 负责分发意图到不同的工具 Handler (如: 股票、文件、爬虫、计算器等)
+    - 动态对接远程 MCP Server 或本地 Mock 逻辑
+    """
+
+    _registry: Dict[str, Dict[str, Any]] = {}
+
+    @classmethod
+    def register_tool(cls, name: str, description: str, input_schema: dict):
+        """装饰器：用于注册新的 MCP 工具处理器"""
+
+        def decorator(func: Callable):
+            cls._registry[name] = {
+                "definition": MCPToolDefinition(name, description, input_schema),
+                "handler": func,
+            }
+            return func
+
+        return decorator
+
+    @classmethod
+    def get_registered_tools(cls) -> List[dict]:
+        """获取所有已注册工具的标准 MCP Manifest (用于 Prompt / LLM 工具选择)"""
+        return [item["definition"].to_dict() for item in cls._registry.values()]
+
+    @classmethod
+    async def dispatch(
+        cls, tool_name: str, arguments: dict, context_params: dict
+    ) -> dict:
+        """统一的工具分发执行器"""
+        if tool_name not in cls._registry:
+            # 兜底提示或路由到大模型通用回答
+            return {
+                "reply": f"⚠️ 未找到处理工具 [{tool_name}]，已切入通用 LLM 回答模式。",
+                "actions": {},
+            }
+
+        try:
+            handler = cls._registry[tool_name]["handler"]
+            # 区分同步与异步 Handler 支持
+            if asyncio.iscoroutinefunction(handler):
+                return await handler(arguments, context_params)
+            else:
+                return handler(arguments, context_params)
+        except Exception as e:
+            logging.error(f"MCP Tool '{tool_name}' 执行异常: {str(e)}", exc_info=True)
+            return {"reply": f"❌ 工具执行错误: {str(e)}", "actions": {}}
+
+
+# ============================================================================
+# 3. 业务 Handler 拓展区 (日后所有新功能只需在此处叠加 @register_tool)
+# ============================================================================
+
+
+# ----------------- 领域 1: 证券与行情标的解析 -----------------
+@MCPClientRouter.register_tool(
+    name="financial_quant_parser",
+    description="处理金融、股票标的切换、均线参数修改等量化指令",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "prompt": {"type": "string", "description": "用户原始自然语言输入"}
+        },
+        "required": ["prompt"],
+    },
+)
+async def handle_financial_quant(args: dict, context: dict) -> dict:
+    prompt = args.get("prompt", "").lower()
+
+    # 标的识别逻辑 (日后可在此处接入真实行情 API 或大模型实体提取)
+    stock_map = {
+        "苹果": "AAPL",
+        "aapl": "AAPL",
+        "特斯拉": "TSLA",
+        "tsla": "TSLA",
+        "英伟达": "NVDA",
+        "nvda": "NVDA",
+        "茅台": "600519.SH",
+        "腾讯": "0700.HK",
+    }
+
+    for key, symbol in stock_map.items():
+        if key in prompt:
+            return {
+                "reply": f"📈 [MCP:Financial] 已解析标的意图，为您切换至 **{symbol}** 行情与分析界面。",
+                "actions": {"symbol": symbol},
+            }
+
+    return {
+        "reply": f"📈 [MCP:Financial] 未在此命令中检测到明确标的切换，保持当前标的 {context.get('symbol')}。",
+        "actions": {},
+    }
+
+
+# ----------------- 领域 2: 本地文件/数据解析 (日后拓展预留) -----------------
+@MCPClientRouter.register_tool(
+    name="local_file_processor",
+    description="解析本地 CSV、Excel、PDF 报表或交易日志数据",
+    input_schema={
+        "type": "object",
+        "properties": {
+            "file_path": {"type": "string"},
+            "action": {"type": "string", "enum": ["parse", "summarize", "export"]},
+        },
+    },
+)
+async def handle_file_processing(args: dict, context: dict) -> dict:
+    # 异步读取文件 / 数据管道
+    await asyncio.sleep(0.2)
+    file_path = args.get("file_path", "data.csv")
+    return {
+        "reply": f"📁 [MCP:File] 成功调用文件解析组件，读取目标路径: `{file_path}`",
+        "actions": {"loaded_file": file_path},
+    }
+
+
+# ----------------- 领域 3: 网络爬虫/自动化数据采集 (日后拓展预留) -----------------
+@MCPClientRouter.register_tool(
+    name="web_scraper_dispatch",
+    description="触发后台爬虫抓取宏观政策、招标公告或网页舆情数据",
+    input_schema={
+        "type": "object",
+        "properties": {"url": {"type": "string"}, "target_depth": {"type": "integer"}},
+    },
+)
+async def handle_web_scraper(args: dict, context: dict) -> dict:
+    # 模拟触发爬虫任务
+    await asyncio.sleep(0.3)
+    return {
+        "reply": "🕷️ [MCP:Scraper] 已向数据采集引擎提交任务队列，后台异步抓取中...",
+        "actions": {"scraper_task_id": "TASK_20260805_001"},
+    }
+
+
+# ============================================================================
+# 4. 智能意图分发器 (模拟 Agent 意图判断)
+# ============================================================================
+class MCPIntentAnalyzer:
+    """决定将用户的自然语言路由给哪一个 MCP Tool"""
+
+    @staticmethod
+    async def analyze_and_execute(user_text: str, context_params: dict) -> dict:
+        # TODO: 日后直接在此处替换为真实大模型 (如 DeepSeek/OpenAI) 的 Function Calling / Tool Call 接口
+        # 传入 MCPClientRouter.get_registered_tools() 让大模型自主决定调用哪个 tool
+
+        text = user_text.strip().lower()
+
+        # 简易意图路由判定
+        if any(
+            keyword in text
+            for keyword in ["股票", "苹果", "特斯拉", "英伟达", "标的", "行情", "aapl"]
+        ):
+            target_tool = "financial_quant_parser"
+            arguments = {"prompt": user_text}
+        elif any(
+            keyword in text for keyword in ["文件", "excel", "csv", "日志", "报表"]
+        ):
+            target_tool = "local_file_processor"
+            arguments = {"file_path": "./user_data.csv", "action": "parse"}
+        elif any(
+            keyword in text for keyword in ["抓取", "爬虫", "网页", "公告", "新闻"]
+        ):
+            target_tool = "web_scraper_dispatch"
+            arguments = {"url": "https://example.com", "target_depth": 1}
+        else:
+            # 默认兜底
+            target_tool = "financial_quant_parser"
+            arguments = {"prompt": user_text}
+
+        # 统一通过路由器分发调用
+        return await MCPClientRouter.dispatch(target_tool, arguments, context_params)
+
 
 # ---------------------------------------------------------------------------
 # 1. Windows 高分屏 (DPI) 锯齿/模糊修复
@@ -467,7 +671,14 @@ class HDQuantStudioApp(tk.Tk):
         input_box = ttk.Frame(chat_frame)
         input_box.pack(fill=tk.X)
 
-        self.chat_input = ttk.Entry(input_box)
+        self.chat_input = tk.Entry(
+            input_box,
+            bg="white",  # 输入框背景色：白色
+            fg="black",  # 输入的文字颜色：黑色
+            insertbackground="black",  # 闪烁的光标颜色：黑色
+            relief="solid",  # 边框样式
+            bd=1,
+        )
         self.chat_input.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 5))
         self.chat_input.bind("<Return>", lambda e: self.send_ai_message())
 
@@ -724,13 +935,33 @@ class HDQuantStudioApp(tk.Tk):
         ).start()
 
     def _process_ai_interaction(self, user_text: str):
+        """主线程调用的异步解耦入口"""
         curr_params = {
             "symbol": self.entry_symbol.get(),
             "ma_short": self.entry_ma_s.get(),
             "ma_long": self.entry_ma_l.get(),
         }
-        result = AIAssistantService.parse_user_intent(user_text, curr_params)
-        self.after(0, lambda: self._handle_ai_response(result))
+
+        def run_mcp_pipeline():
+            # 在独立后台子线程中启动全新的 Asyncio 事件循环
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+            try:
+                # 执行 MCP 分析与工具路由链
+                result = loop.run_until_complete(
+                    MCPIntentAnalyzer.analyze_and_execute(user_text, curr_params)
+                )
+            except Exception as err:
+                result = {"reply": f"MCP 系统运行异常: {str(err)}", "actions": {}}
+            finally:
+                loop.close()
+
+            # 安全切回主线程 GUI 渲染
+            self.after(0, lambda: self._handle_ai_response(result))
+
+        # 后台线程不阻塞 GUI
+        threading.Thread(target=run_mcp_pipeline, daemon=True).start()
 
     def _handle_ai_response(self, result: dict):
         self._append_chat("AI", result["reply"])
@@ -752,8 +983,8 @@ class HDQuantStudioApp(tk.Tk):
             self.entry_ma_l.insert(0, str(actions["ma_long"]))
             need_recalculate = True
 
-        if need_recalculate:
-            self.start_analysis_thread()
+        # if need_recalculate:
+        #     self.start_analysis_thread()
 
     def start_analysis_thread(self):
         self.btn_fetch.config(state=tk.DISABLED)
