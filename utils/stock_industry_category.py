@@ -8,19 +8,6 @@ from download_industry_data import get_csindex_industry_data
 ==============================================================================
 模块名称 (Module Name) : CSIndex Industry Classification Query Tool
 功能描述 (Description) : 本模块提供中证行业分类数据的离线检索与处理工具。
-                        支持按个股代码查询对应行业、按行业名称/代码模糊检索成份股，
-                        以及获取全量层级分类列表等功能。
-
-设计亮点 (Highlights)  :
-    1. 链式/对象化封装：自动将 DataFrame 转换为 StockQueryResult 与 StockItem 对象，
-       摆脱繁琐的 Pandas 索引，支持点语法访问属性 (.name / .code / .l3)。
-    2. 智能模糊检索：支持全层级 (1~4级) 跨级别名称包含检索与自动补全。
-    3. 类型容错处理：自动规避股票代码前导零丢失与浮点数后缀陷阱 (600519.0 -> 600519)。
-
-使用示例 (Usage)       :
-    >>> from industry_query import get_stock_industry_category, get_category_stocks
-    >>> maotai = get_stock_industry_category("600519")
-    >>> print(maotai.to_list()[0].l3)
 ==============================================================================
 """
 
@@ -168,25 +155,35 @@ def _get_cached_data() -> pd.DataFrame:
         rename_dict[f"中证{lvl_zh}级行业分类代码"] = f"l{lvl_num}_code"
 
     df = df.rename(columns=rename_dict)
-    # 规避浮点数与格式问题：600519.0 -> 600519 -> 600519
     df["code"] = df["code"].astype(str).str.split(".").str[0].str.strip().str.zfill(6)
+    df["name"] = df["name"].astype(str).str.strip()
     return df
 
 
-# ==========================================================================================
-# 核心 API 接口
-# ==========================================================================================
-
-
 def get_stock_industry_category(
-    stock_codes: Union[str, int, List[Union[str, int]]], top: Optional[int] = None
+    stocks: Optional[Union[str, int, List[Union[str, int]]]] = None,
+    top: Optional[int] = None,
 ) -> StockQueryResult:
-    """查询指定股票的行业分类 (支持单只代码或代码列表)"""
+    """查询股票的行业分类 (支持单个/多个股票代码或名称)"""
     df = _get_cached_data()
-    raw_list = [stock_codes] if isinstance(stock_codes, (str, int)) else stock_codes
-    codes = [str(c).split(".")[0].strip().zfill(6) for c in raw_list]
 
-    res = df[df["code"].isin(codes)]
+    # 仅在此处增加对 None/空值的兼容，不传 stocks 时返回全量数据
+    if stocks is None or stocks == "" or stocks == []:
+        res = df
+    else:
+        raw_list = [stocks] if isinstance(stocks, (str, int)) else stocks
+        target_codes = []
+        target_names = []
+        for s in raw_list:
+            s_str = str(s).strip()
+            if s_str.split(".")[0].isdigit():
+                target_codes.append(s_str.split(".")[0].zfill(6))
+            else:
+                target_names.append(s_str)
+
+        mask = df["code"].isin(target_codes) | df["name"].isin(target_names)
+        res = df[mask]
+
     if top:
         res = res.head(top)
     return StockQueryResult(res)
@@ -202,7 +199,6 @@ def get_category_stocks(
     clean_cat = str(category_name).strip()
     lvl_num = _parse_level(level)
 
-    # 1. 如果指定了 level，在指定层级查找
     if lvl_num is not None:
         target_col = f"l{lvl_num}_code" if clean_cat.isdigit() else f"l{lvl_num}"
         if target_col in df.columns:
@@ -211,8 +207,6 @@ def get_category_stocks(
                 res = df[df[target_col].astype(str).str.contains(clean_cat, na=False)]
         else:
             res = df.iloc[0:0]
-
-    # 2. 未指定 level，跨层级模糊检索
     else:
         if clean_cat.isdigit():
             code_cols = [
@@ -241,7 +235,9 @@ def get_category_stocks(
 
 
 def get_all_category(
-    level: Union[int, str] = 1, return_code: bool = False, top: Optional[int] = None
+    level: Union[int, str] = 1,
+    return_code: bool = False,
+    top: Optional[int] = None,
 ) -> CategoryQueryResult:
     """获取全量行业分类列表"""
     df = _get_cached_data()
