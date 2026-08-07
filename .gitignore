@@ -7,6 +7,7 @@ private_config.txt
 *.csv
 output/
 *.png
+*.zip
 data/
 
 # Byte-compiled / optimized / DLL files
