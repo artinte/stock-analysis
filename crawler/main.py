@@ -5,6 +5,7 @@ import subprocess
 import time
 from datetime import datetime
 from core.browser import browser_manager
+from spiders.sse_spider import SSESpider
 from spiders.cctv_finance import CCTVFinanceSpider
 from spiders.eastmoney_topic import EastMoneyTopicSpider
 from spiders.mofcom_policy import MOFCOMPolicySpider
@@ -16,6 +17,7 @@ from pipelines.content_publisher import ContentPublisherPipeline
 from utils.data_printer import print_fetched_articles, save_raw_articles_to_txt
 
 SPIDERS = [
+    SSESpider(),
     CCTVFinanceSpider(),
     EastMoneyTopicSpider(),
     MOFCOMPolicySpider(),

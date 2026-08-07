@@ -6,6 +6,10 @@ from stock_industry_category import get_stock_industry_category
 ==============================================================================
 模块名称 (Module Name) : Stock Convenient Utilities
 功能描述 (Description) : 股票代码与名称互转等实用快捷函数模块。
+
+上海证券交易所所有股票：https://www.sse.com.cn/assortment/stock/list/share/
+深证证券交易所所有股票：https://www.szse.cn/market/product/stock/list/index.html
+
 ==============================================================================
 """
 
