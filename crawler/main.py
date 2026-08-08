@@ -17,10 +17,10 @@ from pipelines.content_publisher import ContentPublisherPipeline
 from utils.data_printer import print_fetched_articles, save_raw_articles_to_txt
 
 SPIDERS = [
-    SSESpider(),
+    # SSESpider(),
     CCTVFinanceSpider(),
-    EastMoneyTopicSpider(),
-    MOFCOMPolicySpider(),
+    # EastMoneyTopicSpider(),
+    # MOFCOMPolicySpider(),
 ]
 
 
@@ -112,8 +112,8 @@ async def main():
         output_file = os.path.join(
             output_dir, f"raw_fetched_articles_{date_suffix}.txt"
         )
-        save_raw_articles_to_txt(target_news, output_file=output_file)
-        
+        save_raw_articles_to_txt(target_news, include_content=False, output_file=output_file)
+
         # 生成
         ai_pipeline = ArticleGeneratePipeline(
             output_filename=f"local_output_{date_suffix}.txt"
