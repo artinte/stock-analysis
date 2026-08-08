@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from core.browser import browser_manager
 from manager.ollama_manager import OllamaStatus, start_ollama
 from spiders.sse_spider import SSESpider
+from spiders.sse_announcement import SseAnnouncementSpider
+from spiders.sse_regular import SseRegularReportSpider
 from spiders.cctv_finance import CCTVFinanceSpider
 from spiders.eastmoney_topic import EastMoneyTopicSpider
 from spiders.mofcom_policy import MOFCOMPolicySpider
@@ -16,7 +18,9 @@ from utils.data_printer import print_fetched_articles, save_raw_articles_to_txt
 
 SPIDERS = [
     # SSESpider(),
-    CCTVFinanceSpider(),
+    # SseAnnouncementSpider(),
+    SseRegularReportSpider(),
+    # CCTVFinanceSpider(),
     # EastMoneyTopicSpider(),
     # MOFCOMPolicySpider(),
 ]
