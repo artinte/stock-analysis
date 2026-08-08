@@ -6,20 +6,17 @@ from openai import OpenAI
 # ==================== 【本地模型配置区域】 ====================
 API_KEY = "ollama-local"
 BASE_URL = "http://localhost:11434/v1"
-
-# 确保模型名称与本地一致
-MODEL_NAME = "deepseek-r1:latest"
 # ==========================================================
 
 
-def generate_xueqiu_article(news_list: List[Any]) -> str:
+def generate_xueqiu_article(news_list: List[Any], model_name: str) -> str:
     """调用【本地大模型】，熔炼结合具体新闻的爆款雪球深度分析长文"""
     if not news_list:
         print("未抓取到有效新闻，无法生成文章。")
         return None
 
     print(
-        f"🤖 正在调用本地 AI (模型: {MODEL_NAME}) 深度熔炼全网最新资讯，请稍候..."
+        f"🤖 正在调用本地 AI (模型: {model_name}) 深度熔炼全网最新资讯，请稍候..."
     )
 
     # 1. 构建明确且带有来源标注的新闻素材串
@@ -59,7 +56,7 @@ def generate_xueqiu_article(news_list: List[Any]) -> str:
     try:
         client = OpenAI(api_key=API_KEY, base_url=BASE_URL, timeout=600.0)
         response = client.chat.completions.create(
-            model=MODEL_NAME,
+            model=model_name,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
@@ -87,15 +84,19 @@ def generate_xueqiu_article(news_list: List[Any]) -> str:
 class ArticleGeneratePipeline:
     """雪球深度分析与本地落盘管道"""
 
-    def __init__(self, output_filename: str = "xueqiu_local_output.txt"):
+    def __init__(self, output_filename: str = "xueqiu_local_output.txt", model_name: str = ""):
         self.output_filename = output_filename
+        self.model_name = model_name
 
     def process(self, news_list: List[Any]):
         if not news_list:
             print("❌ 实验未能完成：未能捕获到有效新闻素材。")
             return
+        if not self.model_name:
+            print("❌ 实验未能完成：未指定本地 Ollama 模型名称。")
+            return
 
-        post_generated = generate_xueqiu_article(news_list)
+        post_generated = generate_xueqiu_article(news_list, self.model_name)
 
         if post_generated:
             print(

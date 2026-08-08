@@ -1,5 +1,7 @@
 import asyncio
+from enum import Enum
 import os
+from typing import List, Tuple
 import requests
 import subprocess
 import time
@@ -24,19 +26,45 @@ SPIDERS = [
 ]
 
 
-def start_ollama(timeout=30):
+class OllamaStatus(Enum):
+    SUCCESS = "SUCCESS"  # 正常启动且有模型
+    NOT_INSTALLED = "NOT_INSTALLED"  # 未安装 Ollama
+    NO_MODELS = "NO_MODELS"  # 正常启动但无可用模型
+    START_FAILED = "START_FAILED"  # 启动超时或失败
+
+
+def get_installed_models(base_url="http://127.0.0.1:11434") -> List[str]:
+    """获取本地已安装的模型列表"""
+    try:
+        response = requests.get(f"{base_url}/api/tags", timeout=2)
+        if response.status_code == 200:
+            models = response.json().get("models", [])
+            return [model["name"] for model in models]
+    except Exception:
+        pass
+    return []
+
+
+def start_ollama(timeout=30) -> Tuple[OllamaStatus, List[str]]:
+    """启动 Ollama 并返回运行状态码及模型列表
+
+    Returns:
+        Tuple[OllamaStatus, List[str]]: (状态码, 模型列表)
+    """
     url = "http://127.0.0.1:11434/api/tags"
 
-    # 已启动
+    # 1. 检查是否已经启动
     try:
         requests.get(url, timeout=1)
-        print("✅ Ollama 已启动")
-        return True
+        models = get_installed_models()
+        if not models:
+            return OllamaStatus.NO_MODELS, []
+        return OllamaStatus.SUCCESS, models
     except requests.RequestException:
         pass
 
+    # 2. 尝试后台启动 Ollama
     print("🚀 正在启动 Ollama...")
-
     try:
         subprocess.Popen(
             ["ollama", "serve"],
@@ -44,27 +72,22 @@ def start_ollama(timeout=30):
             stderr=subprocess.DEVNULL,
         )
     except FileNotFoundError:
-        print("❌ 启动失败：未找到 'ollama' 命令，请确认 Ollama 已安装并加入 PATH。")
-        return False
-    except Exception as e:
-        print(f"❌ 启动 Ollama 失败：{e}")
-        return False
+        return OllamaStatus.NOT_INSTALLED, []
+    except Exception:
+        return OllamaStatus.START_FAILED, []
 
-    # 等待服务启动
+    # 3. 轮询等待服务就绪
     for _ in range(timeout):
         try:
             requests.get(url, timeout=1)
-            print("✅ Ollama 启动成功")
-            return True
+            models = get_installed_models()
+            if not models:
+                return OllamaStatus.NO_MODELS, []
+            return OllamaStatus.SUCCESS, models
         except requests.RequestException:
             time.sleep(1)
 
-    print("❌ Ollama 启动超时，请检查：")
-    print("   1. Ollama 是否已正确安装")
-    print("   2. 是否能在终端执行：ollama serve")
-    print("   3. 11434 端口是否被占用")
-
-    return False
+    return OllamaStatus.START_FAILED, []
 
 
 async def run_spider(spider, semaphore: asyncio.Semaphore):
@@ -73,7 +96,31 @@ async def run_spider(spider, semaphore: asyncio.Semaphore):
 
 
 async def main():
-    start_ollama()  # 启动 Ollama 本地服务
+    model_to_use = None
+
+    status, models = start_ollama()
+
+    match status:
+        case OllamaStatus.SUCCESS:
+            print(f"✅ Ollama 就绪，可用模型: {models}")
+            model_to_use = models[0]  # 默认使用第一个模型
+
+        case OllamaStatus.NO_MODELS:
+            print("⚠️ Ollama 已启动，但没有下载任何模型。")
+            print(
+                "💡 程序切换为降级模式（如使用规则匹配、API 服务或跳过 AI 增强功能）..."
+            )
+            # 继续跑后面的程序...
+
+        case OllamaStatus.NOT_INSTALLED:
+            print("❌ 未安装 Ollama。")
+            print("💡 跳过 Ollama 相关逻辑，继续运行后续程序...")
+            # 继续跑后面的程序...
+
+        case OllamaStatus.START_FAILED:
+            print("❌ Ollama 启动超时。")
+            print("💡 切换备用逻辑并继续执行后续程序...")
+            # 继续跑后面的程序...
 
     await browser_manager.start()
     semaphore = asyncio.Semaphore(3)
@@ -112,11 +159,14 @@ async def main():
         output_file = os.path.join(
             output_dir, f"raw_fetched_articles_{date_suffix}.txt"
         )
-        save_raw_articles_to_txt(target_news, include_content=False, output_file=output_file)
+        save_raw_articles_to_txt(
+            target_news, include_content=False, output_file=output_file
+        )
 
         # 生成
         ai_pipeline = ArticleGeneratePipeline(
-            output_filename=f"local_output_{date_suffix}.txt"
+            output_filename=f"local_output_{date_suffix}.txt",
+            model_name=model_to_use,
         )
         content_generated = ai_pipeline.process(target_news)
 
