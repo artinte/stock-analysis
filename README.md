@@ -1,6 +1,6 @@
 # Stock Analysis
 
-> 一个面向个人开发者与量化研究团队的行情分析与量化选股系统。
+> AI时代面向个人开发者与量化研究团队的行情分析与量化选股工具。
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -124,7 +124,7 @@
 
 ### 多源数据采集
 
-支持从不同数据源获取财经信息，例如：
+支持从不同数据源获取信息，例如：
 
 * 上海证券交易所（SSE）
 * 央视财经
@@ -224,7 +224,7 @@ AI 摘要
 
 ---
 
-# 🤖 3. 人工智能分析与预测
+# 🤖 人工智能分析与预测
 
 AI 模块负责将：
 
@@ -264,7 +264,7 @@ AI 分析
 
 ---
 
-# 📈 4. 量化策略与股票筛选
+# 📈 量化策略与股票筛选
 
 系统支持对全市场股票进行批量筛选。
 
