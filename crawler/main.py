@@ -15,8 +15,8 @@ from pipelines.content_publisher import ContentPublisherPipeline
 from utils.data_printer import print_fetched_articles, save_raw_articles_to_txt
 
 SPIDERS = [
-    SSESpider(),
-    # CCTVFinanceSpider(),
+    # SSESpider(),
+    CCTVFinanceSpider(),
     # EastMoneyTopicSpider(),
     # MOFCOMPolicySpider(),
 ]

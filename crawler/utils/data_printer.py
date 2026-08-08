@@ -28,7 +28,7 @@ def print_fetched_articles(
             url = item.get("url", "无链接")
             summary = item.get("summary", "")
             content = item.get("content", "")
-            fetched_at = item.get("fetched_at", "")
+            published_at = item.get("published_at", "")
         else:
             source = getattr(item, "source_name", "未知来源")
             category = getattr(item, "category", "")
@@ -36,14 +36,14 @@ def print_fetched_articles(
             url = getattr(item, "url", "无链接")
             summary = getattr(item, "summary", "")
             content = getattr(item, "content", "")
-            fetched_at = getattr(item, "fetched_at", "")
+            published_at = getattr(item, "published_at", "")
 
-        # 格式化分类与时间显示
+        # 格式化分类与发布时间显示
         cat_info = f" [{category}]" if category else ""
         time_str = (
-            fetched_at.strftime("%Y-%m-%d %H:%M:%S")
-            if hasattr(fetched_at, "strftime")
-            else str(fetched_at)
+            published_at.strftime("%Y-%m-%d %H:%M:%S")
+            if hasattr(published_at, "strftime")
+            else (str(published_at) if published_at else "未知发布时间")
         )
 
         # 确定主内容显示：优先显示正文，若正文为空则显示摘要
@@ -55,7 +55,7 @@ def print_fetched_articles(
         if len(main_text) > max_content_len:
             main_text = main_text[:max_content_len] + "... (后略)"
 
-        print(f"[{idx}/{total}] 来源: {source}{cat_info} | 抓取时间: {time_str}")
+        print(f"[{idx}/{total}] 来源: {source}{cat_info} | 发布时间: {time_str}")
         print(f"📌 标题: {title}")
         print(f"🔗 链接: {url}")
         if summary and content:
@@ -88,7 +88,7 @@ def save_raw_articles_to_txt(
                 url = item.get("url", "无链接")
                 summary = item.get("summary", "")
                 content = item.get("content", "")
-                fetched_at = item.get("fetched_at", "")
+                published_at = item.get("published_at", "")
             else:
                 source = getattr(item, "source_name", "未知来源")
                 category = getattr(item, "category", "")
@@ -96,16 +96,16 @@ def save_raw_articles_to_txt(
                 url = getattr(item, "url", "无链接")
                 summary = getattr(item, "summary", "")
                 content = getattr(item, "content", "")
-                fetched_at = getattr(item, "fetched_at", "")
+                published_at = getattr(item, "published_at", "")
 
             cat_info = f" [{category}]" if category else ""
             time_str = (
-                fetched_at.strftime("%Y-%m-%d %H:%M:%S")
-                if hasattr(fetched_at, "strftime")
-                else str(fetched_at)
+                published_at.strftime("%Y-%m-%d %H:%M:%S")
+                if hasattr(published_at, "strftime")
+                else (str(published_at) if published_at else "未知发布时间")
             )
 
-            f.write(f"[{idx}] 来源: {source}{cat_info} | 抓取时间: {time_str}\n")
+            f.write(f"[{idx}] 来源: {source}{cat_info} | 发布时间: {time_str}\n")
             f.write(f"📌 标题: {title}\n")
             f.write(f"🔗 链接: {url}\n")
             if summary:
