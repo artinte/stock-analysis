@@ -35,10 +35,7 @@ def print_fetched_articles(
             title = getattr(item, "title", "无标题")
             url = getattr(item, "url", "无链接")
             summary = getattr(item, "summary", "")
-            if include_content:
-                content = getattr(item, "content", "")
-            else:
-                content = ""
+            content = getattr(item, "content", "")
             fetched_at = getattr(item, "fetched_at", "")
 
         # 格式化分类与时间显示
