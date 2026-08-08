@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timedelta
 from typing import List
 from playwright.async_api import Page
 from core.base_spider import BaseSpider
@@ -132,6 +133,12 @@ class CCTVFinanceSpider(BaseSpider):
                 # 方案 C：如果依然没抓到，直接用 URL 中的日期（如 /2026/08/06/...）
                 if not publish_at:
                     publish_at = self.extract_date(full_url)
+                    
+                today = datetime.now()
+                yesterday = today - timedelta(days=1)
+                recent_2_days = [today.strftime("%Y-%m-%d"), yesterday.strftime("%Y-%m-%d")]
+                if not publish_at or not any(publish_at.startswith(d) for d in recent_2_days):
+                    continue
 
                 # 2. 直接拿正文区域的文本
                 # 央视网正文唯一核心节点：#content_area
@@ -148,6 +155,7 @@ class CCTVFinanceSpider(BaseSpider):
                     content = ""
             finally:
                 await detail_page.close()
+
 
             # 智能提取摘要（过滤署名 + 限制最低 40 字符）
             summary = ""
