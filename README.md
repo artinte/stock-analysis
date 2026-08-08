@@ -1,35 +1,51 @@
 # Stock Analysis
 
-> AI时代面向个人开发者与量化研究团队的行情分析与量化选股工具。
-
-[![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+> AI 时代面向个人开发者与量化研究团队的行情分析与量化选股工具。
 
 ---
+
+<a id="table-of-contents"></a>
 
 ## 📖 目录
 
-* [项目简介](#-项目简介)
-* [系统架构](#️-系统架构)
-* [核心功能](#-核心功能)
+* [项目简介](#project-introduction)
+* [系统架构](#architecture)
+* [核心功能](#core-features)
 
-  * [智能数据感知与舆情系统](#1-智能数据感知与舆情系统)
-  * [行情接入与技术指标引擎](#2-行情接入与技术指标引擎)
-  * [人工智能分析与预测](#3-人工智能分析与预测)
-  * [量化策略与股票筛选](#4-量化策略与股票筛选)
+  * [智能数据感知与舆情系统](#crawler-feature)
+  * [行情接入与技术指标引擎](#market-feature)
+  * [人工智能分析与预测](#ai-feature)
+  * [量化策略与股票筛选](#strategy-feature)
+* [项目结构](#project-structure)
 
-* [项目结构](#-项目结构)
-* [安装](#-安装)
-* [快速开始](#-快速开始)
-* [功能展示](#-功能展示)
-* [量化分析示例](#-量化分析示例)
-* [股票预测示例](#-股票预测示例)
-* [路线图](#-路线图)
-* [免责声明](#️-免责声明)
+  * [crawler](#crawler)
+  * [gateways](#gateways)
+  * [stock_detail.py](#stock-detail)
+  * [stock_strategy.py](#stock-strategy)
+  * [stock_monitor.py](#stock-monitor)
+  * [stock_predict.py](#stock-predict)
+* [系统安装](#installation)
+
+  * [安装 Python 依赖](#install-python)
+  * [安装 Ollama](#install-ollama)
+* [快速开始](#quick-start)
+* [量化分析界面](#quant-interface)
+* [量化分析示例](#quant-example)
+
+  * [PE-TTM](#pe-ttm)
+* [全市场量化选股](#market-selection)
+* [股票预测实验](#stock-prediction)
+* [数据接口](#data-interface)
+* [路线图](#roadmap)
+* [学习与扩展](#learning)
+* [免责声明](#disclaimer)
+* [Star](#star)
 
 ---
 
-## 📌 项目简介
+<a id="project-introduction"></a>
+
+# 📌 项目简介
 
 **Stock Analysis** 是一款面向个人开发者与量化研究团队打造的**行情分析与量化选股工具**。
 
@@ -55,6 +71,8 @@
 整合到一个统一的分析框架中。
 
 ---
+
+<a id="architecture"></a>
 
 # 🏗️ 系统架构
 
@@ -108,7 +126,7 @@
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
-### 系统架构图
+## 系统架构图
 
 <p align="center">
   <img src="resources/股票系统架构.png" width="800" alt="Stock Analysis 股票系统架构">
@@ -116,7 +134,11 @@
 
 ---
 
+<a id="core-features"></a>
+
 # 🚀 核心功能
+
+<a id="crawler-feature"></a>
 
 ## 1. 🔍 智能数据感知与舆情系统
 
@@ -134,7 +156,9 @@
 * 期货市场相关数据
 * 股票市场热点信息
 
-通过模块化 `spiders` 设计，可以方便地增加新的数据源。同时增加 `pipelines`，方便对数据进行不同的处理。
+通过模块化 `spiders` 设计，可以方便地增加新的数据源。
+
+同时通过 `pipelines` 对采集结果进行进一步处理。
 
 ### AI 舆情分析
 
@@ -189,7 +213,9 @@ AI 摘要
 
 ---
 
-# 📊 2. 行情接入与技术指标引擎
+<a id="market-feature"></a>
+
+## 2. 📊 行情接入与技术指标引擎
 
 `gateways` 模块负责底层行情数据接入，将不同券商的数据接口与上层业务逻辑隔离。
 
@@ -223,6 +249,8 @@ AI 摘要
 后续可以继续扩展更多技术指标与量化因子。
 
 ---
+
+<a id="ai-feature"></a>
 
 # 🤖 人工智能分析与预测
 
@@ -264,6 +292,8 @@ AI 分析
 
 ---
 
+<a id="strategy-feature"></a>
+
 # 📈 量化策略与股票筛选
 
 系统支持对全市场股票进行批量筛选。
@@ -294,6 +324,8 @@ PE(TTM) < 40
 进行组合。
 
 ---
+
+<a id="project-structure"></a>
 
 # 🧩 项目结构
 
@@ -341,6 +373,8 @@ stock-analysis/
 
 ---
 
+<a id="crawler"></a>
+
 ## `crawler`
 
 负责财经数据采集。
@@ -359,6 +393,8 @@ stock-analysis/
 * 消息推送
 
 ---
+
+<a id="gateways"></a>
 
 ## `gateways`
 
@@ -385,6 +421,8 @@ Stock Analysis
 > 使用券商数据接口通常需要自行联系券商开通相应的数据权限。
 
 ---
+
+<a id="stock-detail"></a>
 
 ## `stock_detail.py`
 
@@ -434,6 +472,8 @@ Stock Analysis
 
 ---
 
+<a id="stock-strategy"></a>
+
 ## `stock_strategy.py`
 
 量化策略引擎。
@@ -454,6 +494,8 @@ if (
 通过修改条件即可快速构建新的量化选股策略。
 
 ---
+
+<a id="stock-monitor"></a>
 
 ## `stock_monitor.py`
 
@@ -501,6 +543,8 @@ MA60: 447.17
 
 ---
 
+<a id="stock-predict"></a>
+
 ## `stock_predict.py`
 
 股票预测实验模块。
@@ -522,7 +566,11 @@ MA60: 447.17
 
 ---
 
-# 🛠️ 安装
+<a id="installation"></a>
+
+# 🛠️ 系统安装
+
+<a id="install-python"></a>
 
 ## 1. 安装 Python 依赖
 
@@ -532,13 +580,13 @@ MA60: 447.17
 python -m venv .venv
 ```
 
-Windows：
+### Windows
 
 ```powershell
 .venv\Scripts\activate
 ```
 
-macOS / Linux：
+### macOS / Linux
 
 ```bash
 source .venv/bin/activate
@@ -563,6 +611,8 @@ playwright install
 ```
 
 ---
+
+<a id="install-ollama"></a>
 
 ## 2. 安装 Ollama
 
@@ -594,6 +644,8 @@ ollama run qwen3:8b
 
 ---
 
+<a id="quick-start"></a>
+
 # 🚀 快速开始
 
 如果只是希望快速了解项目，而暂时没有券商数据接口或 AI 环境，可以直接查看：
@@ -618,6 +670,8 @@ python quick_start.py
 ```
 
 ---
+
+<a id="quant-interface"></a>
 
 # 🖥️ 量化分析界面
 
@@ -653,11 +707,13 @@ python quick_start.py
 
 ---
 
+<a id="quant-example"></a>
+
 # 📊 量化分析示例
 
 该工具支持核心数据回溯、多指标估值分析以及全市场策略筛选。
 
-下面以**广合科技（001389）**为例，通过量化程序绘制近半年的：
+下面以 **广合科技（001389）** 为例，通过量化程序绘制近半年的：
 
 * K 线
 * PE-TTM
@@ -670,17 +726,41 @@ python quick_start.py
   <b>示例分析：广合科技（001389）K 线走势与 PE-TTM 估值变化</b>
 </p>
 
-### PE-TTM
+<a id="pe-ttm"></a>
 
-PE-TTM 计算规则：当前总市值 $\div$ 最近 4 个季度的净利润总和（即过去 12 个月的滚动利润）。
+## PE-TTM
+
+PE-TTM 计算规则：
+
+$$
+PE_{TTM}
+========
+
+\frac{\text{当前总市值}}
+{\text{最近四个季度净利润之和}}
+$$
+
+即使用最近 12 个月的滚动净利润计算市盈率。
 
 ---
+
+<a id="market-selection"></a>
 
 # 📈 全市场量化选股
 
 通过 `stock_strategy.py` 可以根据多个条件对全市场股票进行筛选。
 
 例如：
+
+```text
+营业收入同比增长 > 30%
+        AND
+PE(TTM) < 40
+        AND
+当前价格 > MA20
+```
+
+量化多因子评价结果示例：
 
 ```text
 【量化多因子评价报告】
@@ -709,6 +789,8 @@ etf_list.py
 
 ---
 
+<a id="stock-prediction"></a>
+
 # 🔮 股票预测实验
 
 除了传统量化分析之外，项目还提供基于历史数据的深度学习预测实验。
@@ -721,7 +803,7 @@ etf_list.py
 
 输入过去一年的历史数据，对未来五个交易日进行预测。
 
-训练过程：
+### 训练过程
 
 ```text
 开始基于 20 年数据训练 (设备: cuda)...
@@ -733,7 +815,7 @@ Epoch 800, Avg Loss: 0.085509
 Epoch 1000, Avg Loss: 0.065867
 ```
 
-预测结果：
+### 预测结果
 
 ```text
 600519.SH 未来 5 日预测 (当前: 1337.00)
@@ -765,6 +847,8 @@ T+5: 1245.81 (幅度: -6.82%)
 
 ---
 
+<a id="data-interface"></a>
+
 # 🔌 数据接口
 
 本项目将数据层与分析层进行隔离。
@@ -786,7 +870,7 @@ T+5: 1245.81 (幅度: -6.82%)
              │
              ▼
 ┌──────────────────────────┐
-│     Stock Analysis       │
+│      Stock Analysis      │
 │                          │
 │  StockDetail             │
 │  Strategy                │
@@ -806,6 +890,8 @@ T+5: 1245.81 (幅度: -6.82%)
 * 其他金融数据 API
 
 ---
+
+<a id="roadmap"></a>
 
 # 🗺️ 路线图
 
@@ -867,11 +953,13 @@ T+5: 1245.81 (幅度: -6.82%)
 
 ---
 
+<a id="learning"></a>
+
 # 📚 学习与扩展
 
 项目后续计划逐步增加股票量化与金融数据分析相关教程，包括：
 
-### 基础指标
+## 基础指标
 
 * PE
 * PB
@@ -882,7 +970,7 @@ T+5: 1245.81 (幅度: -6.82%)
 * 营收增长率
 * 净利润增长率
 
-### 技术分析
+## 技术分析
 
 * MA
 * MACD
@@ -892,7 +980,7 @@ T+5: 1245.81 (幅度: -6.82%)
 * WR
 * BIAS
 
-### 量化策略
+## 量化策略
 
 * 趋势策略
 * 均线策略
@@ -902,7 +990,7 @@ T+5: 1245.81 (幅度: -6.82%)
 * 行业轮动
 * ETF 策略
 
-### AI 与量化
+## AI 与量化
 
 * Transformer
 * 时间序列预测
@@ -913,6 +1001,8 @@ T+5: 1245.81 (幅度: -6.82%)
 * 事件驱动分析
 
 ---
+
+<a id="disclaimer"></a>
 
 # ⚠️ 免责声明
 
@@ -933,6 +1023,8 @@ T+5: 1245.81 (幅度: -6.82%)
 使用本项目进行任何实际投资决策所产生的风险，由使用者自行承担。
 
 ---
+
+<a id="star"></a>
 
 # ⭐ Star
 
