@@ -84,6 +84,9 @@ class SseRegularReportSpider(BaseSpider):
 
             if not pdf_href or not title:
                 continue
+            
+            if "摘要" in title:
+                continue
 
             full_url = self.build_url(pdf_href)
             if full_url.startswith("http://"):

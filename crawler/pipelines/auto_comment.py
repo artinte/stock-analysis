@@ -71,6 +71,25 @@ def post_comment(url, comment_content=None):
         driver.execute_script("window.scrollTo(0, 400);")
         time.sleep(1)
 
+        # 💡 自动关闭弹窗并彻底清理遮罩蒙层
+        try:
+            close_btns = driver.find_elements(
+                By.CSS_SELECTOR,
+                ".modal .close, .ui.modal .close, .download-app-close, [class*='close']"
+            )
+            for btn in close_btns:
+                if btn.is_displayed():
+                    driver.execute_script("arguments[0].click();", btn)
+        except Exception:
+            pass
+
+        driver.execute_script("""
+            var overlays = document.querySelectorAll('.modals.dimmer, .ui.dimmer, .modal, .mask, [class*="popup"], [class*="qrcode"], [class*="weixin"]');
+            overlays.forEach(function(el) { el.remove(); });
+            document.body.classList.remove('dimmable', 'dimmed', 'scrolling', 'modal-open');
+        """)
+        time.sleep(0.5)
+
         wait = WebDriverWait(driver, 10)
 
         # 2. 精准定位你给的这层伪输入框：.fake-placeholder 或 .lite-editor__textarea
