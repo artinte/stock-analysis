@@ -21,6 +21,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 4. 智能去重与过期清理缓存：
    - 维护本地缓存文件 (`commented_history.json`)，避免对同一个 URL 重复评论。
    - 内置时效控制机制（默认 15 天）：超过 15 天的旧评论记录会自动清理，释放缓存空间。
+   - 设置评论间隔 60 秒，避免触发风控。
 
 【环境依赖】
 - Python 3.8+
