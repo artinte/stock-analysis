@@ -5,18 +5,20 @@ from datetime import datetime
 import sys
 
 from core.browser import browser_manager
+
 from manager.ollama_manager import OllamaStatus, start_ollama
 from pipelines.article_summary import ArticleGeneratePipeline
 from pipelines.content_publisher import ContentPublisherPipeline
 from pipelines.content_summary import ContentSummaryPipeline
 from pipelines.deduplicate import DeduplicatePipeline
-from crawler.pipelines.auto_comment_xueqiu import post_comment
+from pipelines.auto_comment_xueqiu import post_comment
 from spiders.cctv_finance import CCTVFinanceSpider
 from spiders.eastmoney_topic import EastMoneyTopicSpider
 from spiders.mofcom_policy import MOFCOMPolicySpider
 from spiders.sse_announcement import SseAnnouncementSpider
 from spiders.sse_regular import SseRegularReportSpider
 from spiders.sse_spider import SSESpider
+from spiders.szse_fixed import SzseRegularReportSpider
 
 # 1. 获取当前文件所在目录 (crawler) 和项目根目录 (stock-analysis)
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -38,6 +40,7 @@ SPIDER_REGISTRY = {
     "sse": SSESpider,
     "sse_announce": SseAnnouncementSpider,
     "sse_regular": SseRegularReportSpider,
+    "szse_fixed": SzseRegularReportSpider,
     "cctv": CCTVFinanceSpider,
     "eastmoney": EastMoneyTopicSpider,
     "mofcom": MOFCOMPolicySpider,
@@ -46,6 +49,7 @@ SPIDER_REGISTRY = {
 SPIDER_PRESETS = {
     "all": list(SPIDER_REGISTRY.keys()),
     "sse_all": ["sse", "sse_announce", "sse_regular"],
+    "szse_fixed": ["szse_fixed"],
     "regular": ["sse_regular"],
     "news": ["cctv", "eastmoney", "mofcom"],
 }
@@ -123,7 +127,7 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
             xueqiu_url = (
                 StockCodeConverter.get_xueqiu_url(company) if company else "N/A"
             )
-            
+
             if not xueqiu_url:
                 print(f"⚠️ 无法识别公司 [{company}] 的股票代码，跳过发帖。")
                 continue
@@ -263,6 +267,16 @@ TASK_MAP = {
 async def main():
     parser = argparse.ArgumentParser(description="新闻/公告抓取与处理工作流系统")
 
+    # 选择不同的爬虫
+    parser.add_argument(
+        "-s",
+        "--spiders",
+        nargs="+",
+        default=["szse_fixed"],
+        help="选择爬虫或预设: regular, sse_all, all, cctv 等",
+    )
+
+    # 选择不同的任务模式
     parser.add_argument(
         "-m",
         "--mode",
@@ -270,14 +284,6 @@ async def main():
         default="sse_regular",
         choices=list(TASK_MAP.keys()),
         help="任务模式: full(全流程), crawl_only(仅爬取), sse_regular(定向定期报告快捷模式)",
-    )
-
-    parser.add_argument(
-        "-s",
-        "--spiders",
-        nargs="+",
-        default=["regular"],
-        help="选择爬虫或预设: regular, sse_all, all, cctv 等",
     )
 
     args = parser.parse_args()

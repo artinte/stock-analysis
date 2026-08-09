@@ -137,7 +137,7 @@ def record_comment_history(url, content):
     print("💾 已记录该 URL 到评论缓存（有效期 15 天）！")
 
 
-def post_comment(url, comment_content=None):
+def post_comment(url, comment_content=None, interval=60):
     # 0. 去重与过期校验
     if is_already_commented(url):
         print(f"⚠️ 跳过执行：该 URL 在近 15 天内已评论过 -> {url}")
@@ -220,6 +220,9 @@ def post_comment(url, comment_content=None):
 
         # 7. 成功发布后记录并更新缓存
         record_comment_history(url, comment_content)
+        
+        # 8. 留存间隔，避免过快操作
+        time.sleep(interval)
 
     except Exception as e:
         print(f"❌ 执行失败: {e}")
