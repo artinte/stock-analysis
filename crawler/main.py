@@ -10,6 +10,7 @@ from pipelines.article_summary import ArticleGeneratePipeline
 from pipelines.content_publisher import ContentPublisherPipeline
 from pipelines.content_summary import ContentSummaryPipeline
 from pipelines.deduplicate import DeduplicatePipeline
+from pipelines.auto_comment import post_comment
 from spiders.cctv_finance import CCTVFinanceSpider
 from spiders.eastmoney_topic import EastMoneyTopicSpider
 from spiders.mofcom_policy import MOFCOMPolicySpider
@@ -119,12 +120,35 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
 
         for item in cleaned_items:
             company = item.related_companies[0] if item.related_companies else None
-            primary_company = (
+            xueqiu_url = (
                 StockCodeConverter.get_xueqiu_url(company) if company else "N/A"
             )
-            print(primary_company)
+            
+            if not xueqiu_url:
+                print(f"⚠️ 无法识别公司 [{company}] 的股票代码，跳过发帖。")
+                continue
 
-        print_fetched_articles(cleaned_items)
+            # 3. 组装标题和链接为评论内容
+            title = getattr(item, "title", "").strip()
+            url = getattr(item, "url", "").strip()
+
+            # 根据实际情况格式化文本（支持只有标题或只有链接的兜底）
+            if title and url:
+                comment_content = f"{title}\n{url}"
+            elif title:
+                comment_content = title
+            elif url:
+                comment_content = url
+            else:
+                comment_content = "关注后续动态。"
+
+            print(f"\n正在给 [{company}] 发帖: {xueqiu_url}")
+            print(f"评论内容: {comment_content}")
+
+            post_comment(xueqiu_url, comment_content)
+            break
+
+        # print_fetched_articles(cleaned_items)
 
     finally:
         await browser_manager.stop()
