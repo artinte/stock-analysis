@@ -1,6 +1,6 @@
 # Stock Analysis
 
-> AI 时代面向个人开发者与量化研究团队的行情分析与量化选股工具。
+> 面向个人开发者与量化研究团队的行情分析与量化选股工具。
 
 [![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -19,14 +19,17 @@
   * [行情接入与技术指标引擎](#market-feature)
   * [人工智能分析与预测](#ai-feature)
   * [量化策略与股票筛选](#strategy-feature)
+
 * [项目结构](#project-structure)
 
   * [crawler](#crawler)
   * [gateways](#gateways)
+  * [docs](#docs)
   * [stock_detail.py](#stock-detail)
   * [stock_strategy.py](#stock-strategy)
   * [stock_monitor.py](#stock-monitor)
   * [stock_predict.py](#stock-predict)
+
 * [系统安装](#installation)
 
   * [安装 Python 依赖](#install-python)
@@ -422,6 +425,14 @@ Stock Analysis
 > ⚠️ 当前系统集成券商私有数据接口，目前主要支持 **中国银河证券 - 星耀数智平台**。
 >
 > 使用券商数据接口通常需要自行联系券商开通相应的数据权限。
+
+---
+
+<a id="docs"></a>
+
+## `docs`
+
+提供网站 [教学实践](https://artinte.github.io/stock-analysis/)
 
 ---
 
@@ -950,7 +961,7 @@ T+5: 1245.81 (幅度: -6.82%)
 
 # 📚 学习与扩展
 
-项目后续计划逐步增加股票量化与金融数据分析相关教程，包括：
+项目后续计划逐步增加股票量化与金融数据分析相关 [教程](https://artinte.github.io/stock-analysis/#tutorial) ，包括：
 
 ## 基础指标
 
