@@ -13,7 +13,7 @@
 import re
 from enum import Enum
 from typing import Optional, Union, Dict
-from stock_industry_category import get_stock_industry_category
+from .stock_industry_category import get_stock_industry_category
 
 
 class MarketExchange(Enum):

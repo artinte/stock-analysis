@@ -2,7 +2,7 @@
 from functools import lru_cache
 from typing import Dict, List, Optional, Union
 import pandas as pd
-from download_industry_data import get_csindex_industry_data
+from .download_industry_data import get_csindex_industry_data
 
 """
 ==============================================================================

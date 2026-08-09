@@ -2,6 +2,7 @@ import argparse
 import asyncio
 import os
 from datetime import datetime
+import sys
 
 from core.browser import browser_manager
 from manager.ollama_manager import OllamaStatus, start_ollama
@@ -16,13 +17,16 @@ from spiders.sse_announcement import SseAnnouncementSpider
 from spiders.sse_regular import SseRegularReportSpider
 from spiders.sse_spider import SSESpider
 
-import os
-import sys
+# 1. 获取当前文件所在目录 (crawler) 和项目根目录 (stock-analysis)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
 
-# 将项目根目录添加到 sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 2. 将它们都加入 sys.path，确保既能引用上一级，也能引用当前级下的文件夹
+for path in [CURRENT_DIR, PROJECT_ROOT]:
+    if path not in sys.path:
+        sys.path.insert(0, path)
 
-from utils.data_printer import print_fetched_articles, save_raw_articles_to_txt
+from common.data_printer import print_fetched_articles, save_raw_articles_to_txt
 from utils.stock_mapping import StockCodeConverter
 
 # ==========================================
@@ -115,9 +119,10 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
 
         for item in cleaned_items:
             company = item.related_companies[0] if item.related_companies else None
-            primary_company = StockCodeConverter.get_xueqiu_url(company) if company else "N/A"
+            primary_company = (
+                StockCodeConverter.get_xueqiu_url(company) if company else "N/A"
+            )
             print(primary_company)
-
 
         print_fetched_articles(cleaned_items)
 
