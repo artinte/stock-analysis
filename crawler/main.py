@@ -84,6 +84,33 @@ def init_ollama():
 # ==========================================
 
 
+async def task_crawl_and_comment(spiders: list = None, **kwargs):
+    """通用爬取与评论任务 (爬取 -> 去重 -> 摘要 -> 评论)"""
+    if not spiders:
+        print("⚠️ 未提供爬虫实例，取消执行。")
+        return
+
+    await browser_manager.start()
+    semaphore = asyncio.Semaphore(3)
+
+    try:
+        print("🚀 开始运行爬取与评论任务...\n")
+        tasks = [run_spider(spider, semaphore) for spider in spiders]
+        results = await asyncio.gather(*tasks)
+
+        # 1. 压平数据
+        raw_items = [item for sublist in results for item in sublist]
+
+        # 2. 去重
+        dedup_pipeline = DeduplicatePipeline()
+        cleaned_items = dedup_pipeline.process(raw_items)
+
+        print_fetched_articles(cleaned_items)
+
+    finally:
+        await browser_manager.stop()
+
+
 async def task_crawl_and_publish(spiders: list = None, **kwargs):
     """通用全流程 (爬取 -> 去重 -> 摘要 -> AI生成 -> 发布)"""
     if not spiders:
@@ -174,7 +201,7 @@ async def task_crawl_only(spiders: list = None, **kwargs):
 async def task_sse_regular(spiders: list = None, **kwargs):
     """定向快捷任务：若外部未强制指定爬虫，默认绑定运行上交所定期报告"""
     target_spiders = spiders if spiders else get_selected_spiders(["regular"])
-    await task_crawl_and_publish(spiders=target_spiders)
+    await task_crawl_and_comment(spiders=target_spiders, **kwargs)
 
 
 # ==========================================

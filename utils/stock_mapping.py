@@ -1,44 +1,239 @@
 # -*- coding: utf-8 -*-
-from typing import Optional, Union
+"""
+==============================================================================
+模块名称 (Module Name) : Stock Code & Entity Utilities (商业版)
+功能描述 (Description) : 跨交易所股票代码与名称互转工具，支持多平台后缀与雪球链接拼装。
+
+官方数据源参考 (Official Data Sources):
+- 上海证券交易所 (SSE): https://www.sse.com.cn/assortment/stock/list/share/
+- 深圳证券交易所 (SZSE): https://www.szse.cn/market/product/stock/list/index.html
+==============================================================================
+"""
+
+import re
+from enum import Enum
+from typing import Optional, Union, Dict
 from stock_industry_category import get_stock_industry_category
 
-"""
-==============================================================================
-模块名称 (Module Name) : Stock Convenient Utilities
-功能描述 (Description) : 股票代码与名称互转等实用快捷函数模块。
 
-上海证券交易所所有股票：https://www.sse.com.cn/assortment/stock/list/share/
-深证证券交易所所有股票：https://www.szse.cn/market/product/stock/list/index.html
+class MarketExchange(Enum):
+    """交易所枚举"""
 
-==============================================================================
-"""
+    SSE = "SSE"  # 上海证券交易所 (Shanghai Stock Exchange)
+    SZSE = "SZSE"  # 深圳证券交易所 (Shenzhen Stock Exchange)
+    BSE = "BSE"  # 北京证券交易所 (Beijing Stock Exchange)
+    UNKNOWN = "UNKNOWN"
+
+
+class SymbolFormat(Enum):
+    """代码后缀/前缀格式类型"""
+
+    RAW = "RAW"  # 原始 6 位代码，如 '600433'
+    LOWER_SUFFIX = "LOWER"  # 小写点后缀，如 '600433.sh', '000001.sz'
+    UPPER_SUFFIX = "UPPER"  # 大写点后缀 (Wind/Tushare)，如 '600433.SH', '000001.SZ'
+    PREFIX_UPPER = "PREFIX"  # 大写前缀 (雪球/富途)，如 'SH600433', 'SZ000001'
+    JOINQUANT = "JOINQUANT"  # 聚宽/RQAlpha 格式，如 '600433.XSHG', '000001.XSHE'
+    XUEQIU_URL = "XUEQIU_URL"  # 雪球股票主页链接，如 'https://xueqiu.com/S/SH600433'
+
+
+class StockCodeConverter:
+    """商业级股票代码与实体转换器"""
+
+    XUEQIU_BASE_URL = "https://xueqiu.com/S/"
+
+    @staticmethod
+    def clean_code(code: Union[str, int]) -> str:
+        """清洗输入代码并补齐为 6 位标准数字字符串"""
+        if isinstance(code, int):
+            return f"{code:06d}"
+
+        # 提取纯数字部分
+        digits = re.sub(r"\D", "", str(code))
+        if not digits:
+            return ""
+        return digits.zfill(6)
+
+    @classmethod
+    def infer_exchange(cls, code: Union[str, int]) -> MarketExchange:
+        """根据 6 位股票代码前缀智能推断交易所"""
+        standard_code = cls.clean_code(code)
+        if not standard_code:
+            return MarketExchange.UNKNOWN
+
+        # 主板、科创板 (上海)
+        if standard_code.startswith(("600", "601", "603", "605", "688", "689", "900")):
+            return MarketExchange.SSE
+        # 主板、创业板 (深圳)
+        elif standard_code.startswith(("000", "001", "002", "003", "300", "200")):
+            return MarketExchange.SZSE
+        # 北交所
+        elif standard_code.startswith(("83", "87", "88", "43")):
+            return MarketExchange.BSE
+
+        return MarketExchange.UNKNOWN
+
+    @classmethod
+    def format_symbol(
+        cls,
+        code: Union[str, int],
+        fmt: Union[SymbolFormat, str] = SymbolFormat.UPPER_SUFFIX,
+    ) -> str:
+        """
+        将原始股票代码转换为指定平台的格式或拼装链接
+
+        :param code: 股票代码
+        :param fmt: 期望的输出格式，支持 SymbolFormat 枚举或字符串
+        """
+        raw_code = cls.clean_code(code)
+        if not raw_code:
+            return str(code)
+
+        if isinstance(fmt, str):
+            try:
+                fmt = SymbolFormat[fmt.upper()]
+            except KeyError:
+                fmt = SymbolFormat.UPPER_SUFFIX
+
+        exchange = cls.infer_exchange(raw_code)
+
+        if fmt == SymbolFormat.RAW or exchange == MarketExchange.UNKNOWN:
+            return raw_code
+
+        # 根据交易所映射前后缀
+        suffix_map = {
+            MarketExchange.SSE: {
+                "s_upper": ".SH",
+                "s_lower": ".sh",
+                "p_upper": "SH",
+                "jq": ".XSHG",
+            },
+            MarketExchange.SZSE: {
+                "s_upper": ".SZ",
+                "s_lower": ".sz",
+                "p_upper": "SZ",
+                "jq": ".XSHE",
+            },
+            MarketExchange.BSE: {
+                "s_upper": ".BJ",
+                "s_lower": ".bj",
+                "p_upper": "BJ",
+                "jq": ".XBJG",
+            },
+        }
+
+        mapping = suffix_map.get(exchange, {})
+
+        if fmt == SymbolFormat.UPPER_SUFFIX:
+            return f"{raw_code}{mapping.get('s_upper', '')}"
+        elif fmt == SymbolFormat.LOWER_SUFFIX:
+            return f"{raw_code}{mapping.get('s_lower', '')}"
+        elif fmt == SymbolFormat.PREFIX_UPPER:
+            return f"{mapping.get('p_upper', '')}{raw_code}"
+        elif fmt == SymbolFormat.JOINQUANT:
+            return f"{raw_code}{mapping.get('jq', '')}"
+        elif fmt == SymbolFormat.XUEQIU_URL:
+            prefix_symbol = f"{mapping.get('p_upper', '')}{raw_code}"
+            return f"{cls.XUEQIU_BASE_URL}{prefix_symbol}"
+
+        return raw_code
+
+    @classmethod
+    def get_xueqiu_url(cls, code_or_name: Union[str, int]) -> Optional[str]:
+        """
+        快捷拼装雪球股票主页链接
+        :param code_or_name: 股票代码或名称（如 '600433', '600433.SH', '冠豪高新'）
+        :return: 对应的雪球 URL
+        """
+        clean_code = cls.clean_code(code_or_name)
+
+        # 如果传入的是股票名称，先转成代码
+        if not (clean_code and len(clean_code) == 6 and clean_code.isdigit()):
+            query_result = get_stock_industry_category(str(code_or_name))
+            items = query_result.to_list()
+            if items:
+                clean_code = items[0].code
+            else:
+                return None
+
+        return cls.format_symbol(clean_code, fmt=SymbolFormat.XUEQIU_URL)
 
 
 def stock_code_to_name(
     code: Union[str, int], default: Optional[str] = None
 ) -> Optional[str]:
     """根据股票代码获取股票名称"""
-    query_result = get_stock_industry_category(code)
+    clean_code = StockCodeConverter.clean_code(code)
+    if not clean_code:
+        return default
+
+    query_result = get_stock_industry_category(clean_code)
     items = query_result.to_list()
     if items:
         return items[0].name
     return default
 
 
-def stock_name_to_code(name: str, default: Optional[str] = None) -> Optional[str]:
+def stock_name_to_code(
+    name: str,
+    default: Optional[str] = None,
+    fmt: Union[SymbolFormat, str] = SymbolFormat.RAW,
+) -> Optional[str]:
     """根据股票名称获取股票代码"""
     query_result = get_stock_industry_category(name)
     items = query_result.to_list()
     if items:
-        return items[0].code
+        raw_code = items[0].code
+        return StockCodeConverter.format_symbol(raw_code, fmt=fmt)
     return default
 
 
+def get_stock_info(identifier: Union[str, int]) -> Optional[Dict[str, str]]:
+    """获取股票的全维度元数据 (含雪球链接)"""
+    clean_code = StockCodeConverter.clean_code(identifier)
+
+    if clean_code and len(clean_code) == 6 and clean_code.isdigit():
+        code = clean_code
+        name = stock_code_to_name(code)
+    else:
+        name = str(identifier)
+        code = stock_name_to_code(name, fmt=SymbolFormat.RAW)
+
+    if not code or not name:
+        return None
+
+    exchange = StockCodeConverter.infer_exchange(code)
+
+    return {
+        "code": code,
+        "name": name,
+        "exchange": exchange.value,
+        "symbol_wind": StockCodeConverter.format_symbol(
+            code, SymbolFormat.UPPER_SUFFIX
+        ),
+        "symbol_xueqiu": StockCodeConverter.format_symbol(
+            code, SymbolFormat.PREFIX_UPPER
+        ),
+        "xueqiu_url": StockCodeConverter.format_symbol(code, SymbolFormat.XUEQIU_URL),
+        "symbol_joinquant": StockCodeConverter.format_symbol(
+            code, SymbolFormat.JOINQUANT
+        ),
+    }
+
+
 if __name__ == "__main__":
-    print("==================================================================")
-    print(" 快捷 API 测试")
-    print("==================================================================")
-    print(f"代码 '600519' -> 名称: {stock_code_to_name('600519')}")
-    print(f"代码 1 -> 名称: {stock_code_to_name(1)}")
-    print(f"名称 '平安银行' -> 代码: {stock_name_to_code('平安银行')}")
-    print(f"不存在股票 -> 代码: {stock_name_to_code('不存在股票', default='未查到')}")
+    print("=" * 70)
+    print(" 雪球 URL 拼装与生成测试 ")
+    print("=" * 70)
+
+    # 1. 直接拼装雪球链接
+    url_1 = StockCodeConverter.get_xueqiu_url("600433")
+    url_2 = StockCodeConverter.get_xueqiu_url("600433.SH")
+    url_3 = StockCodeConverter.get_xueqiu_url("冠豪高新")
+
+    print(f"输入 '600433'    -> 雪球链接: {url_1}")
+    print(f"输入 '600433.SH' -> 雪球链接: {url_2}")
+    print(f"输入 '冠豪高新'  -> 雪球链接: {url_3}")
+
+    print("\n【全维度元数据展示】")
+    info = get_stock_info("600433")
+    print("600433 元数据:", info)
