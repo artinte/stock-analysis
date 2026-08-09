@@ -10,7 +10,7 @@ from pipelines.article_summary import ArticleGeneratePipeline
 from pipelines.content_publisher import ContentPublisherPipeline
 from pipelines.content_summary import ContentSummaryPipeline
 from pipelines.deduplicate import DeduplicatePipeline
-from pipelines.auto_comment import post_comment
+from crawler.pipelines.auto_comment_xueqiu import post_comment
 from spiders.cctv_finance import CCTVFinanceSpider
 from spiders.eastmoney_topic import EastMoneyTopicSpider
 from spiders.mofcom_policy import MOFCOMPolicySpider
@@ -146,9 +146,6 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
             print(f"评论内容: {comment_content}")
 
             post_comment(xueqiu_url, comment_content)
-            break
-
-        # print_fetched_articles(cleaned_items)
 
     finally:
         await browser_manager.stop()
