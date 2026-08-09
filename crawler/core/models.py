@@ -13,5 +13,7 @@ class ArticleItem(BaseModel):
     category: str = ""  # 扩展分类
     tags: List[str] = Field(default_factory=list)  # 标签列表
 
+    related_companies: List[str] = Field(default_factory=list)  # 关联公司列表（可选，默认为空）
+
     published_at: Optional[datetime] = None  # 文章发布时间（可选，默认为 None）
     fetched_at: datetime = Field(default_factory=datetime.now)  # 抓取时间

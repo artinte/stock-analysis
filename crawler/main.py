@@ -15,7 +15,15 @@ from spiders.mofcom_policy import MOFCOMPolicySpider
 from spiders.sse_announcement import SseAnnouncementSpider
 from spiders.sse_regular import SseRegularReportSpider
 from spiders.sse_spider import SSESpider
+
+import os
+import sys
+
+# 将项目根目录添加到 sys.path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from utils.data_printer import print_fetched_articles, save_raw_articles_to_txt
+from utils.stock_mapping import StockCodeConverter
 
 # ==========================================
 #  0. 爬虫注册与预设映射表
@@ -104,6 +112,12 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
         # 2. 去重
         dedup_pipeline = DeduplicatePipeline()
         cleaned_items = dedup_pipeline.process(raw_items)
+
+        for item in cleaned_items:
+            company = item.related_companies[0] if item.related_companies else None
+            primary_company = StockCodeConverter.get_xueqiu_url(company) if company else "N/A"
+            print(primary_company)
+
 
         print_fetched_articles(cleaned_items)
 

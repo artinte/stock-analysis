@@ -104,6 +104,7 @@ class SseRegularReportSpider(BaseSpider):
                     source_name=self.name,
                     title=full_title,
                     url=full_url,
+                    related_companies=[sec_name],
                     published_at=publish_at,
                     category="定期报告",
                 )
