@@ -1,7 +1,6 @@
 import re
 from datetime import datetime, timedelta
 from typing import List
-from matplotlib.pyplot import title
 from playwright.async_api import Page
 from core.base_spider import BaseSpider
 from core.models import ArticleItem
@@ -62,9 +61,9 @@ class SzseRegularReportSpider(BaseSpider):
         )
         count = await rows.count()
 
-        today = datetime.now()
-        yesterday = today - timedelta(days=1)
-        recent_2_days = [today.strftime("%Y-%m-%d"), yesterday.strftime("%Y-%m-%d")]
+        # 设定允许提取的最小日期（昨日 00:00:00）
+        # 保留昨天、今天，以及所有提前挂出/未来的日期（如 8 月 11 日等）
+        start_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
         for i in range(count):
             row = rows.nth(i)
@@ -113,9 +112,11 @@ class SzseRegularReportSpider(BaseSpider):
             raw_date_text = (await cols.nth(3).inner_text()).strip()
             publish_at = self.extract_date(raw_date_text)
 
-            # 过滤近 2 天数据
-            if publish_at and not any(publish_at.startswith(d) for d in recent_2_days):
-                continue
+            # 只要发布日期 >= 昨天，即予以保留（放弃上限判断）
+            if publish_at:
+                pub_date_str = publish_at.split(" ")[0]
+                if pub_date_str < start_date:
+                    continue
 
             title = self.clean_title(title)
             full_title = f"[{sec_code} {sec_name}] {title}"

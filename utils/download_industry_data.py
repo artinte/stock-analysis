@@ -3,39 +3,17 @@ import time
 import datetime
 import warnings
 import pandas as pd
+import concurrent.futures
 from playwright.sync_api import sync_playwright
 
 """
 ==========================================================================================
 脚本名称: download_csindex.py
 所属项目: stock-analysis (量化选股数据矩阵框架)
-脚本功能: 自动化抓取中证指数官网(csindex.com.cn)全量A股官方行业分类数据，并导出为Excel文件。
-
-技术机制与避坑说明:
-1. 解决 Blob 临时链接阻碍问题: 
-   目标网页的“导出数据”按钮由前端 JavaScript 动态生成内存对象 (blob:https://...)。
-   传统 requests/urllib 爬虫由于无法执行 JS 且无法跨域截获内存流，故在此失效。
-   本脚本采用新一代仿真浏览器框架 Playwright，通过开启 `expect_download()` 下载管道监听器，
-   在底层成功拦截并捕获了浏览器下载管道中由 Blob 对象转化而来的二进制文件流，实现无缝落盘。
-
-2. 解决 Timeout 30000ms 超时崩溃问题:
-   中证官网在渲染完核心数据后，后台仍会持续发送大量埋点、监控和字体流请求。
-   若盲目使用 `wait_until="networkidle"` 会导致脚本陷入长达30秒的死等并触发崩溃。
-   本脚本优化为 `wait_until="domcontentloaded"`（骨架加载即放行），并配合 5 秒硬性缓冲时间，
-   在兼顾按钮渲染完整性的同时，彻底规避了网络请求死锁导致的超时错误。
-
-依赖环境:
-    pip install playwright
-    playwright install chromium
-
-维护建议:
-   - 本数据可作为六维量化矩阵（VCP形态、Forward PEG、PB-ROE匹配度等）的基础行业分类映射表。
-   - 中证行业分类通常按交易日/季度更新。建议配置定时任务(如 Windows 任务计划或 Crontab)定期运行。
-   - 网页元素如发生版面大改（如“导出数据”按钮文本或结构变更），需同步修正 `export_btn_selector`。
 ==========================================================================================
 """
 
-
+# 【恢复同步定义 def】
 def download_csindex_industry_data(download_dir=os.getcwd()):
     """自动化下载中证行业数据，并返回保存的文件绝对路径。
 
@@ -89,7 +67,7 @@ def download_csindex_industry_data(download_dir=os.getcwd()):
             download.save_as(save_path)
             print(f"🎉 自动化爬取成功！文件已保存至: {save_path}")
             browser.close()
-            return save_path  # 【改动】成功后返回文件路径
+            return save_path
 
         except Exception as e:
             print(f"下载文件时遭遇错误: {e}")
@@ -98,32 +76,20 @@ def download_csindex_industry_data(download_dir=os.getcwd()):
 
 
 def get_csindex_industry_data(download_dir=os.getcwd(), force_update=False):
-    """外部调用核心入口函数。
-
-    参数:
-        download_dir (str): 下载文件的保存目录。默认为当前目录。
-        force_update (bool): 是否强制重新下载。默认为 False。
-    返回:
-        pandas.DataFrame 结构体
-    """
+    """外部调用核心入口函数。"""
     today_str = datetime.datetime.now().strftime("%Y%m%d")
 
-    # 1. 在当前目录下，寻找包含今天日期的 .xlsx 文件
     expected_file = None
-
     for file in os.listdir(download_dir):
         if today_str in file and file.endswith(".xlsx"):
             expected_file = os.path.join(download_dir, file)
             break
 
-    # 2. 判断并读取/下载（增加 force_update 的逻辑判断）
     if expected_file and os.path.exists(expected_file) and not force_update:
         print(f"检测到今日数据已存在本地: {expected_file}，直接加载...")
-
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=UserWarning, module="openpyxl")
             df = pd.read_excel(expected_file)
-
         return df
     else:
         if force_update:
@@ -131,17 +97,18 @@ def get_csindex_industry_data(download_dir=os.getcwd(), force_update=False):
         else:
             print("本地未检测到今日数据，开始启动线上下载...")
 
-        file_path = download_csindex_industry_data()
+        # 【核心改动】：使用线程池把同步的 Playwright 隔离到子线程执行，避免触发 asyncio 事件循环冲突
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future = executor.submit(download_csindex_industry_data, download_dir)
+            file_path = future.result()
 
         if file_path and os.path.exists(file_path):
             print("下载完成，开始转换成 Pandas DataFrame...")
-
             with warnings.catch_warnings():
                 warnings.filterwarnings(
                     "ignore", category=UserWarning, module="openpyxl"
                 )
                 df = pd.read_excel(file_path)
-
             return df
         else:
             raise FileNotFoundError(

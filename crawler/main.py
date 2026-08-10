@@ -49,7 +49,7 @@ SPIDER_REGISTRY = {
 SPIDER_PRESETS = {
     "all": list(SPIDER_REGISTRY.keys()),
     "sse_all": ["sse", "sse_announce", "sse_regular"],
-    "szse_fixed": ["szse_fixed"],
+    "szse_fixed": ["sse_regular","szse_fixed"],
     "regular": ["sse_regular"],
     "news": ["cctv", "eastmoney", "mofcom"],
 }

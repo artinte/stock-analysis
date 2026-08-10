@@ -163,8 +163,8 @@
 
 * [上海证券交易所](https://www.sse.com.cn/)
 * [深证证券交易所](https://www.szse.cn/index/index.html)
-* 中证指数
-* 央视财经
+* [中证指数](https://www.csindex.com.cn/)
+* [央视财经](https://finance.cctv.com/)
 * 东方财富
 * 商务部政策文件
 * 财经新闻网站

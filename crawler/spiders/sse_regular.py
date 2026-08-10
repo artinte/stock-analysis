@@ -51,9 +51,9 @@ class SseRegularReportSpider(BaseSpider):
         rows = page.locator(".js_regular table.table tbody tr")
         count = await rows.count()
 
-        today = datetime.now()
-        yesterday = today - timedelta(days=1)
-        recent_2_days = [today.strftime("%Y-%m-%d"), yesterday.strftime("%Y-%m-%d")]
+        # 设定允许提取的最小日期（例如昨天 00:00:00）
+        # 只要发布时间 >= 昨天，无论是今天还是提前挂出（如明天、后天），都会被包含进来
+        start_date = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 
         for i in range(count):
             row = rows.nth(i)
@@ -84,7 +84,7 @@ class SseRegularReportSpider(BaseSpider):
 
             if not pdf_href or not title:
                 continue
-            
+
             if "摘要" in title:
                 continue
 
@@ -96,9 +96,12 @@ class SseRegularReportSpider(BaseSpider):
             raw_date_text = (await cols.nth(3).inner_text()).strip()
             publish_at = self.extract_date(raw_date_text)
 
-            # 过滤近 2 天数据
-            if publish_at and not any(publish_at.startswith(d) for d in recent_2_days):
-                continue
+            # 提取 Publish_at 的日期部分 (YYYY-MM-DD)，比对是否 >= start_date
+            # 这样不仅包含了昨天、今天，还包含了所有提前披露的未来的日期（如 8月11号等）
+            if publish_at:
+                pub_date_str = publish_at.split(" ")[0]
+                if pub_date_str < start_date:
+                    continue
 
             full_title = f"[{sec_code} {sec_name}] {title}"
 
