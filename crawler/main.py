@@ -122,14 +122,15 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
         dedup_pipeline = DeduplicatePipeline()
         cleaned_items = dedup_pipeline.process(raw_items)
 
-        for item in cleaned_items:
+        total = len(cleaned_items)
+        for idx, item in enumerate(cleaned_items, 1):
             company = item.related_companies[0] if item.related_companies else None
             xueqiu_url = (
                 StockCodeConverter.get_xueqiu_url(company) if company else "N/A"
             )
 
-            if not xueqiu_url:
-                print(f"⚠️ 无法识别公司 [{company}] 的股票代码，跳过发帖。")
+            if not xueqiu_url or xueqiu_url == "N/A":
+                print(f"[{idx}/{total}] ⚠️ 无法识别公司 [{company}] 的股票代码，跳过发帖。")
                 continue
 
             # 3. 组装标题和链接为评论内容
@@ -146,7 +147,7 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
             else:
                 comment_content = "关注后续动态。"
 
-            print(f"\n正在给 [{company}] 发帖: {xueqiu_url}")
+            print(f"\n[{idx}/{total}] 正在给 [{company}] 发帖: {xueqiu_url}")
             print(f"评论内容: {comment_content}")
 
             post_comment(xueqiu_url, comment_content)
