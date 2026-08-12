@@ -44,10 +44,11 @@ def get_driver():
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
-
+    print("✅ Chrome WebDriver 初始化完成！")
     driver = webdriver.Chrome(
         service=Service(ChromeDriverManager().install()), options=options
     )
+    print("✅ Chrome 浏览器已启动！请确保已登录雪球账户。")
     driver.execute_cdp_cmd(
         "Page.addScriptToEvaluateOnNewDocument",
         {
