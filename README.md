@@ -1,3 +1,5 @@
+
+
 # Stock Analysis
 
 > 面向个人开发者与量化研究团队的行情分析与量化选股工具。
@@ -157,7 +159,7 @@
 
 ```
 # -s 指定使用的爬虫集合；-m 指定使用的任务集合
-python -s regular_report -m comment crawler/main.py
+python crawler/main.py -s regular_report -m comment
 ```
 
 
