@@ -1,7 +1,7 @@
 import AmazingData
 from gateways.data_manager import DataManager
 import watchlists
-import utils_func
+import utils.utils_func as utils_func
 from dotenv import dotenv_values
 
 converted_code = "603893.SH"  # 目标股票代码

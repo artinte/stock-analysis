@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="laptop_coding_48.png" type="image/png">
+    <title>Stock Analysis 指导手册</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" rel="stylesheet">
+    <link href="article_style.css" rel="stylesheet">
+    <style>
+        .story-section {
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+        .story-header {
+            border-left: 4px solid #0d6efd;
+            padding-left: 1rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.2rem;
+            color: #0d6efd;
+        }
+        .code-block-header {
+            background-color: #212529;
+            color: #adb5bd;
+            padding: 0.4rem 1rem;
+            font-size: 0.85rem;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            font-family: monospace;
+        }
+        .code-block-header + pre {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            margin-top: 0;
+        }
+        .func-tag {
+            background-color: #e7f1ff;
+            color: #0d6efd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+        .dialogue {
+            background-color: #f8f9fa;
+            border-left: 3px solid #6c757d;
+            padding: 0.75rem 1.25rem;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-md-2 left-sidebar">
+
+            </nav>
+
+            <main class="col-md-8 content">
+                <h2 class="custom-title">Stock Analysis 指导手册</h2>
+                <p class="title-subtext">以小说的形式展示 Stock Analysis 系统的全流程实战使用！</p>
+                <p style="color: #a0a0a0;">Created Date: 2025-07-07</p>
+
+                <hr class="my-4">
+
+                <div class="story-section">
+                    <p class="lead">
+                        围绕买卖股票的完整流程，通过叙事的方式，全景展示 <code>Stock Analysis</code> 自动化分析库的功能需求与实战落地方案。直接问 AI “买哪些股票会赚钱”，AI 会抛出一些热门标的；但这只是起点——只有经过多维度的交叉量化与深度审计，才能决定是否砸入真金白银。
+                    </p>
+
+                    <h3 class="story-header">序章：被狂热与冷落撕裂的通信板块</h3>
+                    <p>
+                        2025年12月，A股交易大厅的空气仿佛要被煮沸。
+                    </p>
+                    <p>
+                        散户老张紧盯着自选股界面，呼吸急促。以“易中天”三巨头——<strong>中际旭创</strong>、<strong>新易盛</strong>、<strong>天孚通信</strong>为首的光模块板块，在 AI 算力浪潮的狂推之下节节攀升。这些股票的市盈率（PE）动辄炒到了上百倍，带动着整个通信 ETF（515880）一路高歌猛进。
+                    </p>
+                    <p>
+                        “老陈，冲不冲？再不买就来不及了！”老张拍着旁边程序员出身的投资者老陈的肩膀。
+                    </p>
+                    <p>
+                        老陈没有说话，伸手打开了自己的笔记本电脑，终端窗口里正运行着他自研的开源分析工具 <code>Stock Analysis</code>。
+                    </p>
+                    <p>
+                        “别急。”老陈推了推眼镜，“你只看到了大热的红花，却忽略了被大众遗忘的绿叶。”
+                    </p>
+                    <p>
+                        老陈在终端敲入几行代码。屏幕上立刻弹出了同处于通信板块的<strong>亨通光电（600487）</strong>与<strong>中天科技（600522）</strong>的数据剖析：
+                    </p>
+
+                    <div class="code-block-header">terminal &mdash; stock_analysis_env</div>
+<pre><code class="language-python"># 查看通信板块内成分股的估值与 ETF 持仓渗透率
+from stock_analysis import SectorAnalyzer, ETFHoldingsTracker
+
+sector = SectorAnalyzer("通信设备")
+pe_distribution = sector.get_pe_distribution()
+
+print("== 2025-12 通信板块估值分化采样 ==")
+print(f"中际旭创 PE(TTM): {pe_distribution['300308.SZ']:.1f}x")
+print(f"新易盛   PE(TTM): {pe_distribution['300502.SZ']:.1f}x")
+print(f"亨通光电 PE(TTM): {pe_distribution['600487.SH']:.1f}x (处于历史底层 12% 分位)")
+
+# 追踪公募 ETF 重仓逻辑
+etf_tracker = ETFHoldingsTracker()
+holding_etfs = etf_tracker.get_related_etfs("600487.SH")
+print(f"亨通光电被 {len(holding_etfs)} 只通信/新基建 ETF 被动持有，被动资金持续净流入...")
+</code></pre>
+
+                    <p>
+                        “看到没有？”老陈指着屏幕，“此时亨通光电的 PE 才 17 倍，股价不过 20 元出头。市场把注意力全押在光模块上，却无视了同样受受益于算力网建设的海缆与光纤龙头。ETF 的机构资金一直在暗中吃筹码。”
+                    </p>
+                    <p>
+                        半年后，事实证明了系统的敏锐——亨通光电股价在随后的行情中一路走高，最高较当时翻了近 6 倍。
+                    </p>
+                    <p>
+                        “这就是**买卖股票的研究维度**。”老陈转过头对老张说，“今天我就拿当前半导体设备热门股<strong>北方华创（002371）</strong>为例，带你走一遍 <code>Stock Analysis</code> 的完整二十六维评估流程。”
+                    </p>
+
+                    <h3 class="story-header">第一章：定位血统——行业归属与 ETF 阵营</h3>
+                    <p>
+                        “分析的第一步，不能只看名字。”老陈在键盘上飞速敲击，“首先得获取公司名称并精确定位它的行业层次。”
+                    </p>
+
+                    <div class="code-block-header">1_industry_classification.py</div>
+<pre><code class="language-python">from stock_analysis.industry import get_stock_industry_category, get_stock_etf_holdings
+
+# 1. 获取股票所处的行业（一二三四级）
+industry_hierarchy = get_stock_industry_category(symbol="002371.SZ")
+print("【行业分类】:", industry_hierarchy)
+# 输出: 电子(一级) -> 半导体(二级) -> 半导体设备(三级) -> 刻蚀与薄膜沉积设备(四级)
+
+# 2. 探查关联 ETF 与机构动向（ETF 通常代表公募基金，这是极易被忽略但至关重要的指标）
+etf_data = get_stock_etf_holdings(symbol="002371.SZ")
+for etf in etf_data[:3]:
+    print(f" - ETF: {etf.name}({etf.code}), 持仓占比: {etf.weight}%, 净买入趋势: {etf.flow_trend}")
+</code></pre>
+
+                    <div class="dialogue">
+                        <strong>老张：</strong>“直接看它是半导体不就行了，干嘛分这么细？”<br>
+                        <strong>老陈：</strong>“一级行业看大势，四级行业看壁垒。半导体里的设计、封测和设备在周期上截然不同。结合 <span class="func-tag">get_stock_etf_holdings</span>，你能一眼看出哪些公募基金在用真金白银为你锁仓。”
+                    </div>
+
+                    <h3 class="story-header">第二章：宏观与行业周期审计（维度 1 ~ 5）</h3>
+                    <p>
+                        老陈接着调出了系统中的宏观与行业分析引擎。终端界面开始按顺序输出针对北方华创的评估：
+                    </p>
+
+                    <div class="code-block-header">2_macro_and_industry_analysis.py</div>
+<pre><code class="language-python">from stock_analysis.macro import MacroEngine, IndustryCycleEngine
+
+macro = MacroEngine(symbol="002371.SZ")
+cycle = IndustryCycleEngine(symbol="002371.SZ")
+
+# 行业是上行还是下行
+print("【行业趋势】:", cycle.get_industry_trend()) 
+# 输出: 扩张期（受益于国内晶圆厂扩产周期）
+
+# 技术壁垒与蓝海属性
+print("【技术壁垒】:", cycle.get_tech_barrier_score())  # 得分: 9.5/10 (高专利密度/研发护城河)
+print("【蓝海/红海】:", cycle.is_blue_ocean_market())     # 输出: 局部蓝海 (高阶刻蚀设备国产化率不足30%)
+
+# 行业周期位置
+print("【行业周期阶段】:", cycle.get_current_phase())   # 输出: 逆周期投资上升期
+</code></pre>
+
+                    <p>
+                        “如果一个行业整体在下行，哪怕公司再优秀也难以对抗时代。”老陈解释道，“北方华创所处的半导体设备领域，技术壁垒极高，且处于典型的国产替代蓝海增长期。”
+                    </p>
+
+                    <h3 class="story-header">第三章：公司基本面与护城河深挖（维度 6 ~ 10）</h3>
+                    <p>
+                        紧接着进入了最核心的财报与经营指标穿透阶段。老陈启动了公司的基本面分析模块：
+                    </p>
+
+                    <div class="code-block-header">3_fundamental_metrics.py</div>
+<pre><code class="language-python">from stock_analysis.fundamentals import FinancialAuditor
+
+auditor = FinancialAuditor(symbol="002371.SZ")
+
+# 6. 公司核心竞争力
+print("【核心竞争力】:", auditor.get_core_competence())
+# 输出: 平台型半导体设备龙头，产品线覆盖刻蚀、薄膜沉积、清洗等多道工序
+
+# 7. 利润变化情况
+profit_growth = auditor.get_profit_growth_trend(years=3)
+print(f"【近三年净利润复合增长率】: {profit_growth.cagr}%")
+
+# 8. 现在的 PE/PS 是否处于低位
+valuation = auditor.get_valuation_percentile()
+print(f"【PE(TTM) 历史分位】: {valuation.pe_percentile}% (低于历史 70% 的时间)")
+print(f"【PS 历史分位】: {valuation.ps_percentile}%")
+
+# 9. 公司的增长速度
+print("【营收增速 vs 扣非净利润增速】:", auditor.get_growth_contrast())
+
+# 10. 分红 / 回购 / 减持
+corporate_actions = auditor.get_corporate_governance_events()
+print("【股东回报与减持记录】:", corporate_actions)
+# 输出: 连续5年分红，公司完成2亿元股票回购，高管近期无减持计划
+</code></pre>
+
+                    <h3 class="story-header">第四章：隐藏风险与安全边际排雷（维度 11 ~ 15）</h3>
+                    <p>
+                        “很多散户买股票只看暴涨空间，却不看爆雷风险。”老陈的面色变得严肃，“<code>Stock Analysis</code> 专门设计了安全审计模块，用来排查可转债、质押率以及管理层资质。”
+                    </p>
+
+                    <div class="code-block-header">4_risk_and_governance.py</div>
+<pre><code class="language-python">from stock_analysis.risk import RiskAuditor
+
+risk = RiskAuditor(symbol="002371.SZ")
+
+# 11. 可转债额度与质押比例
+print("【可转债存量】:", risk.get_convertible_bond_info())
+print("【大股东质押比例】:", risk.get_pledge_ratio()) # 输出: 1.2% (极低风险)
+
+# 12. 公司的全球化水平
+print("【海外业务收入占比】:", risk.get_globalization_index()) # 输出: 8.5% (主战场在国内，受海外直接监管风险较低)
+
+# 13. 公司领导层水平
+print("【管理层背景与履历评分】:", risk.evaluate_management_team())
+
+# 14. 汇率变化影响
+print("【汇率敏感度分析】:", risk.get_fx_sensitivity()) # 美元/人民币汇率波动对毛利率的影响控制在 1.5% 内
+
+# 15. 全球宏观环境与不可控因素 (战争、地缘政治)
+print("【地缘政治风险评估】:", risk.get_geopolitical_risk_factor()) 
+# 输出: 高关注度 (受实体清单及出口管制政策影响明显，但催化自主可控需求)
+</code></pre>
+
+                    <h3 class="story-header">第五章：博弈面、筹码与外部催化（维度 16 ~ 20）</h3>
+                    <p>
+                        最后，系统进入动态博弈评估。老陈展示了近期催化剂与筹码结构的变化：
+                    </p>
+
+                    <div class="code-block-header">5_catalysts_and_ownership.py</div>
+<pre><code class="language-python">from stock_analysis.event import EventTracker, OwnershipAnalyzer
+
+event = EventTracker(symbol="002371.SZ")
+ownership = OwnershipAnalyzer(symbol="002371.SZ")
+
+# 16. 竞争对手的变化
+print("【主要竞争对手及份额变化】:", event.get_competitor_dynamics())
+# 输出: 对标中微公司(刻蚀)、拓荆科技(薄膜)，北方华创在多工艺覆盖上保持领先
+
+# 17. 前十大股东变化
+print("【前十大股东变动】:", ownership.get_top_10_holders_change())
+# 输出: 国家集成电路产业基金(大基金)持仓稳定，险资与公募加仓 2.3%
+
+# 18. 近期热点与外部事件干预
+print("【近期事件驱动】:", event.get_recent_hotspots())
+# 输出: 国内头部晶圆厂新一期设备招标在即；新型自主可控政策出台
+
+# 19. 人工智能相关性
+print("【AI 产业相关度】:", event.get_ai_relevance_score())
+# 输出: 92/100 (AI 算力芯片爆发直接倒逼上游半导体晶圆与设备需求)
+</code></pre>
+
+                    <h3 class="story-header">终章：生成诊断报告与决策</h3>
+                    <p>
+                        敲完最后一项指令，老陈按下回车键。终端屏幕瞬间吐出了一份清晰的综合决策汇总表：
+                    </p>
+
+                    <div class="code-block-header">6_final_decision_report.py</div>
+<pre><code class="language-python">from stock_analysis import GenerateFinalReport
+
+report = GenerateFinalReport(symbol="002371.SZ")
+report.render_summary_table()
+</code></pre>
+
+                    <div class="table-responsive my-3">
+                        <table class="table table-bordered table-striped align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>分析维度</th>
+                                    <th>诊断指标</th>
+                                    <th>系统评估结果</th>
+                                    <th>风险/机会评级</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>行业与周期</strong></td>
+                                    <td>行业归属与周期阶段</td>
+                                    <td>半导体设备（四级），处于逆周期扩产与国产替代上行期</td>
+                                    <td><span class="badge bg-success">极佳</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>机构筹码</strong></td>
+                                    <td>ETF 持仓渗透率</td>
+                                    <td>被半导体 ETF、芯片 ETF 重仓，公募基金锁仓明显</td>
+                                    <td><span class="badge bg-success">良好</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>基本面与估值</strong></td>
+                                    <td>PE/PS 分位数与增速</td>
+                                    <td>PE(TTM) 处于历史 32% 低位，扣非净利润连续 3 年增速 >30%</td>
+                                    <td><span class="badge bg-success">安全</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>排雷与治理</strong></td>
+                                    <td>质押/可转债/减持</td>
+                                    <td>质押率 1.2%，无可转债压力，管理层高频回购无减持</td>
+                                    <td><span class="badge bg-primary">低风险</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>外部与 AI 催化</strong></td>
+                                    <td>地缘政治与 AI 关联度</td>
+                                    <td>受出口管制影响（风险与机遇并存），高度受益于 AI 芯片扩产</td>
+                                    <td><span class="badge bg-warning text-dark">中等波动</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p>
+                        老张看着眼前这份面面俱到的表格，长舒了一口气：“以前我买股票就是看代码、听新闻、凭感觉。没想到真正专业的选股，要像搞工程一样，把从**行业分类、公募持仓、估值分位**到**质押风险、地缘政治、AI 相关度**的每一个接口全部跑一遍。”
+                    </p>
+                    <p>
+                        老陈合上电脑，笑着说：
+                    </p>
+                    <p class="fw-bold text-center my-4" style="font-size: 1.15rem; color: #0d6efd;">
+                        “直接问 AI 买哪只股票，AI 只能给你一个猜想。<br>而 <code>Stock Analysis</code> 的这二十六个维度，才是帮你验证这个猜想、在市场上安身立命的护城河。”
+                    </p>
+                </div>
+
+                <div class="navigation mt-5">
+                    <a href="device_mesh.html">Prev: 14.4 Device Mesh</a>
+                    <a href="graph_foundation.html">Next: 15.1 Graph Foundation</a>
+                </div>
+            </main>
+
+            <aside class="col-md-2 right-sidebar">
+                <h5><a href="index.html#section14">Distributed Training</a></h5>
+                <ul id="dynamic-sidebar" class="nav flex-column">
+                </ul>
+            </aside>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="article_script.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+</body>
+
+</html>
