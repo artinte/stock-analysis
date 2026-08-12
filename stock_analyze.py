@@ -1,5 +1,5 @@
 import AmazingData
-from stock_detail import StockDetail
+from models.stock_detail import StockDetail
 import pandas as pd
 import mplfinance as mpf
 

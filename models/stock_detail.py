@@ -1,7 +1,6 @@
 import datetime
 import numpy as np
 import pandas
-from company_financials import CompanyFinancials
 
 
 class StockDetail:
@@ -63,53 +62,6 @@ class StockDetail:
         if self.last_close == 0:
             return 0.0
         return round((self.change / self.last_close) * 100, 2)
-
-    def calculate_pe_from_financials(self, financials: CompanyFinancials):
-        assert self.total_cap > 0
-        data = financials.financial_data
-        if not data:
-            return
-
-        now = datetime.datetime.now()
-        curr_year = now.year
-        start_q_idx = (now.month - 1) // 3
-
-        target_q = None
-        q_num = 0
-
-        for i in range(4):
-            check_idx = start_q_idx - i
-            year = curr_year if check_idx >= 0 else curr_year - 1
-            q_val = (check_idx % 4) + 1
-            if q_val == 4:
-                q_val = 3
-
-            q_key = f"{year}-Q{q_val}"
-            if q_key in data:
-                target_q = q_key
-                q_num = q_val
-                break
-
-        if not target_q:
-            return
-
-        year_str = target_q.split("-")[0]
-        prev_year = int(year_str) - 1
-
-        curr_q_cum = data.get(target_q, {}).get("operating_profit", 0)
-        last_full_year = data.get(f"{prev_year}-Q4", {}).get("operating_profit", 0)
-        prev_q_cum = data.get(f"{prev_year}-Q{q_num}", {}).get("operating_profit", 0)
-
-        profit_ttm = curr_q_cum + (last_full_year - prev_q_cum)
-        if profit_ttm > 0:
-            self.pe_ttm = round(self.total_cap / (profit_ttm / 1e8), 2)
-
-        if last_full_year > 0:
-            self.pe_static = round(self.total_cap / (last_full_year / 1e8), 2)
-
-        if curr_q_cum > 0 and q_num > 0:
-            projected_profit = (curr_q_cum / q_num) * 4
-            self.pe_dynamic = round(self.total_cap / (projected_profit / 1e8), 2)
 
     def calculate_pe(self, financials_dict: dict):
         if not hasattr(self, "total_cap") or self.total_cap <= 0:

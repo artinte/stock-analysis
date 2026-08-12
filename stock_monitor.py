@@ -1,7 +1,6 @@
 import AmazingData
 from dotenv import dotenv_values
-from stock_detail import StockDetail
-from company_financials import AllCompanyFinancials
+from models.stock_detail import StockDetail
 
 TARGET_CODE = "002371.SZ"
 STOCK_NAME = "北方华创"
@@ -55,14 +54,6 @@ if not equity_structure.empty:
 
 stock_instance.update_equity(total_share, float_share)
 
-# 计算静态市盈率、动态市盈率、市盈 (TTM)
-# fin_obj = next(
-#     (f for f in AllCompanyFinancials if f.ticker and f.ticker in stock_instance.code),
-#     None,
-# )
-# if fin_obj:
-#     stock_instance.calculate_pe_from_financials(fin_obj)
-
 raw_income_dict = info_data_object.get_income(
     code_list=[TARGET_CODE],
     local_path=config["local_path"],
@@ -87,5 +78,14 @@ stock_instance.calculate_moving_averages(kline_data)
 stock_instance.calculate_volume_ratio(kline_data)
 stock_instance.calculate_williams(kline_data, n=14)
 stock_instance.calculate_bias()
+
+stock_instance.calculate_moving_averages(kline_data)
+stock_instance.calculate_volume_ratio(kline_data)
+stock_instance.calculate_williams(kline_data, n=14)
+stock_instance.calculate_bias()
+
+stock_instance.calculate_macd(kline_data)
+stock_instance.calculate_rsi(kline_data, period=14)
+stock_instance.calculate_bollinger_bands(kline_data, period=20, std_dev=2)
 
 stock_instance.display()

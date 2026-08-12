@@ -1,11 +1,10 @@
 import datetime
 import AmazingData
 from dotenv import dotenv_values
-from stock_detail import StockDetail
-from company_financials import AllCompanyFinancials
+from models.stock_detail import StockDetail
 import mplfinance
 import pandas
-from matplotlib import pyplot, font_manager, transforms
+from matplotlib import pyplot, transforms
 
 TARGET_CODE = "001389.SZ"
 STOCK_NAME = "广合科技"
@@ -59,12 +58,6 @@ if not equity_structure.empty:
 
 stock_instance.update_equity(total_share, float_share)
 
-# 计算静态市盈率、动态市盈率、市盈 (TTM)
-fin_obj = next(
-    (f for f in AllCompanyFinancials if f.ticker and f.ticker in stock_instance.code),
-    None,
-)
-
 lookback = 180
 begin_date = calendar[-lookback]
 kline_data = market_data_object.query_kline(
@@ -99,26 +92,6 @@ mc = mplfinance.make_marketcolors(
 
 mav_periods = (5, 10, 20, 60)
 
-# pyplot.rcParams["font.sans-serif"] = ["SimHei"]
-# pyplot.rcParams["axes.unicode_minus"] = False
-
-# mplfinance.plot(
-#     plot_df,
-#     type="candle",  # 蜡烛图
-#     style=mplfinance.make_mpf_style(
-#         marketcolors=mc, base_mpf_style="binance", rc={"font.family": "SimHei"}
-#     ),
-#     title=f"\nK-Line: {STOCK_NAME} ({TARGET_CODE})",
-#     ylabel="Price",
-#     datetime_format="%Y-%m-%d",
-#     volume=False,  # 不显示成交量
-#     mav=mav_periods,  # 移动平均线
-#     figsize=(14, 8),  # 图像大小
-#     tight_layout=True,
-#     show_nontrading=False,  # 隐藏非交易日（周末/节假日）
-#     scale_padding={"left": 0.3, "top": 1.0, "right": 0.95, "bottom": 1.0},
-# )
-
 import numpy as np
 
 # --- 1. PE-TTM 动态计算 (单位：万股/元 修正版) ---
@@ -127,52 +100,6 @@ pe_ttm_series = []
 
 # 明确单位：万股 -> 还原为 股
 corrected_total_share = total_share * 10000
-
-if fin_obj and corrected_total_share > 0:
-    all_q_keys = sorted(fin_obj.financial_data.keys())
-
-    for d in dates:
-        d_str = d.strftime("%Y-%m-%d")
-        matched_q = None
-        for q_key in reversed(all_q_keys):
-            y, q_n = q_key.split("-")
-            gate = {"Q1": "03-31", "Q2": "06-30", "Q3": "09-30", "Q4": "12-31"}
-            if d_str >= f"{y}-{gate[q_n]}":
-                matched_q = q_key
-                break
-
-        if matched_q:
-            y_str, q_str = matched_q.split("-")
-            curr_year = int(y_str)
-            prev_year = curr_year - 1
-
-            # 获取利润 (元)
-            curr_q_cum = fin_obj.financial_data.get(matched_q, {}).get(
-                "operating_profit", 0
-            )
-            last_full_year = fin_obj.financial_data.get(f"{prev_year}-Q4", {}).get(
-                "operating_profit", 0
-            )
-            prev_q_cum = fin_obj.financial_data.get(f"{prev_year}-{q_str}", {}).get(
-                "operating_profit", 0
-            )
-
-            # TTM利润 (元)
-            profit_ttm = curr_q_cum + (last_full_year - prev_q_cum)
-
-            # 计算总市值 (元)
-            current_price = plot_df.loc[d, "Close"]
-            total_cap_yuan = current_price * corrected_total_share
-
-            if profit_ttm > 0:
-                pe_val = total_cap_yuan / profit_ttm
-                pe_ttm_series.append(pe_val)
-            else:
-                pe_ttm_series.append(np.nan)
-        else:
-            pe_ttm_series.append(np.nan)
-else:
-    pe_ttm_series = [np.nan] * len(plot_df)
 
 # --- 2. 计算平均 PE ---
 # 过滤掉空值计算这段时间的均值
@@ -254,5 +181,4 @@ axlist[2].text(
 for ax in [axlist[0], axlist[2]]:
     ax.grid(True, linestyle="--", alpha=0.5)
 
-#
 pyplot.show()

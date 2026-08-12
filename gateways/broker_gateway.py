@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from stock_detail import StockDetail
+from models.stock_detail import StockDetail
 
 
 class BrokerGateway(ABC):

@@ -87,7 +87,7 @@ import pandas as pd
 import numpy as np
 import AmazingData
 from utils.download_industry_data import get_csindex_industry_data
-from stock_detail import StockDetail
+from models.stock_detail import StockDetail
 from watchlists import Watchlists
 from datetime import datetime
 from etf_list import securities_etf_components
