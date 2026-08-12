@@ -34,6 +34,7 @@
 
   * [安装 Python 依赖](#install-python)
   * [安装 Ollama](#install-ollama)
+
 * [快速开始](#quick-start)
 * [量化分析界面](#quant-interface)
 * [量化分析示例](#quant-example)
@@ -75,7 +76,7 @@
 
 > **时事热点 + 财经信息 + 行情数据 + 财务数据 + 技术指标 + AI分析 + 量化策略**
 
-整合到一个统一的分析框架中。详细介绍参考 <a href="docs/manual.html">Stock Analysis 指导手册</a>！
+整合到一个统一的分析框架中。详细介绍参考 [Stock Analysis 指导手册](https://artinte.github.io/docs/manual.html)！
 
 ---
 
