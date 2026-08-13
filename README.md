@@ -27,6 +27,8 @@
   * [crawler](#crawler)
   * [gateways](#gateways)
   * [docs](#docs)
+  * [utils](#utils)
+  * [tools](#tools)
   * [stock_detail.py](#stock-detail)
   * [stock_strategy.py](#stock-strategy)
   * [stock_monitor.py](#stock-monitor)
@@ -40,8 +42,6 @@
 * [快速开始](#quick-start)
 * [量化分析界面](#quant-interface)
 * [量化分析示例](#quant-example)
-
-  * [PE-TTM](#pe-ttm)
 * [全市场量化选股](#market-selection)
 * [股票预测实验](#stock-prediction)
 * [数据接口](#data-interface)
@@ -189,7 +189,7 @@ python crawler/main.py -s regular_report -m comment
 
 支持对接：
 
-* 本地 Ollama
+* 本地 [Ollama](https://ollama.com/)
 * Qwen 等本地模型
 * 云端大语言模型
 
