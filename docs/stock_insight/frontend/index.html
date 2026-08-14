@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>A股股票研究中心</title>
+  <link rel="stylesheet" href="/css/global.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">A股股票研究中心</div>
+  <div class="search-wrap">
+    <input id="searchInput" autocomplete="off" placeholder="输入股票代码或名称，例如：601117 / 中国化学">
+    <button id="searchBtn">查询</button>
+    <div id="searchDropdown" class="search-dropdown"></div>
+  </div>
+</header>
+
+<main class="page">
+  <section id="emptyState" class="empty-state">
+    <div class="empty-icon">⌕</div>
+    <h1>输入股票，开始研究</h1>
+    <p>一个页面集中查看基本信息、行情、财务、估值、行业、ETF、指数、新闻、公告等。</p>
+    <div class="examples">
+      <button data-code="601117">中国化学 601117</button>
+      <button data-code="600028">中国石化 600028</button>
+      <button data-code="300750">宁德时代 300750</button>
+    </div>
+  </section>
+
+  <section id="stockPage" hidden>
+    <div class="stock-header card">
+      <div>
+        <div class="stock-title-row">
+          <h1 id="stockName">-</h1>
+          <span id="stockCode" class="badge">-</span>
+        </div>
+        <div id="stockSub" class="muted">-</div>
+      </div>
+      <div class="price-box">
+        <div id="stockPrice" class="price">-</div>
+        <div id="stockChange" class="change">-</div>
+      </div>
+    </div>
+
+    <div id="summaryCards" class="metric-grid"></div>
+
+    <div class="tabbar" id="tabbar"></div>
+    <div id="moduleContent" class="module-content"></div>
+  </section>
+</main>
+<script src="/js/api.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

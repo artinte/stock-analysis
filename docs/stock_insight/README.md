@@ -5,7 +5,15 @@ StockInsight
 
 技术：Python FastAPI + Vue3 + TypeScript + ECharts
 
+cd stock-insight\backend
 
+python -m venv .venv
+
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+.\.venv\Scripts\python.exe app.py
+
+http://127.0.0.1:8000
 
 
 01：股票概览
