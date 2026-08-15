@@ -1,5 +1,20 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import annotations
+
+import logging
+import os
+import shutil
+import subprocess
+import time
+from enum import Enum
+from typing import Optional
+
+import requests
+
+logger = logging.getLogger(__name__)
+
+
 """
 Ollama 本地模型客户端。
 
@@ -17,21 +32,6 @@ Ollama 本地模型客户端。
 本模块负责本地 Ollama 的基础设施管理，不包含任何业务逻辑。
 业务层无需关心 Ollama 是否已经启动，只需要处理最终的模型结果即可。
 """
-
-from __future__ import annotations
-
-import logging
-import os
-import shutil
-import subprocess
-import time
-from enum import Enum
-from typing import Optional
-
-import requests
-
-logger = logging.getLogger(__name__)
-
 
 # =============================================================================
 # Configuration
