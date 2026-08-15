@@ -134,7 +134,7 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
         await browser_manager.stop()
 
 
-async def task_crawl_and_publish(spiders: list = None, **kwargs):
+async def task_crawl_and_ai_analysis(spiders: list = None, **kwargs):
     """通用全流程 (爬取 -> 去重 -> 摘要 -> AI生成 -> 发布)"""
     if not spiders:
         print("⚠️ 未提供爬虫实例，取消执行。")
@@ -172,14 +172,13 @@ async def task_crawl_and_publish(spiders: list = None, **kwargs):
         )
 
         # 4. AI 生成与发布
-        ai_pipeline = ArticleGeneratePipeline(
-            output_filename=f"local_output_{date_suffix}.txt",
-            model_name="qwen3:8b",
-        )
-        content_generated = ai_pipeline.process(target_news)
-
-        publisher = ContentPublisherPipeline()
-        publisher.publish(content_generated)
+        # ai_pipeline = ArticleGeneratePipeline(
+        #     output_filename=f"local_output_{date_suffix}.txt",
+        #     model_name="qwen3:8b",
+        # )
+        # content_generated = ai_pipeline.process(target_news)
+        # publisher = ContentPublisherPipeline()
+        # publisher.publish(content_generated)
 
     finally:
         await browser_manager.stop()
@@ -230,7 +229,7 @@ async def task_sse_regular(spiders: list = None, **kwargs):
 # ==========================================
 
 TASK_MAP = {
-    "full": task_crawl_and_publish,
+    "ai_analysis": task_crawl_and_ai_analysis,
     "crawl_only": task_crawl_only,
     "sse_regular": task_sse_regular,  # 快捷任务模式
 }
@@ -260,7 +259,7 @@ async def main():
         type=str,
         default="full",
         choices=list(TASK_MAP.keys()),
-        help="任务模式: full(全流程), crawl_only(仅爬取), sse_regular(定向定期报告快捷模式)",
+        help="任务模式: full(全流程), crawl_only(仅爬取), sse_regular(定向定期报告快捷模式), ai_analysis(AI分析模式)",
     )
 
     args = parser.parse_args()

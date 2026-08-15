@@ -7,6 +7,8 @@
 官方数据源参考 (Official Data Sources):
 - 上海证券交易所 (SSE): https://www.sse.com.cn/assortment/stock/list/share/
 - 深圳证券交易所 (SZSE): https://www.szse.cn/market/product/stock/list/index.html
+
+执行：python -m utils.stock_mapping
 ==============================================================================
 """
 
@@ -64,7 +66,7 @@ class StockCodeConverter:
         if standard_code.startswith(("600", "601", "603", "605", "688", "689", "900")):
             return MarketExchange.SSE
         # 主板、创业板 (深圳)
-        elif standard_code.startswith(("000", "001", "002", "003", "300", "200")):
+        elif standard_code.startswith(("000", "001", "002", "003", "300", "301", "302", "200")):
             return MarketExchange.SZSE
         # 北交所
         elif standard_code.startswith(("83", "87", "88", "43")):
@@ -229,10 +231,11 @@ if __name__ == "__main__":
     url_1 = StockCodeConverter.get_xueqiu_url("600433")
     url_2 = StockCodeConverter.get_xueqiu_url("600433.SH")
     url_3 = StockCodeConverter.get_xueqiu_url("冠豪高新")
-
+    url_4 = StockCodeConverter.get_xueqiu_url("301391")
     print(f"输入 '600433'    -> 雪球链接: {url_1}")
     print(f"输入 '600433.SH' -> 雪球链接: {url_2}")
     print(f"输入 '冠豪高新'  -> 雪球链接: {url_3}")
+    print(f"输入 '301391'    -> 雪球链接: {url_4}")
 
     print("\n【全维度元数据展示】")
     info = get_stock_info("600433")
