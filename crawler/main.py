@@ -5,8 +5,6 @@ from datetime import datetime
 import sys
 
 from core.browser import browser_manager
-
-from manager.ollama_manager import init_ollama
 from pipelines.article_summary import ArticleGeneratePipeline
 from pipelines.content_publisher import ContentPublisherPipeline
 from pipelines.content_summary import ContentSummaryPipeline
@@ -142,8 +140,6 @@ async def task_crawl_and_publish(spiders: list = None, **kwargs):
         print("⚠️ 未提供爬虫实例，取消执行。")
         return
 
-    model_to_use = init_ollama()
-
     await browser_manager.start()
     semaphore = asyncio.Semaphore(3)
 
@@ -178,7 +174,7 @@ async def task_crawl_and_publish(spiders: list = None, **kwargs):
         # 4. AI 生成与发布
         ai_pipeline = ArticleGeneratePipeline(
             output_filename=f"local_output_{date_suffix}.txt",
-            model_name=model_to_use,
+            model_name="qwen3:8b",
         )
         content_generated = ai_pipeline.process(target_news)
 
@@ -253,7 +249,7 @@ async def main():
         "-s",
         "--spiders",
         nargs="+",
-        default=["regular_reports"],
+        default=["daily_news"],
         help="选择爬虫或预设: regular, sse_all, all, cctv 等",
     )
 
@@ -262,7 +258,7 @@ async def main():
         "-m",
         "--mode",
         type=str,
-        default="sse_regular",
+        default="full",
         choices=list(TASK_MAP.keys()),
         help="任务模式: full(全流程), crawl_only(仅爬取), sse_regular(定向定期报告快捷模式)",
     )
