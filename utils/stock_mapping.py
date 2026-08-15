@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 ==============================================================================
-模块名称 (Module Name) : Stock Code & Entity Utilities (商业版)
+模块名称 (Module Name) : Stock Code & Entity Utilities
 功能描述 (Description) : 跨交易所股票代码与名称互转工具，支持多平台后缀与雪球链接拼装。
 
 官方数据源参考 (Official Data Sources):

@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 from playwright.async_api import Page
 from core.base_spider import BaseSpider
@@ -10,6 +11,7 @@ class EastMoneyTopicSpider(BaseSpider):
 
     async def parse(self, page: Page) -> List[ArticleItem]:
         items = []
+        crawl_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         target_locator = page.locator(
             'a[href*="topic"], .topic_item, .topic_list, .list_item'
         )
@@ -23,7 +25,6 @@ class EastMoneyTopicSpider(BaseSpider):
 
         for i in range(count):
             item = target_locator.nth(i)
-            
             # 1. 尝试精准提取标题（避免 inner_text 把正文摘要也塞进 title 里）
             title_el = item.locator(".title, .topic_title, h3, a").first
             if await title_el.count() > 0:
@@ -46,8 +47,13 @@ class EastMoneyTopicSpider(BaseSpider):
                 continue
 
             # 4. 提取卡片上的正文/摘要
-            summary_el = item.locator(".brief, .desc, .topic_desc")
+            card = item.locator(
+                "xpath=ancestor::div[contains(@class, 'hotTopicMsg')]"
+            ).first
+
+            summary_el = card.locator(".item_desc")
             content = ""
+
             if await summary_el.count() > 0:
                 content = (await summary_el.first.inner_text()).strip()
 
@@ -56,13 +62,20 @@ class EastMoneyTopicSpider(BaseSpider):
             if content and content in title:
                 title = title.replace(content, "").strip()
 
+            if len(content) < 200:
+                summary = content
+            else:
+                summary = ""
+
             items.append(
                 ArticleItem(
                     source_name=self.name,
                     title=title,
                     url=full_url,
-                    content=content,  # 👈 直接把列表卡片抓到的摘要/正文传给 content
+                    summary=summary,
+                    content=content,
                     category="热门话题",
+                    published_at=crawl_time,
                 )
             )
 

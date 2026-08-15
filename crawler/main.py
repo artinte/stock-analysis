@@ -45,7 +45,7 @@ SPIDER_REGISTRY = {
     "sse_announce": SseAnnouncementSpider,
     "sse_regular": SseRegularReportSpider,
     "szse_fixed": SzseRegularReportSpider,
-    "cctv": CCTVFinanceSpider,
+    "cctv_finance": CCTVFinanceSpider,
     "eastmoney": EastMoneyTopicSpider,
     "mofcom": MOFCOMPolicySpider,
 }
@@ -56,7 +56,7 @@ SPIDER_PRESETS = {
     # 抓取公司的季度报告
     "regular_reports": ["sse_regular", "szse_fixed"],
     "regular": ["sse_regular"],
-    "daily_news": ["cctv", "eastmoney", "mofcom"],
+    "daily_news": ["cctv_finance", "eastmoney"],
 }
 
 
@@ -257,7 +257,7 @@ async def main():
         "-m",
         "--mode",
         type=str,
-        default="full",
+        default="ai_analysis",
         choices=list(TASK_MAP.keys()),
         help="任务模式: full(全流程), crawl_only(仅爬取), sse_regular(定向定期报告快捷模式), ai_analysis(AI分析模式)",
     )
