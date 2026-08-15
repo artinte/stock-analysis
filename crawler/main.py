@@ -6,7 +6,7 @@ import sys
 
 from core.browser import browser_manager
 
-from manager.ollama_manager import OllamaStatus, start_ollama
+from manager.ollama_manager import init_ollama
 from pipelines.article_summary import ArticleGeneratePipeline
 from pipelines.content_publisher import ContentPublisherPipeline
 from pipelines.content_summary import ContentSummaryPipeline
@@ -32,6 +32,12 @@ for path in [CURRENT_DIR, PROJECT_ROOT]:
 from common.data_printer import print_fetched_articles, save_raw_articles_to_txt
 from utils.stock_mapping import StockCodeConverter
 
+
+async def run_spider(spider, semaphore: asyncio.Semaphore):
+    async with semaphore:
+        return await spider.run()
+
+
 # ==========================================
 #  0. 爬虫注册与预设映射表
 # ==========================================
@@ -49,9 +55,10 @@ SPIDER_REGISTRY = {
 SPIDER_PRESETS = {
     "all": list(SPIDER_REGISTRY.keys()),
     "sse_all": ["sse", "sse_announce", "sse_regular"],
-    "szse_fixed": ["sse_regular","szse_fixed"],
+    # 抓取公司的季度报告
+    "regular_reports": ["sse_regular", "szse_fixed"],
     "regular": ["sse_regular"],
-    "news": ["cctv", "eastmoney", "mofcom"],
+    "daily_news": ["cctv", "eastmoney", "mofcom"],
 }
 
 
@@ -65,35 +72,6 @@ def get_selected_spiders(spider_args: list) -> list:
             spider_keys.add(item)
 
     return [SPIDER_REGISTRY[key]() for key in spider_keys if key in SPIDER_REGISTRY]
-
-
-# ==========================================
-#  1. 辅助函数
-# ==========================================
-
-
-async def run_spider(spider, semaphore: asyncio.Semaphore):
-    async with semaphore:
-        return await spider.run()
-
-
-def init_ollama():
-    """初始化并检测 Ollama 模型"""
-    model_to_use = None
-    status, models = start_ollama()
-
-    match status:
-        case OllamaStatus.SUCCESS:
-            print(f"✅ Ollama 就绪，可用模型: {models}")
-            model_to_use = models[0]
-        case OllamaStatus.NO_MODELS:
-            print("⚠️ Ollama 已启动，但没有下载任何模型。切换降级模式...")
-        case OllamaStatus.NOT_INSTALLED:
-            print("❌ 未安装 Ollama。跳过 AI 逻辑，继续运行...")
-        case OllamaStatus.START_FAILED:
-            print("❌ Ollama 启动超时。切换备用逻辑...")
-
-    return model_to_use
 
 
 # ==========================================
@@ -130,7 +108,9 @@ async def task_crawl_and_comment(spiders: list = None, **kwargs):
             )
 
             if not xueqiu_url or xueqiu_url == "N/A":
-                print(f"[{idx}/{total}] ⚠️ 无法识别公司 [{company}] 的股票代码，跳过发帖。")
+                print(
+                    f"[{idx}/{total}] ⚠️ 无法识别公司 [{company}] 的股票代码，跳过发帖。"
+                )
                 continue
 
             # 3. 组装标题和链接为评论内容
@@ -273,7 +253,7 @@ async def main():
         "-s",
         "--spiders",
         nargs="+",
-        default=["szse_fixed"],
+        default=["regular_reports"],
         help="选择爬虫或预设: regular, sse_all, all, cctv 等",
     )
 
