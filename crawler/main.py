@@ -150,10 +150,12 @@ async def task_crawl_and_ai_analysis(spiders: list = None, **kwargs):
 
         # 1. 压平数据
         raw_items = [item for sublist in results for item in sublist]
+        print(f"✅ 共抓取到 {len(raw_items)} 条原生内容，准备进入去重与摘要阶段...")
 
         # 2. 去重
         dedup_pipeline = DeduplicatePipeline()
         cleaned_items = dedup_pipeline.process(raw_items)
+        print(f"✅ 去重后剩余 {len(cleaned_items)} 条有效内容，准备进入摘要阶段...")
 
         # 3. 摘要
         summary_pipeline = ContentSummaryPipeline(concurrency_limit=5)

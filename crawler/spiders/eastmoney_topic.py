@@ -12,71 +12,93 @@ class EastMoneyTopicSpider(BaseSpider):
     async def parse(self, page: Page) -> List[ArticleItem]:
         items = []
         crawl_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        target_locator = page.locator(
-            'a[href*="topic"], .topic_item, .topic_list, .list_item'
+
+        # 东方财富热点话题的完整卡片
+        target_locator = page.locator(".hotTopicMsg")
+
+        await target_locator.first.wait_for(
+            state="visible",
+            timeout=15000
         )
-        await target_locator.first.wait_for(state="visible", timeout=15000)
 
         await page.evaluate("window.scrollBy(0, 400)")
         await page.wait_for_timeout(1000)
 
         count = await target_locator.count()
-        blacklist = ["passport", "login", "register", "user.eastmoney"]
+
+        blacklist = [
+            "passport",
+            "login",
+            "register",
+            "user.eastmoney",
+        ]
 
         for i in range(count):
-            item = target_locator.nth(i)
-            # 1. 尝试精准提取标题（避免 inner_text 把正文摘要也塞进 title 里）
-            title_el = item.locator(".title, .topic_title, h3, a").first
-            if await title_el.count() > 0:
-                title = (await title_el.inner_text()).strip().replace("\n", " ")
-            else:
-                title = (await item.inner_text()).strip().replace("\n", " ")
+            card = target_locator.nth(i)
 
-            # 2. 提取链接
-            href = await item.get_attribute("href")
-            if not href and await title_el.count() > 0:
-                href = await title_el.get_attribute("href")
+            try:
+                # 1. 提取标题
+                title_el = card.locator(".topic_title a").first
 
-            full_url = self.build_url(href) if href else self.start_url
+                if await title_el.count() > 0:
+                    title = (
+                        await title_el.inner_text()
+                    ).strip().replace("\n", " ")
+                else:
+                    title = ""
 
-            # 3. 过滤黑名单和无效标题
-            if any(k in full_url for k in blacklist):
-                continue
+                # 2. 提取链接
+                href = None
 
-            if not title or len(title) < 3:
-                continue
+                if await title_el.count() > 0:
+                    href = await title_el.get_attribute("href")
 
-            # 4. 提取卡片上的正文/摘要
-            card = item.locator(
-                "xpath=ancestor::div[contains(@class, 'hotTopicMsg')]"
-            ).first
+                full_url = self.build_url(href) if href else self.start_url
 
-            summary_el = card.locator(".item_desc")
-            content = ""
+                # 3. 过滤黑名单和无效标题
+                if any(k in full_url for k in blacklist):
+                    continue
 
-            if await summary_el.count() > 0:
-                content = (await summary_el.first.inner_text()).strip()
+                if not title or len(title) < 3:
+                    continue
 
-            # 5. 如果抓到了 summary，但没有抓到单独的 title，说明卡片整体就是文本
-            # 清理标题中可能重叠的正文部分
-            if content and content in title:
-                title = title.replace(content, "").strip()
+                # 4. 提取热点正文 / 摘要
+                summary_el = card.locator(".item_desc").first
+                content = ""
 
-            if len(content) < 200:
-                summary = content
-            else:
-                summary = ""
+                if await summary_el.count() > 0:
+                    content = (
+                        await summary_el.inner_text()
+                    ).strip()
 
-            items.append(
-                ArticleItem(
-                    source_name=self.name,
-                    title=title,
-                    url=full_url,
-                    summary=summary,
-                    content=content,
-                    category="热门话题",
-                    published_at=crawl_time,
+
+                # 5. 清理标题中可能重复的正文
+                if content and content in title:
+                    title = title.replace(content, "").strip()
+
+                # 6. summary
+                if len(content) < 200:
+                    summary = content
+                else:
+                    summary = ""
+
+                items.append(
+                    ArticleItem(
+                        source_name=self.name,
+                        title=title,
+                        url=full_url,
+                        summary=summary,
+                        content=content,
+                        category="热门话题",
+                        published_at=crawl_time,
+                    )
                 )
-            )
+
+            except Exception as e:
+                print(
+                    f"  ⚠️ [东方财富网] 第 {i + 1} 个热点解析失败: {e}"
+                )
+                continue
 
         return items
+
