@@ -1,6 +1,6 @@
 import AmazingData
 from gateways.data_manager import DataManager
-import watchlists
+import tools.watchlists as watchlists
 import utils.utils_func as utils_func
 from dotenv import dotenv_values
 

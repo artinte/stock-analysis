@@ -88,9 +88,8 @@ import numpy as np
 import AmazingData
 from utils.download_industry_data import get_csindex_industry_data
 from models.stock_detail import StockDetail
-from watchlists import Watchlists
+from tools.watchlists import Watchlists
 from datetime import datetime
-from etf_list import securities_etf_components
 
 # ==========================================
 # 1. 策略引擎核心类：对接 StockDetail 属性
@@ -255,7 +254,6 @@ if __name__ == "__main__":
 
     items = [(row.Index, row.symbol) for row in code_infos.itertuples()]
     # items = format_watchlists(Watchlists)
-    # items = format_watchlists(securities_etf_components)
     random.shuffle(items)
     for code, name in items:
         try:

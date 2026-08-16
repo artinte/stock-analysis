@@ -1,4 +1,4 @@
-import constants
+import utils.constants as constants
 
 
 def add_exchange_suffix(stock_code):

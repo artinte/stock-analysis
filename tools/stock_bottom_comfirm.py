@@ -8,7 +8,7 @@ from dotenv import dotenv_values
 from gateways.data_manager import DataManager
 from gateways.pe_type import PEType
 from models.constants import Interval
-from watchlists import Watchlists
+from tools.watchlists import Watchlists
 from utils.download_csindex import get_csindex_industry_data
 
 
