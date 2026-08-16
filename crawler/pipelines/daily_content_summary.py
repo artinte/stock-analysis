@@ -1,6 +1,6 @@
 import os
 import re
-from typing import Any, List
+from typing import Any, List, Dict
 from openai import OpenAI
 
 # ==================== 【本地模型配置区域】 ====================
@@ -12,7 +12,7 @@ BASE_URL = "http://localhost:11434/v1"
 def generate_daily_content_summary(
     news_list: List[Any],
     model_name: str,
-) -> str:
+) -> Dict[str, str]:
     """调用本地大模型，提炼每日股票市场重点关注信息。"""
 
     if not news_list:
@@ -99,8 +99,27 @@ def generate_daily_content_summary(
         "⑦ 上市公司重大事件\n"
         "⑧ 资金、市场情绪和指数变化\n"
         "⑨ 对A股行业和上市公司的潜在影响\n\n"
+        "【标题要求】\n"
+        "生成一个约20字的财经标题。\n"
+        "要求：\n"
+        "1. 控制在15～25字左右。\n"
+        "2. 必须概括当天最值得股票投资者关注的核心信息。\n"
+        "3. 优先突出重大政策、产业趋势、市场主线或重要事件。\n"
+        "4. 标题简洁、有信息量，避免空泛和标题党。\n"
+        "5. 不要使用“今日新闻汇总”“每日资讯”等没有实际信息的标题。\n\n"
         "【输出格式】\n"
-        "请严格按照以下结构输出：\n\n"
+        "必须严格按照下面的格式输出，不得修改标签名称：\n\n"
+        "[TITLE]\n"
+        "这里填写约20字的标题\n"
+        "[/TITLE]\n\n"
+        "[CONTENT]\n"
+        "这里填写正文\n"
+        "[/CONTENT]\n\n"
+        "注意：\n"
+        "1. [TITLE] 和 [/TITLE] 之间只能放标题。\n"
+        "2. [CONTENT] 和 [/CONTENT] 之间只能放正文。\n"
+        "3. 不要在标签外输出任何解释、说明或其他内容。\n\n"
+        "【正文结构】\n"
         "一、今日市场核心结论\n"
         "用3～5句话概括今天最重要的市场变化和核心逻辑。\n\n"
         "二、今日最值得关注的事件\n"
@@ -158,17 +177,75 @@ def generate_daily_content_summary(
             max_tokens=4000,
         )
 
-        full_content = response.choices[0].message.content
+        full_content = response.choices[0].message.content or ""
 
         # 清理模型可能输出的 <think>...</think>
         clean_content = re.sub(
             r"<think>.*?</think>",
             "",
-            full_content or "",
+            full_content,
             flags=re.DOTALL,
         ).strip()
 
-        return clean_content if clean_content else full_content
+        if not clean_content:
+            print("⚠️ AI 未生成有效内容。")
+            return None
+
+        # 3. 提取标题
+        title_match = re.search(
+            r"\[TITLE\]\s*(.*?)\s*\[/TITLE\]",
+            clean_content,
+            flags=re.DOTALL,
+        )
+
+        title = ""
+
+        if title_match:
+            title = title_match.group(1).strip()
+
+        # 4. 提取正文
+        content_match = re.search(
+            r"\[CONTENT\]\s*(.*?)\s*\[/CONTENT\]",
+            clean_content,
+            flags=re.DOTALL,
+        )
+
+        content = ""
+
+        if content_match:
+            content = content_match.group(1).strip()
+
+        # 5. 兜底处理
+        # 如果模型没有按照要求输出标签，则保留完整内容，
+        # 避免因为模型格式问题导致正文丢失。
+        if not content:
+            content = clean_content
+
+        if not title:
+            # 兜底尝试从正文第一行获取标题
+            lines = [
+                line.strip() for line in clean_content.splitlines() if line.strip()
+            ]
+
+            if lines:
+                first_line = lines[0]
+
+                first_line = re.sub(
+                    r"^(标题|Title)\s*[:：]\s*",
+                    "",
+                    first_line,
+                    flags=re.IGNORECASE,
+                )
+
+                title = first_line.strip()
+
+        if not title:
+            title = "今日A股市场重点关注信息"
+
+        return {
+            "title": title,
+            "content": content,
+        }
 
     except Exception as e:
         print(f"❌ 调用本地 AI 失败，请检查 Ollama 是否正常运行。" f"错误信息: {e}")
@@ -197,15 +274,20 @@ class DailyContentSummaryPipeline:
             print("❌ 未指定本地 Ollama 模型名称。")
             return
 
-        daily_summary = generate_daily_content_summary(
+        result = generate_daily_content_summary(
             news_list,
             self.model_name,
         )
 
-        if daily_summary:
+        if result:
+            title = result["title"]
+            content = result["content"]
+
             print("\n" + "📊" * 10 + " 今日股票重点关注信息 " + "📊" * 10 + "\n")
 
-            print(daily_summary)
+            print(f"📌 标题：{title}")
+            print()
+            print(content)
 
             print("\n" + "=" * 60)
 
@@ -229,8 +311,11 @@ class DailyContentSummaryPipeline:
                 "w",
                 encoding="utf-8",
             ) as f:
-                f.write(daily_summary)
+                f.write(f"{title}\n\n")
+                f.write(content)
 
             print(f"🎉 每日重点信息生成完成：{output_file}")
 
-        return daily_summary
+            return result
+
+        return None

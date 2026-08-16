@@ -5,6 +5,7 @@ from datetime import datetime
 import sys
 
 from core.browser import browser_manager
+from pipelines.daily_content_summary import DailyContentSummaryPipeline
 from pipelines.article_summary_xueqiu import ArticleGeneratePipeline
 from pipelines.content_publisher import ContentPublisherPipeline
 from pipelines.content_summary import ContentSummaryPipeline
@@ -173,9 +174,17 @@ async def task_crawl_and_ai_analysis(spiders: list = None, **kwargs):
             target_news, include_content=False, output_file=output_file
         )
 
+
+        pipeline = DailyContentSummaryPipeline(
+            output_filename=f"ai_summary_output_{date_suffix}.txt",
+            model_name="qwen3:8b",
+        )
+
+        daily_summary = pipeline.process(target_news)
+
         # 4. AI 生成与发布
         # ai_pipeline = ArticleGeneratePipeline(
-        #     output_filename=f"local_output_{date_suffix}.txt",
+        #     output_filename=
         #     model_name="qwen3:8b",
         # )
         # content_generated = ai_pipeline.process(target_news)
