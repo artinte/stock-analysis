@@ -1,5 +1,7 @@
 import asyncio
+import re
 from typing import Any, List
+from openai import OpenAI
 
 
 class ContentSummaryPipeline:
@@ -7,34 +9,79 @@ class ContentSummaryPipeline:
     专门用于为单条新闻/文章的 content 字段生成精炼 summary 字段
     """
 
-    def __init__(self, concurrency_limit: int = 5):
+    def __init__(self, model_name,concurrency_limit: int = 5):
         """初始化 Pipeline
         :param concurrency_limit: AI API 调用的最大并发数，防止触发 Rate Limit
         """
+        self.model_name = model_name
         self.semaphore = asyncio.Semaphore(concurrency_limit)
 
     async def _call_ai_model(self, content: str) -> str:
-        """调用 AI 模型生成摘要的具体逻辑
-        替换为你实际使用的 AI SDK（如 OpenAI, DashScope, ZhiPu 等）
-        """
+        """调用本地 Ollama AI 模型生成新闻摘要。"""
+
         if not content or not content.strip():
             return "（文本为空，无法生成摘要）"
 
-        # 示例：使用 AsyncOpenAI 异步客户端
-        # client = AsyncOpenAI(api_key="your_api_key")
-        # response = await client.chat.completions.create(
-        #     model="gpt-4o-mini",  # 选择合适高效的模型
-        #     messages=[
-        #         {"role": "system", "content": "你是一个精炼的新闻摘要助手。请将以下内容精炼总结为100字以内的摘要。"},
-        #         {"role": "user", "content": content[:3000]}  # 截断避免超出 Token 限制
-        #     ],
-        #     max_tokens=200
-        # )
-        # return response.choices[0].message.content.strip()
+        API_KEY = "ollama-local"
+        BASE_URL = "http://localhost:11434/v1"
 
-        # 模拟 AI 异步调用延迟（实际对接 API 时请删掉这两行并解开上方注释）
-        await asyncio.sleep(0.5)
-        return f"【AI摘要】: {content[:50]}..."
+        try:
+            client = OpenAI(
+                api_key=API_KEY,
+                base_url=BASE_URL,
+                timeout=600.0,
+            )
+
+            system_prompt = (
+                "你是一名专业的财经新闻编辑，负责生成高质量的新闻摘要。\n"
+                "请根据提供的新闻正文，提炼出最核心的信息。\n"
+                "要求：\n"
+                "1. 严格依据原文，不得编造信息。\n"
+                "2. 准确提炼新闻的核心事实、事件、数据和影响。\n"
+                "3. 摘要控制在100～150字以内。\n"
+                "4. 语言简洁、客观、信息密度高。\n"
+                "5. 不要加入个人观点、投资建议或主观判断。\n"
+                "6. 不要重复标题或添加“摘要：”等前缀。\n"
+                "7. 直接输出摘要正文。\n"
+            )
+
+            user_prompt = (
+                "请根据以下财经新闻正文生成一段简洁的新闻摘要：\n\n"
+                f"{content[:8000]}"
+            )
+
+            response = await asyncio.to_thread(
+                client.chat.completions.create,
+                model=self.model_name,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": system_prompt,
+                    },
+                    {
+                        "role": "user",
+                        "content": user_prompt,
+                    },
+                ],
+                temperature=0.3,
+                max_tokens=300,
+            )
+
+            full_content = response.choices[0].message.content or ""
+
+            # 清理模型可能输出的 <think>...</think>
+            clean_content = re.sub(
+                r"<think>.*?</think>",
+                "",
+                full_content,
+                flags=re.DOTALL,
+            ).strip()
+
+            return clean_content if clean_content else "（AI未生成有效摘要）"
+
+        except Exception as e:
+            print(f"❌ AI 摘要生成失败：{e}")
+            return "（AI摘要生成失败）"
 
     async def _process_single_item(self, item: Any) -> Any:
         """单个 Item 的处理逻辑（带信号量控制并发）"""

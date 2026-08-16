@@ -158,7 +158,7 @@ async def task_crawl_and_ai_analysis(spiders: list = None, **kwargs):
         print(f"✅ 去重后剩余 {len(cleaned_items)} 条有效内容，准备进入摘要阶段...")
 
         # 3. 摘要
-        summary_pipeline = ContentSummaryPipeline(concurrency_limit=5)
+        summary_pipeline = ContentSummaryPipeline(model_name="", concurrency_limit=5)
         target_news = await summary_pipeline.process_async(cleaned_items)
 
         print_fetched_articles(target_news)

@@ -619,6 +619,8 @@ MA60: 447.17
 
 # 🛠️ 系统安装
 
+## 1. 安装 Python 依赖
+
 <a id="install-python"></a>
 
 ```bash
@@ -627,7 +629,7 @@ pip install -r requirements.txt
 
 ## 2. 安装 Ollama
 
-如果需要使用本地 AI 模型，可以安装 Ollama。
+如果需要使用本地 AI 模型，可以安装 [Ollama](https://github.com/ollama/ollama)。
 
 Windows PowerShell：
 
@@ -652,6 +654,8 @@ ollama pull qwen3:8b
 ```bash
 ollama run qwen3:8b
 ```
+
+具体的使用方法可以参考 Ollama 官网。
 
 ---
 

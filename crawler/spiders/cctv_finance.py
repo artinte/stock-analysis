@@ -21,6 +21,10 @@ class CCTVFinanceSpider(BaseSpider):
     name = "央视财经"
     start_url = "https://finance.cctv.com/"
 
+    def __init__(self, use_first_paragraph_summary: bool = False):
+        super().__init__()
+        self.use_first_paragraph_summary = use_first_paragraph_summary
+
     # 正则提取日期函数
     def extract_date(self, text: str) -> str:
         if not text:
@@ -52,7 +56,8 @@ class CCTVFinanceSpider(BaseSpider):
     async def parse(self, page: Page) -> List[ArticleItem]:
         items = []
 
-        content_area = page.locator(".content, .list, .con_left, #page_body, .text_box")
+        content_area = page.locator(
+            ".content, .list, .con_left, #page_body, .text_box")
 
         await content_area.first.wait_for(
             state="visible",
@@ -201,40 +206,41 @@ class CCTVFinanceSpider(BaseSpider):
             finally:
                 await detail_page.close()
 
-            # 智能提取摘要
             summary = ""
-            if content:
-                paragraphs = [p.strip() for p in content.split("\n") if p.strip()]
+            if self.use_first_paragraph_summary:
+                if content:
+                    paragraphs = [p.strip()
+                                  for p in content.split("\n") if p.strip()]
 
-                valid_parts = []
+                    valid_parts = []
 
-                for p in paragraphs:
-                    # 规则 A：跳过短于 25 字且包含署名词汇的行
-                    is_reporter_tag = len(p) < 25 and any(
-                        k in p
-                        for k in [
-                            "记者",
-                            "讯",
-                            "电",
-                            "消息",
-                            "编辑",
-                            "来源",
-                        ]
-                    )
-                    if is_reporter_tag:
-                        continue
+                    for p in paragraphs:
+                        # 规则 A：跳过短于 25 字且包含署名词汇的行
+                        is_reporter_tag = len(p) < 25 and any(
+                            k in p
+                            for k in [
+                                "记者",
+                                "讯",
+                                "电",
+                                "消息",
+                                "编辑",
+                                "来源",
+                            ]
+                        )
+                        if is_reporter_tag:
+                            continue
 
-                    # 规则 B：累加有效段落
-                    valid_parts.append(p)
-                    combined_text = " ".join(valid_parts)
+                        # 规则 B：累加有效段落
+                        valid_parts.append(p)
+                        combined_text = " ".join(valid_parts)
 
-                    if len(combined_text) >= 40:
-                        summary = combined_text
-                        break
-                if not summary:
-                    summary = content
-            else:
-                summary = title
+                        if len(combined_text) >= 40:
+                            summary = combined_text
+                            break
+                    if not summary:
+                        summary = content
+                else:
+                    summary = title
 
             items.append(
                 ArticleItem(
@@ -268,6 +274,7 @@ if __name__ == "__main__":
                 print(f"   日期: {item.published_at}")
                 print(f"   链接: {item.url}")
                 print(f"   摘要: {item.summary}")
+                print(f"   内容: {item.content[:100]}...")
                 print("-" * 60)
 
         finally:
