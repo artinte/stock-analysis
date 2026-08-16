@@ -15,9 +15,7 @@ def generate_xueqiu_article(news_list: List[Any], model_name: str) -> str:
         print("未抓取到有效新闻，无法生成文章。")
         return None
 
-    print(
-        f"🤖 正在调用本地 AI (模型: {model_name}) 深度熔炼全网最新资讯，请稍候..."
-    )
+    print(f"🤖 正在调用本地 AI (模型: {model_name}) 深度熔炼全网最新资讯，请稍候...")
 
     # 1. 构建明确且带有来源标注的新闻素材串
     raw_material = ""
@@ -75,16 +73,16 @@ def generate_xueqiu_article(news_list: List[Any], model_name: str) -> str:
         return clean_content if clean_content else full_content
 
     except Exception as e:
-        print(
-            f"❌ 调用本地 AI 失败，请检查 Ollama 是否在后台正常运行。错误信息: {e}"
-        )
+        print(f"❌ 调用本地 AI 失败，请检查 Ollama 是否在后台正常运行。错误信息: {e}")
         return None
 
 
 class ArticleGeneratePipeline:
     """雪球深度分析与本地落盘管道"""
 
-    def __init__(self, output_filename: str = "xueqiu_local_output.txt", model_name: str = ""):
+    def __init__(
+        self, output_filename: str = "xueqiu_local_output.txt", model_name: str = ""
+    ):
         self.output_filename = output_filename
         self.model_name = model_name
 
@@ -100,11 +98,7 @@ class ArticleGeneratePipeline:
 
         if post_generated:
             print(
-                "\n"
-                + "🔥" * 10
-                + " 本地 AI 生成的雪球深度分析长文 "
-                + "🔥" * 10
-                + "\n"
+                "\n" + "🔥" * 10 + " 本地 AI 生成的雪球深度分析长文 " + "🔥" * 10 + "\n"
             )
             print(post_generated)
             print("\n" + "=" * 50)
@@ -117,5 +111,5 @@ class ArticleGeneratePipeline:
                 f.write(post_generated)
 
             print(f"🎉 本地实验大成功！文章已完美保存至本地：{output_file}")
-            
+
         return post_generated

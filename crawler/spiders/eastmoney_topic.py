@@ -4,6 +4,16 @@ from playwright.async_api import Page
 from core.base_spider import BaseSpider
 from core.models import ArticleItem
 
+"""
+东方财富热门话题爬虫。
+
+抓取东方财富热门话题的标题、链接、摘要及发布时间，
+并转换为统一的 ArticleItem 数据结构。
+
+支持独立运行：
+    python -m spiders.eastmoney_topic
+"""
+
 
 class EastMoneyTopicSpider(BaseSpider):
     name = "东方财富网"
@@ -94,7 +104,6 @@ class EastMoneyTopicSpider(BaseSpider):
 
 
 if __name__ == "__main__":
-    # python -m spiders.eastmoney_topic
     import asyncio
     from core.browser import browser_manager
 

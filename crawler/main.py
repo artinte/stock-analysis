@@ -5,7 +5,7 @@ from datetime import datetime
 import sys
 
 from core.browser import browser_manager
-from pipelines.article_summary import ArticleGeneratePipeline
+from pipelines.article_summary_xueqiu import ArticleGeneratePipeline
 from pipelines.content_publisher import ContentPublisherPipeline
 from pipelines.content_summary import ContentSummaryPipeline
 from pipelines.deduplicate import DeduplicatePipeline
