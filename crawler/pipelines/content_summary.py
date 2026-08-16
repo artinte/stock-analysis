@@ -9,7 +9,7 @@ class ContentSummaryPipeline:
     专门用于为单条新闻/文章的 content 字段生成精炼 summary 字段
     """
 
-    def __init__(self, model_name,concurrency_limit: int = 5):
+    def __init__(self, model_name, concurrency_limit: int = 5):
         """初始化 Pipeline
         :param concurrency_limit: AI API 调用的最大并发数，防止触发 Rate Limit
         """
@@ -46,8 +46,7 @@ class ContentSummaryPipeline:
             )
 
             user_prompt = (
-                "请根据以下财经新闻正文生成一段简洁的新闻摘要：\n\n"
-                f"{content[:8000]}"
+                "请根据以下财经新闻正文生成一段简洁的新闻摘要：\n\n" f"{content[:8000]}"
             )
 
             response = await asyncio.to_thread(
@@ -67,7 +66,7 @@ class ContentSummaryPipeline:
             )
 
             full_content = response.choices[0].message.content or ""
-            print(full_content)
+            print(f"📝 AI 生成的摘要内容: {full_content[:100]}...")  # 打印前100字符预览
             # 清理模型可能输出的 <think>...</think>
             clean_content = re.sub(
                 r"<think>.*?</think>",
