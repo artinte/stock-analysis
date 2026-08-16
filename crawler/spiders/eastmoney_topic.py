@@ -16,10 +16,7 @@ class EastMoneyTopicSpider(BaseSpider):
         # 东方财富热点话题的完整卡片
         target_locator = page.locator(".hotTopicMsg")
 
-        await target_locator.first.wait_for(
-            state="visible",
-            timeout=15000
-        )
+        await target_locator.first.wait_for(state="visible", timeout=15000)
 
         await page.evaluate("window.scrollBy(0, 400)")
         await page.wait_for_timeout(1000)
@@ -41,9 +38,7 @@ class EastMoneyTopicSpider(BaseSpider):
                 title_el = card.locator(".topic_title a").first
 
                 if await title_el.count() > 0:
-                    title = (
-                        await title_el.inner_text()
-                    ).strip().replace("\n", " ")
+                    title = (await title_el.inner_text()).strip().replace("\n", " ")
                 else:
                     title = ""
 
@@ -67,10 +62,7 @@ class EastMoneyTopicSpider(BaseSpider):
                 content = ""
 
                 if await summary_el.count() > 0:
-                    content = (
-                        await summary_el.inner_text()
-                    ).strip()
-
+                    content = (await summary_el.inner_text()).strip()
 
                 # 5. 清理标题中可能重复的正文
                 if content and content in title:
@@ -95,10 +87,33 @@ class EastMoneyTopicSpider(BaseSpider):
                 )
 
             except Exception as e:
-                print(
-                    f"  ⚠️ [东方财富网] 第 {i + 1} 个热点解析失败: {e}"
-                )
+                print(f"  ⚠️ [东方财富网] 第 {i + 1} 个热点解析失败: {e}")
                 continue
 
         return items
 
+
+if __name__ == "__main__":
+    # python -m spiders.eastmoney_topic
+    import asyncio
+    from core.browser import browser_manager
+
+    async def run():
+        spider = EastMoneyTopicSpider()
+
+        await browser_manager.start()
+
+        try:
+            items = await spider.run()
+
+            for i, item in enumerate(items, 1):
+                print(f"{i}. {item.title}")
+                print(f"   日期: {item.published_at}")
+                print(f"   链接: {item.url}")
+                print(f"   摘要: {item.summary}")
+                print("-" * 60)
+
+        finally:
+            await browser_manager.stop()
+
+    asyncio.run(run())
