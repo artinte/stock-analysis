@@ -63,12 +63,11 @@ class ContentSummaryPipeline:
                         "content": user_prompt,
                     },
                 ],
-                temperature=0.3,
-                max_tokens=300,
+                temperature=0.7,
             )
 
             full_content = response.choices[0].message.content or ""
-
+            print(full_content)
             # 清理模型可能输出的 <think>...</think>
             clean_content = re.sub(
                 r"<think>.*?</think>",
@@ -76,7 +75,6 @@ class ContentSummaryPipeline:
                 full_content,
                 flags=re.DOTALL,
             ).strip()
-
             return clean_content if clean_content else "（AI未生成有效摘要）"
 
         except Exception as e:
