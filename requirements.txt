@@ -1,1 +1,4 @@
-playwright>=1.40.0
+openai
+playwright
+selenium
+webdriver_manager

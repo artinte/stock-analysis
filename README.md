@@ -621,47 +621,9 @@ MA60: 447.17
 
 <a id="install-python"></a>
 
-## 1. 安装 Python 依赖
-
-建议使用 Python 虚拟环境。
-
-```bash
-python -m venv .venv
-```
-
-### Windows
-
-```powershell
-.venv\Scripts\activate
-```
-
-### macOS / Linux
-
-```bash
-source .venv/bin/activate
-```
-
-然后安装项目依赖：
-
 ```bash
 pip install -r requirements.txt
 ```
-
-如果项目尚未提供完整的 `requirements.txt`，可以先安装 Playwright：
-
-```bash
-pip install playwright
-```
-
-安装浏览器：
-
-```bash
-playwright install
-```
-
----
-
-<a id="install-ollama"></a>
 
 ## 2. 安装 Ollama
 
