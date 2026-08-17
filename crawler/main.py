@@ -259,7 +259,7 @@ async def main():
         "-s",
         "--spiders",
         nargs="+",
-        default=["daily_news"],
+        default=["regular_reports"],
         help="选择爬虫或预设: regular, sse_all, all, cctv 等",
     )
 
@@ -268,7 +268,7 @@ async def main():
         "-m",
         "--mode",
         type=str,
-        default="ai_analysis",
+        default="sse_regular",
         choices=list(TASK_MAP.keys()),
         help="任务模式: full(全流程), crawl_only(仅爬取), sse_regular(定向定期报告快捷模式), ai_analysis(AI分析模式)",
     )

@@ -2,7 +2,7 @@ import datetime
 import os
 from typing import List, Optional
 import pandas
-from gateways.broker_gateway import BrokerGateway
+from broker_gateway import BrokerGateway
 from models.constants import Interval
 from models.kline import Kline
 from models.stock_detail import StockDetail
