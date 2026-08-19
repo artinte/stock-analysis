@@ -23,6 +23,8 @@ def test_provider(
 
     try:
         data = DataManager(provider_name)
+        
+        data.start()
 
         print(f"数据源：{data.provider}")
         print(
