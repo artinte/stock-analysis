@@ -98,13 +98,12 @@ class AkShareGateway(StockDataGateway):
             self._ensure_started()
 
             data = ak.stock_zh_a_spot_em()
-
             return (
                 data is not None
                 and not data.empty
             )
-
-        except Exception:
+        except Exception as exc:
+            print("异常信息:", exc)
             return False
 
     # ==========================================================
