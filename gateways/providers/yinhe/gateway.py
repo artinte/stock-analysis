@@ -966,3 +966,249 @@ class YinheGateway(StockDataGateway):
         if not self._started:
 
             raise RuntimeError("银河数据源尚未启动，" "请先调用 DataManager.start()")
+
+
+
+def main() -> None:
+    """
+    银河证券数据网关测试入口。
+
+    测试内容：
+
+        1. 登录数据源
+        2. 检查数据源状态
+        3. 股票代码标准化
+        4. 获取股票基础信息
+        5. 获取股票名称
+        6. 获取历史 K 线
+        7. 获取估值数据
+        8. 注销数据源
+
+    注意：
+        需要提前配置真实的银河证券 / AmazingData
+        登录信息。
+    """
+
+    print()
+    print("=" * 72)
+    print("银河证券数据网关测试")
+    print("=" * 72)
+
+    config = {
+        "username": os.getenv(
+            "YINHE_USERNAME",
+            "",
+        ),
+        "password": os.getenv(
+            "YINHE_PASSWORD",
+            "",
+        ),
+        "host": os.getenv(
+            "YINHE_HOST",
+            "",
+        ),
+        "port": int(
+            os.getenv(
+                "YINHE_PORT",
+                "0",
+            )
+        ),
+        "local_path": os.getenv(
+            "YINHE_LOCAL_PATH",
+            os.path.curdir,
+        ),
+    }
+
+    gateway = YinheGateway(config)
+
+    try:
+        # ======================================================
+        # 1. 登录
+        # ======================================================
+
+        print()
+        print("[1/7] 登录数据源")
+
+        if not gateway.login():
+            print("❌ 银河数据源登录失败")
+            return
+
+        print("✅ 银河数据源登录成功")
+
+        # ======================================================
+        # 2. 健康检查
+        # ======================================================
+
+        print()
+        print("[2/7] 健康检查")
+
+        if gateway.health_check():
+            print("✅ 数据源运行正常")
+        else:
+            print("❌ 数据源未启动")
+            return
+
+        # ======================================================
+        # 3. 测试股票代码标准化
+        # ======================================================
+
+        print()
+        print("[3/7] 股票代码标准化")
+
+        test_symbols = [
+            "600519",
+            "600519.SH",
+            "000001",
+            "000001.SZ",
+            "300750",
+            "688981",
+        ]
+
+        for symbol in test_symbols:
+            normalized = gateway._normalize_symbol(symbol)
+
+            print(
+                f"    {symbol:<12} -> {normalized}"
+            )
+
+        # ======================================================
+        # 4. 获取股票基础信息
+        # ======================================================
+
+        symbol = "600519"
+
+        print()
+        print(f"[4/7] 获取股票基础信息: {symbol}")
+
+        stock = gateway.fetch_stock(symbol)
+
+        if stock is None:
+            print("❌ 未获取到股票基础信息")
+        else:
+            print("✅ 股票基础信息:")
+            print(f"    代码: {stock.get('symbol')}")
+            print(f"    名称: {stock.get('name')}")
+
+        # ======================================================
+        # 5. 获取股票名称
+        # ======================================================
+
+        print()
+        print(f"[5/7] 获取股票名称: {symbol}")
+
+        name = gateway.fetch_stock_name(symbol)
+
+        print(
+            f"    股票名称: {name}"
+        )
+
+        # ======================================================
+        # 6. 获取历史 K 线
+        # ======================================================
+
+        print()
+        print(f"[6/7] 获取历史 K 线: {symbol}")
+
+        end_time = datetime.datetime.now()
+
+        start_time = end_time - datetime.timedelta(
+            days=30
+        )
+
+        klines = gateway.fetch_kline(
+            symbol=symbol,
+            interval=Interval.DAY_1,
+            start_time=start_time,
+            end_time=end_time,
+            limit=10,
+        )
+
+        if not klines:
+            print("❌ 未获取到 K 线数据")
+        else:
+            print(
+                f"✅ 获取到 {len(klines)} 条 K 线"
+            )
+
+            print()
+
+            for kline in klines:
+                print(
+                    f"    {kline.trade_time} "
+                    f"O={kline.open:.2f} "
+                    f"H={kline.high:.2f} "
+                    f"L={kline.low:.2f} "
+                    f"C={kline.close:.2f} "
+                    f"V={kline.volume}"
+                )
+
+        # ======================================================
+        # 7. 获取估值
+        # ======================================================
+
+        print()
+        print(f"[7/7] 获取估值数据: {symbol}")
+
+        valuation = gateway.fetch_valuation(symbol)
+
+        print("✅ 估值数据:")
+
+        print(
+            f"    代码      : {valuation.symbol}"
+        )
+
+        print(
+            f"    时间      : {valuation.timestamp}"
+        )
+
+        print(
+            f"    当前价格  : {valuation.price}"
+        )
+
+        print(
+            f"    总市值    : {valuation.market_cap}"
+        )
+
+        print(
+            f"    静态 PE   : {valuation.pe_static}"
+        )
+
+        print(
+            f"    动态 PE   : {valuation.pe_dynamic}"
+        )
+
+        print(
+            f"    TTM PE    : {valuation.pe_ttm}"
+        )
+
+        print()
+        print("=" * 72)
+        print("✅ 银河证券数据网关测试完成")
+        print("=" * 72)
+
+    except KeyboardInterrupt:
+
+        print()
+        print("⚠️ 用户中断测试")
+
+    except Exception as e:
+
+        print()
+        print(f"❌ 测试过程中发生异常: {e}")
+
+        import traceback
+
+        traceback.print_exc()
+
+    finally:
+
+        print()
+        print("正在注销银河数据源...")
+
+        gateway.logout()
+
+        print("银河数据源已注销")
+
+
+if __name__ == "__main__":
+    main()
