@@ -228,6 +228,7 @@ def post_comment(url, comment_content=None, interval=60):
 
     except Exception as e:
         print(f"❌ 执行失败: {e}")
+        print("登录缓存可能已经失效，需要清除：", COOKIE_FILE)
         driver.save_screenshot("error_screenshot.png")
 
     finally:
