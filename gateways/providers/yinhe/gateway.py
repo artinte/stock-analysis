@@ -6,6 +6,7 @@ from typing import Any, Optional
 
 import pandas
 import AmazingData
+from dotenv import load_dotenv
 
 from base import StockDataGateway
 from models.constants import Interval
@@ -37,7 +38,6 @@ class YinheGateway(StockDataGateway):
     """
 
     name = "yinhe"
-
     display_name = "银河证券"
 
     def __init__(
@@ -94,16 +94,6 @@ class YinheGateway(StockDataGateway):
             BaseData
             Calendar
             MarketData
-
-        Parameters
-        ----------
-        config:
-            登录配置。
-
-        Returns
-        -------
-        bool
-            登录成功返回 True，否则返回 False。
         """
 
         if config:
@@ -187,7 +177,6 @@ class YinheGateway(StockDataGateway):
         """
 
         if self._started:
-
             try:
                 AmazingData.logout(self.user)
 
@@ -204,14 +193,120 @@ class YinheGateway(StockDataGateway):
     def health_check(self) -> bool:
         """
         检查数据源是否已经启动。
-
-        Returns
-        -------
-        bool
-            True 表示已经启动。
         """
 
         return self._started
+
+    # ==========================================================
+    # StockDataGateway 统一接口
+    #
+    # 这些方法是对外暴露的标准接口。
+    # 具体的数据源实现仍然由 fetch_* 完成。
+    # ==========================================================
+
+    def get_stock(
+        self,
+        symbol: str,
+    ):
+        """
+        获取股票基础信息。
+        """
+
+        return self.fetch_stock(symbol)
+
+    def get_quote(
+        self,
+        symbol: str,
+    ):
+        """
+        获取单只股票最新行情。
+        """
+
+        return self.fetch_quote(symbol)
+
+    def get_quotes(
+        self,
+        symbols: list[str],
+    ):
+        """
+        批量获取股票最新行情。
+        """
+
+        return self.fetch_quotes(symbols)
+
+    def get_kline(
+        self,
+        symbol: str,
+        interval: Interval,
+        start_time: Optional[datetime.datetime] = None,
+        end_time: Optional[datetime.datetime] = None,
+        limit: int = 10000,
+    ) -> list[Kline]:
+        """
+        获取历史 K 线。
+        """
+
+        return self.fetch_kline(
+            symbol=symbol,
+            interval=interval,
+            start_time=start_time,
+            end_time=end_time,
+            limit=limit,
+        )
+
+    def get_financial(
+        self,
+        symbol: str,
+    ):
+        """
+        获取股票财务数据。
+
+        当前返回 AmazingData.get_income()
+        对应股票的 DataFrame。
+
+        上层如果后续定义统一 Financial 模型，
+        可以在这里完成 DataFrame → Financial
+        的转换。
+        """
+
+        self._ensure_started()
+
+        formatted_symbol = self._normalize_symbol(symbol)
+
+        try:
+            if not self.calendar:
+                print(
+                    f"[银河网关] 财务数据获取失败 " f"{formatted_symbol}: 交易日历为空"
+                )
+                return None
+
+            financials_dict = self.info_data.get_income(
+                code_list=[formatted_symbol],
+                local_path=self.local_path,
+                is_local=False,
+                begin_date="20220101",
+                end_date=self.calendar[-1],
+            )
+
+            if financials_dict is None:
+                return None
+
+            return financials_dict.get(formatted_symbol)
+
+        except Exception as e:
+            print(f"[银河网关] 获取财务数据失败 " f"{formatted_symbol}: {e}")
+
+            return None
+
+    def get_valuation(
+        self,
+        symbol: str,
+    ) -> Valuation:
+        """
+        获取股票估值数据。
+        """
+
+        return self.fetch_valuation(symbol)
 
     # ==========================================================
     # 股票基础信息
@@ -224,20 +319,14 @@ class YinheGateway(StockDataGateway):
         """
         获取股票基础信息。
 
-        注意：
+        不使用 StockDetail。
 
-        这里不再使用 StockDetail。
+        当前直接返回：
 
-        由于当前项目提供的 Stock 模型字段尚未给出，
-        因此这里暂时不强行构造一个未知的数据模型。
-
-        等 Stock 模型确定后，只需要在这里完成：
-
-            AmazingData
-                ↓
-            Stock
-
-        的转换即可。
+            {
+                "symbol": "...",
+                "name": "..."
+            }
         """
 
         self._ensure_started()
@@ -251,10 +340,7 @@ class YinheGateway(StockDataGateway):
                 return None
 
             # DataFrame
-            if hasattr(
-                stock_basic,
-                "empty",
-            ):
+            if hasattr(stock_basic, "empty"):
 
                 if stock_basic.empty:
                     return None
@@ -297,9 +383,7 @@ class YinheGateway(StockDataGateway):
         """
         获取股票名称。
 
-        这是银河数据源内部辅助方法。
-
-        不使用 StockDetail。
+        银河数据源内部辅助方法。
         """
 
         self._ensure_started()
@@ -310,13 +394,9 @@ class YinheGateway(StockDataGateway):
             stock_basic = self.info_data.get_stock_basic([formatted_symbol])
 
             # DataFrame
-            if hasattr(
-                stock_basic,
-                "empty",
-            ):
+            if hasattr(stock_basic, "empty"):
 
                 if not stock_basic.empty:
-
                     return stock_basic["SECURITY_NAME"].iloc[0]
 
             # List[Dict]
@@ -352,8 +432,10 @@ class YinheGateway(StockDataGateway):
         获取单只股票最新行情。
 
         当前 AmazingData 的实时行情接口
-        尚未在现有代码中提供，因此暂不猜测
-        AmazingData 的接口名称和返回字段。
+        尚未在现有代码中提供。
+
+        因此这里暂不猜测 AmazingData
+        的接口名称和返回字段。
         """
 
         self._ensure_started()
@@ -453,17 +535,20 @@ class YinheGateway(StockDataGateway):
                 end_date=int(end_str),
             )
 
+            if kline_dict is None:
+                return []
+
             df = kline_dict.get(code)
 
             if df is None:
 
-                print(f"[银河网关] " f"{code} 无返回数据")
+                print(f"[银河网关] {code} 无返回数据")
 
                 return []
 
             if hasattr(df, "empty") and df.empty:
 
-                print(f"[银河网关] " f"{code} 返回数据为空")
+                print(f"[银河网关] {code} 返回数据为空")
 
                 return []
 
@@ -539,6 +624,22 @@ class YinheGateway(StockDataGateway):
         return klines
 
     # ==========================================================
+    # 财务数据
+    # ==========================================================
+
+    def fetch_financial(
+        self,
+        symbol: str,
+    ):
+        """
+        获取股票财务数据。
+
+        这是银河数据源内部实现。
+        """
+
+        return self.get_financial(symbol)
+
+    # ==========================================================
     # 估值
     # ==========================================================
 
@@ -549,8 +650,6 @@ class YinheGateway(StockDataGateway):
         """
         获取股票估值数据。
 
-        返回统一的 Valuation。
-
         包括：
 
             当前价格
@@ -558,15 +657,6 @@ class YinheGateway(StockDataGateway):
             静态 PE
             动态 PE
             TTM PE
-
-        当前可以进一步扩展：
-
-            PB
-            PS
-            PEG
-            股息率
-            EV
-            EV/EBITDA
         """
 
         self._ensure_started()
@@ -659,11 +749,6 @@ class YinheGateway(StockDataGateway):
             TTM
             STATIC
             DYNAMIC
-
-        注意：
-
-        这里是 YinheGateway 内部实现，
-        不作为 StockDataGateway 的公共接口。
         """
 
         formatted_symbol = self._normalize_symbol(symbol)
@@ -683,6 +768,9 @@ class YinheGateway(StockDataGateway):
                 begin_date="20220101",
                 end_date=self.calendar[-1],
             )
+
+            if financials_dict is None:
+                return float("nan")
 
             df = financials_dict.get(formatted_symbol)
 
@@ -718,7 +806,7 @@ class YinheGateway(StockDataGateway):
 
                 latest_row = equity_structure.iloc[-1]
 
-                total_share = latest_row["TOT_SHARE"]
+                total_share = float(latest_row["TOT_SHARE"])
 
             # --------------------------------------------------
             # 3. 如果没有传入市值，则自己计算
@@ -730,12 +818,11 @@ class YinheGateway(StockDataGateway):
                     symbol=formatted_symbol,
                     interval=Interval.DAY_1,
                     start_time=(datetime.datetime.now() - pandas.Timedelta(days=30)),
-                    end_time=(datetime.datetime.now()),
+                    end_time=datetime.datetime.now(),
                     limit=30,
                 )
 
                 if not klines:
-
                     return float("nan")
 
                 current_price = klines[-1].close
@@ -785,7 +872,6 @@ class YinheGateway(StockDataGateway):
                     break
 
             if not target_period:
-
                 return float("nan")
 
             # --------------------------------------------------
@@ -896,7 +982,6 @@ class YinheGateway(StockDataGateway):
             )
 
             if equity_structure is None or equity_structure.empty:
-
                 return None
 
             equity_structure = equity_structure.sort_values("CHANGE_DATE")
@@ -923,7 +1008,9 @@ class YinheGateway(StockDataGateway):
     # ==========================================================
 
     @staticmethod
-    def _normalize_symbol(symbol: str) -> str:
+    def _normalize_symbol(
+        symbol: str,
+    ) -> str:
         """
         标准化股票代码。
 
@@ -944,15 +1031,38 @@ class YinheGateway(StockDataGateway):
             return symbol
 
         # 上海证券交易所
-        if symbol.startswith(("600", "601", "603", "605", "688", "689")):
+        if symbol.startswith(
+            (
+                "600",
+                "601",
+                "603",
+                "605",
+                "688",
+                "689",
+            )
+        ):
             return f"{symbol}.SH"
 
         # 深圳证券交易所
-        if symbol.startswith(("000", "001", "002", "003", "300", "301")):
+        if symbol.startswith(
+            (
+                "000",
+                "001",
+                "002",
+                "003",
+                "300",
+                "301",
+            )
+        ):
             return f"{symbol}.SZ"
 
         # 北京证券交易所
-        if symbol.startswith(("4", "8")):
+        if symbol.startswith(
+            (
+                "4",
+                "8",
+            )
+        ):
             return f"{symbol}.BJ"
 
         # 无法判断时直接返回原代码
@@ -968,7 +1078,6 @@ class YinheGateway(StockDataGateway):
             raise RuntimeError("银河数据源尚未启动，" "请先调用 DataManager.start()")
 
 
-
 def main() -> None:
     """
     银河证券数据网关测试入口。
@@ -981,13 +1090,18 @@ def main() -> None:
         4. 获取股票基础信息
         5. 获取股票名称
         6. 获取历史 K 线
-        7. 获取估值数据
-        8. 注销数据源
+        7. 获取财务数据
+        8. 获取估值数据
+        9. 注销数据源
 
     注意：
+
         需要提前配置真实的银河证券 / AmazingData
         登录信息。
     """
+
+    load_dotenv()
+
 
     print()
     print("=" * 72)
@@ -996,25 +1110,25 @@ def main() -> None:
 
     config = {
         "username": os.getenv(
-            "YINHE_USERNAME",
+            "amazing_username",
             "",
         ),
         "password": os.getenv(
-            "YINHE_PASSWORD",
+            "amazing_password",
             "",
         ),
         "host": os.getenv(
-            "YINHE_HOST",
+            "amazing_host",
             "",
         ),
         "port": int(
             os.getenv(
-                "YINHE_PORT",
+                "amazing_port",
                 "0",
             )
         ),
         "local_path": os.getenv(
-            "YINHE_LOCAL_PATH",
+            "local_path",
             os.path.curdir,
         ),
     }
@@ -1022,15 +1136,18 @@ def main() -> None:
     gateway = YinheGateway(config)
 
     try:
+
         # ======================================================
         # 1. 登录
         # ======================================================
 
         print()
-        print("[1/7] 登录数据源")
+        print("[1/9] 登录数据源")
 
         if not gateway.login():
+
             print("❌ 银河数据源登录失败")
+
             return
 
         print("✅ 银河数据源登录成功")
@@ -1040,20 +1157,24 @@ def main() -> None:
         # ======================================================
 
         print()
-        print("[2/7] 健康检查")
+        print("[2/9] 健康检查")
 
         if gateway.health_check():
+
             print("✅ 数据源运行正常")
+
         else:
+
             print("❌ 数据源未启动")
+
             return
 
         # ======================================================
-        # 3. 测试股票代码标准化
+        # 3. 股票代码标准化
         # ======================================================
 
         print()
-        print("[3/7] 股票代码标准化")
+        print("[3/9] 股票代码标准化")
 
         test_symbols = [
             "600519",
@@ -1065,11 +1186,10 @@ def main() -> None:
         ]
 
         for symbol in test_symbols:
+
             normalized = gateway._normalize_symbol(symbol)
 
-            print(
-                f"    {symbol:<12} -> {normalized}"
-            )
+            print(f"    {symbol:<12} -> " f"{normalized}")
 
         # ======================================================
         # 4. 获取股票基础信息
@@ -1078,44 +1198,45 @@ def main() -> None:
         symbol = "600519"
 
         print()
-        print(f"[4/7] 获取股票基础信息: {symbol}")
+        print(f"[4/9] 获取股票基础信息: " f"{symbol}")
 
-        stock = gateway.fetch_stock(symbol)
+        stock = gateway.get_stock(symbol)
 
         if stock is None:
+
             print("❌ 未获取到股票基础信息")
+
         else:
+
             print("✅ 股票基础信息:")
-            print(f"    代码: {stock.get('symbol')}")
-            print(f"    名称: {stock.get('name')}")
+
+            print(f"    代码: " f"{stock.get('symbol')}")
+
+            print(f"    名称: " f"{stock.get('name')}")
 
         # ======================================================
         # 5. 获取股票名称
         # ======================================================
 
         print()
-        print(f"[5/7] 获取股票名称: {symbol}")
+        print(f"[5/9] 获取股票名称: " f"{symbol}")
 
         name = gateway.fetch_stock_name(symbol)
 
-        print(
-            f"    股票名称: {name}"
-        )
+        print(f"    股票名称: {name}")
 
         # ======================================================
         # 6. 获取历史 K 线
         # ======================================================
 
         print()
-        print(f"[6/7] 获取历史 K 线: {symbol}")
+        print(f"[6/9] 获取历史 K 线: " f"{symbol}")
 
         end_time = datetime.datetime.now()
 
-        start_time = end_time - datetime.timedelta(
-            days=30
-        )
+        start_time = end_time - datetime.timedelta(days=30)
 
-        klines = gateway.fetch_kline(
+        klines = gateway.get_kline(
             symbol=symbol,
             interval=Interval.DAY_1,
             start_time=start_time,
@@ -1124,15 +1245,17 @@ def main() -> None:
         )
 
         if not klines:
+
             print("❌ 未获取到 K 线数据")
+
         else:
-            print(
-                f"✅ 获取到 {len(klines)} 条 K 线"
-            )
+
+            print(f"✅ 获取到 " f"{len(klines)} 条 K 线")
 
             print()
 
             for kline in klines:
+
                 print(
                     f"    {kline.trade_time} "
                     f"O={kline.open:.2f} "
@@ -1143,43 +1266,95 @@ def main() -> None:
                 )
 
         # ======================================================
-        # 7. 获取估值
+        # 7. 获取财务数据
         # ======================================================
 
         print()
-        print(f"[7/7] 获取估值数据: {symbol}")
+        print(f"[7/9] 获取财务数据: " f"{symbol}")
 
-        valuation = gateway.fetch_valuation(symbol)
+        financial = gateway.get_financial(symbol)
 
-        print("✅ 估值数据:")
+        if financial is None:
 
-        print(
-            f"    代码      : {valuation.symbol}"
-        )
+            print("❌ 未获取到财务数据")
 
-        print(
-            f"    时间      : {valuation.timestamp}"
-        )
+        elif (
+            hasattr(
+                financial,
+                "empty",
+            )
+            and financial.empty
+        ):
 
-        print(
-            f"    当前价格  : {valuation.price}"
-        )
+            print("❌ 财务数据为空")
 
-        print(
-            f"    总市值    : {valuation.market_cap}"
-        )
+        else:
 
-        print(
-            f"    静态 PE   : {valuation.pe_static}"
-        )
+            print("✅ 财务数据获取成功")
 
-        print(
-            f"    动态 PE   : {valuation.pe_dynamic}"
-        )
+            if hasattr(
+                financial,
+                "shape",
+            ):
 
-        print(
-            f"    TTM PE    : {valuation.pe_ttm}"
-        )
+                print(f"    行数: " f"{financial.shape[0]}")
+
+                print(f"    列数: " f"{financial.shape[1]}")
+
+            if hasattr(
+                financial,
+                "columns",
+            ):
+
+                print("    字段:")
+
+                print(
+                    "    "
+                    + ", ".join(
+                        map(
+                            str,
+                            financial.columns,
+                        )
+                    )
+                )
+
+        # ======================================================
+        # 8. 获取估值
+        # ======================================================
+
+        print()
+        print(f"[8/9] 获取估值数据: " f"{symbol}")
+
+        valuation = gateway.get_valuation(symbol)
+
+        if valuation is None:
+
+            print("❌ 未获取到估值数据")
+
+        else:
+
+            print("✅ 估值数据:")
+
+            print(f"    代码      : " f"{valuation.symbol}")
+
+            print(f"    时间      : " f"{valuation.timestamp}")
+
+            print(f"    当前价格  : " f"{valuation.price}")
+
+            print(f"    总市值    : " f"{valuation.market_cap}")
+
+            print(f"    静态 PE   : " f"{valuation.pe_static}")
+
+            print(f"    动态 PE   : " f"{valuation.pe_dynamic}")
+
+            print(f"    TTM PE    : " f"{valuation.pe_ttm}")
+
+        # ======================================================
+        # 9. 完成
+        # ======================================================
+
+        print()
+        print("[9/9] 测试完成")
 
         print()
         print("=" * 72)
