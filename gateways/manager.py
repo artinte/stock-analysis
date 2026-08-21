@@ -1,3 +1,5 @@
+import os
+
 import pandas
 from typing import Optional
 
@@ -286,71 +288,103 @@ class DataManager:
 
 
 if __name__ == "__main__":
+    import pandas
+
     from analysis.valuation import ValuationAnalyzer
-    from indicators import (
-        calculate_bollinger_bands,
-        calculate_macd,
-        calculate_moving_averages,
-        calculate_rsi,
-        calculate_williams,
-    )
+    from indicators.volatility import calculate_bollinger_bands
+    from indicators.macd import calculate_macd
+    from indicators.moving_average import calculate_moving_averages
+    from indicators.momentum import calculate_rsi, calculate_williams
 
     manager = DataManager(
         provider_name="yinhe",
-        config=config,
     )
+
+    print("\n股票数据与技术指标测试")
 
     if not manager.start():
         raise RuntimeError("数据源启动失败")
 
     symbol = "600519"
 
-    # 1. 基础数据
-    stock = manager.get_stock(symbol)
+    try:
+        # 1. 基础数据
+        print(f"\n[1] 股票基础数据：{symbol}")
 
-    # 2. K线
-    klines = manager.get_daily_kline(
-        symbol,
-        days=120,
-    )
+        stock = manager.get_stock(symbol)
+        print(stock)
 
-    # 3. 如果需要 DataFrame
-    df = pandas.DataFrame(
-        [
-            {
-                "timestamp": item.timestamp,
-                "open": item.open,
-                "high": item.high,
-                "low": item.low,
-                "close": item.close,
-                "volume": item.volume,
-                "amount": item.amount,
-            }
-            for item in klines
-        ]
-    )
+        # 2. K 线
+        print("\n[2] 日 K 线")
 
-    # 4. 技术指标
-    ma = calculate_moving_averages(df)
+        klines = manager.get_daily_kline(
+            symbol,
+            days=120,
+        )
 
-    macd = calculate_macd(df)
+        print(f"共获取 {len(klines)} 条 K 线")
 
-    rsi = calculate_rsi(df)
+        # 3. 构建 DataFrame
+        df = pandas.DataFrame(
+            [
+                {
+                    "timestamp": item.timestamp,
+                    "open": item.open,
+                    "high": item.high,
+                    "low": item.low,
+                    "close": item.close,
+                    "volume": item.volume,
+                    "amount": item.amount,
+                }
+                for item in klines
+            ]
+        )
 
-    williams = calculate_williams(
-        df,
-    )
+        # 4. 技术指标
+        print("\n[3] 计算技术指标")
 
-    boll = calculate_bollinger_bands(
-        df,
-    )
+        ma = calculate_moving_averages(df)
+        macd = calculate_macd(df)
+        rsi = calculate_rsi(df)
+        williams = calculate_williams(df)
+        boll = calculate_bollinger_bands(df)
 
-    # 5. 估值
-    financial = manager.get_financial(symbol)
+        print("✓ MA")
+        print("✓ MACD")
+        print("✓ RSI")
+        print("✓ Williams %R")
+        print("✓ Bollinger Bands")
 
-    valuation = ValuationAnalyzer()
+        # 5. 合并所有技术指标
+        print("\n[4] 技术指标结果")
 
-    # 这里根据你的 Gateway 返回的数据
-    # 取出对应 DataFrame 后进行计算
+        indicators = pandas.concat(
+            [
+                ma,
+                macd,
+                rsi,
+                williams,
+                boll,
+            ],
+            axis=1,
+        )
 
-    manager.stop()
+        print(indicators.to_string(index=False))
+
+        # 6. 财务数据
+        print("\n[5] 财务数据")
+
+        financial = manager.get_financial(symbol)
+        print(financial)
+
+        # 7. 估值
+        print("\n[6] 估值分析")
+
+        valuation = ValuationAnalyzer()
+        print(valuation)
+
+        print("\n测试完成")
+
+    finally:
+        manager.stop()
+        print("数据源已停止")
