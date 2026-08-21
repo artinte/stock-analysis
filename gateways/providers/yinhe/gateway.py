@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import os
-from typing import Any, Optional
+from typing import Optional
 
 import pandas
 import AmazingData
@@ -13,6 +13,43 @@ from models.constants import Interval
 from models.kline import Kline
 from models.valuation import Valuation
 from registry import GatewayRegistry
+
+"""
+银河证券数据网关。
+
+本模块实现基于 AmazingData 的银河证券数据源适配器，
+将 AmazingData 提供的原始数据转换为项目内部统一的数据模型
+和接口，使上层业务无需直接依赖具体的数据源实现。
+
+主要功能包括：
+
+- 管理 AmazingData 数据源的登录、注销和运行状态。
+- 获取股票基础信息和股票名称。
+- 获取历史 K 线，并转换为统一的 Kline 模型。
+- 获取股票财务数据。
+- 获取股票最新价格及总市值。
+- 根据财务数据和市值计算静态 PE、动态 PE 和 TTM PE。
+- 将估值结果转换为统一的 Valuation 模型。
+- 对股票代码进行标准化，自动识别上海、深圳和北京市场。
+
+本模块属于数据源适配层，上层业务统一通过
+StockDataGateway 访问数据，不应直接依赖 AmazingData。
+
+数据流：
+
+    DataManager
+        ↓
+    StockDataGateway
+        ↓
+    YinheGateway
+        ↓
+    AmazingData
+        ↓
+    银河证券数据服务
+
+当前已支持股票基础信息、历史 K 线、财务数据和估值数据。
+实时行情接口暂未接入，相关方法会明确抛出 NotImplementedError。
+"""
 
 
 @GatewayRegistry.register("yinhe")
@@ -496,7 +533,7 @@ class YinheGateway(StockDataGateway):
             Interval.MINUTE_5: AmazingData.constant.Period.min5.value,
             Interval.MINUTE_15: AmazingData.constant.Period.min15.value,
             Interval.MINUTE_30: AmazingData.constant.Period.min30.value,
-            Interval.HOUR_1: AmazingData.constant.Period.min60.value,
+            Interval.MINUTE_60: AmazingData.constant.Period.min60.value,
             Interval.DAY_1: AmazingData.constant.Period.day.value,
             Interval.WEEK_1: AmazingData.constant.Period.week.value,
         }
@@ -602,8 +639,9 @@ class YinheGateway(StockDataGateway):
 
                 klines.append(
                     Kline(
-                        code=code,
-                        trade_time=kline_time,
+                        symbol=code,
+                        timestamp=kline_time,
+                        interval=interval,
                         open=float(item["open"]),
                         high=float(item["high"]),
                         low=float(item["low"]),
@@ -1102,7 +1140,6 @@ def main() -> None:
 
     load_dotenv()
 
-
     print()
     print("=" * 72)
     print("银河证券数据网关测试")
@@ -1257,7 +1294,7 @@ def main() -> None:
             for kline in klines:
 
                 print(
-                    f"    {kline.trade_time} "
+                    f"    {kline.timestamp} "
                     f"O={kline.open:.2f} "
                     f"H={kline.high:.2f} "
                     f"L={kline.low:.2f} "

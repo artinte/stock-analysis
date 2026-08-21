@@ -1,4 +1,7 @@
 
+# Local data
+.infodata/
+
 # 私有配置
 temp/
 private_config.txt
