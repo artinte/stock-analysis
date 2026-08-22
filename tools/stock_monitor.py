@@ -1,3 +1,5 @@
+import argparse
+
 from gateways import DataManager, GatewayRegistry
 
 """
@@ -246,7 +248,30 @@ def print_stock_report(
     print("=" * 40)
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="股票数据源测试程序")
+
+    parser.add_argument(
+        "-p",
+        "--provider",
+        default="tencent",
+        choices=GatewayRegistry.names(),
+        help="数据源名称，默认：tencent",
+    )
+
+    parser.add_argument(
+        "-s",
+        "--symbol",
+        default="600460",
+        help="股票代码，默认：600460",
+    )
+
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
     print("可用数据源：")
 
     for name in GatewayRegistry.names():
@@ -258,22 +283,28 @@ def main():
             name,
         )
 
-        print(f"  {name:<10} {display_name}")
+        default_mark = " [默认]" if name == "tencent" else ""
+
+        print(f"  {name:<10} " f"{display_name}" f"{default_mark}")
+
+    print(f"\n使用数据源：{args.provider}")
+    print(f"股票代码：{args.symbol}")
 
     manager = DataManager(
-        provider_name="tencent",
+        provider_name=args.provider,
     )
-
-    symbol = "600460"
 
     if not manager.start():
         raise RuntimeError("数据源启动失败")
 
     try:
-        stock = manager.get_stock(symbol)
-        quote = manager.get_quote(symbol)
-        valuation = manager.get_valuation(symbol)
-        financial = manager.get_financial(symbol)
+        stock = manager.get_stock(args.symbol)
+
+        quote = manager.get_quote(args.symbol)
+
+        valuation = manager.get_valuation(args.symbol)
+
+        financial = manager.get_financial(args.symbol)
 
         print_stock_report(
             stock=stock,
@@ -281,6 +312,7 @@ def main():
             valuation=valuation,
             financial=financial,
         )
+
     except Exception as e:
         print(f"股票数据获取失败: {e}")
 
