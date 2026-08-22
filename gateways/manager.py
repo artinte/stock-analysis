@@ -1,9 +1,11 @@
 import os
 
+from dotenv import load_dotenv
 import pandas
 from typing import Optional
 
 from base import StockDataGateway
+
 from registry import GatewayRegistry
 
 """
@@ -288,17 +290,44 @@ class DataManager:
 
 
 if __name__ == "__main__":
+    import datetime
     import pandas
-
     from analysis.valuation import ValuationAnalyzer
+    from providers.yinhe.gateway import YinheGateway
+    from models.constants import Interval
     from indicators.volatility import calculate_bollinger_bands
     from indicators.macd import calculate_macd
     from indicators.moving_average import calculate_moving_averages
     from indicators.momentum import calculate_rsi, calculate_williams
 
-    manager = DataManager(
-        provider_name="yinhe",
-    )
+    load_dotenv()
+
+    config = {
+        "username": os.getenv(
+            "amazing_username",
+            "",
+        ),
+        "password": os.getenv(
+            "amazing_password",
+            "",
+        ),
+        "host": os.getenv(
+            "amazing_host",
+            "",
+        ),
+        "port": int(
+            os.getenv(
+                "amazing_port",
+                "0",
+            )
+        ),
+        "local_path": os.getenv(
+            "local_path",
+            os.path.curdir,
+        ),
+    }
+
+    manager = DataManager(provider_name="yinhe", config=config)
 
     print("\n股票数据与技术指标测试")
 
@@ -317,9 +346,16 @@ if __name__ == "__main__":
         # 2. K 线
         print("\n[2] 日 K 线")
 
-        klines = manager.get_daily_kline(
-            symbol,
-            days=120,
+        end_time = datetime.datetime.now()
+        
+        start_time = end_time - datetime.timedelta(days=120)
+
+        klines = manager.get_kline(
+            symbol=symbol,
+            interval=Interval.DAY_1,
+            start_time=start_time,
+            end_time=end_time,
+            limit=120,
         )
 
         print(f"共获取 {len(klines)} 条 K 线")

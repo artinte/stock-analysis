@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import datetime
 import os
+from pathlib import Path
 from typing import Optional
 
 import pandas
@@ -72,6 +73,8 @@ class YinheGateway(StockDataGateway):
         YinheGateway
             ↓
         AmazingData
+
+    执行：python -m providers.yinhe.gateway
     """
 
     name = "yinhe"
@@ -139,12 +142,12 @@ class YinheGateway(StockDataGateway):
         try:
             self.user = self.config.get(
                 "username",
-                "",
+                "default",
             )
 
             self.host = self.config.get(
                 "host",
-                "",
+                "127.0.0.1",
             )
 
             self.port = int(
@@ -161,7 +164,7 @@ class YinheGateway(StockDataGateway):
 
             print(
                 f"[银河网关] 尝试登录: "
-                f"{self.host}:{self.port} "
+                f"网址：{self.host}:{self.port}\n"
                 f"用户: {self.user}"
             )
 
