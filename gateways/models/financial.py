@@ -271,3 +271,114 @@ class Financial:
         akshare
         tushare
     """
+    
+    # ==========================================================
+    # 报表信息
+    # ==========================================================
+
+    statement_type: Optional[str] = None
+    """
+    报表类型
+
+    例如:
+
+        annual
+        quarterly
+    """
+
+
+    announcement_date: Optional[str] = None
+    """
+    公告日期
+    """
+
+
+    # ==========================================================
+    # 利润表扩展
+    # ==========================================================
+
+    operating_income: Optional[float] = None
+    """
+    营业收入
+    """
+
+
+    operating_cost: Optional[float] = None
+    """
+    营业成本
+    """
+
+
+    total_operating_cost: Optional[float] = None
+    """
+    营业总成本
+    """
+
+
+    total_operating_income: Optional[float] = None
+    """
+    营业总收入
+    """
+
+
+    total_profit: Optional[float] = None
+    """
+    利润总额
+    """
+
+
+    ebit: Optional[float] = None
+    """
+    息税前利润
+    """
+
+
+    ebitda: Optional[float] = None
+    """
+    息税折旧摊销前利润
+    """
+
+
+    income_tax: Optional[float] = None
+    """
+    所得税
+    """
+
+
+    # ==========================================================
+    # 费用
+    # ==========================================================
+
+    selling_expense: Optional[float] = None
+    """
+    销售费用
+    """
+
+
+    administrative_expense: Optional[float] = None
+    """
+    管理费用
+    """
+
+
+    financial_expense: Optional[float] = None
+    """
+    财务费用
+    """
+
+
+    rd_expense: Optional[float] = None
+    """
+    研发费用
+    """
+
+
+    # ==========================================================
+    # 现金流扩展
+    # ==========================================================
+
+    cash_flow_from_operations: Optional[float] = None
+
+    fcff: Optional[float] = None
+
+    fcfe: Optional[float] = None

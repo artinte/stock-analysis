@@ -100,3 +100,7 @@ class StockDataGateway(ABC):
         traceback,
     ):
         self.logout()
+
+    @property
+    def version(self) -> str:
+        return "unknown"

@@ -20,6 +20,12 @@ from gateways.models.constants import SHARES_PER_10K
 """
 银河证券数据网关。
 
+银河证券提供两组API：
+pip install tgw-1.7.1-py3-none-any.whl 
+pip install AmazingData-1.0.0-cp312-none-any.whl
+
+具体介绍联系相关券商。
+
 本模块实现基于 AmazingData 的银河证券数据源适配器，
 将 AmazingData 提供的原始数据转换为项目内部统一的数据模型
 和接口，使上层业务无需直接依赖具体的数据源实现。
@@ -888,27 +894,51 @@ class YinheGateway(StockDataGateway):
                 return None
 
             # 最新一期财务数据
-            latest = df.iloc[-1]
+            latest = self._get_latest_financial_row(df)
+
+            if latest is None:
+                return None
 
             financial = Financial(
                 symbol=formatted_symbol,
                 # ==================================================
                 # 基础信息
                 # ==================================================
-                report_date=str(latest.get("END_DATE", "")),
-                currency="CNY",
+                report_date=str(
+                    latest.get(
+                        "REPORTING_PERIOD",
+                        "",
+                    )
+                ),
+                statement_type=latest.get("STATEMENT_TYPE"),
+                announcement_date=str(latest.get("ANN_DATE", "")),
+                currency=latest.get(
+                    "CURRENCY_CODE",
+                    "CNY",
+                ),
                 # ==================================================
                 # 利润表
                 # ==================================================
-                revenue=self._safe_float(latest.get("OPERATE_INCOME")),
-                operating_profit=self._safe_float(latest.get("OPERATE_PROFIT")),
-                net_profit=self._safe_float(latest.get("NET_PROFIT")),
+                operating_income=self._safe_float(latest.get("OPERA_REV")),
+                revenue=self._safe_float(latest.get("TOT_OPERA_REV")),
+                operating_cost=self._safe_float(latest.get("LESS_OPERA_COST")),
+                total_operating_cost=self._safe_float(latest.get("TOT_OPERA_COST")),
+                operating_profit=self._safe_float(latest.get("OPERA_PROFIT")),
+                total_profit=self._safe_float(latest.get("TOTAL_PROFIT")),
+                net_profit=self._safe_float(latest.get("NET_PRO_INCL_MIN_INT_INC")),
                 net_profit_attributable=self._safe_float(
-                    latest.get("PARENT_NETPROFIT")
+                    latest.get("NET_PRO_EXCL_MIN_INT_INC")
                 ),
                 non_recurring_net_profit=self._safe_float(
-                    latest.get("DEDUCTED_PROFIT")
+                    latest.get("NET_PRO_AFTER_DED_NR_GL")
                 ),
+                # ==================================================
+                # 费用
+                # ==================================================
+                selling_expense=self._safe_float(latest.get("LESS_SELLING_EXP")),
+                administrative_expense=self._safe_float(latest.get("LESS_ADMIN_EXP")),
+                financial_expense=self._safe_float(latest.get("LESS_FIN_EXP")),
+                rd_expense=self._safe_float(latest.get("RD_EXP")),
                 # ==================================================
                 # 盈利能力
                 # ==================================================
@@ -917,10 +947,15 @@ class YinheGateway(StockDataGateway):
                 roe=self._safe_float(latest.get("ROE")),
                 roa=self._safe_float(latest.get("DUPONT_ROA")),
                 # ==================================================
+                # EBIT / EBITDA
+                # ==================================================
+                ebit=self._safe_float(latest.get("EBIT")),
+                ebitda=self._safe_float(latest.get("EBITDA")),
+                # ==================================================
                 # 每股指标
                 # ==================================================
-                eps=self._safe_float(latest.get("EPS_BASIC")),
-                diluted_eps=self._safe_float(latest.get("EPS_DILUTED")),
+                eps=self._safe_float(latest.get("BASIC_EPS")),
+                diluted_eps=self._safe_float(latest.get("DILUTED_EPS")),
                 book_value_per_share=self._safe_float(latest.get("BPS")),
                 operating_cash_flow_per_share=self._safe_float(latest.get("OCFPS")),
                 # ==================================================
@@ -944,7 +979,8 @@ class YinheGateway(StockDataGateway):
                 # 现金流
                 # ==================================================
                 operating_cash_flow=self._safe_float(latest.get("OCF")),
-                free_cash_flow=self._safe_float(latest.get("FCFF")),
+                fcff=self._safe_float(latest.get("FCFF")),
+                fcfe=self._safe_float(latest.get("FCFE")),
                 source="yinhe",
             )
 
@@ -1316,6 +1352,27 @@ class YinheGateway(StockDataGateway):
 
             return None
 
+    def _get_latest_financial_row(
+        self,
+        df,
+    ):
+        """
+        获取最新一期财务数据。
+        """
+
+        if df is None or df.empty:
+            return None
+
+        if "REPORTING_PERIOD" in df.columns:
+
+            df = df.copy()
+
+            df["REPORTING_PERIOD"] = df["REPORTING_PERIOD"].astype(str)
+
+            df = df.sort_values("REPORTING_PERIOD")
+
+        return df.iloc[-1]
+
     # ==========================================================
     # 工具方法
     # ==========================================================
@@ -1408,271 +1465,9 @@ class YinheGateway(StockDataGateway):
         ):
             return None
 
-
-# ==============================================================
-# 测试
-# ==============================================================
-
-
-def main() -> None:
-    """
-    银河证券数据网关测试入口。
-    """
-
-    load_dotenv()
-
-    print()
-    print("=" * 72)
-    print("银河证券数据网关测试")
-    print("=" * 72)
-
-    config = {
-        "username": os.getenv(
-            "amazing_username",
-            "",
-        ),
-        "password": os.getenv(
-            "amazing_password",
-            "",
-        ),
-        "host": os.getenv(
-            "amazing_host",
-            "",
-        ),
-        "port": int(
-            os.getenv(
-                "amazing_port",
-                "0",
-            )
-        ),
-        "local_path": os.getenv(
-            "local_path",
-            os.path.curdir,
-        ),
-    }
-
-    gateway = YinheGateway(config)
-
-    try:
-
-        # ------------------------------------------------------
-        # 1. 登录
-        # ------------------------------------------------------
-
-        print()
-        print("[1/8] 登录数据源")
-
-        if not gateway.login():
-
-            print("❌ 银河数据源登录失败")
-
-            return
-
-        print("✅ 银河数据源登录成功")
-
-        # ------------------------------------------------------
-        # 2. 健康检查
-        # ------------------------------------------------------
-
-        print()
-        print("[2/8] 健康检查")
-
-        if gateway.health_check():
-
-            print("✅ 数据源运行正常")
-
-        else:
-
-            print("❌ 数据源未启动")
-
-            return
-
-        # ------------------------------------------------------
-        # 3. 股票代码标准化
-        # ------------------------------------------------------
-
-        print()
-        print("[3/8] 股票代码标准化")
-
-        test_symbols = [
-            "600519",
-            "600519.SH",
-            "000001",
-            "000001.SZ",
-            "300750",
-            "688981",
-        ]
-
-        for symbol in test_symbols:
-
-            normalized = gateway._normalize_symbol(symbol)
-
-            print(f"    {symbol:<12} -> " f"{normalized}")
-
-        # ------------------------------------------------------
-        # 测试股票
-        # ------------------------------------------------------
-
-        symbol = "600519"
-
-        # ------------------------------------------------------
-        # 4. 股票基础信息
-        # ------------------------------------------------------
-
-        print()
-        print(f"[4/8] 获取股票基础信息: " f"{symbol}")
-
-        stock = gateway.fetch_stock(symbol)
-
-        if stock is None:
-
-            print("❌ 未获取到股票基础信息")
-
-        else:
-
-            print("✅ 股票基础信息:")
-
-            print(f"    代码: " f"{stock.get('symbol')}")
-
-            print(f"    名称: " f"{stock.get('name')}")
-
-        # ------------------------------------------------------
-        # 5. K 线
-        # ------------------------------------------------------
-
-        print()
-        print(f"[5/8] 获取历史 K 线: " f"{symbol}")
-
-        end_time = datetime.datetime.now()
-
-        start_time = end_time - datetime.timedelta(days=30)
-
-        klines = gateway.fetch_kline(
-            symbol=symbol,
-            interval=Interval.DAY_1,
-            start_time=start_time,
-            end_time=end_time,
-            limit=10,
-        )
-
-        if not klines:
-
-            print("❌ 未获取到 K 线数据")
-
-        else:
-
-            print(f"✅ 获取到 " f"{len(klines)} 条 K 线")
-
-            for kline in klines:
-
-                print(
-                    f"    {kline.timestamp} "
-                    f"O={kline.open:.2f} "
-                    f"H={kline.high:.2f} "
-                    f"L={kline.low:.2f} "
-                    f"C={kline.close:.2f} "
-                    f"V={kline.volume}"
-                )
-
-        # ------------------------------------------------------
-        # 6. 财务数据
-        # ------------------------------------------------------
-
-        print()
-        print(f"[6/8] 获取财务数据: " f"{symbol}")
-
-        financial = gateway.fetch_financial(symbol)
-
-        if financial is None:
-
-            print("❌ 未获取到财务数据")
-
-        elif hasattr(financial, "empty") and financial.empty:
-
-            print("❌ 财务数据为空")
-
-        else:
-
-            print("✅ 财务数据获取成功")
-
-            if hasattr(
-                financial,
-                "shape",
-            ):
-
-                print(f"    行数: " f"{financial.shape[0]}")
-
-                print(f"    列数: " f"{financial.shape[1]}")
-
-        # ------------------------------------------------------
-        # 7. 估值
-        # ------------------------------------------------------
-
-        print()
-        print(f"[7/8] 获取估值数据: " f"{symbol}")
-
-        valuation = gateway.fetch_valuation(symbol)
-
-        if valuation is None:
-
-            print("❌ 未获取到估值数据")
-
-        else:
-
-            print("✅ 估值数据:")
-
-            print(f"    代码      : " f"{valuation.symbol}")
-
-            print(f"    时间      : " f"{valuation.timestamp}")
-
-            print(f"    当前价格  : " f"{valuation.price}")
-
-            print(f"    总市值    : " f"{valuation.market_cap}")
-
-            print(f"    静态 PE   : " f"{valuation.pe_static}")
-
-            print(f"    动态 PE   : " f"{valuation.pe_dynamic}")
-
-            print(f"    TTM PE    : " f"{valuation.pe_ttm}")
-
-        # ------------------------------------------------------
-        # 8. 完成
-        # ------------------------------------------------------
-
-        print()
-        print("[8/8] 测试完成")
-        print("✅ 银河证券数据网关测试完成")
-
-    except KeyboardInterrupt:
-
-        print()
-        print("⚠️ 用户中断测试")
-
-    except Exception as e:
-
-        print()
-        print(f"❌ 测试过程中发生异常: {e}")
-
-        import traceback
-
-        traceback.print_exc()
-
-    finally:
-
-        print()
-
+    @property
+    def version(self) -> str:
         try:
-
-            print("正在注销银河数据源...")
-
-            gateway.logout()
-
-            print("银河数据源已注销")
-
-        except Exception as e:
-
-            print(f"⚠️ 注销银河数据源失败: {e}")
-
-
-if __name__ == "__main__":
-    main()
+            return tgw.GetVersion()
+        except Exception:
+            return "unknown"
