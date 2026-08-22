@@ -9,11 +9,11 @@ from gateways.gateway import StockDataGateway
 from gateways.registry import GatewayRegistry
 
 from gateways.models.constants import Interval
-from gateways.models.stock import Stock
-from gateways.models.quote import Quote
-from gateways.models.kline import Kline
-from gateways.models.valuation import Valuation
 from gateways.models.financial import Financial
+from gateways.models.kline import Kline
+from gateways.models.quote import Quote
+from gateways.models.stock import Stock
+from gateways.models.valuation import Valuation
 
 
 @GatewayRegistry.register("akshare")
@@ -21,12 +21,9 @@ class AkShareGateway(StockDataGateway):
     """
     AkShare 股票数据网关。
 
-    AkShare 是本项目默认的数据源。
+    将 AkShare 原始数据转换为项目统一的数据模型。
 
-    负责将 AkShare 返回的原始数据统一转换成
-    项目内部的标准 Model。
-
-    上层业务不应该直接调用 AkShare，而应该通过：
+    数据流：
 
         DataManager
             ↓
@@ -36,12 +33,8 @@ class AkShareGateway(StockDataGateway):
             ↓
         AkShare
 
-    这样后续可以非常方便地切换：
-
-        AkShare
-        银河证券
-        通达信
-        其他数据源
+    上层业务只依赖 StockDataGateway，
+    不应该直接依赖 AkShare。
     """
 
     name = "akshare"
@@ -52,10 +45,6 @@ class AkShareGateway(StockDataGateway):
         self,
         config: Optional[dict] = None,
     ) -> None:
-        """
-        初始化 AkShare 数据源。
-        """
-
         super().__init__(config)
 
     # ==========================================================
@@ -67,9 +56,9 @@ class AkShareGateway(StockDataGateway):
         config: Optional[dict] = None,
     ) -> bool:
         """
-        初始化 AkShare。
+        启动 AkShare 数据源。
 
-        AkShare 本身不需要账号登录，因此这里主要负责
+        AkShare 不需要账号登录，因此这里只负责
         Gateway 生命周期管理。
         """
 
@@ -89,31 +78,29 @@ class AkShareGateway(StockDataGateway):
 
     def health_check(self) -> bool:
         """
-        检查 AkShare 是否可以正常访问。
-
-        使用 A 股实时行情接口进行简单探测。
+        检查 AkShare 是否能够正常访问。
         """
 
-        try:
-            self._ensure_started()
+        if not self._started:
+            return False
 
+        try:
             data = ak.stock_zh_a_spot_em()
-            return (
-                data is not None
-                and not data.empty
-            )
+
+            return data is not None and not data.empty
+
         except Exception as exc:
-            print("异常信息:", exc)
+            print(f"[AkShare] 健康检查失败: {exc}")
             return False
 
     # ==========================================================
     # 股票基础信息
     # ==========================================================
 
-    def get_stock(
+    def fetch_stock(
         self,
         symbol: str,
-    ) -> Stock:
+    ) -> Optional[Stock]:
         """
         获取股票基础信息。
         """
@@ -122,90 +109,91 @@ class AkShareGateway(StockDataGateway):
 
         code = self._normalize_symbol(symbol)
 
-        data = ak.stock_zh_a_spot_em()
+        try:
+            data = ak.stock_zh_a_spot_em()
 
-        if data is None or data.empty:
-            raise RuntimeError(
-                "AkShare 未返回股票基础数据"
+            if data is None or data.empty:
+                return None
+
+            row = data[data["代码"].astype(str) == code]
+
+            if row.empty:
+                return None
+
+            item = row.iloc[0]
+
+            return Stock(
+                symbol=symbol,
+                name=self._get_value(
+                    item,
+                    "名称",
+                ),
+                market=self._detect_market(code),
+                industry=None,
             )
 
-        row = data[
-            data["代码"].astype(str) == code
-        ]
+        except Exception as exc:
+            print(f"[AkShare] 获取股票基础信息失败 " f"{symbol}: {exc}")
 
-        if row.empty:
-            raise ValueError(
-                f"未找到股票：{symbol}"
-            )
-
-        item = row.iloc[0]
-
-        return Stock(
-            symbol=symbol,
-            name=self._get_value(
-                item,
-                "名称",
-            ),
-            market=self._detect_market(code),
-            industry=None,
-        )
+            return None
 
     # ==========================================================
     # 单只行情
     # ==========================================================
 
-    def get_quote(
+    def fetch_quote(
         self,
         symbol: str,
-    ) -> Quote:
+    ) -> Optional[Quote]:
         """
         获取单只股票最新行情。
+
+        AkShare 的 stock_zh_a_spot_em()
+        返回的是全市场实时行情。
+
+        这里获取全市场数据后，
+        根据股票代码筛选目标股票。
         """
 
         self._ensure_started()
 
         code = self._normalize_symbol(symbol)
 
-        data = ak.stock_zh_a_spot_em()
+        try:
+            data = ak.stock_zh_a_spot_em()
 
-        if data is None or data.empty:
-            raise RuntimeError(
-                "AkShare 未返回实时行情"
+            if data is None or data.empty:
+                return None
+
+            row = data[data["代码"].astype(str) == code]
+
+            if row.empty:
+                print(f"[AkShare] 未找到股票行情: {symbol}")
+                return None
+
+            return self._convert_quote(
+                symbol,
+                row.iloc[0],
             )
 
-        row = data[
-            data["代码"].astype(str) == code
-        ]
+        except Exception as exc:
+            print(f"[AkShare] 获取行情失败 " f"{symbol}: {exc}")
 
-        if row.empty:
-            raise ValueError(
-                f"未找到股票：{symbol}"
-            )
-
-        return self._convert_quote(
-            symbol,
-            row.iloc[0],
-        )
+            return None
 
     # ==========================================================
     # 批量行情
     # ==========================================================
 
-    def get_quotes(
+    def fetch_quotes(
         self,
         symbols: list[str],
     ) -> list[Quote]:
         """
         批量获取股票行情。
 
-        AkShare 一次获取全市场行情，然后本地筛选。
-
-        相比：
-
-            for symbol in symbols:
-                get_quote(symbol)
-
-        只请求一次数据源，效率更高。
+        AkShare 一次获取全市场行情，
+        然后在本地筛选目标股票。
         """
 
         self._ensure_started()
@@ -213,45 +201,44 @@ class AkShareGateway(StockDataGateway):
         if not symbols:
             return []
 
-        data = ak.stock_zh_a_spot_em()
+        try:
+            data = ak.stock_zh_a_spot_em()
 
-        if data is None or data.empty:
-            return []
+            if data is None or data.empty:
+                return []
 
-        symbol_map = {
-            self._normalize_symbol(symbol): symbol
-            for symbol in symbols
-        }
+            symbol_map = {self._normalize_symbol(symbol): symbol for symbol in symbols}
 
-        result: list[Quote] = []
+            result: list[Quote] = []
 
-        for _, row in data.iterrows():
+            for _, row in data.iterrows():
 
-            code = str(
-                row["代码"]
-            )
+                code = str(row["代码"])
 
-            original_symbol = symbol_map.get(
-                code
-            )
+                original_symbol = symbol_map.get(code)
 
-            if original_symbol is None:
-                continue
+                if original_symbol is None:
+                    continue
 
-            result.append(
-                self._convert_quote(
+                quote = self._convert_quote(
                     original_symbol,
                     row,
                 )
-            )
 
-        return result
+                result.append(quote)
+
+            return result
+
+        except Exception as exc:
+            print(f"[AkShare] 批量获取行情失败: {exc}")
+
+            return []
 
     # ==========================================================
     # K 线
     # ==========================================================
 
-    def get_kline(
+    def fetch_kline(
         self,
         symbol: str,
         interval: Interval = Interval.DAY_1,
@@ -262,22 +249,25 @@ class AkShareGateway(StockDataGateway):
         """
         获取历史 K 线。
 
-        支持日、周、月以及分钟周期。
+        支持：
+
+            1分钟
+            5分钟
+            15分钟
+            30分钟
+            60分钟
+            日线
+            周线
+            月线
         """
 
         self._ensure_started()
 
         code = self._normalize_symbol(symbol)
 
-        period = self._convert_interval(
-            interval
-        )
+        period = self._convert_interval(interval)
 
-        start_date = (
-            start_time.strftime("%Y%m%d")
-            if start_time
-            else "19900101"
-        )
+        start_date = start_time.strftime("%Y%m%d") if start_time else "19900101"
 
         end_date = (
             end_time.strftime("%Y%m%d")
@@ -285,169 +275,167 @@ class AkShareGateway(StockDataGateway):
             else datetime.now().strftime("%Y%m%d")
         )
 
-        data = ak.stock_zh_a_hist(
-            symbol=code,
-            period=period,
-            start_date=start_date,
-            end_date=end_date,
-            adjust="qfq",
-        )
-
-        if data is None or data.empty:
-            return []
-
-        result: list[Kline] = []
-
-        for _, row in data.iterrows():
-
-            result.append(
-                Kline(
-                    symbol=symbol,
-                    timestamp=self._parse_datetime(
-                        row["日期"]
-                    ),
-                    open=self._to_float(
-                        row["开盘"]
-                    ),
-                    high=self._to_float(
-                        row["最高"]
-                    ),
-                    low=self._to_float(
-                        row["最低"]
-                    ),
-                    close=self._to_float(
-                        row["收盘"]
-                    ),
-                    volume=self._to_float(
-                        row["成交量"]
-                    ),
-                    amount=self._to_float(
-                        row["成交额"]
-                    ),
-                )
+        try:
+            data = ak.stock_zh_a_hist(
+                symbol=code,
+                period=period,
+                start_date=start_date,
+                end_date=end_date,
+                adjust="qfq",
             )
 
-        result.sort(
-            key=lambda item: item.timestamp
-        )
+            if data is None or data.empty:
+                return []
 
-        if limit > 0:
-            result = result[-limit:]
+            result: list[Kline] = []
 
-        return result
+            for _, row in data.iterrows():
+
+                try:
+                    result.append(
+                        Kline(
+                            symbol=symbol,
+                            timestamp=self._parse_datetime(row["日期"]),
+                            interval=interval,
+                            open=self._to_float(row["开盘"]),
+                            high=self._to_float(row["最高"]),
+                            low=self._to_float(row["最低"]),
+                            close=self._to_float(row["收盘"]),
+                            volume=self._to_float(row["成交量"]),
+                            amount=self._to_float(row["成交额"]),
+                        )
+                    )
+
+                except Exception as exc:
+                    print(f"[AkShare] Kline 转换失败: {exc}")
+
+                    continue
+
+            result.sort(key=lambda item: item.timestamp)
+
+            if limit > 0:
+                result = result[-limit:]
+
+            return result
+
+        except Exception as exc:
+            print(f"[AkShare] 获取 K 线失败 " f"{symbol}: {exc}")
+
+            return []
 
     # ==========================================================
     # 估值
     # ==========================================================
 
-    def get_valuation(
+    def fetch_valuation(
         self,
         symbol: str,
-    ) -> Valuation:
+    ) -> Optional[Valuation]:
         """
-        获取股票估值数据。
+        获取股票估值。
 
-        包括：
+        AkShare 实时行情接口可以直接提供：
 
-            当前价格
+            最新价格
             总市值
             流通市值
-            PE
+            动态 PE
             PB
 
-        AkShare 的实时行情接口提供部分估值字段。
+        静态 PE 和 TTM PE 如果数据源没有提供，
+        则暂时保持 None。
         """
 
         self._ensure_started()
 
         code = self._normalize_symbol(symbol)
 
-        data = ak.stock_zh_a_spot_em()
+        try:
+            data = ak.stock_zh_a_spot_em()
 
-        if data is None or data.empty:
-            raise RuntimeError(
-                "AkShare 未返回估值数据"
-            )
+            if data is None or data.empty:
+                return None
 
-        row = data[
-            data["代码"].astype(str) == code
-        ]
+            row = data[data["代码"].astype(str) == code]
 
-        if row.empty:
-            raise ValueError(
-                f"未找到股票：{symbol}"
-            )
+            if row.empty:
+                return None
 
-        item = row.iloc[0]
+            item = row.iloc[0]
 
-        pe_dynamic = self._get_float(
-            item,
-            "市盈率-动态",
-        )
-
-        return Valuation(
-            symbol=symbol,
-            price=self._get_float(
+            price = self._get_float(
                 item,
                 "最新价",
-            ),
-            market_cap=self._get_float(
-                item,
-                "总市值",
-            ),
-            circulating_market_cap=self._get_float(
-                item,
-                "流通市值",
-            ),
-            pe_ttm=pe_dynamic,
-            pe_dynamic=pe_dynamic,
-            pe_static=None,
-            pb=self._get_float(
-                item,
-                "市净率",
-            ),
-            ps=None,
-        )
+            )
+
+            return Valuation(
+                symbol=symbol,
+                timestamp=datetime.now(),
+                price=price,
+                market_cap=self._get_float(
+                    item,
+                    "总市值",
+                ),
+                circulating_market_cap=self._get_float(
+                    item,
+                    "流通市值",
+                ),
+                pe_dynamic=self._get_float(
+                    item,
+                    "市盈率-动态",
+                ),
+                pe_ttm=None,
+                pe_static=None,
+                pb=self._get_float(
+                    item,
+                    "市净率",
+                ),
+            )
+
+        except Exception as exc:
+            print(f"[AkShare] 获取估值失败 " f"{symbol}: {exc}")
+
+            return None
 
     # ==========================================================
     # 财务数据
     # ==========================================================
 
-    def get_financial(
+    def fetch_financial(
         self,
         symbol: str,
-    ) -> Financial:
+    ) -> Optional[Financial]:
         """
         获取股票财务数据。
 
-        使用 AkShare 财务分析指标接口。
+        使用：
 
-        这里负责：
-
-            AkShare 原始字段
-                    ↓
-            Financial 标准模型
+            ak.stock_financial_analysis_indicator()
         """
 
         self._ensure_started()
 
         code = self._normalize_symbol(symbol)
 
-        data = ak.stock_financial_analysis_indicator(
-            symbol=code
-        )
-
-        if data is None or data.empty:
-            raise RuntimeError(
-                f"未获取到股票财务数据：{symbol}"
+        try:
+            data = ak.stock_financial_analysis_indicator(
+                symbol=code,
             )
 
-        row = data.iloc[0]
+            if data is None or data.empty:
+                return None
 
-        return self._convert_financial(
-            symbol,
-            row,
-        )
+            row = data.iloc[0]
+
+            return self._convert_financial(
+                symbol,
+                row,
+            )
+
+        except Exception as exc:
+            print(f"[AkShare] 获取财务数据失败 " f"{symbol}: {exc}")
+
+            return None
 
     # ==========================================================
     # Financial 转换
@@ -459,12 +447,7 @@ class AkShareGateway(StockDataGateway):
         row: Any,
     ) -> Financial:
         """
-        将 AkShare 财务数据转换成 Financial。
-
-        注意：
-
-        Financial 的具体字段必须与 models.financial
-        中的定义保持一致。
+        AkShare 财务数据 → Financial。
         """
 
         values = {
@@ -500,13 +483,11 @@ class AkShareGateway(StockDataGateway):
 
         except TypeError as exc:
             raise RuntimeError(
-                "Financial 模型字段与 AkShareGateway "
-                "的财务字段映射不一致。"
-                f"当前映射字段：{list(values.keys())}"
+                "Financial 模型字段与 " "AkShareGateway 映射不一致。"
             ) from exc
 
     # ==========================================================
-    # 数据转换
+    # Quote 转换
     # ==========================================================
 
     @classmethod
@@ -516,7 +497,7 @@ class AkShareGateway(StockDataGateway):
         row: Any,
     ) -> Quote:
         """
-        将 AkShare 行情转换为 Quote。
+        AkShare 行情数据 → Quote。
         """
 
         return Quote(
@@ -525,17 +506,14 @@ class AkShareGateway(StockDataGateway):
                 row,
                 "名称",
             ),
+            timestamp=datetime.now(),
             price=cls._get_float(
                 row,
                 "最新价",
             ),
-            change=cls._get_float(
+            prev_close=cls._get_float(
                 row,
-                "涨跌额",
-            ),
-            change_percent=cls._get_float(
-                row,
-                "涨跌幅",
+                "昨收",
             ),
             open=cls._get_float(
                 row,
@@ -549,6 +527,14 @@ class AkShareGateway(StockDataGateway):
                 row,
                 "最低",
             ),
+            change=cls._get_float(
+                row,
+                "涨跌额",
+            ),
+            change_percent=cls._get_float(
+                row,
+                "涨跌幅",
+            ),
             volume=cls._get_float(
                 row,
                 "成交量",
@@ -561,14 +547,46 @@ class AkShareGateway(StockDataGateway):
                 row,
                 "换手率",
             ),
+            volume_ratio=cls._get_float(
+                row,
+                "量比",
+            ),
             market_cap=cls._get_float(
                 row,
                 "总市值",
             ),
+            circulating_market_cap=cls._get_float(
+                row,
+                "流通市值",
+            ),
+            pe_dynamic=cls._get_float(
+                row,
+                "市盈率-动态",
+            ),
+            pb=cls._get_float(
+                row,
+                "市净率",
+            ),
+            high_limit=cls._get_float(
+                row,
+                "涨停",
+            ),
+            low_limit=cls._get_float(
+                row,
+                "跌停",
+            ),
+            average_price=cls._get_float(
+                row,
+                "均价",
+            ),
+            amplitude=cls._get_float(
+                row,
+                "振幅",
+            ),
         )
 
     # ==========================================================
-    # 工具函数
+    # 股票代码
     # ==========================================================
 
     @staticmethod
@@ -576,19 +594,19 @@ class AkShareGateway(StockDataGateway):
         symbol: str,
     ) -> str:
         """
-        将统一证券代码转换成 AkShare 代码。
+        标准化股票代码。
 
         例如：
 
-            600519.SH → 600519
-            000001.SZ → 000001
+            600519
+            600519.SH
+
+        最终统一为：
+
+            600519
         """
 
-        value = (
-            symbol
-            .strip()
-            .upper()
-        )
+        value = symbol.strip().upper()
 
         if "." in value:
             value = value.split(
@@ -602,6 +620,9 @@ class AkShareGateway(StockDataGateway):
     def _detect_market(
         code: str,
     ) -> str:
+        """
+        根据股票代码判断市场。
+        """
 
         if code.startswith(
             (
@@ -637,43 +658,38 @@ class AkShareGateway(StockDataGateway):
 
         return "UNKNOWN"
 
+    # ==========================================================
+    # Interval
+    # ==========================================================
+
     @staticmethod
     def _convert_interval(
         interval: Interval,
     ) -> str:
+        """
+        项目 Interval → AkShare period。
+        """
 
-        value = str(interval).lower()
+        mapping = {
+            Interval.MINUTE_1: "1",
+            Interval.MINUTE_5: "5",
+            Interval.MINUTE_15: "15",
+            Interval.MINUTE_30: "30",
+            Interval.MINUTE_60: "60",
+            Interval.DAY_1: "daily",
+            Interval.WEEK_1: "weekly",
+            Interval.MONTH_1: "monthly",
+        }
 
-        if interval == Interval.DAY_1:
-            return "daily"
+        try:
+            return mapping[interval]
 
-        if "day" in value:
-            return "daily"
+        except KeyError:
+            raise ValueError(f"AkShare 不支持的 K 线周期：{interval}")
 
-        if "week" in value:
-            return "weekly"
-
-        if "month" in value:
-            return "monthly"
-
-        if "60" in value:
-            return "60"
-
-        if "30" in value:
-            return "30"
-
-        if "15" in value:
-            return "15"
-
-        if "5" in value:
-            return "5"
-
-        if "1" in value:
-            return "1"
-
-        raise ValueError(
-            f"AkShare 不支持的 K 线周期：{interval}"
-        )
+    # ==========================================================
+    # DataFrame / Row 工具
+    # ==========================================================
 
     @staticmethod
     def _get_value(
@@ -681,6 +697,9 @@ class AkShareGateway(StockDataGateway):
         column: str,
         default: Any = None,
     ) -> Any:
+        """
+        安全读取字段。
+        """
 
         try:
             value = row[column]
@@ -704,6 +723,9 @@ class AkShareGateway(StockDataGateway):
         column: str,
         default: Optional[float] = None,
     ) -> Optional[float]:
+        """
+        安全读取浮点数。
+        """
 
         value = cls._get_value(
             row,
@@ -721,6 +743,9 @@ class AkShareGateway(StockDataGateway):
         value: Any,
         default: Optional[float] = None,
     ) -> Optional[float]:
+        """
+        转换成 float。
+        """
 
         if value is None:
             return default
@@ -738,6 +763,9 @@ class AkShareGateway(StockDataGateway):
     def _parse_datetime(
         value: Any,
     ) -> datetime:
+        """
+        转换时间。
+        """
 
         if isinstance(
             value,
@@ -751,15 +779,138 @@ class AkShareGateway(StockDataGateway):
         ):
             return value.to_pydatetime()
 
-        return datetime.fromisoformat(
-            str(value)
-        )
+        return datetime.fromisoformat(str(value))
+
+    # ==========================================================
+    # 状态
+    # ==========================================================
 
     def _ensure_started(self) -> None:
+        """
+        确保数据源已经启动。
+        """
 
         if not self._started:
-
             raise RuntimeError(
-                "AkShare 数据源尚未启动，"
-                "请先调用 DataManager.start()"
+                "AkShare 数据源尚未启动，" "请先调用 DataManager.start()"
             )
+
+
+def main() -> None:
+    """
+    AkShare 网关测试。
+    """
+
+    symbol = "600519"
+
+    gateway = AkShareGateway()
+
+    try:
+        print()
+        print("AkShare Gateway Test")
+
+        # ------------------------------------------------------
+        # 1. 登录
+        # ------------------------------------------------------
+
+        print()
+        print("[1] 登录")
+
+        if not gateway.login():
+            print("❌ 登录失败")
+            return
+
+        print("✅ 登录成功")
+
+        # ------------------------------------------------------
+        # 2. 健康检查
+        # ------------------------------------------------------
+
+        print()
+        print("[2] 健康检查")
+
+        print("✅ 正常" if gateway.health_check() else "❌ 异常")
+
+        # ------------------------------------------------------
+        # 3. 股票
+        # ------------------------------------------------------
+
+        print()
+        print(f"[3] 股票信息: {symbol}")
+
+        stock = gateway.fetch_stock(symbol)
+
+        print(stock)
+
+        # ------------------------------------------------------
+        # 4. Quote
+        # ------------------------------------------------------
+
+        print()
+        print(f"[4] 最新行情: {symbol}")
+
+        quote = gateway.fetch_quote(symbol)
+
+        print(quote)
+
+        # ------------------------------------------------------
+        # 5. K 线
+        # ------------------------------------------------------
+
+        print()
+        print(f"[5] K 线: {symbol}")
+
+        klines = gateway.fetch_kline(
+            symbol=symbol,
+            interval=Interval.DAY_1,
+            limit=10,
+        )
+
+        print(f"获取 {len(klines)} 条 K 线")
+
+        for item in klines:
+            print(item)
+
+        # ------------------------------------------------------
+        # 6. 财务
+        # ------------------------------------------------------
+
+        print()
+        print(f"[6] 财务: {symbol}")
+
+        financial = gateway.fetch_financial(symbol)
+
+        print(financial)
+
+        # ------------------------------------------------------
+        # 7. 估值
+        # ------------------------------------------------------
+
+        print()
+        print(f"[7] 估值: {symbol}")
+
+        valuation = gateway.fetch_valuation(symbol)
+
+        print(valuation)
+
+        print()
+        print("✅ AkShare Gateway 测试完成")
+
+    except KeyboardInterrupt:
+        print()
+        print("⚠️ 用户中断")
+
+    except Exception as exc:
+        print()
+        print(f"❌ 测试失败: {exc}")
+
+        import traceback
+
+        traceback.print_exc()
+
+    finally:
+        gateway.logout()
+
+
+if __name__ == "__main__":
+    main()

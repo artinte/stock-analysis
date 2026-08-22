@@ -1,5 +1,3 @@
-# gateways/models/constants.py
-
 from enum import Enum
 
 
@@ -23,3 +21,15 @@ class Interval(str, Enum):
     WEEK_1 = "1w"
 
     MONTH_1 = "1M"
+
+
+class PEType(str, Enum):
+    """
+    市盈率类型。
+    """
+
+    STATIC = "static"
+
+    DYNAMIC = "dynamic"
+
+    TTM = "ttm"
