@@ -386,7 +386,7 @@ if __name__ == "__main__":
 
         ma = calculate_moving_averages(df)
         macd = calculate_macd(df)
-        rsi = calculate_rsi(df)
+        rsi = calculate_rsi(df, 12)
         williams = calculate_williams(df)
         boll = calculate_bollinger_bands(df)
 
@@ -418,13 +418,11 @@ if __name__ == "__main__":
 
         print("✓ RSI")
         print(
-            f"  RSI6  = {fmt(rsi.get('RSI6'))}    "
-            f"RSI12 = {fmt(rsi.get('RSI12'))}    "
-            f"RSI24 = {fmt(rsi.get('RSI24'))}"
+            f"  RSI12  = {fmt(rsi)}"
         )
 
-        print("✓ Williams %R")
-        print(f"  Williams %R = {fmt(williams.get('Williams %R'))}")
+        print("✓ Williams")
+        print(f"  Williams = {fmt(williams)}")
 
         print("✓ Bollinger Bands")
         print(

@@ -40,7 +40,7 @@ def calculate_bollinger_bands(
             upper.iloc[-1],
             2,
         ),
-        "mid": round(
+        "middle": round(
             mid.iloc[-1],
             2,
         ),
