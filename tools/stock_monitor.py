@@ -1,4 +1,3 @@
-
 from gateways import DataManager, GatewayRegistry
 
 """
@@ -6,110 +5,193 @@ from gateways import DataManager, GatewayRegistry
 """
 
 
+def print_stock_report(
+    stock,
+    quote,
+    valuation,
+    financial,
+) -> None:
+
+    # ==========================================================
+    # 股票基本信息
+    # ==========================================================
+
+    name = stock.get("name", "--") if stock else "--"
+
+    symbol = stock.get("symbol", "--") if stock else "--"
+
+    print("=" * 40)
+
+    print(f"股票名称: {name} ({symbol})")
+
+    print(f"更新时间: " f"{quote.timestamp if quote else '--'}")
+
+    print("-" * 40)
+
+    # ==========================================================
+    # 行情
+    # ==========================================================
+
+    print(
+        f"现价: {quote.price if quote else '--'}"
+        f"      "
+        f"开盘: {quote.open if quote else '--'}"
+    )
+
+    print(
+        f"最高: {quote.high if quote else '--'}"
+        f"     "
+        f"最低: {quote.low if quote else '--'}"
+    )
+
+    print(
+        f"涨跌: {quote.change if quote else '--'}"
+        f"      "
+        f"幅度: {quote.change_percent if quote else '--'}%"
+    )
+
+    print("-" * 40)
+
+    # ==========================================================
+    # 市值
+    # ==========================================================
+
+    print(f"总市值: " f"{quote.market_cap if quote else '--'}")
+
+    print(f"流通市值: " f"{quote.circulating_market_cap if quote else '--'}")
+
+    print("-" * 40)
+
+    # ==========================================================
+    # 财务数据
+    # ==========================================================
+
+    revenue = "--"
+    revenue_yoy = "--"
+
+    if financial is not None:
+
+        try:
+            if hasattr(financial, "columns"):
+
+                # 根据实际财务表字段获取
+                if "REVENUE" in financial.columns:
+                    revenue = financial["REVENUE"].iloc[-1]
+
+                if "REVENUE_YOY" in financial.columns:
+                    revenue_yoy = financial["REVENUE_YOY"].iloc[-1]
+
+        except Exception:
+            pass
+
+    print(f"营业总收入: " f"{revenue}" f"  " f"(同比: {revenue_yoy})")
+
+    # ==========================================================
+    # 估值
+    # ==========================================================
+
+    print(f"PE(TTM): " f"{valuation.pe_ttm if valuation else '--'}")
+
+    print(f"PE(静态): " f"{valuation.pe_static if valuation else '--'}")
+
+    print(f"PE(动态): " f"{valuation.pe_dynamic if valuation else '--'}")
+
+    print("-" * 40)
+
+    # ==========================================================
+    # 成交数据
+    # ==========================================================
+
+    print(
+        f"成交量: "
+        f"{quote.volume if quote else '--'}"
+        f" 股"
+        f"      "
+        f"成交额: "
+        f"{quote.amount if quote else '--'}"
+        f" 亿元"
+    )
+
+    print(
+        f"换手率: "
+        f"{quote.turnover_rate if quote else '--'}"
+        f"        "
+        f"量比: "
+        f"{quote.volume_ratio if quote else '--'}"
+    )
+
+    print("-" * 40)
+
+    # ==========================================================
+    # 涨跌停
+    # ==========================================================
+
+    print(
+        f"涨停: "
+        f"{quote.high_limit if quote else '--'}"
+        f"      "
+        f"跌停: "
+        f"{quote.low_limit if quote else '--'}"
+    )
+
+    # Quote 当前没有 average_price / amplitude
+    print(f"均价: --" f"      " f"振幅: --")
+
+    print("-" * 40)
+
+    # ==========================================================
+    # 技术指标
+    # ==========================================================
+
+    print("移动平均价 (MA):")
+
+    print("MA3:  --")
+    print("MA5:  --")
+    print("MA10: --")
+    print("MA20: --")
+    print("MA30: --")
+    print("MA60: --")
+
+    print("-" * 40)
+
+    print("威廉指标(14): --")
+    print("乖离率(5): --")
+
+    print("=" * 40)
+
+
 def main():
     manager = DataManager(
         provider_name="yinhe",
     )
 
-    print(manager)
-    print(GatewayRegistry.names())
-    
-    STOCK_NAME = "士兰微"
-    
+    manager = DataManager(
+        provider_name="yinhe",
+    )
 
+    symbol = "600460"
+
+    if not manager.start():
+        raise RuntimeError("数据源启动失败")
+
+    try:
+        stock = manager.get_stock(symbol)
+        quote = manager.get_quote(symbol)
+        valuation = manager.get_valuation(symbol)
+        financial = manager.get_financial(symbol)
+
+        print_stock_report(
+            stock=stock,
+            quote=quote,
+            valuation=valuation,
+            financial=financial,
+        )
+    except Exception as e:
+        print(f"股票数据获取失败: {e}")
+
+    finally:
+        manager.stop()
 
 
 if __name__ == "__main__":
     main()
-
-# import AmazingData
-# from dotenv import dotenv_values
-# from models.stock_detail import StockDetail
-
-# TARGET_CODE = "002371.SZ"
-# STOCK_NAME = "北方华创"
-# # TARGET_CODE = "600460.SH"
-# # STOCK_NAME = "士兰微"
-
-# config = dotenv_values("private_config.txt")
-# AmazingData.login(
-#     username=config["username"],
-#     password=config["password"],
-#     host=config["host"],
-#     port=int(config["port"]),
-# )
-
-# info_data_object = AmazingData.InfoData()
-# base_data_object = AmazingData.BaseData()
-# calendar = base_data_object.get_calendar()
-# market_data_object = AmazingData.MarketData(calendar)
-
-# kline_dict = market_data_object.query_kline(
-#     code_list=[TARGET_CODE],
-#     begin_date=calendar[-2],
-#     end_date=calendar[-1],
-#     period=AmazingData.constant.Period.day.value,  # 日线
-# )
-
-# df = kline_dict[TARGET_CODE]
-# if len(df) >= 2:
-#     prev_close = df.iloc[-2]["close"]
-#     today_data = df.iloc[-1].to_dict()
-#     stock_instance = StockDetail.from_dict_data(
-#         STOCK_NAME, today_data, last_close=prev_close
-#     )
-# else:
-#     print("警告：数据行数不足，无法获取昨收价。")
-#     stock_instance = StockDetail.from_dict_data(STOCK_NAME, df.iloc[-1].to_dict())
-
-
-# equity_structure = info_data_object.get_equity_structure(
-#     [TARGET_CODE], local_path=config["local_path"], is_local=False
-# )
-
-# # 获取总市值
-# total_share = 0
-# float_share = 0
-# if not equity_structure.empty:
-#     equity_structure = equity_structure.sort_values("CHANGE_DATE")
-#     latest_row = equity_structure.iloc[-1]
-#     total_share = latest_row["TOT_SHARE"]
-#     float_share = latest_row["FLOAT_SHARE"]
-
-# stock_instance.update_equity(total_share, float_share)
-
-# raw_income_dict = info_data_object.get_income(
-#     code_list=[TARGET_CODE],
-#     local_path=config["local_path"],
-#     is_local=False,
-#     begin_date="20220101",
-#     end_date=calendar[-1],
-# )
-# stock_instance.calculate_pe(raw_income_dict)
-# stock_instance.calculate_ps(raw_income_dict)
-
-# # 计算 60日，30日，20日，10日，5日，3日股价均值
-# lookback = 100
-# begin_date = calendar[-lookback]
-# kline_data = market_data_object.query_kline(
-#     code_list=[stock_instance.code],
-#     begin_date=begin_date,
-#     end_date=calendar[-1],
-#     period=AmazingData.constant.Period.day.value,
-# )[stock_instance.code]
-
-# stock_instance.calculate_moving_averages(kline_data)
-# stock_instance.calculate_volume_ratio(kline_data)
-# stock_instance.calculate_williams(kline_data, n=14)
-# stock_instance.calculate_bias()
-
-# stock_instance.calculate_moving_averages(kline_data)
-# stock_instance.calculate_volume_ratio(kline_data)
-# stock_instance.calculate_williams(kline_data, n=14)
-# stock_instance.calculate_bias()
-
-# stock_instance.calculate_macd(kline_data)
-# stock_instance.calculate_rsi(kline_data, period=14)
-# stock_instance.calculate_bollinger_bands(kline_data, period=20, std_dev=2)
-
-# stock_instance.display()

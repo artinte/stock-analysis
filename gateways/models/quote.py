@@ -6,9 +6,10 @@ from typing import Optional
 @dataclass(slots=True)
 class Quote:
     """
-    股票实时行情。
+    股票行情快照。
 
-    用于描述某一时刻的市场行情。
+    当前银河数据源使用最近交易日 K 线构造行情，
+    因此 price 表示最近交易日收盘价，而非实时成交价。
     """
 
     symbol: str
@@ -16,6 +17,10 @@ class Quote:
     name: Optional[str] = None
 
     timestamp: Optional[datetime] = None
+
+    # ----------------------------------------------------------
+    # 价格
+    # ----------------------------------------------------------
 
     price: Optional[float] = None
 
@@ -27,9 +32,17 @@ class Quote:
 
     low: Optional[float] = None
 
+    # ----------------------------------------------------------
+    # 涨跌
+    # ----------------------------------------------------------
+
     change: Optional[float] = None
 
     change_percent: Optional[float] = None
+
+    # ----------------------------------------------------------
+    # 成交
+    # ----------------------------------------------------------
 
     volume: Optional[float] = None
 
@@ -39,9 +52,21 @@ class Quote:
 
     volume_ratio: Optional[float] = None
 
+    # ----------------------------------------------------------
+    # 股本 / 市值
+    # ----------------------------------------------------------
+
+    total_shares: Optional[float] = None
+
+    float_shares: Optional[float] = None
+
     market_cap: Optional[float] = None
 
     circulating_market_cap: Optional[float] = None
+
+    # ----------------------------------------------------------
+    # 估值
+    # ----------------------------------------------------------
 
     pe_dynamic: Optional[float] = None
 
@@ -49,6 +74,18 @@ class Quote:
 
     pb: Optional[float] = None
 
+    # ----------------------------------------------------------
+    # 涨跌停
+    # ----------------------------------------------------------
+
     high_limit: Optional[float] = None
 
     low_limit: Optional[float] = None
+
+    # ----------------------------------------------------------
+    # 其他行情指标
+    # ----------------------------------------------------------
+
+    average_price: Optional[float] = None
+
+    amplitude: Optional[float] = None

@@ -208,7 +208,6 @@ class DataManager:
         provider_name: str = DEFAULT_PROVIDER,
         config: Optional[dict] = None,
     ):
-
         self.provider = provider_name.strip().lower()
 
         self.config = config or {}
@@ -219,15 +218,12 @@ class DataManager:
         )
 
     def start(self) -> bool:
-
         return self.gateway.login(self.config)
 
     def stop(self) -> None:
-
         self.gateway.logout()
 
     def health_check(self) -> bool:
-
         return self.gateway.health_check()
 
     def get_stock(
@@ -270,11 +266,16 @@ class DataManager:
     ):
         return self.gateway.fetch_valuation(symbol)
 
+    def get_financial(
+        self,
+        symbol: str,
+    ):
+        return self.gateway.fetch_financial(symbol)
+
     @classmethod
     def available_providers(
         cls,
     ) -> list[str]:
-
         return GatewayRegistry.names()
 
 

@@ -41,28 +41,28 @@ class StockDataGateway(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_stock(
+    def fetch_stock(
         self,
         symbol: str,
     ):
         raise NotImplementedError
 
     @abstractmethod
-    def get_quote(
+    def fetch_quote(
         self,
         symbol: str,
     ):
         raise NotImplementedError
 
     @abstractmethod
-    def get_quotes(
+    def fetch_quotes(
         self,
         symbols: list[str],
     ):
         raise NotImplementedError
 
     @abstractmethod
-    def get_kline(
+    def fetch_kline(
         self,
         symbol: str,
         interval: Interval = Interval.DAY_1,
@@ -73,14 +73,14 @@ class StockDataGateway(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_valuation(
+    def fetch_valuation(
         self,
         symbol: str,
     ):
         raise NotImplementedError
 
     @abstractmethod
-    def get_financial(
+    def fetch_financial(
         self,
         symbol: str,
     ):
