@@ -161,12 +161,21 @@ def print_stock_report(
 
 
 def main():
-    manager = DataManager(
-        provider_name="yinhe",
-    )
+    print("可用数据源：")
+
+    for name in GatewayRegistry.names():
+        gateway_class = GatewayRegistry.get(name)
+
+        display_name = getattr(
+            gateway_class,
+            "display_name",
+            name,
+        )
+
+        print(f"  {name:<10} {display_name}")
 
     manager = DataManager(
-        provider_name="yinhe",
+        provider_name="tencent",
     )
 
     symbol = "600460"
