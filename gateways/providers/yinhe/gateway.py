@@ -14,6 +14,7 @@ from gateways.models.kline import Kline
 from gateways.models.valuation import Valuation
 from gateways.models.quote import Quote
 from gateways.registry import GatewayRegistry
+from gateways.models.constants import SHARES_PER_10K
 
 """
 银河证券数据网关。
@@ -449,10 +450,8 @@ class YinheGateway(StockDataGateway):
             # --------------------------------------------------
 
             total_shares = None
-            float_shares = None
-
+            circulating_shares = None
             try:
-
                 equity_structure = self.info_data.get_equity_structure(
                     [formatted_symbol],
                     local_path=self.local_path,
@@ -460,48 +459,44 @@ class YinheGateway(StockDataGateway):
                 )
 
                 if equity_structure is not None and not equity_structure.empty:
-
                     equity_structure = equity_structure.sort_values("CHANGE_DATE")
-
                     latest_row = equity_structure.iloc[-1]
 
                     if "TOT_SHARE" in equity_structure.columns:
-                        total_shares = float(latest_row["TOT_SHARE"])
+                        # 原始数据是万为单位
+                        total_shares = float(latest_row["TOT_SHARE"]) * SHARES_PER_10K
 
-                    # AmazingData 如果存在流通股字段，
-                    # 根据实际字段读取。
+                    # 如果存在流通股字段，根据实际字段读取。
                     if "FLOAT_SHARE" in equity_structure.columns:
-
-                        float_shares = float(latest_row["FLOAT_SHARE"])
-
+                        circulating_shares = (
+                            float(latest_row["FLOAT_SHARE"]) * SHARES_PER_10K
+                        )
                     elif "CIRC_SHARE" in equity_structure.columns:
-
-                        float_shares = float(latest_row["CIRC_SHARE"])
-
+                        circulating_shares = (
+                            float(latest_row["CIRC_SHARE"]) * SHARES_PER_10K
+                        )
             except Exception as e:
-
                 print(f"[银河网关] 获取股本失败 " f"{formatted_symbol}: {e}")
 
             # --------------------------------------------------
             # 6. 市值
             # --------------------------------------------------
 
+            # 总市值计算：
+            # 总市值 = 总股本 × 当前股价
+            # 单位：亿元（取决于 total_shares 和 price 的单位）
             market_cap = None
+
+            # 流通市值计算：
+            # 流通市值 = 流通股本 × 当前股价
+            # 单位：亿元（取决于 circulating_shares 和 price 的单位）
             circulating_market_cap = None
 
             if total_shares is not None:
+                market_cap = total_shares * price
 
-                market_cap = round(
-                    total_shares * price / 10000,
-                    2,
-                )
-
-            if float_shares is not None:
-
-                circulating_market_cap = round(
-                    float_shares * price / 10000,
-                    2,
-                )
+            if circulating_shares is not None:
+                circulating_market_cap = circulating_shares * price
 
             # --------------------------------------------------
             # 7. 换手率
@@ -510,12 +505,12 @@ class YinheGateway(StockDataGateway):
             turnover = None
 
             if (
-                float_shares is not None
-                and float_shares > 0
+                circulating_shares is not None
+                and circulating_shares > 0
                 and latest.volume is not None
             ):
 
-                turnover = latest.volume / float_shares * 100
+                turnover = latest.volume / circulating_shares * 100
 
             # --------------------------------------------------
             # 8. 均价
@@ -644,7 +639,7 @@ class YinheGateway(StockDataGateway):
                 turnover_rate=turnover,
                 volume_ratio=None,
                 total_shares=total_shares,
-                float_shares=float_shares,
+                circulating_shares=circulating_shares,
                 market_cap=market_cap,
                 circulating_market_cap=(circulating_market_cap),
                 pe_dynamic=pe_dynamic,

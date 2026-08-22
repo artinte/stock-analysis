@@ -1,6 +1,7 @@
 import argparse
 
 from gateways import DataManager, GatewayRegistry
+from gateways.models.constants import SHARES_PER_100M
 
 """
 股票实时监控与数据源测试工具。
@@ -133,20 +134,31 @@ def print_stock_report(
     )
 
     print(
-        f"涨跌: {quote.change if quote else '--'}"
-        f"      "
-        f"幅度: {quote.change_percent if quote else '--'}%"
+        f"涨跌: {quote.change:.2f}      " f"幅度: {quote.change_percent:.2f}%"
+        if quote
+        else "涨跌: --      幅度: --%"
     )
 
     print("-" * 40)
 
-    # ==========================================================
     # 市值
-    # ==========================================================
+    print(
+        f"总股本: "
+        f"{quote.total_shares / SHARES_PER_100M:.2f} 亿股"
+        f"   总市值: "
+        f"{quote.market_cap / SHARES_PER_100M:.2f} 亿元"
+        if quote
+        else "总股本: -- 亿股   总市值: -- 亿元"
+    )
 
-    print(f"总市值: " f"{quote.market_cap if quote else '--'}")
-
-    print(f"流通市值: " f"{quote.circulating_market_cap if quote else '--'}")
+    print(
+        f"流通股: "
+        f"{quote.circulating_shares / SHARES_PER_100M:.2f} 亿股"
+        f"   流通值: "
+        f"{quote.circulating_market_cap / SHARES_PER_100M:.2f} 亿元"
+        if quote
+        else "流通股: -- 亿股   流通值: -- 亿元"
+    )
 
     print("-" * 40)
 

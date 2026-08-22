@@ -187,7 +187,7 @@ class Quote:
     总股本。
     """
 
-    float_shares: Optional[float] = None
+    circulating_shares: Optional[float] = None
     """
     流通股本。
     """

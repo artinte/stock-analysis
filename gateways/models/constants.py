@@ -33,3 +33,7 @@ class PEType(str, Enum):
     DYNAMIC = "dynamic"
 
     TTM = "ttm"
+
+
+SHARES_PER_10K = 10_000
+SHARES_PER_100M = 100_000_000
