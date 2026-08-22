@@ -22,9 +22,9 @@ def calculate_macd(
     if len(df) < slow + signal:
 
         return {
-            "dif": 0.0,
-            "dea": 0.0,
-            "hist": 0.0,
+            "DIF": 0.0,
+            "DEA": 0.0,
+            "MACD": 0.0,
         }
 
     close = df.sort_index()["close"]
@@ -49,16 +49,7 @@ def calculate_macd(
     hist = (dif - dea) * 2
 
     return {
-        "dif": round(
-            dif.iloc[-1],
-            2,
-        ),
-        "dea": round(
-            dea.iloc[-1],
-            2,
-        ),
-        "hist": round(
-            hist.iloc[-1],
-            2,
-        ),
+        "DIF": round(dif.iloc[-1], 2),
+        "DEA": round(dea.iloc[-1], 2),
+        "MACD": round(hist.iloc[-1], 2),
     }

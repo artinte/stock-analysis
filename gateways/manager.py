@@ -347,15 +347,15 @@ if __name__ == "__main__":
         print("\n[2] 日 K 线")
 
         end_time = datetime.datetime.now()
-        
-        start_time = end_time - datetime.timedelta(days=120)
+
+        start_time = end_time - datetime.timedelta(days=720)
 
         klines = manager.get_kline(
             symbol=symbol,
             interval=Interval.DAY_1,
             start_time=start_time,
             end_time=end_time,
-            limit=120,
+            limit=720,
         )
 
         print(f"共获取 {len(klines)} 条 K 线")
@@ -376,6 +376,11 @@ if __name__ == "__main__":
             ]
         )
 
+        # 按时间排序，并将 timestamp 作为索引
+        df["timestamp"] = pandas.to_datetime(df["timestamp"])
+        df = df.sort_values("timestamp")
+        df = df.set_index("timestamp")
+
         # 4. 技术指标
         print("\n[3] 计算技术指标")
 
@@ -385,11 +390,48 @@ if __name__ == "__main__":
         williams = calculate_williams(df)
         boll = calculate_bollinger_bands(df)
 
+        def fmt(value) -> str:
+            """格式化指标数值。"""
+            if value is None:
+                return "--"
+
+            return f"{float(value):.2f}"
+
         print("✓ MA")
+        print(
+            f"  MA3  = {fmt(ma.get('MA3'))}    "
+            f"MA5  = {fmt(ma.get('MA5'))}    "
+            f"MA10 = {fmt(ma.get('MA10'))}"
+        )
+        print(
+            f"  MA20 = {fmt(ma.get('MA20'))}    "
+            f"MA30 = {fmt(ma.get('MA30'))}    "
+            f"MA60 = {fmt(ma.get('MA60'))}"
+        )
+
         print("✓ MACD")
+        print(
+            f"  DIF  = {fmt(macd.get('DIF'))}    "
+            f"DEA  = {fmt(macd.get('DEA'))}    "
+            f"MACD = {fmt(macd.get('MACD'))}"
+        )
+
         print("✓ RSI")
+        print(
+            f"  RSI6  = {fmt(rsi.get('RSI6'))}    "
+            f"RSI12 = {fmt(rsi.get('RSI12'))}    "
+            f"RSI24 = {fmt(rsi.get('RSI24'))}"
+        )
+
         print("✓ Williams %R")
+        print(f"  Williams %R = {fmt(williams.get('Williams %R'))}")
+
         print("✓ Bollinger Bands")
+        print(
+            f"  Upper  = {fmt(boll.get('upper'))}    "
+            f"Middle = {fmt(boll.get('middle'))}    "
+            f"Lower  = {fmt(boll.get('lower'))}"
+        )
 
         # 5. 合并所有技术指标
         print("\n[4] 技术指标结果")
