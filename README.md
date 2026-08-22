@@ -25,14 +25,12 @@
 * [项目结构](#project-structure)
 
   * [crawler](#crawler)
-  * [gateways](#gateways)
   * [docs](#docs)
-  * [utils](#utils)
+  * [gateways](#gateways)
+  * [gui](#gui)
+  * [tests](#tests)
   * [tools](#tools)
-  * [stock_detail.py](#stock-detail)
-  * [stock_strategy.py](#stock-strategy)
-  * [stock_monitor.py](#stock-monitor)
-  * [stock_predict.py](#stock-predict)
+  * [utils](#utils)
 
 * [系统安装](#installation)
 
