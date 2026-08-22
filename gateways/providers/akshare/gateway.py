@@ -5,15 +5,15 @@ from typing import Any, Optional
 
 import akshare as ak
 
-from gateway import StockDataGateway
-from registry import GatewayRegistry
+from gateways.gateway import StockDataGateway
+from gateways.registry import GatewayRegistry
 
-from models.constants import Interval
-from models.stock import Stock
-from models.quote import Quote
-from models.kline import Kline
-from models.valuation import Valuation
-from models.financial import Financial
+from gateways.models.constants import Interval
+from gateways.models.stock import Stock
+from gateways.models.quote import Quote
+from gateways.models.kline import Kline
+from gateways.models.valuation import Valuation
+from gateways.models.financial import Financial
 
 
 @GatewayRegistry.register("akshare")

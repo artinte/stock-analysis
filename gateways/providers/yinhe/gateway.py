@@ -9,11 +9,11 @@ import pandas
 import AmazingData
 from dotenv import load_dotenv
 
-from gateway import StockDataGateway
-from models.constants import Interval
-from models.kline import Kline
-from models.valuation import Valuation
-from registry import GatewayRegistry
+from gateways.gateway import StockDataGateway
+from gateways.models.constants import Interval
+from gateways.models.kline import Kline
+from gateways.models.valuation import Valuation
+from gateways.registry import GatewayRegistry
 
 """
 银河证券数据网关。

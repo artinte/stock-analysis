@@ -1,12 +1,11 @@
 import os
-
-from dotenv import load_dotenv
 import pandas
-import providers
 from typing import Optional
+from dotenv import load_dotenv
 
-from gateway import StockDataGateway
-from registry import GatewayRegistry
+from gateways import providers
+from gateways.gateway import StockDataGateway
+from gateways.registry import GatewayRegistry
 
 """
 

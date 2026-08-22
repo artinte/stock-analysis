@@ -11,5 +11,16 @@ Provider 的注册由各自的 gateway.py
 通过 GatewayRegistry 装饰器自动完成。
 """
 
-from providers.yinhe.gateway import YinheGateway
-from providers.akshare.gateway import AkShareGateway
+"""
+内置股票数据源。
+
+导入各个 Gateway，使其注册装饰器自动执行。
+"""
+
+from .akshare.gateway import AkShareGateway
+from .yinhe.gateway import YinheGateway
+
+__all__ = [
+    "AkShareGateway",
+    "YinheGateway",
+]

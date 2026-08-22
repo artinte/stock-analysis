@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Optional
 
-from models.constants import Interval
+from gateways.models.constants import Interval
 
 
 class StockDataGateway(ABC):
