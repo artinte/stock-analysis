@@ -4,8 +4,7 @@ from dotenv import load_dotenv
 import pandas
 from typing import Optional
 
-from base import StockDataGateway
-
+from gateway import StockDataGateway
 from registry import GatewayRegistry
 
 """
@@ -130,24 +129,14 @@ AkShare、银河证券或其他具体数据源，只需要通过 DataManager
 
 设计原则：
 
-    DataManager 负责：
-        “从哪里获取数据”
+    DataManager 负责：“从哪里获取数据”
+    Gateway 负责：“如何从具体数据源获取数据”
+    Model 负责：“数据应该以什么形式表达”
 
-    Gateway 负责：
-        “如何从具体数据源获取数据”
+    Indicators 负责：“如何计算技术指标”
+    Analysis 负责：“如何分析这些数据”
 
-    Model 负责：
-        “数据应该以什么形式表达”
-
-    Indicators 负责：
-        “如何计算技术指标”
-
-    Analysis 负责：
-        “如何分析这些数据”
-
-这种分层可以避免业务代码与具体数据源产生强耦合，
-同时方便后续增加新的数据源、替换数据接口以及进行
-单元测试。
+这种分层可以避免业务代码与具体数据源产生强耦合，同时方便后续增加新的数据源、替换数据接口以及进行单元测试。
 
 数据源注册机制：
 
@@ -417,9 +406,7 @@ if __name__ == "__main__":
         )
 
         print("✓ RSI")
-        print(
-            f"  RSI12  = {fmt(rsi)}"
-        )
+        print(f"  RSI12  = {fmt(rsi)}")
 
         print("✓ Williams")
         print(f"  Williams = {fmt(williams)}")

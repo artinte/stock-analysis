@@ -5,7 +5,7 @@ from typing import Any, Optional
 
 import akshare as ak
 
-from base import StockDataGateway
+from gateways.gateway import StockDataGateway
 from registry import GatewayRegistry
 
 from models.constants import Interval

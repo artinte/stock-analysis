@@ -9,7 +9,7 @@ import pandas
 import AmazingData
 from dotenv import load_dotenv
 
-from base import StockDataGateway
+from gateways.gateway import StockDataGateway
 from models.constants import Interval
 from models.kline import Kline
 from models.valuation import Valuation

@@ -1,7 +1,6 @@
 from typing import Type
 
-from base import StockDataGateway
-
+from gateway import StockDataGateway
 
 class GatewayRegistry:
     """
