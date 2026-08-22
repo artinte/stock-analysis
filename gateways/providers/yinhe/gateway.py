@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from gateways.gateway import StockDataGateway
 from gateways.models.constants import Interval
+from gateways.models.financial import Financial
 from gateways.models.kline import Kline
 from gateways.models.valuation import Valuation
 from gateways.models.quote import Quote
@@ -841,12 +842,22 @@ class YinheGateway(StockDataGateway):
     def fetch_financial(
         self,
         symbol: str,
-    ):
+    ) -> Financial | None:
         """
         获取股票财务数据。
 
-        当前直接返回 AmazingData
-        get_income() 返回的 DataFrame。
+        将银河证券返回的财务指标 DataFrame
+        转换为统一 Financial 模型。
+
+        数据流：
+
+            AmazingData
+                |
+                ↓
+            DataFrame
+                |
+                ↓
+            Financial
         """
 
         self._ensure_started()
@@ -854,13 +865,10 @@ class YinheGateway(StockDataGateway):
         formatted_symbol = self._normalize_symbol(symbol)
 
         try:
-
             if not self.calendar:
-
                 print(
                     f"[银河网关] 财务数据获取失败 " f"{formatted_symbol}: 交易日历为空"
                 )
-
                 return None
 
             financials_dict = self.info_data.get_income(
@@ -871,10 +879,76 @@ class YinheGateway(StockDataGateway):
                 end_date=self.calendar[-1],
             )
 
-            if financials_dict is None:
+            if not financials_dict:
                 return None
 
-            return financials_dict.get(formatted_symbol)
+            df = financials_dict.get(formatted_symbol)
+
+            if df is None or df.empty:
+                return None
+
+            # 最新一期财务数据
+            latest = df.iloc[-1]
+
+            financial = Financial(
+                symbol=formatted_symbol,
+                # ==================================================
+                # 基础信息
+                # ==================================================
+                report_date=str(latest.get("END_DATE", "")),
+                currency="CNY",
+                # ==================================================
+                # 利润表
+                # ==================================================
+                revenue=self._safe_float(latest.get("OPERATE_INCOME")),
+                operating_profit=self._safe_float(latest.get("OPERATE_PROFIT")),
+                net_profit=self._safe_float(latest.get("NET_PROFIT")),
+                net_profit_attributable=self._safe_float(
+                    latest.get("PARENT_NETPROFIT")
+                ),
+                non_recurring_net_profit=self._safe_float(
+                    latest.get("DEDUCTED_PROFIT")
+                ),
+                # ==================================================
+                # 盈利能力
+                # ==================================================
+                gross_margin=self._safe_float(latest.get("GROSS_PROFIT_MARGIN")),
+                net_margin=self._safe_float(latest.get("NET_PROFIT_MARGIN")),
+                roe=self._safe_float(latest.get("ROE")),
+                roa=self._safe_float(latest.get("DUPONT_ROA")),
+                # ==================================================
+                # 每股指标
+                # ==================================================
+                eps=self._safe_float(latest.get("EPS_BASIC")),
+                diluted_eps=self._safe_float(latest.get("EPS_DILUTED")),
+                book_value_per_share=self._safe_float(latest.get("BPS")),
+                operating_cash_flow_per_share=self._safe_float(latest.get("OCFPS")),
+                # ==================================================
+                # 资产负债
+                # ==================================================
+                total_assets=self._safe_float(latest.get("TOTAL_ASSETS")),
+                total_liabilities=self._safe_float(latest.get("TOTAL_LIABILITIES")),
+                shareholders_equity=self._safe_float(latest.get("TOTAL_EQUITY")),
+                # ==================================================
+                # 财务健康
+                # ==================================================
+                debt_to_asset_ratio=self._safe_float(latest.get("DEBT_TO_ASSETS")),
+                current_ratio=self._safe_float(latest.get("CURRENT_RATIO")),
+                quick_ratio=self._safe_float(latest.get("QUICK_RATIO")),
+                # ==================================================
+                # 运营效率
+                # ==================================================
+                receivable_turnover=self._safe_float(latest.get("AR_TURN")),
+                inventory_turnover=self._safe_float(latest.get("INV_TURN")),
+                # ==================================================
+                # 现金流
+                # ==================================================
+                operating_cash_flow=self._safe_float(latest.get("OCF")),
+                free_cash_flow=self._safe_float(latest.get("FCFF")),
+                source="yinhe",
+            )
+
+            return financial
 
         except Exception as e:
 
@@ -1315,6 +1389,24 @@ class YinheGateway(StockDataGateway):
         if not self._started:
 
             raise RuntimeError("银河数据源尚未启动，" "请先调用 DataManager.start()")
+
+    @staticmethod
+    def _safe_float(value):
+        """
+        安全转换 float。
+        """
+
+        if value is None:
+            return None
+
+        try:
+            return float(value)
+
+        except (
+            TypeError,
+            ValueError,
+        ):
+            return None
 
 
 # ==============================================================

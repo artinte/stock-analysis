@@ -169,22 +169,22 @@ def print_stock_report(
     revenue = "--"
     revenue_yoy = "--"
 
-    if financial is not None:
+    if financial:
+        print(
+            f"营业收入: " f"{financial.revenue:.2f} 元"
+            if financial.revenue is not None
+            else "营业收入: --"
+        )
 
-        try:
-            if hasattr(financial, "columns"):
+        print(
+            f"净利润: " f"{financial.net_profit:.2f} 元"
+            if financial.net_profit is not None
+            else "净利润: --"
+        )
 
-                # 根据实际财务表字段获取
-                if "REVENUE" in financial.columns:
-                    revenue = financial["REVENUE"].iloc[-1]
-
-                if "REVENUE_YOY" in financial.columns:
-                    revenue_yoy = financial["REVENUE_YOY"].iloc[-1]
-
-        except Exception:
-            pass
-
-    print(f"营业总收入: " f"{revenue}" f"  " f"(同比: {revenue_yoy})")
+        print(
+            f"ROE: " f"{financial.roe:.2f}%" if financial.roe is not None else "ROE: --"
+        )
 
     # ==========================================================
     # 估值
