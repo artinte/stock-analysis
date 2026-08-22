@@ -3,8 +3,6 @@ from __future__ import annotations
 import datetime
 import re
 from typing import Any, Optional
-
-import pandas
 import requests
 
 from gateways.gateway import StockDataGateway
