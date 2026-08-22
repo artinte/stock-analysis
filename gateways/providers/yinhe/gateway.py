@@ -9,7 +9,7 @@ import pandas
 import AmazingData
 from dotenv import load_dotenv
 
-from gateways.gateway import StockDataGateway
+from gateway import StockDataGateway
 from models.constants import Interval
 from models.kline import Kline
 from models.valuation import Valuation
@@ -138,6 +138,33 @@ class YinheGateway(StockDataGateway):
 
         if config:
             self.config.update(config)
+        else:
+            load_dotenv()
+            
+            self.config = {
+                "username": os.getenv(
+                    "amazing_username",
+                    "",
+                ),
+                "password": os.getenv(
+                    "amazing_password",
+                    "",
+                ),
+                "host": os.getenv(
+                    "amazing_host",
+                    "",
+                ),
+                "port": int(
+                    os.getenv(
+                        "amazing_port",
+                        "0",
+                    )
+                ),
+                "local_path": os.getenv(
+                    "local_path",
+                    os.path.curdir,
+                ),
+            }
 
         try:
             self.user = self.config.get(

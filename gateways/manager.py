@@ -2,6 +2,7 @@ import os
 
 from dotenv import load_dotenv
 import pandas
+import providers
 from typing import Optional
 
 from gateway import StockDataGateway
@@ -201,7 +202,7 @@ class DataManager:
     股票数据统一管理器。
     """
 
-    DEFAULT_PROVIDER = "akshare"
+    DEFAULT_PROVIDER = "yinhe"
 
     def __init__(
         self,
