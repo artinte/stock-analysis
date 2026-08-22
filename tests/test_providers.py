@@ -305,8 +305,8 @@ def test_provider(
         print("✅ 股票基础信息")
         print(f"   代码：{stock.symbol}")
         print(f"   名称：{stock.name}")
-        print(f"   行业：{stock.industry}")
-        print(f"   市场：{stock.market}")
+        # print(f"   行业：{stock.industry}")
+        # print(f"   市场：{stock.market}")
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现股票基础信息")
@@ -383,7 +383,7 @@ def test_provider(
         print(f"   PE(动态)：" f"{valuation.pe_dynamic}")
         print(f"   PE(静态)：" f"{valuation.pe_static}")
         print(f"   PB：{valuation.pb}")
-        print(f"   PS：{valuation.ps}")
+        print(f"   PS：{valuation.ps_ttm}")
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现估值")

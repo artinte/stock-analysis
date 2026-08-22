@@ -449,7 +449,7 @@ class YinheGateway(StockDataGateway):
             name = None
 
             if stock:
-                name = stock.get("name")
+                name = stock.name
 
             # --------------------------------------------------
             # 5. 股本

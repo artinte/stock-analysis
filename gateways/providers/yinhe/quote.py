@@ -115,13 +115,10 @@ class YinheQuote:
             # 股票名称
             # -----------------------------
 
-            stock = self.gateway.stock.fetch_stock(
-                code
-            )
-
+            stock = self.gateway.fetch_stock(code)
 
             name = (
-                stock.get("name")
+                stock.name
                 if stock
                 else None
             )

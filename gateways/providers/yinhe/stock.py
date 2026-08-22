@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 from typing import Optional
+
+from gateways.models.stock import Stock
 
 
 class YinheStock:
@@ -6,25 +10,16 @@ class YinheStock:
     银河证券股票基础信息适配器。
 
     负责：
+        AmazingData.get_stock_basic()
 
-        - 获取股票基本信息
-        - 股票名称查询
+    转换：
 
-    数据流：
-
-        AmazingData
-             |
-             ↓
-        DataFrame / List[Dict]
-             |
-             ↓
+        DataFrame
+            ↓
         Stock Model
 
     注意：
-
-        本类不是独立数据源。
-        它属于 YinheGateway 内部功能模块，
-        通过组合方式被 YinheGateway 使用。
+        不包含其它数据源逻辑。
     """
 
     def __init__(
@@ -32,36 +27,33 @@ class YinheStock:
         gateway,
     ):
         """
-        保存银河主网关引用。
+        gateway:
+            YinheGateway 实例
 
-        通过 gateway 可以访问：
-
-            gateway.info_data
-            gateway._ensure_started()
-            gateway._normalize_symbol()
-
+        通过组合方式访问：
+            login 状态
+            AmazingData 对象
+            工具方法
         """
 
         self.gateway = gateway
 
-    # ==========================================================
-    # 股票基础信息
-    # ==========================================================
-
     def fetch_stock(
         self,
         symbol: str,
-    ):
+    ) -> Optional[Stock]:
         """
         获取股票基础信息。
 
-        返回：
+        数据流：
 
-            {
-                "symbol": "600519.SH",
-                "name": "贵州茅台"
-            }
-
+            AmazingData
+                |
+                ↓
+            DataFrame
+                |
+                ↓
+            Stock
         """
 
         self.gateway._ensure_started()
@@ -75,9 +67,9 @@ class YinheStock:
             if stock_basic is None:
                 return None
 
-            # ----------------------------------------------
+            # ==================================================
             # DataFrame
-            # ----------------------------------------------
+            # ==================================================
 
             if hasattr(
                 stock_basic,
@@ -89,14 +81,15 @@ class YinheStock:
 
                 row = stock_basic.iloc[0]
 
-                return {
-                    "symbol": code,
-                    "name": row.get("SECURITY_NAME"),
-                }
+                return Stock(
+                    symbol=code,
+                    name=row.get("SECURITY_NAME"),
+                    source="yinhe",
+                )
 
-            # ----------------------------------------------
+            # ==================================================
             # List[Dict]
-            # ----------------------------------------------
+            # ==================================================
 
             if isinstance(
                 stock_basic,
@@ -108,10 +101,11 @@ class YinheStock:
 
                 item = stock_basic[0]
 
-                return {
-                    "symbol": code,
-                    "name": item.get("SECURITY_NAME"),
-                }
+                return Stock(
+                    symbol=code,
+                    name=item.get("SECURITY_NAME"),
+                    source="yinhe",
+                )
 
             return None
 
@@ -121,10 +115,6 @@ class YinheStock:
 
             return None
 
-    # ==========================================================
-    # 股票名称
-    # ==========================================================
-
     def fetch_stock_name(
         self,
         symbol: str,
@@ -132,46 +122,13 @@ class YinheStock:
         """
         获取股票名称。
 
-        内部辅助方法。
+        内部辅助接口。
         """
 
-        self.gateway._ensure_started()
+        stock = self.fetch_stock(symbol)
 
-        code = self.gateway._normalize_symbol(symbol)
+        if stock:
 
-        try:
+            return stock.name or "未知名称"
 
-            stock_basic = self.gateway.info_data.get_stock_basic([code])
-
-            # DataFrame
-
-            if hasattr(
-                stock_basic,
-                "empty",
-            ):
-
-                if not stock_basic.empty:
-
-                    return stock_basic["SECURITY_NAME"].iloc[0]
-
-            # List[Dict]
-
-            elif isinstance(
-                stock_basic,
-                list,
-            ):
-
-                if stock_basic:
-
-                    return stock_basic[0].get(
-                        "SECURITY_NAME",
-                        "未知名称",
-                    )
-
-            return "未知名称"
-
-        except Exception as e:
-
-            print(f"[银河网关] 获取股票名称失败 " f"{code}: {e}")
-
-            return "获取失败"
+        return "未知名称"
