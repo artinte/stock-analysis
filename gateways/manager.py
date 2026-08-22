@@ -3,7 +3,6 @@ import pandas
 from typing import Optional
 from dotenv import load_dotenv
 
-from gateways import providers
 from gateways.gateway import StockDataGateway
 from gateways.registry import GatewayRegistry
 

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from models.constants import Interval
-from manager import DataManager
+from gateways.models.constants import Interval
+from gateways.manager import DataManager
 
 """
 股票数据网关测试程序。
@@ -215,7 +215,7 @@ NotImplementedError 明确提示，而不会导致整个测试程序退出。
 
 使用示例：
 
-    python test_gateway.py
+    python -m tests.test_providers
 
 程序会依次：
 
@@ -390,6 +390,58 @@ def test_provider(
 
     except Exception as exc:
         print(f"❌ 获取估值失败：{exc}")
+
+    try:
+        print()
+        print("正在获取财务数据...")
+
+        financial = data.get_financial(symbol)
+
+        if financial is None:
+            print("❌ 未获取到财务数据")
+
+        else:
+            print("✅ 财务数据")
+
+            print(f"   报告日期：" f"{financial.report_date}")
+
+            print(f"   营业收入：" f"{financial.revenue}")
+
+            print(f"   净利润：" f"{financial.net_profit}")
+
+            print(f"   归母净利润：" f"{financial.net_profit_attributable}")
+
+            print(f"   扣非净利润：" f"{financial.non_recurring_net_profit}")
+
+            print(f"   EPS：" f"{financial.eps}")
+
+            print(f"   每股净资产：" f"{financial.book_value_per_share}")
+
+            print(f"   毛利率：" f"{financial.gross_margin}%")
+
+            print(f"   净利率：" f"{financial.net_margin}%")
+
+            print(f"   ROE：" f"{financial.roe}%")
+
+            print(f"   资产负债率：" f"{financial.debt_to_asset_ratio}%")
+
+            print(f"   流动比率：" f"{financial.current_ratio}%")
+
+            print(f"   应收账款周转率：" f"{financial.receivable_turnover}")
+
+            print(f"   存货周转率：" f"{financial.inventory_turnover}")
+
+            print(f"   经营现金流：" f"{financial.operating_cash_flow}")
+
+            print(f"   自由现金流：" f"{financial.free_cash_flow}")
+
+            print(f"   数据来源：" f"{financial.source}")
+
+    except NotImplementedError:
+        print("⚠️ 当前数据源暂未实现财务数据")
+
+    except Exception as exc:
+        print(f"❌ 获取财务数据失败：{exc}")
 
     try:
         print()
