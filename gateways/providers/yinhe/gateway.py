@@ -16,6 +16,10 @@ from gateways.models.kline import Kline
 from gateways.models.valuation import Valuation
 from gateways.models.quote import Quote
 from gateways.providers.yinhe.financial import YinheFinancial
+from gateways.providers.yinhe.kline import YinheKline
+from gateways.providers.yinhe.quote import YinheQuote
+from gateways.providers.yinhe.stock import YinheStock
+from gateways.providers.yinhe.valuation import YinheValuation
 from gateways.registry import GatewayRegistry
 from gateways.models.constants import SHARES_PER_10K
 
@@ -120,11 +124,42 @@ class YinheGateway(StockDataGateway):
         self.base_data = None
         self.calendar = None
         self.market_data = None
-        
-        # ==========================
-        # 组合
-        # ==========================
+
+        # ==========================================================
+        # 组合式设计（Composition）
+        #
+        # YinheGateway 作为银河证券数据源的统一入口，
+        # 负责生命周期管理以及对外接口转发。
+        #
+        # 具体业务功能按照数据类型拆分到独立组件中：
+        #
+        #     YinheStock       股票基础信息
+        #     YinheKline       K线数据
+        #     YinheQuote       行情数据
+        #     YinheFinancial   财务数据
+        #     YinheValuation   估值数据
+        #
+        # 这些组件共享同一个 YinheGateway 实例，
+        # 可以访问银河证券的数据连接、登录状态以及
+        # AmazingData 接口对象。
+        #
+        # 这样可以避免 YinheGateway 成为一个过大的上帝类，
+        # 同时保持 DataManager 和 StockDataGateway 接口稳定。
+        #
+        # 注意：
+        # 这些组件并不是独立的数据源，
+        # 而是 YinheGateway 内部针对不同业务能力的拆分。
+        # ==========================================================
+
+        self.stock = YinheStock(self)
+
+        self.kline = YinheKline(self)
+
+        self.quote = YinheQuote(self)
+
         self.financial = YinheFinancial(self)
+
+        self.valuation = YinheValuation(self)
 
     # ==========================================================
     # 生命周期
@@ -291,50 +326,7 @@ class YinheGateway(StockDataGateway):
                 "name": "..."
             }
         """
-
-        self._ensure_started()
-
-        formatted_symbol = self._normalize_symbol(symbol)
-
-        try:
-            stock_basic = self.info_data.get_stock_basic([formatted_symbol])
-
-            if stock_basic is None:
-                return None
-
-            # DataFrame
-            if hasattr(stock_basic, "empty"):
-
-                if stock_basic.empty:
-                    return None
-
-                row = stock_basic.iloc[0]
-
-                return {
-                    "symbol": formatted_symbol,
-                    "name": row.get("SECURITY_NAME"),
-                }
-
-            # List[Dict]
-            if isinstance(stock_basic, list):
-
-                if not stock_basic:
-                    return None
-
-                item = stock_basic[0]
-
-                return {
-                    "symbol": formatted_symbol,
-                    "name": item.get("SECURITY_NAME"),
-                }
-
-            return None
-
-        except Exception as e:
-
-            print(f"[银河网关] 获取股票基础信息失败 " f"{formatted_symbol}: {e}")
-
-            return None
+        return self.stock.fetch_stock(symbol)
 
     def fetch_stock_name(
         self,
@@ -711,142 +703,7 @@ class YinheGateway(StockDataGateway):
 
             list[Kline]
         """
-
-        self._ensure_started()
-
-        # ------------------------------------------------------
-        # 1. 周期映射
-        # ------------------------------------------------------
-
-        period_map = {
-            Interval.MINUTE_1: AmazingData.constant.Period.min1.value,
-            Interval.MINUTE_5: AmazingData.constant.Period.min5.value,
-            Interval.MINUTE_15: AmazingData.constant.Period.min15.value,
-            Interval.MINUTE_30: AmazingData.constant.Period.min30.value,
-            Interval.MINUTE_60: AmazingData.constant.Period.min60.value,
-            Interval.DAY_1: AmazingData.constant.Period.day.value,
-            Interval.WEEK_1: AmazingData.constant.Period.week.value,
-        }
-
-        period = period_map.get(
-            interval,
-            AmazingData.constant.Period.day.value,
-        )
-
-        # ------------------------------------------------------
-        # 2. 股票代码标准化
-        # ------------------------------------------------------
-
-        code = self._normalize_symbol(symbol)
-
-        # ------------------------------------------------------
-        # 3. 日期处理
-        # ------------------------------------------------------
-
-        today_str = datetime.datetime.now().strftime("%Y%m%d")
-
-        begin_str = start_time.strftime("%Y%m%d") if start_time else today_str
-
-        end_str = end_time.strftime("%Y%m%d") if end_time else today_str
-
-        # ------------------------------------------------------
-        # 4. 查询数据
-        # ------------------------------------------------------
-
-        try:
-
-            kline_dict = self.market_data.query_kline(
-                [code],
-                period=period,
-                begin_date=int(begin_str),
-                end_date=int(end_str),
-            )
-
-            if kline_dict is None:
-                return []
-
-            df = kline_dict.get(code)
-
-            if df is None:
-
-                print(f"[银河网关] {code} 无返回数据")
-
-                return []
-
-            if hasattr(df, "empty") and df.empty:
-
-                print(f"[银河网关] {code} 返回数据为空")
-
-                return []
-
-            # --------------------------------------------------
-            # DataFrame → List[Dict]
-            # --------------------------------------------------
-
-            if hasattr(df, "to_dict"):
-
-                raw_bars = df.to_dict("records")
-
-            else:
-
-                raw_bars = df
-
-            # --------------------------------------------------
-            # limit
-            # --------------------------------------------------
-
-            if limit and len(raw_bars) > limit:
-
-                raw_bars = raw_bars[-limit:]
-
-        except Exception as e:
-
-            print(f"[银河网关] query_kline 查询失败: {e}")
-
-            return []
-
-        # ------------------------------------------------------
-        # 5. 转换成统一 Kline
-        # ------------------------------------------------------
-
-        klines: list[Kline] = []
-
-        for item in raw_bars:
-
-            try:
-
-                kline_time = item.get("kline_time")
-
-                if hasattr(
-                    kline_time,
-                    "to_pydatetime",
-                ):
-
-                    kline_time = kline_time.to_pydatetime()
-
-                klines.append(
-                    Kline(
-                        symbol=code,
-                        timestamp=kline_time,
-                        interval=interval,
-                        open=float(item["open"]),
-                        high=float(item["high"]),
-                        low=float(item["low"]),
-                        close=float(item["close"]),
-                        volume=int(item["volume"]),
-                        amount=float(item["amount"]),
-                    )
-                )
-
-            except Exception as e:
-
-                print(f"[银河网关] 转换 Kline 失败: {e}")
-
-                print(f"    原始数据: {item}")
-
-                continue
-
-        return klines
+        return self.kline.fetch_kline(symbol, interval, start_time, end_time, limit)
 
     # ==========================================================
     # 财务数据
@@ -1328,8 +1185,6 @@ class YinheGateway(StockDataGateway):
         if not self._started:
 
             raise RuntimeError("银河数据源尚未启动，" "请先调用 DataManager.start()")
-
-    
 
     @property
     def version(self) -> str:
