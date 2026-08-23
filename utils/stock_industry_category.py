@@ -135,23 +135,10 @@ class StockQueryResult:
         return len(self._df)
 
     def __str__(self) -> str:
-
         if self._df.empty:
             return "<StockQueryResult: 空数据>"
 
-        rows = []
-
-        for _, row in self._df.iterrows():
-
-            rows.append(
-                {
-                    "code": row.get("code"),
-                    "name": row.get("name"),
-                    "industry": self._industry_path(row),
-                }
-            )
-
-        return pd.DataFrame(rows).to_string(index=False)
+        return self._industry_path(self._df.iloc[0])
 
     def __repr__(self) -> str:
         return self.__str__()

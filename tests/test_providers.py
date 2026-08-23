@@ -302,15 +302,7 @@ def test_provider(
         print("正在获取股票基础信息...")
 
         stock = data.get_stock(symbol)
-
-        print("✅ 股票基础信息")
-        print(f"   代码：{stock.symbol}")
-        print(f"   名称：{stock.name}")
-        print(f"   证券中文名称：{stock.company_name}")
-        print(f"   交易所：{exchange_name(stock.exchange)}")
-        print(f"   市场：{stock.market}")
-        print(f"   上市日期：{stock.listing_date}")
-        print(f"   数据来源：{stock.source}")
+        stock.display()
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现股票基础信息")
