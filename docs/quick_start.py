@@ -250,17 +250,6 @@ def get_tencent_kline(
     #
     # [日期, 开盘, 收盘, 最高, 最低, 成交量]
     #
-    # 注意：
-    #
-    # 千万不要写成：
-    #
-    # Open  = row[1]
-    # High  = row[2]
-    # Low   = row[3]
-    # Close = row[4]
-    #
-    # 正确：
-    #
     # Open  = row[1]
     # Close = row[2]
     # High  = row[3]
