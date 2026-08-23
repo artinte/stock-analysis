@@ -58,3 +58,69 @@ class PEType(str, Enum):
 
 TEN_THOUSAND = 10_000
 HUNDRED_MILLION = 100_000_000
+
+
+class IndexSymbol(str, Enum):
+    """
+    A 股主要市场指数。
+
+    用法：
+        # 获取完整 Symbol
+        IndexSymbol.SSE.value
+        # "000001.SH"
+
+        # 获取指数名称
+        IndexSymbol.SSE.name
+        # "上证指数"
+
+        # 获取不带市场后缀的代码
+        IndexSymbol.SSE.code
+        # "000001"
+
+        # 获取交易所
+        IndexSymbol.SSE.exchange
+        # "SH"
+
+        # 传递给 Gateway
+        gateway.fetch_index(IndexSymbol.SSE)
+
+        # 遍历所有指数
+        for index in IndexSymbol:
+            print(index.symbol, index.name)
+
+    注意：
+        value / symbol 使用标准的 "代码.交易所" 格式，
+        例如 "000001.SH"。
+
+        如果底层数据源只接受纯代码，例如 "000001"，
+        使用 .code 获取。
+    """
+
+    SSE = ("000001.SH", "上证指数")
+    SZSE = ("399001.SZ", "深证成指")
+    GEM = ("399006.SZ", "创业板指")
+    STAR = ("000680.SH", "科创综指")
+    STAR_50 = ("000688.SH", "科创50")
+
+    SSE_50 = ("000016.SH", "上证50")
+    CSI_300 = ("000300.SH", "沪深300")
+    CSI_500 = ("000905.SH", "中证500")
+    CSI_1000 = ("000852.SH", "中证1000")
+    CSI_A500 = ("000510.SH", "中证A500")
+
+    def __new__(cls, symbol: str, name: str):
+        obj = str.__new__(cls, symbol)
+        obj._value_ = symbol
+        obj.symbol = symbol
+        obj.name = name
+        return obj
+
+    @property
+    def code(self) -> str:
+        """不带市场后缀的指数代码。"""
+        return self.symbol.split(".", 1)[0]
+
+    @property
+    def exchange(self) -> str:
+        """交易所代码。"""
+        return self.symbol.split(".", 1)[1]

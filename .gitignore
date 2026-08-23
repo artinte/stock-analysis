@@ -1,6 +1,7 @@
 
 # Local data
 .infodata/
+.basedata/
 
 # 私有配置
 temp/
