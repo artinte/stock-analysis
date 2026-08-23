@@ -15,7 +15,22 @@
 import re
 from enum import Enum
 from typing import Optional, Union, Dict
-from .stock_industry_category import get_stock_industry_category
+from utils.stock_industry_category import get_stock_industry_category
+
+# 上海证券交易所 (Shanghai Stock Exchange - SSE)
+# 沪市主板代码前缀
+SSE_MAIN_BOARD_PREFIX = "60"
+# 科创板代码前缀
+SSE_STAR_MARKET_PREFIX = "688"
+
+# 深圳证券交易所 (Shenzhen Stock Exchange - SZSE)
+# 深市主板/中小板代码前缀
+SZSE_MAIN_BOARD_PREFIX = "00"
+# 创业板代码前缀
+SZSE_CHINEXT_PREFIX = "30"
+
+# 北京证券交易所 (Beijing Stock Exchange - BSE)
+BSE_PREFIXES = ("8", "43", "47", "92")
 
 
 class MarketExchange(Enum):
@@ -283,6 +298,45 @@ def normalize_symbol(
 
     # 无法判断时直接返回原代码
     return symbol
+
+
+def add_exchange_suffix(stock_code):
+    """
+    根据 A 股代码规则添加交易所后缀
+    逻辑：已有后缀不处理，无后缀根据前缀自动补全
+    """
+    if not stock_code:
+        return ""
+
+    # 1. 预处理：转大写并去空格
+    code = stock_code.strip().upper()
+
+    # 2. 如果已经有正确后缀，直接返回
+    if code.endswith((".SH", ".SZ", ".BJ")):
+        return code
+
+    # 3. 提取纯数字部分，防止类似 600519.ss 的错误输入
+    base_code = code.split(".")[0]
+
+    # 4. 根据你提供的前缀常量进行判断
+    # 沪市 (SH)
+    if base_code.startswith(SSE_MAIN_BOARD_PREFIX) or base_code.startswith(
+        SSE_STAR_MARKET_PREFIX
+    ):
+        return f"{base_code}.SH"
+
+    # 深市 (SZ)
+    if base_code.startswith(SZSE_MAIN_BOARD_PREFIX) or base_code.startswith(
+        SZSE_CHINEXT_PREFIX
+    ):
+        return f"{base_code}.SZ"
+
+    # 北交所 (BJ)
+    if base_code.startswith(BSE_PREFIXES):
+        return f"{base_code}.BJ"
+
+    # 5. 不匹配则返回原始 base_code
+    return base_code
 
 
 if __name__ == "__main__":
