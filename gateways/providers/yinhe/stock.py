@@ -4,6 +4,7 @@ from typing import Optional
 
 from gateways.models.stock import Stock
 from utils.stock_mapping import normalize_symbol, get_exchange
+from utils.stock_industry_category import get_stock_industry_category
 
 
 class YinheStock:
@@ -67,7 +68,11 @@ class YinheStock:
 
                 row = stock_basic.iloc[0]
 
+                # 获取交易所代号
                 exchange = get_exchange(code)
+
+                # 获取行业分类
+                stock_category = get_stock_industry_category(code)
 
                 return Stock(
                     symbol=row["MARKET_CODE"],
