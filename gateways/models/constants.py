@@ -37,3 +37,24 @@ class PEType(str, Enum):
 
 SHARES_PER_10K = 10_000
 SHARES_PER_100M = 100_000_000
+
+
+class Exchange(str, Enum):
+    """
+    股票交易所。
+    """
+
+    # 上海证券交易所
+    SSE = "SSE"
+
+    # 深圳证券交易所
+    SZSE = "SZSE"
+
+    # 北京证券交易所
+    BSE = "BSE"
+
+    NASDAQ = "NASDAQ"
+
+    NYSE = "NYSE"
+
+    UNKNOWN = "UNKNOWN"

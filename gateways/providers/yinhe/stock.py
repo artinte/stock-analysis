@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from gateways.models.stock import Stock
-from utils.stock_mapping import normalize_symbol
+from utils.stock_mapping import normalize_symbol, get_exchange, exchange_name
 
 
 class YinheStock:
@@ -58,10 +58,6 @@ class YinheStock:
             if stock_basic is None:
                 return None
 
-            # ==================================================
-            # DataFrame
-            # ==================================================
-
             if hasattr(
                 stock_basic,
                 "empty",
@@ -71,10 +67,13 @@ class YinheStock:
 
                 row = stock_basic.iloc[0]
 
+                exchange = get_exchange(code)
+
                 return Stock(
                     symbol=row["MARKET_CODE"],
                     name=row["SECURITY_NAME"],
                     company_name=row.get("COMP_NAME"),
+                    exchange=exchange_name(exchange),
                     market=row.get("LISTPLATE_NAME"),
                     listing_date=str(row.get("LISTDATE")),
                     delisting_date=str(row.get("DELISTDATE")),

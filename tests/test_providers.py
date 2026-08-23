@@ -307,6 +307,7 @@ def test_provider(
         print(f"   名称：{stock.name}")
         print(f"   证券中文名称：{stock.company_name}")
         # print(f"   行业：{stock.industry}")
+        print(f"   交易所：{stock.exchange}")
         print(f"   市场：{stock.market}")
         print(f"   上市日期：{stock.listing_date}")
 

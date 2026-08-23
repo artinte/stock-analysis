@@ -15,6 +15,7 @@
 import re
 from enum import Enum
 from typing import Optional, Union, Dict
+from gateways.models.constants import Exchange
 from utils.stock_industry_category import get_stock_industry_category
 
 # 上海证券交易所 (Shanghai Stock Exchange - SSE)
@@ -337,6 +338,99 @@ def add_exchange_suffix(stock_code):
 
     # 5. 不匹配则返回原始 base_code
     return base_code
+
+
+def get_exchange(symbol: str) -> Exchange | None:
+    """
+    根据股票代码判断交易所。
+
+    支持：
+
+        600519.SH
+        000001.SZ
+        688981
+        430047.BJ
+
+    """
+
+    symbol = symbol.upper().strip()
+
+    # 去掉后缀
+    if "." in symbol:
+        code, suffix = symbol.split(".", 1)
+
+        if suffix == "SH":
+            return Exchange.SSE
+
+        if suffix == "SZ":
+            return Exchange.SZSE
+
+        if suffix == "BJ":
+            return Exchange.BSE
+
+    code = symbol
+
+    # 上海
+    if code.startswith(
+        (
+            "600",
+            "601",
+            "603",
+            "605",
+            "688",
+            "689",
+        )
+    ):
+        return Exchange.SSE
+
+    # 深圳
+    if code.startswith(
+        (
+            "000",
+            "001",
+            "002",
+            "003",
+            "300",
+            "301",
+        )
+    ):
+        return Exchange.SZSE
+
+    # 北京
+    if code.startswith(
+        (
+            "4",
+            "8",
+        )
+    ):
+        return Exchange.BSE
+
+    return None
+
+
+_EXCHANGE_NAMES = {
+    Exchange.SSE: "上海证券交易所",
+    Exchange.SZSE: "深圳证券交易所",
+    Exchange.BSE: "北京证券交易所",
+    Exchange.NASDAQ: "纳斯达克证券交易所",
+    Exchange.NYSE: "纽约证券交易所",
+}
+
+
+def exchange_name(
+    exchange: Exchange | None,
+) -> str:
+    """
+    获取交易所中文名称。
+    """
+
+    if exchange is None:
+        return "--"
+
+    return _EXCHANGE_NAMES.get(
+        exchange,
+        "未知交易所",
+    )
 
 
 if __name__ == "__main__":
