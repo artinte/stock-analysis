@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Optional
-from utils.stock_mapping import Exchange
+from gateways.models.constants import Exchange
 
 
 @dataclass(slots=True)

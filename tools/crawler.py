@@ -4,31 +4,31 @@ import os
 from datetime import datetime
 import sys
 
-from core.browser import browser_manager
-from pipelines.daily_content_summary import DailyContentSummaryPipeline
-from pipelines.article_summary_xueqiu import ArticleGeneratePipeline
-from pipelines.content_publisher import ContentPublisherPipeline
-from pipelines.content_summary import ContentSummaryPipeline
-from pipelines.deduplicate import DeduplicatePipeline
-from pipelines.auto_comment_xueqiu import post_comment
-from spiders.cctv_finance import CCTVFinanceSpider
-from spiders.eastmoney_topic import EastMoneyTopicSpider
-from spiders.mofcom_policy import MOFCOMPolicySpider
-from spiders.sse_announcement import SseAnnouncementSpider
-from spiders.sse_regular import SseRegularReportSpider
-from spiders.sse_spider import SSESpider
-from spiders.szse_fixed import SzseRegularReportSpider
+from crawler.core.browser import browser_manager
+from crawler.pipelines.daily_content_summary import DailyContentSummaryPipeline
+from crawler.pipelines.article_summary_xueqiu import ArticleGeneratePipeline
+from crawler.pipelines.content_publisher import ContentPublisherPipeline
+from crawler.pipelines.content_summary import ContentSummaryPipeline
+from crawler.pipelines.deduplicate import DeduplicatePipeline
+from crawler.pipelines.auto_comment_xueqiu import post_comment
+from crawler.spiders.cctv_finance import CCTVFinanceSpider
+from crawler.spiders.eastmoney_topic import EastMoneyTopicSpider
+from crawler.spiders.mofcom_policy import MOFCOMPolicySpider
+from crawler.spiders.sse_announcement import SseAnnouncementSpider
+from crawler.spiders.sse_regular import SseRegularReportSpider
+from crawler.spiders.sse_spider import SSESpider
+from crawler.spiders.szse_fixed import SzseRegularReportSpider
 
 # 1. 获取当前文件所在目录 (crawler) 和项目根目录 (stock-analysis)
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
+# CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# PROJECT_ROOT = os.path.dirname(CURRENT_DIR)
 
-# 2. 将它们都加入 sys.path，确保既能引用上一级，也能引用当前级下的文件夹
-for path in [CURRENT_DIR, PROJECT_ROOT]:
-    if path not in sys.path:
-        sys.path.insert(0, path)
+# # 2. 将它们都加入 sys.path，确保既能引用上一级，也能引用当前级下的文件夹
+# for path in [CURRENT_DIR, PROJECT_ROOT]:
+#     if path not in sys.path:
+#         sys.path.insert(0, path)
 
-from common.data_printer import print_fetched_articles, save_raw_articles_to_txt
+from crawler.common.data_printer import print_fetched_articles, save_raw_articles_to_txt
 from utils.stock_mapping import StockCodeConverter
 
 

@@ -13,6 +13,7 @@ from playwright.sync_api import sync_playwright
 ==========================================================================================
 """
 
+
 # 【恢复同步定义 def】
 def download_csindex_industry_data(download_dir=os.getcwd()):
     """自动化下载中证行业数据，并返回保存的文件绝对路径。
@@ -75,7 +76,10 @@ def download_csindex_industry_data(download_dir=os.getcwd()):
             return None
 
 
-def get_csindex_industry_data(download_dir=os.getcwd(), force_update=False):
+def get_csindex_industry_data(
+    download_dir=os.path.join(os.getcwd(), "temp"),
+    force_update=False,
+):
     """外部调用核心入口函数。"""
     today_str = datetime.datetime.now().strftime("%Y%m%d")
 
@@ -114,14 +118,3 @@ def get_csindex_industry_data(download_dir=os.getcwd(), force_update=False):
             raise FileNotFoundError(
                 "未能成功下载中证行业分类数据，无法转换为 DataFrame。"
             )
-
-
-# 测试当前文件运行情况
-if __name__ == "__main__":
-    try:
-        df_data = get_csindex_industry_data()
-        print("\n--- 成功获取数据前 5 行预览 ---")
-        print(df_data.head())
-        print(f"数据总行数: {len(df_data)}")
-    except Exception as ex:
-        print(f"运行失败: {ex}")

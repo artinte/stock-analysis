@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List
 from urllib.parse import urljoin
 from playwright.async_api import Page
-from core.browser import browser_manager
-from core.models import ArticleItem
+from crawler.core.browser import browser_manager
+from crawler.core.models import ArticleItem
 
 
 class BaseSpider(ABC):

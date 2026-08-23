@@ -8,8 +8,8 @@ from playwright.async_api import async_playwright, Page, BrowserContext
 # ==============================================================================
 # 引入项目中已存在的基类与数据模型
 # ==============================================================================
-from core.base_spider import BaseSpider
-from core.models import ArticleItem
+from crawler.core.base_spider import BaseSpider
+from crawler.core.models import ArticleItem
 
 
 # ==============================================================================

@@ -2,8 +2,8 @@ import re
 from datetime import datetime, timedelta
 from typing import List
 from playwright.async_api import Page
-from core.base_spider import BaseSpider
-from core.models import ArticleItem
+from crawler.core.base_spider import BaseSpider
+from crawler.core.models import ArticleItem
 
 
 class SzseRegularReportSpider(BaseSpider):

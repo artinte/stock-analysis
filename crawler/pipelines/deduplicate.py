@@ -1,5 +1,5 @@
 from typing import List
-from core.models import ArticleItem
+from crawler.core.models import ArticleItem
 
 
 class DeduplicatePipeline:
