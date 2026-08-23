@@ -91,16 +91,70 @@ class StockQueryResult:
         """提取底层原生 DataFrame"""
         return self._df.copy()
 
+    def industry(
+        self,
+    ) -> pd.Series:
+        """
+        获取行业路径。
+        """
+
+        return self._df.apply(
+            self._industry_path,
+            axis=1,
+        )
+
+    def _industry_path(
+        self,
+        row: pd.Series,
+    ) -> str:
+        """
+        拼接行业层级。
+
+        示例：
+
+        l1 - l2 - l3 - l4
+        """
+
+        levels = []
+
+        for col in [
+            "l1",
+            "l2",
+            "l3",
+            "l4",
+        ]:
+            value = row.get(col)
+
+            if value is not None and str(value).strip():
+                levels.append(str(value))
+
+        return " - ".join(levels)
+
     def __len__(self) -> int:
+
         return len(self._df)
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
+
         if self._df.empty:
             return "<StockQueryResult: 空数据>"
-        show_cols = [
-            c for c in ["code", "name", "l1", "l2", "l3", "l4"] if c in self._df.columns
-        ]
-        return self._df[show_cols].to_string(index=False)
+
+        rows = []
+
+        for _, row in self._df.iterrows():
+
+            rows.append(
+                {
+                    "code": row.get("code"),
+                    "name": row.get("name"),
+                    "industry": self._industry_path(row),
+                }
+            )
+
+        return pd.DataFrame(rows).to_string(index=False)
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class CategoryQueryResult:
@@ -259,4 +313,3 @@ def get_all_category(
     if top:
         res_list = res_list[:top]
     return CategoryQueryResult(res_list)
-

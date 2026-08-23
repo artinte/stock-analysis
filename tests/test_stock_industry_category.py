@@ -1,5 +1,8 @@
-from utils.stock_industry_category import get_stock_industry_category, get_category_stocks
-
+from utils.stock_industry_category import (
+    get_stock_industry_category,
+    get_category_stocks,
+    get_all_category,
+)
 
 
 def main():

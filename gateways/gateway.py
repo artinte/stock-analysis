@@ -86,6 +86,13 @@ class StockDataGateway(ABC):
     ):
         raise NotImplementedError
 
+    @abstractmethod
+    def fetch_industry(
+        self,
+        symbol: str,
+    ):
+        raise NotImplementedError
+
     def is_started(self) -> bool:
         return self._started
 

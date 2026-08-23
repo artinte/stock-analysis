@@ -231,6 +231,12 @@ class DataManager:
     ):
         return self.gateway.fetch_stock(symbol)
 
+    def get_industry(
+        self,
+        symbol: str,
+    ):
+        return self.gateway.fetch_industry(symbol)
+
     def get_quote(
         self,
         symbol: str,

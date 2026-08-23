@@ -320,6 +320,21 @@ def test_provider(
 
     try:
         print()
+        print("正在获取行业分类...")
+
+        industry = data.get_industry(symbol)
+
+        print("✅ 行业分类")
+        print(f"   行业：{industry}")
+
+    except NotImplementedError:
+        print("⚠️ 当前数据源暂未实现行业分类")
+
+    except Exception as exc:
+        print(f"❌ 获取行业分类失败：{exc}")
+
+    try:
+        print()
         print("正在获取最新行情...")
 
         quote = data.get_quote(symbol)

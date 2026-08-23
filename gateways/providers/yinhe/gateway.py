@@ -15,6 +15,7 @@ from gateways.models.financial import Financial
 from gateways.models.kline import Kline
 from gateways.models.valuation import Valuation
 from gateways.models.quote import Quote
+from gateways.models.industry import Industry
 from gateways.providers.yinhe.financial import YinheFinancial
 from gateways.providers.yinhe.kline import YinheKline
 from gateways.providers.yinhe.quote import YinheQuote
@@ -24,6 +25,7 @@ from gateways.registry import GatewayRegistry
 from gateways.models.constants import SHARES_PER_10K
 
 from utils.stock_mapping import normalize_symbol
+from utils.stock_industry_category import get_stock_industry_category
 
 """
 银河证券数据网关。
@@ -345,6 +347,14 @@ class YinheGateway(StockDataGateway):
     # ==========================================================
     # 实时行情
     # ==========================================================
+
+    def fetch_industry(
+        self,
+        symbol: str,
+    ) -> Optional[Industry]:
+        # 获取行业分类
+        stock_category = get_stock_industry_category(symbol)
+        return stock_category
 
     def fetch_quote(
         self,
