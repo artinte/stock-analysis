@@ -66,7 +66,9 @@ class StockCodeConverter:
         if standard_code.startswith(("600", "601", "603", "605", "688", "689", "900")):
             return MarketExchange.SSE
         # 主板、创业板 (深圳)
-        elif standard_code.startswith(("000", "001", "002", "003", "300", "301", "302", "200")):
+        elif standard_code.startswith(
+            ("000", "001", "002", "003", "300", "301", "302", "200")
+        ):
             return MarketExchange.SZSE
         # 北交所
         elif standard_code.startswith(("83", "87", "88", "43")):
@@ -220,6 +222,67 @@ def get_stock_info(identifier: Union[str, int]) -> Optional[Dict[str, str]]:
             code, SymbolFormat.JOINQUANT
         ),
     }
+
+
+def normalize_symbol(
+    symbol: str,
+) -> str:
+    """
+    标准化股票代码。
+
+    支持：
+
+        600519
+        600519.SH
+        000001
+        000001.SZ
+        300750
+        688981
+    """
+
+    symbol = symbol.strip().upper()
+
+    # 已经带交易所后缀
+    if "." in symbol:
+        return symbol
+
+    # 上海证券交易所
+    if symbol.startswith(
+        (
+            "600",
+            "601",
+            "603",
+            "605",
+            "688",
+            "689",
+        )
+    ):
+        return f"{symbol}.SH"
+
+    # 深圳证券交易所
+    if symbol.startswith(
+        (
+            "000",
+            "001",
+            "002",
+            "003",
+            "300",
+            "301",
+        )
+    ):
+        return f"{symbol}.SZ"
+
+    # 北京证券交易所
+    if symbol.startswith(
+        (
+            "4",
+            "8",
+        )
+    ):
+        return f"{symbol}.BJ"
+
+    # 无法判断时直接返回原代码
+    return symbol
 
 
 if __name__ == "__main__":

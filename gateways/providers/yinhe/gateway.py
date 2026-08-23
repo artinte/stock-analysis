@@ -23,6 +23,8 @@ from gateways.providers.yinhe.valuation import YinheValuation
 from gateways.registry import GatewayRegistry
 from gateways.models.constants import SHARES_PER_10K
 
+from utils.stock_mapping import normalize_symbol
+
 """
 银河证券数据网关。
 
@@ -365,7 +367,7 @@ class YinheGateway(StockDataGateway):
 
         self._ensure_started()
 
-        formatted_symbol = self._normalize_symbol(symbol)
+        formatted_symbol = normalize_symbol(symbol)
 
         try:
             # --------------------------------------------------
@@ -722,7 +724,7 @@ class YinheGateway(StockDataGateway):
 
         self._ensure_started()
 
-        formatted_symbol = self._normalize_symbol(symbol)
+        formatted_symbol = normalize_symbol(symbol)
 
         print(f"[{formatted_symbol}] " f"正在获取估值数据...")
 
@@ -812,7 +814,7 @@ class YinheGateway(StockDataGateway):
             DYNAMIC
         """
 
-        formatted_symbol = self._normalize_symbol(symbol)
+        formatted_symbol = normalize_symbol(symbol)
 
         try:
 
@@ -1080,71 +1082,6 @@ class YinheGateway(StockDataGateway):
             df = df.sort_values("REPORTING_PERIOD")
 
         return df.iloc[-1]
-
-    # ==========================================================
-    # 工具方法
-    # ==========================================================
-
-    @staticmethod
-    def _normalize_symbol(
-        symbol: str,
-    ) -> str:
-        """
-        标准化股票代码。
-
-        支持：
-
-            600519
-            600519.SH
-            000001
-            000001.SZ
-            300750
-            688981
-        """
-
-        symbol = symbol.strip().upper()
-
-        # 已经带交易所后缀
-        if "." in symbol:
-            return symbol
-
-        # 上海证券交易所
-        if symbol.startswith(
-            (
-                "600",
-                "601",
-                "603",
-                "605",
-                "688",
-                "689",
-            )
-        ):
-            return f"{symbol}.SH"
-
-        # 深圳证券交易所
-        if symbol.startswith(
-            (
-                "000",
-                "001",
-                "002",
-                "003",
-                "300",
-                "301",
-            )
-        ):
-            return f"{symbol}.SZ"
-
-        # 北京证券交易所
-        if symbol.startswith(
-            (
-                "4",
-                "8",
-            )
-        ):
-            return f"{symbol}.BJ"
-
-        # 无法判断时直接返回原代码
-        return symbol
 
     def _ensure_started(self) -> None:
         """
