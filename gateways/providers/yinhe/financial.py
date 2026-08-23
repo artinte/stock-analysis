@@ -1,5 +1,5 @@
 from gateways.models.financial import Financial
-
+from utils.stock_mapping import normalize_symbol
 
 class YinheFinancial:
     """
@@ -43,7 +43,7 @@ class YinheFinancial:
 
         self.gateway._ensure_started()
 
-        formatted_symbol = self.gateway._normalize_symbol(symbol)
+        formatted_symbol = normalize_symbol(symbol)
 
         try:
             if not self.gateway.calendar:

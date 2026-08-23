@@ -7,6 +7,8 @@ import AmazingData
 from gateways.models.constants import Interval
 from gateways.models.kline import Kline
 
+from utils.stock_mapping import normalize_symbol
+
 
 class YinheKline:
     """
@@ -69,7 +71,7 @@ class YinheKline:
         # 2. 股票代码标准化
         # ------------------------------------------------------
 
-        code = self.gateway._normalize_symbol(symbol)
+        code = normalize_symbol(symbol)
 
         # ------------------------------------------------------
         # 3. 日期处理

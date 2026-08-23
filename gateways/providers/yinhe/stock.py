@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from gateways.models.stock import Stock
+from utils.stock_mapping import normalize_symbol
 
 
 class YinheStock:
@@ -58,7 +59,7 @@ class YinheStock:
 
         self.gateway._ensure_started()
 
-        code = self.gateway._normalize_symbol(symbol)
+        code = normalize_symbol(symbol)
 
         try:
 
@@ -127,7 +128,7 @@ class YinheStock:
 
         self._ensure_started()
 
-        formatted_symbol = self._normalize_symbol(symbol)
+        formatted_symbol = normalize_symbol(symbol)
 
         try:
             stock_basic = self.info_data.get_stock_basic([formatted_symbol])

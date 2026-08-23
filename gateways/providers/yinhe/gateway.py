@@ -753,10 +753,50 @@ class YinheGateway(StockDataGateway):
         # 获取总市值
         # ------------------------------------------------------
 
-        market_cap = self._fetch_market_cap(
-            formatted_symbol,
-            current_price,
-        )
+        total_shares = None
+        circulating_shares = None
+        try:
+            equity_structure = self.info_data.get_equity_structure(
+                [formatted_symbol],
+                local_path=self.local_path,
+                is_local=False,
+            )
+
+            if equity_structure is not None and not equity_structure.empty:
+                equity_structure = equity_structure.sort_values("CHANGE_DATE")
+                latest_row = equity_structure.iloc[-1]
+
+                if "TOT_SHARE" in equity_structure.columns:
+                    # 原始数据是万为单位
+                    total_shares = float(latest_row["TOT_SHARE"]) * SHARES_PER_10K
+
+                # 如果存在流通股字段，根据实际字段读取。
+                if "FLOAT_SHARE" in equity_structure.columns:
+                    circulating_shares = (
+                        float(latest_row["FLOAT_SHARE"]) * SHARES_PER_10K
+                    )
+                elif "CIRC_SHARE" in equity_structure.columns:
+                    circulating_shares = (
+                        float(latest_row["CIRC_SHARE"]) * SHARES_PER_10K
+                    )
+        except Exception as e:
+            print(f"[银河网关] 获取股本失败 " f"{formatted_symbol}: {e}")
+
+        # 总市值计算：
+        # 总市值 = 总股本 × 当前股价
+        # 单位：亿元（取决于 total_shares 和 current_price 的单位）
+        market_cap = None
+
+        # 流通市值计算：
+        # 流通市值 = 流通股本 × 当前股价
+        # 单位：亿元（取决于 circulating_shares 和 current_price 的单位）
+        circulating_market_cap = None
+
+        if total_shares is not None:
+            market_cap = total_shares * current_price
+
+        if circulating_shares is not None:
+            circulating_market_cap = circulating_shares * current_price
 
         # ------------------------------------------------------
         # 计算 PE
@@ -789,6 +829,7 @@ class YinheGateway(StockDataGateway):
             timestamp=datetime.datetime.now(),
             price=current_price,
             market_cap=market_cap,
+            circulating_market_cap=circulating_market_cap,
             pe_static=pe_static,
             pe_dynamic=pe_dynamic,
             pe_ttm=pe_ttm,

@@ -6,6 +6,8 @@ import pandas
 from gateways.models.constants import Interval, SHARES_PER_10K
 from gateways.models.quote import Quote
 
+from utils.stock_mapping import normalize_symbol
+
 
 class YinheQuote:
     """
@@ -43,10 +45,7 @@ class YinheQuote:
         self.gateway._ensure_started()
 
 
-        code = self.gateway._normalize_symbol(
-            symbol
-        )
-
+        code = normalize_symbol(symbol)
 
         try:
 

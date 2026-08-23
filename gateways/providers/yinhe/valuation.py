@@ -8,6 +8,8 @@ import pandas
 from gateways.models.constants import Interval
 from gateways.models.valuation import Valuation
 
+from utils.stock_mapping import normalize_symbol
+
 
 class YinheValuation:
     """
@@ -32,10 +34,9 @@ class YinheValuation:
         symbol: str,
     ) -> Valuation:
 
-        
         self.gateway._ensure_started()
 
-        formatted_symbol = self.gateway._normalize_symbol(symbol)
+        formatted_symbol = normalize_symbol(symbol)
 
         print(f"[{formatted_symbol}] " f"正在获取估值数据...")
 
@@ -121,7 +122,7 @@ class YinheValuation:
             DYNAMIC
         """
 
-        formatted_symbol = self.gateway._normalize_symbol(symbol)
+        formatted_symbol = normalize_symbol(symbol)
 
         try:
 
