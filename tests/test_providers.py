@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from gateways.models.constants import Interval
 from gateways.manager import DataManager
+from utils.stock_mapping import exchange_name
 
 """
 股票数据网关测试程序。
@@ -306,10 +307,10 @@ def test_provider(
         print(f"   代码：{stock.symbol}")
         print(f"   名称：{stock.name}")
         print(f"   证券中文名称：{stock.company_name}")
-        # print(f"   行业：{stock.industry}")
-        print(f"   交易所：{stock.exchange}")
+        print(f"   交易所：{exchange_name(stock.exchange)}")
         print(f"   市场：{stock.market}")
         print(f"   上市日期：{stock.listing_date}")
+        print(f"   数据来源：{stock.source}")
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现股票基础信息")

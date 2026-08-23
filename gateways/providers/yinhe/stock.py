@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from gateways.models.stock import Stock
-from utils.stock_mapping import normalize_symbol, get_exchange, exchange_name
+from utils.stock_mapping import normalize_symbol, get_exchange
 
 
 class YinheStock:
@@ -73,19 +73,17 @@ class YinheStock:
                     symbol=row["MARKET_CODE"],
                     name=row["SECURITY_NAME"],
                     company_name=row.get("COMP_NAME"),
-                    exchange=exchange_name(exchange),
+                    exchange=exchange,
                     market=row.get("LISTPLATE_NAME"),
                     listing_date=str(row.get("LISTDATE")),
                     delisting_date=str(row.get("DELISTDATE")),
                     listed_status=row.get("IS_LISTED"),
-                    source="yinhe",
+                    source=self.gateway.display_name,
                 )
             return None
 
         except Exception as e:
-
             print(f"[银河网关] 获取股票信息失败 " f"{code}: {e}")
-
             return None
 
     def fetch_stock_name(
@@ -99,31 +97,17 @@ class YinheStock:
         """
 
         self._ensure_started()
-
         formatted_symbol = normalize_symbol(symbol)
 
         try:
             stock_basic = self.info_data.get_stock_basic([formatted_symbol])
 
-            # DataFrame
             if hasattr(stock_basic, "empty"):
-
                 if not stock_basic.empty:
                     return stock_basic["SECURITY_NAME"].iloc[0]
-
-            # List[Dict]
-            elif isinstance(stock_basic, list):
-
-                if stock_basic:
-                    return stock_basic[0].get(
-                        "SECURITY_NAME",
-                        "未知名称",
-                    )
 
             return "未知名称"
 
         except Exception as e:
-
             print(f"[银河网关] 获取股票名称失败 " f"{formatted_symbol}: {e}")
-
             return "获取失败"

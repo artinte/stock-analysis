@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Optional
+from utils.stock_mapping import Exchange
 
 
 @dataclass(slots=True)
@@ -26,7 +27,7 @@ class Stock:
     market: Optional[str] = None
 
     # 交易所
-    exchange: Optional[str] = None
+    exchange: Optional[Exchange] = None
 
     # 上市日期
     listing_date: Optional[str] = None
