@@ -1666,7 +1666,7 @@ async def async_main():
     symbol = args.symbol
 
     if not symbol:
-        symbol = input("请输入股票代码：").strip()
+        symbol = input("请输入股票代码（例如 002430）：").strip()
 
     try:
         symbol = normalize_symbol(symbol)
