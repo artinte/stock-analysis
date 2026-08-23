@@ -125,10 +125,32 @@ class YinheStock:
         内部辅助接口。
         """
 
-        stock = self.fetch_stock(symbol)
+        self._ensure_started()
 
-        if stock:
+        formatted_symbol = self._normalize_symbol(symbol)
 
-            return stock.name or "未知名称"
+        try:
+            stock_basic = self.info_data.get_stock_basic([formatted_symbol])
 
-        return "未知名称"
+            # DataFrame
+            if hasattr(stock_basic, "empty"):
+
+                if not stock_basic.empty:
+                    return stock_basic["SECURITY_NAME"].iloc[0]
+
+            # List[Dict]
+            elif isinstance(stock_basic, list):
+
+                if stock_basic:
+                    return stock_basic[0].get(
+                        "SECURITY_NAME",
+                        "未知名称",
+                    )
+
+            return "未知名称"
+
+        except Exception as e:
+
+            print(f"[银河网关] 获取股票名称失败 " f"{formatted_symbol}: {e}")
+
+            return "获取失败"

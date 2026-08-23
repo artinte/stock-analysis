@@ -338,36 +338,7 @@ class YinheGateway(StockDataGateway):
         这是银河数据源内部辅助方法，
         不属于 StockDataGateway 统一接口。
         """
-
-        self._ensure_started()
-
-        formatted_symbol = self._normalize_symbol(symbol)
-
-        try:
-            stock_basic = self.info_data.get_stock_basic([formatted_symbol])
-
-            # DataFrame
-            if hasattr(stock_basic, "empty"):
-
-                if not stock_basic.empty:
-                    return stock_basic["SECURITY_NAME"].iloc[0]
-
-            # List[Dict]
-            elif isinstance(stock_basic, list):
-
-                if stock_basic:
-                    return stock_basic[0].get(
-                        "SECURITY_NAME",
-                        "未知名称",
-                    )
-
-            return "未知名称"
-
-        except Exception as e:
-
-            print(f"[银河网关] 获取股票名称失败 " f"{formatted_symbol}: {e}")
-
-            return "获取失败"
+        return self.stock.fetch_stock_name(symbol)
 
     # ==========================================================
     # 实时行情
@@ -537,9 +508,7 @@ class YinheGateway(StockDataGateway):
             # --------------------------------------------------
 
             amplitude = None
-
             if prev_close is not None and prev_close != 0:
-
                 amplitude = (latest.high - latest.low) / prev_close * 100
 
             # --------------------------------------------------
@@ -647,7 +616,7 @@ class YinheGateway(StockDataGateway):
                 total_shares=total_shares,
                 circulating_shares=circulating_shares,
                 market_cap=market_cap,
-                circulating_market_cap=(circulating_market_cap),
+                circulating_market_cap=circulating_market_cap,
                 pe_dynamic=pe_dynamic,
                 pe_ttm=pe_ttm,
                 pb=None,
