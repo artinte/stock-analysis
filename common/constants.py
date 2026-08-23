@@ -70,7 +70,7 @@ class IndexSymbol(str, Enum):
         # "000001.SH"
 
         # 获取指数名称
-        IndexSymbol.SSE.name
+        IndexSymbol.SSE.display_name
         # "上证指数"
 
         # 获取不带市场后缀的代码
@@ -86,7 +86,7 @@ class IndexSymbol(str, Enum):
 
         # 遍历所有指数
         for index in IndexSymbol:
-            print(index.symbol, index.name)
+            print(index.symbol, index.display_name)
 
     注意：
         value / symbol 使用标准的 "代码.交易所" 格式，
@@ -108,11 +108,11 @@ class IndexSymbol(str, Enum):
     CSI_1000 = ("000852.SH", "中证1000")
     CSI_A500 = ("000510.SH", "中证A500")
 
-    def __new__(cls, symbol: str, name: str):
+    def __new__(cls, symbol: str, display_name: str):
         obj = str.__new__(cls, symbol)
         obj._value_ = symbol
         obj.symbol = symbol
-        obj.name = name
+        obj.display_name = display_name
         return obj
 
     @property
@@ -124,3 +124,39 @@ class IndexSymbol(str, Enum):
     def exchange(self) -> str:
         """交易所代码。"""
         return self.symbol.split(".", 1)[1]
+
+
+class IndustryLevel(int, Enum):
+    """行业分类层级。"""
+
+    LEVEL_1 = 1
+    LEVEL_2 = 2
+    LEVEL_3 = 3
+    LEVEL_4 = 4
+
+
+class IndustryStandard(str, Enum):
+    """
+    行业分类标准。
+
+    不同数据源、研究机构使用的行业分类体系可能不同，
+    因此不能简单地使用一个 industry 字段表示。
+    """
+
+    # 中证行业分类
+    CSI = "csi"
+
+    # 国民经济行业分类
+    NATIONAL = "national"
+
+    # 证监会行业分类
+    CSRC = "csrc"
+
+    # 申万行业分类
+    SW = "sw"
+
+    # Wind 行业分类
+    WIND = "wind"
+
+    # 自定义分类
+    CUSTOM = "custom"
