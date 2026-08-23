@@ -24,7 +24,6 @@ from gateways.providers.yinhe.valuation import YinheValuation
 from gateways.registry import GatewayRegistry
 
 from utils.stock_mapping import normalize_symbol
-from utils.stock_industry_category import get_stock_industry_category
 
 """
 银河证券数据网关。
@@ -346,14 +345,6 @@ class YinheGateway(StockDataGateway):
     # ==========================================================
     # 实时行情
     # ==========================================================
-
-    def fetch_industry(
-        self,
-        symbol: str,
-    ) -> Optional[Industry]:
-        # 获取行业分类
-        stock_category = get_stock_industry_category(symbol)
-        return stock_category
 
     def fetch_quote(
         self,

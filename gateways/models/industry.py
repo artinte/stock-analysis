@@ -23,17 +23,18 @@ class Industry:
     def display(self) -> None:
         """打印行业信息。"""
 
-        print(f"行业代码：{self.code or '-'}")
-        print(f"行业名称：{self.name or '-'}")
+        print("✅ 行业分类")
+        print(f"  行业代码：{self.code or '-'}")
+        print(f"  行业名称：{self.name or '-'}")
 
         if self.standard is not None:
-            print(f"分类标准：{self.standard.value}")
+            print(f"  分类标准：{self.standard.value}")
         else:
-            print("分类标准：-")
+            print("  分类标准：-")
 
-        print(f"一级行业：{self.level_1 or '-'}")
-        print(f"二级行业：{self.level_2 or '-'}")
-        print(f"三级行业：{self.level_3 or '-'}")
-        print(f"四级行业：{self.level_4 or '-'}")
+        print(f"  一级行业：{self.level_1 or '-'}")
+        print(f"  二级行业：{self.level_2 or '-'}")
+        print(f"  三级行业：{self.level_3 or '-'}")
+        print(f"  四级行业：{self.level_4 or '-'}")
 
-        print(f"数据来源：{self.source or '-'}")
+        print(f"  数据来源：{self.source or '-'}")

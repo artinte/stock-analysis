@@ -4,7 +4,10 @@ from typing import Optional
 from dotenv import load_dotenv
 
 from gateways.gateway import StockDataGateway
+from gateways.models.industry import Industry
+from gateways.models.industry_profile import IndustryProfile
 from gateways.registry import GatewayRegistry
+from gateways.services.industry_service import IndustryService
 
 """
 
@@ -216,6 +219,9 @@ class DataManager:
             self.config,
         )
 
+        # 行业服务
+        self.industry = IndustryService()
+
     def start(self) -> bool:
         return self.gateway.login(self.config)
 
@@ -230,12 +236,6 @@ class DataManager:
         symbol: str,
     ):
         return self.gateway.fetch_stock(symbol)
-
-    def get_industry(
-        self,
-        symbol: str,
-    ):
-        return self.gateway.fetch_industry(symbol)
 
     def get_quote(
         self,
@@ -282,3 +282,15 @@ class DataManager:
         cls,
     ) -> list[str]:
         return GatewayRegistry.names()
+
+    def get_industry(
+        self,
+        symbol: str,
+    ) -> Industry:
+        return self.industry.get_industry(symbol)
+
+    def get_industry_profile(
+        self,
+        industry: Industry,
+    ) -> IndustryProfile:
+        return self.industry.get_industry_profile(industry)
