@@ -305,8 +305,10 @@ def test_provider(
         print("✅ 股票基础信息")
         print(f"   代码：{stock.symbol}")
         print(f"   名称：{stock.name}")
+        print(f"   证券中文名称：{stock.company_name}")
         # print(f"   行业：{stock.industry}")
-        # print(f"   市场：{stock.market}")
+        print(f"   市场：{stock.market}")
+        print(f"   上市日期：{stock.listing_date}")
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现股票基础信息")

@@ -60,36 +60,24 @@ class Stock:
     """
 
     market: Optional[str] = None
-    """
-    市场。
-
-    示例:
-
-        SH
-        SZ
-        BJ
-        NASDAQ
-        NYSE
-    """
 
     exchange: Optional[str] = None
-    """
-    交易所。
-
-    示例:
-
-        SSE
-        SZSE
-        NASDAQ
-    """
 
     # ==========================================================
     # 上市信息
     # ==========================================================
 
+    # 上市日期
     listing_date: Optional[str] = None
 
+    # 上市价格
     ipo_price: Optional[float] = None
+    
+    # 退市日期
+    delisting_date: Optional[str] = None
+    
+    # 上市状态
+    listed_status: Optional[bool] = None
 
     # ==========================================================
     # 股本
@@ -103,27 +91,8 @@ class Stock:
     # 公司关联
     # ==========================================================
 
+    # 公司全称
     company_name: Optional[str] = None
-    """
-    公司全称。
 
-    可以来自：
-
-        交易所
-        工商系统
-    """
-
-    # ==========================================================
-    # 数据源
-    # ==========================================================
-
+    # 数据来源
     source: Optional[str] = None
-    """
-    数据来源。
-
-    例如:
-
-        yinhe
-        tencent
-        akshare
-    """

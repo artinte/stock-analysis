@@ -45,16 +45,6 @@ class YinheStock:
     ) -> Optional[Stock]:
         """
         获取股票基础信息。
-
-        数据流：
-
-            AmazingData
-                |
-                ↓
-            DataFrame
-                |
-                ↓
-            Stock
         """
 
         self.gateway._ensure_started()
@@ -76,38 +66,21 @@ class YinheStock:
                 stock_basic,
                 "empty",
             ):
-
-                if stock_basic.empty:
+                if stock_basic is None or stock_basic.empty:
                     return None
 
                 row = stock_basic.iloc[0]
 
                 return Stock(
-                    symbol=code,
-                    name=row.get("SECURITY_NAME"),
+                    symbol=row["MARKET_CODE"],
+                    name=row["SECURITY_NAME"],
+                    company_name=row.get("COMP_NAME"),
+                    market=row.get("LISTPLATE_NAME"),
+                    listing_date=str(row.get("LISTDATE")),
+                    delisting_date=str(row.get("DELISTDATE")),
+                    listed_status=row.get("IS_LISTED"),
                     source="yinhe",
                 )
-
-            # ==================================================
-            # List[Dict]
-            # ==================================================
-
-            if isinstance(
-                stock_basic,
-                list,
-            ):
-
-                if not stock_basic:
-                    return None
-
-                item = stock_basic[0]
-
-                return Stock(
-                    symbol=code,
-                    name=item.get("SECURITY_NAME"),
-                    source="yinhe",
-                )
-
             return None
 
         except Exception as e:
