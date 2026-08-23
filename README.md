@@ -24,6 +24,7 @@
 
 * [项目结构](#project-structure)
 
+  * [common](#common)
   * [crawler](#crawler) - 新闻、公告、研报等非结构化信息采集模块
   * [docs](#docs) - 项目文档、快速入门和使用示例
   * [gateways](#gateways) - 多数据源统一接入层，负责行情、K线、财务和估值数据适配
