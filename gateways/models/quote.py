@@ -147,24 +147,8 @@ class Quote:
         USD
     """
 
+    # 换手率
     turnover: Optional[float] = None
-    """
-    换手率。
-
-    推荐新代码使用。
-
-
-    兼容旧字段:
-
-        turnover_rate
-    """
-
-    turnover_rate: Optional[float] = None
-    """
-    旧版本字段。
-
-    保留兼容。
-    """
 
     volume_ratio: Optional[float] = None
     """
@@ -268,7 +252,6 @@ class Quote:
         delisted
     """
 
-    currency: Optional[str] = None
     """
     交易货币。
 
@@ -281,3 +264,68 @@ class Quote:
 
         USD
     """
+    currency: Optional[str] = None
+
+    def display(self) -> None:
+        """打印实时行情信息。"""
+        print("✅ 最新行情")
+        print(f"  股票代码：{self.symbol}")
+        print(f"  股票名称：{self.name or '-'}")
+        print(f"  时间：{self.timestamp or '-'}")
+        print(f"  数据来源：{self.source or '-'}")
+
+        print(f"  当前价格：{self.price if self.price is not None else '-'}")
+        print(f"  昨收：{self.prev_close if self.prev_close is not None else '-'}")
+        print(f"  开盘：{self.open if self.open is not None else '-'}")
+        print(f"  最高：{self.high if self.high is not None else '-'}")
+        print(f"  最低：{self.low if self.low is not None else '-'}")
+
+        print(f"  涨跌：{self.change if self.change is not None else '-'}")
+        print(
+            f"  涨跌幅："
+            f"{self.change_percent if self.change_percent is not None else '-'}%"
+        )
+        print(f"  振幅：" f"{self.amplitude if self.amplitude is not None else '-'}%")
+
+        print(f"  成交量：{self.volume if self.volume is not None else '-'}")
+        print(f"  成交额：{self.amount if self.amount is not None else '-'}")
+        print(f"  换手率：" f"{self.turnover if self.turnover is not None else '-'}%")
+        print(
+            f"  量比：" f"{self.volume_ratio if self.volume_ratio is not None else '-'}"
+        )
+        print(
+            f"  成交均价："
+            f"{self.average_price if self.average_price is not None else '-'}"
+        )
+
+        print(
+            f"  总股本："
+            f"{self.total_shares if self.total_shares is not None else '-'}"
+        )
+        print(
+            f"  流通股本："
+            f"{self.circulating_shares if self.circulating_shares is not None else '-'}"
+        )
+
+        print(
+            f"  总市值："
+            f"{self.market_cap if self.market_cap is not None else '-'} 亿元"
+        )
+        print(
+            f"  流通市值："
+            f"{self.circulating_market_cap if self.circulating_market_cap is not None else '-'} 亿元"
+        )
+
+        print(
+            f"  动态 PE：" f"{self.pe_dynamic if self.pe_dynamic is not None else '-'}"
+        )
+        print(f"  静态 PE：" f"{self.pe_static if self.pe_static is not None else '-'}")
+        print(f"  PE(TTM)：" f"{self.pe_ttm if self.pe_ttm is not None else '-'}")
+        print(f"  PB：{self.pb if self.pb is not None else '-'}")
+        print(f"  PS：{self.ps if self.ps is not None else '-'}")
+
+        print(f"  涨停：" f"{self.high_limit if self.high_limit is not None else '-'}")
+        print(f"  跌停：" f"{self.low_limit if self.low_limit is not None else '-'}")
+
+        print(f"  状态：{self.status or '-'}")
+        print(f"  货币：{self.currency or '-'}")

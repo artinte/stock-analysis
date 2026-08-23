@@ -5,7 +5,7 @@ from typing import Optional
 
 import pandas
 
-from gateways.models.constants import Interval
+from common.constants import Interval
 from gateways.models.valuation import Valuation
 
 from utils.stock_mapping import normalize_symbol

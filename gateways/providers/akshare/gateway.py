@@ -5,10 +5,9 @@ from typing import Any, Optional
 
 import akshare as ak
 
+from common.constants import Interval
 from gateways.gateway import StockDataGateway
 from gateways.registry import GatewayRegistry
-
-from gateways.models.constants import Interval
 from gateways.models.financial import Financial
 from gateways.models.kline import Kline
 from gateways.models.quote import Quote

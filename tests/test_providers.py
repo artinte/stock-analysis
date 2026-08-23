@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from gateways.models.constants import Interval
+from common.constants import Interval
 from gateways.manager import DataManager
 from utils.stock_mapping import exchange_name
 
@@ -298,7 +298,6 @@ def test_provider(
         return
 
     try:
-        print()
         print("正在获取股票基础信息...")
 
         stock = data.get_stock(symbol)
@@ -330,19 +329,7 @@ def test_provider(
         print("正在获取最新行情...")
 
         quote = data.get_quote(symbol)
-
-        print("✅ 最新行情")
-        print(f"   股票：{quote.name}")
-        print(f"   最新价：{quote.price}")
-        print(f"   涨跌额：{quote.change}")
-        print(f"   涨跌幅：{quote.change_percent}%")
-        print(f"   今开：{quote.open}")
-        print(f"   最高：{quote.high}")
-        print(f"   最低：{quote.low}")
-        print(f"   成交量：{quote.volume}")
-        print(f"   成交额：{quote.amount}")
-        print(f"   换手率：{quote.turnover_rate}%")
-        print(f"   总市值：{quote.market_cap}")
+        quote.display()
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现最新行情")

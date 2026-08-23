@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 import tgw
 
 from gateways.gateway import StockDataGateway
-from gateways.models.constants import Interval
+from common.constants import Interval, TEN_THOUSAND
 from gateways.models.financial import Financial
 from gateways.models.kline import Kline
 from gateways.models.valuation import Valuation
@@ -22,7 +22,6 @@ from gateways.providers.yinhe.quote import YinheQuote
 from gateways.providers.yinhe.stock import YinheStock
 from gateways.providers.yinhe.valuation import YinheValuation
 from gateways.registry import GatewayRegistry
-from gateways.models.constants import SHARES_PER_10K
 
 from utils.stock_mapping import normalize_symbol
 from utils.stock_industry_category import get_stock_industry_category
@@ -453,16 +452,16 @@ class YinheGateway(StockDataGateway):
 
                     if "TOT_SHARE" in equity_structure.columns:
                         # 原始数据是万为单位
-                        total_shares = float(latest_row["TOT_SHARE"]) * SHARES_PER_10K
+                        total_shares = float(latest_row["TOT_SHARE"]) * TEN_THOUSAND
 
                     # 如果存在流通股字段，根据实际字段读取。
                     if "FLOAT_SHARE" in equity_structure.columns:
                         circulating_shares = (
-                            float(latest_row["FLOAT_SHARE"]) * SHARES_PER_10K
+                            float(latest_row["FLOAT_SHARE"]) * TEN_THOUSAND
                         )
                     elif "CIRC_SHARE" in equity_structure.columns:
                         circulating_shares = (
-                            float(latest_row["CIRC_SHARE"]) * SHARES_PER_10K
+                            float(latest_row["CIRC_SHARE"]) * TEN_THOUSAND
                         )
             except Exception as e:
                 print(f"[银河网关] 获取股本失败 " f"{formatted_symbol}: {e}")
@@ -623,7 +622,7 @@ class YinheGateway(StockDataGateway):
                 change_percent=change_percent,
                 volume=latest.volume,
                 amount=latest.amount,
-                turnover_rate=turnover,
+                turnover=turnover,
                 volume_ratio=None,
                 total_shares=total_shares,
                 circulating_shares=circulating_shares,
@@ -778,16 +777,16 @@ class YinheGateway(StockDataGateway):
 
                 if "TOT_SHARE" in equity_structure.columns:
                     # 原始数据是万为单位
-                    total_shares = float(latest_row["TOT_SHARE"]) * SHARES_PER_10K
+                    total_shares = float(latest_row["TOT_SHARE"]) * TEN_THOUSAND
 
                 # 如果存在流通股字段，根据实际字段读取。
                 if "FLOAT_SHARE" in equity_structure.columns:
                     circulating_shares = (
-                        float(latest_row["FLOAT_SHARE"]) * SHARES_PER_10K
+                        float(latest_row["FLOAT_SHARE"]) * TEN_THOUSAND
                     )
                 elif "CIRC_SHARE" in equity_structure.columns:
                     circulating_shares = (
-                        float(latest_row["CIRC_SHARE"]) * SHARES_PER_10K
+                        float(latest_row["CIRC_SHARE"]) * TEN_THOUSAND
                     )
         except Exception as e:
             print(f"[银河网关] 获取股本失败 " f"{formatted_symbol}: {e}")

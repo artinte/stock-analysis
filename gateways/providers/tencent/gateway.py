@@ -6,7 +6,7 @@ from typing import Any, Optional
 import requests
 
 from gateways.gateway import StockDataGateway
-from gateways.models.constants import Interval
+from common.constants import Interval
 from gateways.models.kline import Kline
 from gateways.models.quote import Quote
 from gateways.models.valuation import Valuation
