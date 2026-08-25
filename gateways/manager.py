@@ -4,8 +4,8 @@ from typing import Optional
 from dotenv import load_dotenv
 
 from gateways.gateway import StockDataGateway
-from gateways.models.industry import Industry
-from gateways.models.industry_profile import IndustryProfile
+from core.models.industry import Industry
+from core.models.industry_profile import IndustryProfile
 from gateways.registry import GatewayRegistry
 from gateways.services.industry_service import IndustryService
 

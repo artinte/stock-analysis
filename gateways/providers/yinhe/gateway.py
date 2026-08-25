@@ -11,11 +11,11 @@ import tgw
 
 from gateways.gateway import StockDataGateway
 from common.constants import Interval, TEN_THOUSAND
-from gateways.models.financial import Financial
-from gateways.models.kline import Kline
-from gateways.models.valuation import Valuation
-from gateways.models.quote import Quote
-from gateways.models.industry import Industry
+from core.models.financial import Financial
+from core.models.kline import Kline
+from core.models.valuation import Valuation
+from core.models.quote import Quote
+from core.models.industry import Industry
 from gateways.providers.yinhe.financial import YinheFinancial
 from gateways.providers.yinhe.kline import YinheKline
 from gateways.providers.yinhe.quote import YinheQuote

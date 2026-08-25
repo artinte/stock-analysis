@@ -1,4 +1,4 @@
-from gateways.models.financial import Financial
+from core.models.financial import Financial
 from utils.stock_mapping import normalize_symbol
 
 class YinheFinancial:

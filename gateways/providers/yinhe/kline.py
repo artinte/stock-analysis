@@ -5,7 +5,7 @@ from typing import Optional
 import AmazingData
 
 from common.constants import Interval
-from gateways.models.kline import Kline
+from core.models.kline import Kline
 
 from utils.stock_mapping import normalize_symbol
 

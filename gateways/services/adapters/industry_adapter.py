@@ -1,4 +1,4 @@
-from gateways.models.industry import Industry
+from core.models.industry import Industry
 from common.constants import IndustryStandard
 
 

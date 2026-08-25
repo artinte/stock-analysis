@@ -8,11 +8,11 @@ import akshare as ak
 from common.constants import Interval
 from gateways.gateway import StockDataGateway
 from gateways.registry import GatewayRegistry
-from gateways.models.financial import Financial
-from gateways.models.kline import Kline
-from gateways.models.quote import Quote
-from gateways.models.stock import Stock
-from gateways.models.valuation import Valuation
+from core.models.financial import Financial
+from core.models.kline import Kline
+from core.models.quote import Quote
+from core.models.stock import Stock
+from core.models.valuation import Valuation
 
 
 @GatewayRegistry.register("akshare")

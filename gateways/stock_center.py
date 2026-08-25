@@ -5,19 +5,19 @@ from datetime import datetime
 from typing import Optional
 
 
-from gateways.models.stock import Stock
-from gateways.models.company import Company
-from gateways.models.capital import Capital
-from gateways.models.industry import Industry
-from gateways.models.institution import InstitutionData
-from gateways.models.news import News
-from gateways.models.announcement import Announcement
-from gateways.models.event import Event
+from core.models.stock import Stock
+from core.models.company import Company
+from core.models.capital import Capital
+from core.models.industry import Industry
+from core.models.institution import InstitutionData
+from core.models.news import News
+from core.models.announcement import Announcement
+from core.models.event import Event
 
-from gateways.models.quote import Quote
-from gateways.models.kline import Kline
-from gateways.models.valuation import Valuation
-from gateways.models.financial import Financial
+from core.models.quote import Quote
+from core.models.kline import Kline
+from core.models.valuation import Valuation
+from core.models.financial import Financial
 
 
 @dataclass(slots=True)

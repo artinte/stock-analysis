@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from gateways.models.stock import Stock
+from core.models.stock import Stock
 from utils.stock_mapping import normalize_symbol, get_exchange
 
 

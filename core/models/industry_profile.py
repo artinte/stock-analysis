@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 from common.constants import IndustryLevel
-from gateways.models.industry import Industry
+from core.models.industry import Industry
 
 
 @dataclass(slots=True)

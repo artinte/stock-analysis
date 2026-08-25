@@ -4,7 +4,7 @@ import datetime
 import pandas
 
 from common.constants import Interval, TEN_THOUSAND
-from gateways.models.quote import Quote
+from core.models.quote import Quote
 
 from utils.stock_mapping import normalize_symbol
 

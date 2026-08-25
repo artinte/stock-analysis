@@ -1,6 +1,6 @@
 from gateways.services.adapters.industry_adapter import IndustryAdapter
-from gateways.models.industry import Industry
-from gateways.models.industry_profile import IndustryProfile
+from core.models.industry import Industry
+from core.models.industry_profile import IndustryProfile
 from utils.stock_industry_category import StockQueryResult, get_stock_industry_category
 
 

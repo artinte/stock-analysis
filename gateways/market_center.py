@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 
-from models.index import Index
-from models.market_statistics import MarketStatistics
+from core.models.index import Index
+from core.models.market_statistics import MarketStatistics
 
 
 @dataclass(slots=True)

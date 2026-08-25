@@ -7,9 +7,9 @@ import requests
 
 from gateways.gateway import StockDataGateway
 from common.constants import Interval
-from gateways.models.kline import Kline
-from gateways.models.quote import Quote
-from gateways.models.valuation import Valuation
+from core.models.kline import Kline
+from core.models.quote import Quote
+from core.models.valuation import Valuation
 from gateways.registry import GatewayRegistry
 
 """
