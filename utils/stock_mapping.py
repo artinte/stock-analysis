@@ -15,7 +15,7 @@
 import re
 from enum import Enum
 from typing import Optional, Union, Dict
-from common.constants import Exchange
+from common.enums.exchange import Exchange
 from utils.stock_industry_category import get_stock_industry_category
 
 # 上海证券交易所 (Shanghai Stock Exchange - SSE)

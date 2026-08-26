@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Optional
-from common.constants import Exchange
+from common.enums.exchange import Exchange
 from utils.stock_mapping import exchange_name
 
 
