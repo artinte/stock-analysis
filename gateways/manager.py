@@ -4,6 +4,7 @@ from typing import Optional
 from dotenv import load_dotenv
 
 from gateways.gateway import StockDataGateway
+from core.models.stock import Stock
 from core.models.industry import Industry
 from core.models.industry_profile import IndustryProfile
 from gateways.registry import GatewayRegistry
@@ -234,7 +235,7 @@ class DataManager:
     def get_stock(
         self,
         symbol: str,
-    ):
+    ) -> Stock:
         return self.gateway.fetch_stock(symbol)
 
     def get_quote(

@@ -542,7 +542,7 @@ class AkShareGateway(StockDataGateway):
                 row,
                 "成交额",
             ),
-            turnover_rate=cls._get_float(
+            turnover=cls._get_float(
                 row,
                 "换手率",
             ),

@@ -305,7 +305,7 @@ class TencentGateway(StockDataGateway):
 
             amount = raw.get("amount")
 
-            turnover = raw.get("turnover_rate")
+            turnover = raw.get("turnover")
 
             market_cap = raw.get("market_cap")
 
@@ -453,7 +453,7 @@ class TencentGateway(StockDataGateway):
                 change_percent=change_percent,
                 volume=volume,
                 amount=amount,
-                turnover_rate=turnover,
+                turnover=turnover,
                 volume_ratio=raw.get("volume_ratio"),
                 total_shares=total_shares,
                 circulating_shares=float_shares,
@@ -1002,7 +1002,7 @@ class TencentGateway(StockDataGateway):
             "change_percent": change_percent,
             "volume": volume,
             "amount": amount,
-            "turnover_rate": None,
+            "turnover": None,
             "volume_ratio": None,
             "total_shares": None,
             "float_shares": None,
@@ -1080,7 +1080,7 @@ class TencentGateway(StockDataGateway):
             change_percent=change_percent,
             volume=volume,
             amount=amount,
-            turnover_rate=raw.get("turnover_rate"),
+            turnover=raw.get("turnover"),
             volume_ratio=raw.get("volume_ratio"),
             total_shares=raw.get("total_shares"),
             circulating_shares=raw.get("float_shares"),
@@ -1574,7 +1574,7 @@ def main() -> None:
 
             print(f"成交额: {quote.amount}")
 
-            print(f"换手率: {quote.turnover_rate}")
+            print(f"换手率: {quote.turnover}")
 
             print(f"总市值: {quote.market_cap}")
 

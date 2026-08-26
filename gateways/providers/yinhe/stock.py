@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from typing import Optional
 
 from core.models.stock import Stock
@@ -76,8 +77,8 @@ class YinheStock:
                     company_name=row.get("COMP_NAME"),
                     exchange=exchange,
                     market=row.get("LISTPLATE_NAME"),
-                    listing_date=str(row.get("LISTDATE")),
-                    delisting_date=str(row.get("DELISTDATE")),
+                    listing_date=row.get("LISTDATE"),
+                    delisting_date=row.get("DELISTDATE"),
                     listed_status=row.get("IS_LISTED"),
                     source=self.gateway.display_name,
                 )

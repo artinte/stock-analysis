@@ -214,7 +214,7 @@ def print_stock_report(
 
     print(
         f"换手率: "
-        f"{quote.turnover_rate if quote else '--'}"
+        f"{quote.turnover if quote else '--'}"
         f"        "
         f"量比: "
         f"{quote.volume_ratio if quote else '--'}"
