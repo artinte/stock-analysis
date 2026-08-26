@@ -150,12 +150,13 @@ class YinheKline:
             try:
 
                 kline_time = item.get("kline_time")
+                
+                if kline_time is None:
+                    print("❌ 缺少 kline_time")
+                    print(item)
+                    continue
 
-                if hasattr(
-                    kline_time,
-                    "to_pydatetime",
-                ):
-
+                if hasattr(kline_time, "to_pydatetime"):
                     kline_time = kline_time.to_pydatetime()
 
                 klines.append(

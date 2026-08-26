@@ -14,19 +14,39 @@ class Kline:
     不同数据源由 Gateway 统一转换为该结构。
 
     时间约定：
-        timestamp 表示该 K 线周期的结束时间。
+
+        timestamp 表示该 K 线周期的时间。
 
     例如：
-        5 分钟 K：09:30 ~ 09:35，timestamp = 09:35
-        日 K：    当日交易周期，timestamp = 当日交易时间
+
+        5 分钟 K：
+            timestamp = 09:30:00
+            表示 09:30 ~ 09:35 这一根 K 线
+
+        日 K：
+            timestamp = 当日交易日期
+            表示当天交易周期
+
 
     OHLC 含义均针对“当前 K 线周期”：
-        open   周期内第一笔成交价
-        high   周期内最高成交价
-        low    周期内最低成交价
-        close  周期内最后一笔成交价
-        volume 周期内成交量
-        amount 周期内成交额
+
+        open:
+            周期内第一笔成交价
+
+        high:
+            周期内最高成交价
+
+        low:
+            周期内最低成交价
+
+        close:
+            周期内最后一笔成交价
+
+        volume:
+            周期内成交量
+
+        amount:
+            周期内成交额
     """
 
     # 标准证券代码，例如 600519.SH
@@ -35,7 +55,7 @@ class Kline:
     # K 线周期
     interval: Interval
 
-    # K 线周期结束时间
+    # K 线时间（周期开始时间）
     timestamp: datetime
 
     # 当前周期 OHLC
@@ -56,10 +76,11 @@ class Kline:
         """
         print("✅ K线数据")
         print(f"  证券代码：{self.symbol}")
+        print(f"  K线周期：{self.interval.value}")
         print(f"  交易时间：{self.timestamp}")
         print(f"  开盘价：{self.open:.2f}")
         print(f"  最高价：{self.high:.2f}")
         print(f"  最低价：{self.low:.2f}")
         print(f"  收盘价：{self.close:.2f}")
-        print(f"  成交量：{self.volume if self.volume is not None else '-'}")
-        print(f"  成交额：{self.amount if self.amount is not None else '-'}")
+        print(f"  成交量：" f"{self.volume if self.volume is not None else '-'}")
+        print(f"  成交额：" f"{self.amount if self.amount is not None else '-'}")

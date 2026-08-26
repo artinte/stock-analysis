@@ -6,29 +6,24 @@ from core.models.stock import Stock
 """
 股票基础信息测试。
 
-运行：python -m tests.gateways.test_stock
+运行：
+python -m tests.gateways.test_stock
 """
 
 
-def test_stock(
-    provider_name: str,
+def run_stock_test(
+    data: DataManager,
     symbol: str,
 ) -> None:
     """
-    测试指定数据源的股票基础信息接口。
+    使用已有 DataManager 测试股票信息。
 
-    Args:
-        provider_name: 数据源名称，例如 yinhe、akshare。
-        symbol: 标准证券代码，例如 600519.SH。
+    用于集成测试。
     """
-    print(f"【股票基础信息】{provider_name} / {symbol}")
 
-    data: DataManager | None = None
+    print(f"【股票基础信息】{symbol}")
 
     try:
-        data = DataManager(provider_name)
-
-        data.start()
 
         stock: Stock | None = data.get_stock(symbol)
 
@@ -39,21 +34,54 @@ def test_stock(
         stock.display()
 
     except NotImplementedError:
+
         print("⚠️ 当前数据源暂未实现股票基础信息")
 
     except Exception as exc:
+
         print(f"❌ 获取股票基础信息失败：{exc}")
 
+
+def test_stock(
+    provider_name: str,
+    symbol: str,
+) -> None:
+    """
+    独立测试入口。
+
+    自己管理 DataManager 生命周期。
+    """
+
+    print(f"【股票基础信息测试】" f"{provider_name} / {symbol}")
+
+    data: DataManager | None = None
+
+    try:
+
+        data = DataManager(provider_name)
+
+        data.start()
+
+        run_stock_test(
+            data,
+            symbol,
+        )
+
     finally:
+
         if data is not None:
+
             try:
                 data.stop()
                 print("✅ 数据源已关闭")
+
             except Exception as exc:
+
                 print(f"⚠️ 关闭数据源失败：{exc}")
 
 
 def main() -> None:
+
     test_stock(
         provider_name="yinhe",
         symbol="600519.SH",
