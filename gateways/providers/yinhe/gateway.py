@@ -292,7 +292,7 @@ class YinheGateway(StockDataGateway):
         if self._started:
             try:
                 AmazingData.logout(self.user)
-
+                print("[银河网关] 退出登录")
             except Exception as e:
                 print(f"[银河网关] 注销异常: {e}")
 

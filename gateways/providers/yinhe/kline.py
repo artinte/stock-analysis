@@ -71,7 +71,7 @@ class YinheKline:
         # 2. 股票代码标准化
         # ------------------------------------------------------
 
-        code = normalize_symbol(symbol)
+        symbol = normalize_symbol(symbol)
 
         # ------------------------------------------------------
         # 3. 日期处理
@@ -90,7 +90,7 @@ class YinheKline:
         try:
 
             kline_dict = self.gateway.market_data.query_kline(
-                [code],
+                [symbol],
                 period=period,
                 begin_date=int(begin_str),
                 end_date=int(end_str),
@@ -99,17 +99,17 @@ class YinheKline:
             if kline_dict is None:
                 return []
 
-            df = kline_dict.get(code)
+            df = kline_dict.get(symbol)
 
             if df is None:
 
-                print(f"[银河网关] {code} 无返回数据")
+                print(f"[银河网关] {symbol} 无返回数据")
 
                 return []
 
             if hasattr(df, "empty") and df.empty:
 
-                print(f"[银河网关] {code} 返回数据为空")
+                print(f"[银河网关] {symbol} 返回数据为空")
 
                 return []
 
@@ -160,7 +160,7 @@ class YinheKline:
 
                 klines.append(
                     Kline(
-                        symbol=code,
+                        symbol=symbol,
                         timestamp=kline_time,
                         interval=interval,
                         open=float(item["open"]),
