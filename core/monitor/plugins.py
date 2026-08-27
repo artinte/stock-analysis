@@ -1,6 +1,6 @@
 import asyncio
 import random
-from base_monitor import MonitorTask, logger
+from core.monitor.base_monitor import MonitorTask, logger
 
 class XMonitorPlugin(MonitorTask):
     """插件 A：假装这是一个 X.com 监控器"""

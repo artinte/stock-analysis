@@ -25,13 +25,14 @@
 * [项目结构](#project-structure)
 
   * [common](#common)
-  * [crawler](#crawler) - 新闻、公告、研报等非结构化信息采集模块
-  * [docs](#docs) - 项目文档、快速入门和使用示例
-  * [gateways](#gateways) - 多数据源统一接入层，负责行情、K线、财务和估值数据适配
-  * [gui](#gui) - 图形化界面模块，用于数据展示和交互操作
-  * [tests](#tests) - 自动化测试和数据源验证代码
-  * [tools](#tools) - 独立工具脚本，例如股票监控、数据检查和维护工具
-  * [utils](#utils) - 通用工具库和公共辅助函数
+  * [core](#core)
+  * [crawler](#crawler)
+  * [docs](#docs)
+  * [gateways](#gateways)
+  * [gui](#gui)
+  * [tests](#tests)
+  * [tools](#tools)
+  * [utils](#utils)
 
 * [系统安装](#installation)
 
