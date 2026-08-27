@@ -20,25 +20,18 @@ def run_stock_test(
 
     用于集成测试。
     """
-
     print(f"【股票基础信息】{symbol}")
 
     try:
-
         stock: Stock | None = data.get_stock(symbol)
-
         if stock is None:
             print("❌ 未获取到股票信息")
             return
-
         stock.display()
 
     except NotImplementedError:
-
         print("⚠️ 当前数据源暂未实现股票基础信息")
-
     except Exception as exc:
-
         print(f"❌ 获取股票基础信息失败：{exc}")
 
 
@@ -51,15 +44,12 @@ def test_stock(
 
     自己管理 DataManager 生命周期。
     """
-
     print(f"【股票基础信息测试】" f"{provider_name} / {symbol}")
 
     data: DataManager | None = None
 
     try:
-
         data = DataManager(provider_name)
-
         data.start()
 
         run_stock_test(
@@ -68,20 +58,15 @@ def test_stock(
         )
 
     finally:
-
         if data is not None:
-
             try:
                 data.stop()
                 print("✅ 数据源已关闭")
-
             except Exception as exc:
-
                 print(f"⚠️ 关闭数据源失败：{exc}")
 
 
 def main() -> None:
-
     test_stock(
         provider_name="yinhe",
         symbol="600519.SH",

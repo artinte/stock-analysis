@@ -8,117 +8,157 @@ from typing import Optional
 @dataclass(slots=True)
 class Quote:
     """
-    股票实时行情快照。
+    股票最新行情快照。
 
-    描述某一个证券在某个时间点的市场状态。
+    Quote 表示股票在某一个时间点的市场行情状态。
 
+    主要包括：
 
-    数据来源：
+        - 最新价格
+        - 开盘 / 最高 / 最低 / 昨收
+        - 涨跌 / 涨跌幅 / 振幅
+        - 成交量 / 成交额
+        - 成交均价
+        - 换手率 / 量比
+        - 总市值 / 流通市值
+        - 涨停价 / 跌停价
+        - 交易状态
+        - 数据来源
 
-        Tencent
-        银河证券
-        AkShare
-        TDX
-        Tushare
-        Yahoo Finance
+    不包含：
 
+        - PE / PB / PS 等估值数据
+        - 总股本 / 流通股本等基础数据
+        - 财务报表数据
+        - 技术指标
+        - AI 分析结果
 
-    数据流：
+    数据来源可以是：
 
-        DataSource
-            ↓
-        Gateway
-            ↓
-        Quote
-            ↓
-        StockCenter
-            ↓
-        行情展示 / 策略 / AI分析
+        - AmazingData / 银河
+        - AkShare
+        - TDX
+        - 东方财富
+        - 其他行情数据源
 
-
-    注意：
-
-    Quote 不是历史数据。
-
-    历史价格:
-        Kline
-
-
-    股票静态信息:
-        Stock
-
-
-    财务:
-        Financial
-
-
-    估值:
-        Valuation
+    所有数据源最终统一转换为 Quote。
     """
 
     # ==========================================================
-    # 基础
+    # 基础信息
     # ==========================================================
 
     symbol: str
+    """
+    股票代码。
+
+    例如：
+
+        600519.SH
+        000001.SZ
+        300750.SZ
+    """
 
     name: Optional[str] = None
+    """
+    股票名称。
+
+    例如：
+
+        贵州茅台
+        平安银行
+        宁德时代
+    """
 
     timestamp: Optional[datetime] = None
+    """
+    行情时间。
+
+    表示这条行情快照对应的时间。
+    """
 
     source: Optional[str] = None
     """
-    数据来源。
+    数据来源代码。
 
-    例如:
+    例如：
 
-        tencent
         yinhe
         akshare
+        tdx
+        eastmoney
+    """
+
+    currency: Optional[str] = None
+    """
+    货币。
+
+    例如：
+
+        CNY
+        HKD
+        USD
     """
 
     # ==========================================================
-    # 当前价格
+    # 价格
     # ==========================================================
 
-    price: Optional[float] = None
+    last_price: Optional[float] = None
     """
-    当前价格。
-
-    注意：
-
-    部分数据源没有实时行情时，
-    可能是最近交易日收盘价。
+    最新价 / 当前价格。
     """
 
-    prev_close: Optional[float] = None
+    previous_close: Optional[float] = None
     """
-    昨收。
+    昨收价。
     """
 
-    open: Optional[float] = None
+    open_price: Optional[float] = None
+    """
+    开盘价。
+    """
 
-    high: Optional[float] = None
+    high_price: Optional[float] = None
+    """
+    最高价。
+    """
 
-    low: Optional[float] = None
+    low_price: Optional[float] = None
+    """
+    最低价。
+    """
 
     # ==========================================================
     # 涨跌
     # ==========================================================
 
     change: Optional[float] = None
+    """
+    涨跌额。
+
+    通常：
+
+        最新价 - 昨收价
+    """
 
     change_percent: Optional[float] = None
+    """
+    涨跌幅，单位：%。
+
+    例如：
+
+        2.35
+        -0.81
+    """
 
     amplitude: Optional[float] = None
     """
-    振幅。
+    振幅，单位：%。
 
-    %
+    通常根据：
 
-    计算:
-
-        (high-low)/prev_close
+        (最高价 - 最低价) / 昨收价 × 100%
     """
 
     # ==========================================================
@@ -129,51 +169,34 @@ class Quote:
     """
     成交量。
 
-    A股:
-        股
-
-    美股:
-        shares
+    A 股通常为股。
     """
 
     amount: Optional[float] = None
     """
     成交额。
 
-    A股:
-        元
-
-    美股:
-        USD
-    """
-
-    # 换手率
-    turnover: Optional[float] = None
-
-    volume_ratio: Optional[float] = None
-    """
-    量比。
+    单位：元。
     """
 
     average_price: Optional[float] = None
     """
     成交均价。
-
-    amount / volume
     """
 
-    # ==========================================================
-    # 股本
-    # ==========================================================
+    turnover_rate: Optional[float] = None
+    """
+    换手率，单位：%。
 
-    total_shares: Optional[float] = None
-    """
-    总股本。
+    例如：
+
+        0.1981
+        5.32
     """
 
-    circulating_shares: Optional[float] = None
+    volume_ratio: Optional[float] = None
     """
-    流通股本。
+    量比。
     """
 
     # ==========================================================
@@ -184,148 +207,205 @@ class Quote:
     """
     总市值。
 
-    单位:
-
-        亿元
+    单位：元。
     """
 
-    circulating_market_cap: Optional[float] = None
+    float_market_cap: Optional[float] = None
     """
     流通市值。
 
-    单位:
-
-        亿元
-    """
-
-    # ==========================================================
-    # 估值
-    # ==========================================================
-
-    pe_dynamic: Optional[float] = None
-    """
-    动态 PE。
-    """
-
-    pe_static: Optional[float] = None
-    """
-    静态 PE。
-
-    增加这个。
-
-    原 Quote 缺少。
-    """
-
-    pe_ttm: Optional[float] = None
-    """
-    TTM PE。
-    """
-
-    pb: Optional[float] = None
-
-    ps: Optional[float] = None
-    """
-    市销率。
+    单位：元。
     """
 
     # ==========================================================
     # 涨跌停
     # ==========================================================
 
-    high_limit: Optional[float] = None
+    limit_up: Optional[float] = None
+    """
+    涨停价。
+    """
 
-    low_limit: Optional[float] = None
+    limit_down: Optional[float] = None
+    """
+    跌停价。
+    """
 
     # ==========================================================
-    # 交易状态
+    # 市场状态
     # ==========================================================
 
     status: Optional[str] = None
     """
-    股票状态。
+    当前交易状态。
 
-
-    示例:
+    例如：
 
         trading
         suspended
-        delisted
+        closed
+
+    不同数据源可以使用不同状态，
+    Gateway 负责统一转换。
     """
 
-    """
-    交易货币。
-
-    A股:
-
-        CNY
-
-
-    美股:
-
-        USD
-    """
-    currency: Optional[str] = None
+    # ==========================================================
+    # Display
+    # ==========================================================
 
     def display(self) -> None:
-        """打印实时行情信息。"""
-        print("✅ 最新行情")
-        print(f"  股票代码：{self.symbol}")
-        print(f"  股票名称：{self.name or '-'}")
-        print(f"  时间：{self.timestamp or '-'}")
-        print(f"  数据来源：{self.source or '-'}")
+        """
+        平铺显示最新行情。
 
-        print(f"  当前价格：{self.price if self.price is not None else '-'}")
-        print(f"  昨收：{self.prev_close if self.prev_close is not None else '-'}")
-        print(f"  开盘：{self.open if self.open is not None else '-'}")
-        print(f"  最高：{self.high if self.high is not None else '-'}")
-        print(f"  最低：{self.low if self.low is not None else '-'}")
+        显示规则：
 
-        print(f"  涨跌：{self.change if self.change is not None else '-'}")
-        print(
-            f"  涨跌幅："
-            f"{self.change_percent if self.change_percent is not None else '-'}%"
-        )
-        print(f"  振幅：" f"{self.amplitude if self.amplitude is not None else '-'}%")
+            - 所有字段固定显示
+            - 空值统一显示 "-"
+            - 字段顺序固定
+            - 时间统一为 YYYY-MM-DD HH:MM:SS
+            - 百分比统一保留 4 位
+            - 金额 / 市值使用千分位
+            - 不输出不存在于 Quote 的其他数据
+        """
 
-        print(f"  成交量：{self.volume if self.volume is not None else '-'}")
-        print(f"  成交额：{self.amount if self.amount is not None else '-'}")
-        print(f"  换手率：" f"{self.turnover if self.turnover is not None else '-'}%")
-        print(
-            f"  量比：" f"{self.volume_ratio if self.volume_ratio is not None else '-'}"
-        )
-        print(
-            f"  成交均价："
-            f"{self.average_price if self.average_price is not None else '-'}"
-        )
+        def fmt(value: object) -> str:
+            """格式化普通字段。"""
 
-        print(
-            f"  总股本："
-            f"{self.total_shares if self.total_shares is not None else '-'}"
-        )
-        print(
-            f"  流通股本："
-            f"{self.circulating_shares if self.circulating_shares is not None else '-'}"
-        )
+            if value is None:
+                return "-"
 
-        print(
-            f"  总市值："
-            f"{self.market_cap if self.market_cap is not None else '-'} 亿元"
-        )
-        print(
-            f"  流通市值："
-            f"{self.circulating_market_cap if self.circulating_market_cap is not None else '-'} 亿元"
-        )
+            if isinstance(value, str):
+                value = value.strip()
 
-        print(
-            f"  动态 PE：" f"{self.pe_dynamic if self.pe_dynamic is not None else '-'}"
-        )
-        print(f"  静态 PE：" f"{self.pe_static if self.pe_static is not None else '-'}")
-        print(f"  PE(TTM)：" f"{self.pe_ttm if self.pe_ttm is not None else '-'}")
-        print(f"  PB：{self.pb if self.pb is not None else '-'}")
-        print(f"  PS：{self.ps if self.ps is not None else '-'}")
+                if not value:
+                    return "-"
 
-        print(f"  涨停：" f"{self.high_limit if self.high_limit is not None else '-'}")
-        print(f"  跌停：" f"{self.low_limit if self.low_limit is not None else '-'}")
+            return str(value)
 
-        print(f"  状态：{self.status or '-'}")
-        print(f"  货币：{self.currency or '-'}")
+        def fmt_datetime(
+            value: Optional[datetime],
+        ) -> str:
+            """格式化时间。"""
+
+            if value is None:
+                return "-"
+
+            return value.strftime("%Y-%m-%d %H:%M:%S")
+
+        def fmt_price(
+            value: Optional[float],
+        ) -> str:
+            """格式化价格。"""
+
+            if value is None:
+                return "-"
+
+            return f"{value:,.4f}".rstrip("0").rstrip(".")
+
+        def fmt_number(
+            value: Optional[float],
+        ) -> str:
+            """格式化普通数值。"""
+
+            if value is None:
+                return "-"
+
+            return f"{value:,.2f}"
+
+        def fmt_percent(
+            value: Optional[float],
+        ) -> str:
+            """格式化百分比。"""
+
+            if value is None:
+                return "-"
+
+            return f"{value:.4f}%"
+
+        def fmt_amount(
+            value: Optional[float],
+        ) -> str:
+            """格式化金额。"""
+
+            if value is None:
+                return "-"
+
+            return f"{value:,.2f}"
+
+        def fmt_market_cap(
+            value: Optional[float],
+        ) -> str:
+            """格式化市值。"""
+
+            if value is None:
+                return "-"
+
+            if value >= 100_000_000_000:
+                return f"{value / 100_000_000_000:.2f} 千亿"
+
+            if value >= 100_000_000:
+                return f"{value / 100_000_000:.2f} 亿"
+
+            if value >= 10_000:
+                return f"{value / 10_000:.2f} 万"
+
+            return f"{value:,.2f}"
+
+        # ======================================================
+        # 基础信息
+        # ======================================================
+
+        print("最新行情")
+        print(f"股票代码: {fmt(self.symbol)}")
+        print(f"股票名称: {fmt(self.name)}")
+        print(f"时间: {fmt_datetime(self.timestamp)}")
+        print(f"数据来源: {fmt(self.source)}")
+        print(f"货币: {fmt(self.currency)}")
+
+        # ======================================================
+        # 价格
+        # ======================================================
+
+        print(f"当前价格: {fmt_price(self.last_price)}")
+        print(f"昨收: {fmt_price(self.previous_close)}")
+        print(f"开盘: {fmt_price(self.open_price)}")
+        print(f"最高: {fmt_price(self.high_price)}")
+        print(f"最低: {fmt_price(self.low_price)}")
+
+        # ======================================================
+        # 涨跌
+        # ======================================================
+
+        print(f"涨跌: {fmt_price(self.change)}")
+        print(f"涨跌幅: {fmt_percent(self.change_percent)}")
+        print(f"振幅: {fmt_percent(self.amplitude)}")
+
+        # ======================================================
+        # 成交
+        # ======================================================
+
+        print(f"成交量: {fmt_number(self.volume)}")
+        print(f"成交额: {fmt_amount(self.amount)}")
+        print(f"成交均价: {fmt_price(self.average_price)}")
+        print(f"换手率: {fmt_percent(self.turnover_rate)}")
+        print(f"量比: {fmt_number(self.volume_ratio)}")
+
+        # ======================================================
+        # 市值
+        # ======================================================
+
+        print(f"总市值: {fmt_market_cap(self.market_cap)}")
+        print(f"流通市值: " f"{fmt_market_cap(self.float_market_cap)}")
+
+        # ======================================================
+        # 涨跌停
+        # ======================================================
+
+        print(f"涨停: {fmt_price(self.limit_up)}")
+        print(f"跌停: {fmt_price(self.limit_down)}")
+
+        # ======================================================
+        # 状态
+        # ======================================================
+
+        print(f"状态: {fmt(self.status)}")

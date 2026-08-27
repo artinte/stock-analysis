@@ -506,7 +506,7 @@ class AkShareGateway(StockDataGateway):
                 "名称",
             ),
             timestamp=datetime.now(),
-            price=cls._get_float(
+            last_price=cls._get_float(
                 row,
                 "最新价",
             ),
