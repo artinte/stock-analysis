@@ -5,7 +5,7 @@ from typing import Optional
 
 import pandas
 
-from common.constants import Interval
+from common.constants import TEN_THOUSAND, Interval
 from core.models.valuation import Valuation
 
 from utils.stock_mapping import normalize_symbol
@@ -65,10 +65,46 @@ class YinheValuation:
         # 获取总市值
         # ------------------------------------------------------
 
-        market_cap = self.gateway._fetch_market_cap(
-            formatted_symbol,
-            current_price,
-        )
+        total_shares = None
+        circulating_shares = None
+        try:
+            equity_structure = self.gateway.info_data.get_equity_structure(
+                [formatted_symbol],
+                local_path=self.gateway.local_path,
+                is_local=False,
+            )
+
+            if equity_structure is not None and not equity_structure.empty:
+                equity_structure = equity_structure.sort_values("CHANGE_DATE")
+                latest_row = equity_structure.iloc[-1]
+
+                if "TOT_SHARE" in equity_structure.columns:
+                    # 原始数据是万为单位
+                    total_shares = float(latest_row["TOT_SHARE"]) * TEN_THOUSAND
+
+                # 如果存在流通股字段，根据实际字段读取。
+                if "FLOAT_SHARE" in equity_structure.columns:
+                    circulating_shares = float(latest_row["FLOAT_SHARE"]) * TEN_THOUSAND
+                elif "CIRC_SHARE" in equity_structure.columns:
+                    circulating_shares = float(latest_row["CIRC_SHARE"]) * TEN_THOUSAND
+        except Exception as e:
+            print(f"[银河网关] 获取股本失败 " f"{formatted_symbol}: {e}")
+
+        # 总市值计算：
+        # 总市值 = 总股本 × 当前股价
+        # 单位：亿元（取决于 total_shares 和 current_price 的单位）
+        market_cap = None
+
+        # 流通市值计算：
+        # 流通市值 = 流通股本 × 当前股价
+        # 单位：亿元（取决于 circulating_shares 和 current_price 的单位）
+        circulating_market_cap = None
+
+        if total_shares is not None:
+            market_cap = total_shares * current_price
+
+        if circulating_shares is not None:
+            circulating_market_cap = circulating_shares * current_price
 
         # ------------------------------------------------------
         # 计算 PE
@@ -101,6 +137,7 @@ class YinheValuation:
             timestamp=datetime.datetime.now(),
             price=current_price,
             market_cap=market_cap,
+            circulating_market_cap=circulating_market_cap,
             pe_static=pe_static,
             pe_dynamic=pe_dynamic,
             pe_ttm=pe_ttm,
@@ -134,10 +171,10 @@ class YinheValuation:
 
             financials_dict = self.gateway.info_data.get_income(
                 code_list=[formatted_symbol],
-                local_path=self.local_path,
+                local_path=self.gateway.local_path,
                 is_local=False,
                 begin_date="20220101",
-                end_date=self.calendar[-1],
+                end_date=self.gateway.calendar[-1],
             )
 
             if financials_dict is None:
@@ -163,9 +200,9 @@ class YinheValuation:
             # 2. 获取总股本
             # --------------------------------------------------
 
-            equity_structure = self.info_data.get_equity_structure(
+            equity_structure = self.gateway.info_data.get_equity_structure(
                 [formatted_symbol],
-                local_path=self.local_path,
+                local_path=self.gateway.local_path,
                 is_local=False,
             )
 
@@ -185,7 +222,7 @@ class YinheValuation:
 
             if market_cap is None:
 
-                klines = self.gateway.fetch_kline(
+                klines = self.fetch_kline(
                     symbol=formatted_symbol,
                     interval=Interval.DAY_1,
                     start_time=(datetime.datetime.now() - pandas.Timedelta(days=30)),
@@ -276,7 +313,7 @@ class YinheValuation:
                 if profit_ttm > 0:
 
                     return round(
-                        market_cap / (profit_ttm / 1e8),
+                        market_cap / profit_ttm,
                         2,
                     )
 
@@ -292,7 +329,7 @@ class YinheValuation:
                 if last_full_year > 0:
 
                     return round(
-                        market_cap / (last_full_year / 1e8),
+                        market_cap / last_full_year,
                         2,
                     )
 
@@ -310,7 +347,7 @@ class YinheValuation:
                     annual_profit = curr_q_cum / q_num * 4
 
                     return round(
-                        market_cap / (annual_profit / 1e8),
+                        market_cap / annual_profit,
                         2,
                     )
 
