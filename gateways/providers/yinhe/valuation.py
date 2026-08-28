@@ -50,7 +50,7 @@ class YinheValuation:
     def fetch_valuation(
         self,
         symbol: str,
-    ) -> Optional[Valuation]:
+    ) -> Valuation:
         """
         获取完整估值数据。
         """
@@ -162,14 +162,7 @@ class YinheValuation:
             if circulating_shares is not None:
                 circulating_market_cap = circulating_shares * current_price
 
-            # --------------------------------------------------
             # 5. PE
-            #
-            # 注意：
-            #
-            # 这里完全保留你原来的 PE 计算方式。
-            # --------------------------------------------------
-
             pe_ttm = self._calculate_pe(
                 formatted_symbol,
                 "TTM",
@@ -188,17 +181,19 @@ class YinheValuation:
                 market_cap,
             )
 
-            # --------------------------------------------------
-            # 6. 获取财务数据
-            #
-            # PE 自己获取利润表。
-            #
-            # 这里单独获取其它估值指标需要的数据。
-            # --------------------------------------------------
-
-            financial = self._get_financial_data(
-                formatted_symbol,
-            )
+            # TODO: 获取财务数据
+            # financial = self.gateway.fetch_financial(symbol)
+            financial = {
+                "net_assets": None,
+                "revenue": None,
+                "revenue_ttm": None,
+                "profit_growth": None,
+                "cash": None,
+                "debt": None,
+                "ebitda": None,
+                "dividend": None,
+                "report_date": None,
+            }
 
             # --------------------------------------------------
             # 7. PB
@@ -278,7 +273,7 @@ class YinheValuation:
             # --------------------------------------------------
             # 15. 返回 Valuation
             # --------------------------------------------------
-
+            print("返回数据")
             return Valuation(
                 symbol=formatted_symbol,
                 timestamp=datetime.datetime.now(),
@@ -315,313 +310,8 @@ class YinheValuation:
             )
 
         except Exception as e:
-
             print(f"[银河估值] 获取失败 " f"{formatted_symbol}: {e}")
-
             return None
-
-    # ==========================================================
-    # Financial Data
-    # ==========================================================
-
-    def _get_financial_data(
-        self,
-        symbol: str,
-    ) -> dict:
-        """
-        获取其它估值指标需要的财务数据。
-
-        返回：
-
-            net_assets
-            revenue
-            revenue_ttm
-            profit_growth
-            cash
-            debt
-            ebitda
-            dividend
-            report_date
-
-        注意：
-
-            这里不负责 PE。
-
-            PE 使用原来的 _calculate_pe()。
-        """
-
-        result = {
-            "net_assets": None,
-            "revenue": None,
-            "revenue_ttm": None,
-            "profit_growth": None,
-            "cash": None,
-            "debt": None,
-            "ebitda": None,
-            "dividend": None,
-            "report_date": None,
-        }
-
-        try:
-
-            # ==================================================
-            # 利润表
-            # ==================================================
-
-            financials_dict = self.gateway.info_data.get_income(
-                code_list=[symbol],
-                local_path=self.gateway.local_path,
-                is_local=False,
-                begin_date="20220101",
-                end_date=self.gateway.calendar[-1],
-            )
-
-            if financials_dict is None:
-                return result
-
-            income = financials_dict.get(symbol)
-
-            if income is None or income.empty:
-                return result
-
-            income = income.copy()
-
-            period_field = "REPORTING_PERIOD"
-
-            if period_field not in income.columns:
-                return result
-
-            income[period_field] = income[period_field].astype(str)
-
-            income = income.sort_values(period_field)
-
-            # ==================================================
-            # 找最新报告期
-            # ==================================================
-
-            report_date, quarter = self._find_latest_report(income)
-
-            if report_date is None:
-                return result
-
-            result["report_date"] = report_date
-
-            # ==================================================
-            # 营业收入
-            #
-            # 银河字段根据实际数据表优先寻找。
-            # ==================================================
-
-            revenue_field = self._find_column(
-                income,
-                [
-                    "OPER_REV",
-                    "OPERATING_REVENUE",
-                    "TOTAL_OPERATING_REVENUE",
-                    "REVENUE",
-                ],
-            )
-
-            if revenue_field is not None:
-
-                revenue_map = income.set_index(period_field)[revenue_field].to_dict()
-
-                current_year = int(report_date[:4])
-
-                previous_year = current_year - 1
-
-                current_revenue = self._safe_float(revenue_map.get(report_date))
-
-                previous_full_year = self._safe_float(
-                    revenue_map.get(f"{previous_year}1231")
-                )
-
-                previous_same_period = self._safe_float(
-                    revenue_map.get(f"{previous_year}" f"{self._quarter_code(quarter)}")
-                )
-
-                result["revenue"] = current_revenue
-
-                if (
-                    current_revenue is not None
-                    and previous_full_year is not None
-                    and previous_same_period is not None
-                ):
-
-                    result["revenue_ttm"] = (
-                        current_revenue + previous_full_year - previous_same_period
-                    )
-
-                elif report_date.endswith("1231") and current_revenue is not None:
-
-                    result["revenue_ttm"] = current_revenue
-
-            # ==================================================
-            # 净利润增长率
-            # ==================================================
-
-            profit_field = "NET_PRO_EXCL_MIN_INT_INC"
-
-            if profit_field in income.columns:
-
-                profit_map = income.set_index(period_field)[profit_field].to_dict()
-
-                current_profit = self._safe_float(profit_map.get(report_date))
-
-                previous_profit = self._safe_float(
-                    profit_map.get(
-                        f"{int(report_date[:4]) - 1}" f"{self._quarter_code(quarter)}"
-                    )
-                )
-
-                if (
-                    current_profit is not None
-                    and previous_profit is not None
-                    and previous_profit != 0
-                ):
-
-                    result["profit_growth"] = (
-                        (current_profit - previous_profit) / abs(previous_profit) * 100
-                    )
-
-            # ==================================================
-            # 资产负债表
-            # ==================================================
-
-            self._load_balance_sheet_data(
-                symbol,
-                report_date,
-                result,
-            )
-
-        except Exception as e:
-
-            print(f"[银河估值] 获取财务数据失败 " f"{symbol}: {e}")
-
-        return result
-
-    # ==========================================================
-    # Balance Sheet
-    # ==========================================================
-
-    def _load_balance_sheet_data(
-        self,
-        symbol: str,
-        report_date: str,
-        result: dict,
-    ) -> None:
-        """
-        获取资产负债表数据。
-
-        注意：
-
-            不同银河数据版本字段可能不同。
-
-            因此这里采用候选字段映射，
-            找不到字段就保持 None。
-        """
-
-        try:
-
-            # 如果当前 AmazingData 版本提供 get_balance_sheet，
-            # 则从这里获取。
-            if not hasattr(
-                self.gateway.info_data,
-                "get_balance_sheet",
-            ):
-                return
-
-            balance = self.gateway.info_data.get_balance_sheet(
-                code_list=[symbol],
-                local_path=self.gateway.local_path,
-                is_local=False,
-                begin_date="20220101",
-                end_date=self.gateway.calendar[-1],
-            )
-
-            if balance is None:
-                return
-
-            if isinstance(balance, dict):
-                balance = balance.get(symbol)
-
-            if balance is None or balance.empty:
-                return
-
-            balance = balance.copy()
-
-            period_field = "REPORTING_PERIOD"
-
-            if period_field not in balance.columns:
-                return
-
-            balance[period_field] = balance[period_field].astype(str)
-
-            balance = balance.sort_values(period_field)
-
-            if report_date in set(balance[period_field]):
-
-                row = balance[balance[period_field] == report_date].iloc[-1]
-
-            else:
-
-                row = balance.iloc[-1]
-
-            # ==================================================
-            # 净资产
-            # ==================================================
-
-            net_assets_field = self._find_column(
-                balance,
-                [
-                    "TOTAL_OWNER_EQUITY",
-                    "TOTAL_EQUITY",
-                    "OWNER_EQUITY",
-                    "NET_ASSETS",
-                ],
-            )
-
-            if net_assets_field:
-
-                result["net_assets"] = self._safe_float(row[net_assets_field])
-
-            # ==================================================
-            # 现金
-            # ==================================================
-
-            cash_field = self._find_column(
-                balance,
-                [
-                    "MONETARY_FUNDS",
-                    "CASH_AND_EQUIVALENTS",
-                    "CASH",
-                ],
-            )
-
-            if cash_field:
-
-                result["cash"] = self._safe_float(row[cash_field])
-
-            # ==================================================
-            # 有息债务
-            # ==================================================
-
-            debt_field = self._find_column(
-                balance,
-                [
-                    "INTEREST_BEARING_DEBT",
-                    "TOTAL_DEBT",
-                    "SHORT_TERM_DEBT",
-                ],
-            )
-
-            if debt_field:
-
-                result["debt"] = self._safe_float(row[debt_field])
-
-        except Exception as e:
-
-            print(f"[银河估值] 获取资产负债表失败 " f"{symbol}: {e}")
 
     def _calculate_pe(
         self,
@@ -633,7 +323,6 @@ class YinheValuation:
         计算 PE。
 
         支持：
-
             TTM
             STATIC
             DYNAMIC
