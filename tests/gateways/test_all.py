@@ -1,5 +1,6 @@
 from gateways.manager import DataManager
 
+from tests.gateways.test_quote import run_quote_test
 from tests.gateways.test_stock import run_stock_test
 from tests.gateways.test_kline import run_kline_test
 
@@ -16,18 +17,13 @@ def main():
         data.start()
 
         print("=" * 80)
-
-        run_stock_test(
-            data,
-            symbol,
-        )
+        run_stock_test(data, symbol)
 
         print("=" * 80)
+        run_kline_test(data, symbol)
 
-        run_kline_test(
-            data,
-            symbol,
-        )
+        print("=" * 80)
+        run_quote_test(data, symbol)
 
         print("=" * 80)
 

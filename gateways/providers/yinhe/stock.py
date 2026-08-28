@@ -37,8 +37,15 @@ class YinheStock:
             AmazingData 对象
             工具方法
         """
-
         self.gateway = gateway
+
+        # 股票名称缓存
+        #
+        #     600519.SH -> 贵州茅台
+        #     000001.SZ -> 平安银行
+        #
+        # 只缓存成功获取到的名称。
+        self._stock_name_cache: dict[str, str] = {}
 
     def fetch_stock(
         self,
@@ -71,9 +78,14 @@ class YinheStock:
                 # 获取交易所代号
                 exchange = get_exchange(code)
 
+                stock_name = row.get("SECURITY_NAME")
+
+                if stock_name:
+                    self._stock_name_cache[code] = stock_name
+
                 return Stock(
                     symbol=row["MARKET_CODE"],
-                    name=row["SECURITY_NAME"],
+                    name=stock_name,
                     company_name=row.get("COMP_NAME"),
                     exchange=exchange,
                     market=row.get("LISTPLATE_NAME"),
@@ -95,18 +107,33 @@ class YinheStock:
         """
         获取股票名称。
 
-        内部辅助接口。
+        优先从内存缓存读取。
+        缓存不存在时才请求银河接口。
+
+        注意：
+            只有成功获取到的真实股票名称才会进入缓存。
         """
 
-        self._ensure_started()
+        self.gateway._ensure_started()
         formatted_symbol = normalize_symbol(symbol)
 
+        # 1. 优先读取缓存
+        cached_name = self._stock_name_cache.get(formatted_symbol)
+        if cached_name:
+            return cached_name
+
+        # 2. 缓存不存在，请求银河接口
         try:
-            stock_basic = self.info_data.get_stock_basic([formatted_symbol])
+            stock_basic = self.gateway.info_data.get_stock_basic([formatted_symbol])
 
             if hasattr(stock_basic, "empty"):
                 if not stock_basic.empty:
-                    return stock_basic["SECURITY_NAME"].iloc[0]
+                    stock_name = stock_basic["SECURITY_NAME"].iloc[0]
+
+                    # 3. 获取成功，写入缓存
+                    self._stock_name_cache[formatted_symbol] = stock_name
+
+                    return stock_name
 
             return "未知名称"
 

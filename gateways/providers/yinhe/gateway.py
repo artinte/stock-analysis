@@ -862,7 +862,6 @@ class YinheGateway(StockDataGateway):
         """
 
         if not self._started:
-
             raise RuntimeError("银河数据源尚未启动，" "请先调用 DataManager.start()")
 
     @property

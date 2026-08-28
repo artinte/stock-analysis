@@ -37,10 +37,6 @@ class YinheQuote:
     ):
         self.gateway = gateway
 
-    # ==========================================================
-    # Public
-    # ==========================================================
-
     def fetch_quote(
         self,
         symbol: str,
@@ -66,10 +62,7 @@ class YinheQuote:
         try:
             now = datetime.datetime.now()
 
-            # ==================================================
             # 最近 K 线
-            # ==================================================
-
             klines = self.gateway.kline.fetch_kline(
                 symbol=code,
                 interval=Interval.DAY_1,
@@ -85,33 +78,20 @@ class YinheQuote:
 
             previous = klines[-2] if len(klines) > 1 else None
 
-            # ==================================================
-            # 基础价格
-            # ==================================================
-
-            price = latest.close
-
+            last_price = latest.close
             prev_close = previous.close if previous is not None else None
 
             open_price = latest.open
             high_price = latest.high
             low_price = latest.low
 
-            # ==================================================
-            # 涨跌
-            # ==================================================
-
             change = None
             change_percent = None
 
-            if price is not None and prev_close is not None and prev_close != 0:
-                change = price - prev_close
+            if last_price is not None and prev_close is not None and prev_close != 0:
+                change = last_price - prev_close
 
                 change_percent = change / prev_close * 100
-
-            # ==================================================
-            # 振幅
-            # ==================================================
 
             amplitude = None
 
@@ -123,20 +103,13 @@ class YinheQuote:
             ):
                 amplitude = (high_price - low_price) / prev_close * 100
 
-            # ==================================================
-            # 股票基本信息
-            # ==================================================
-
-            stock = self.gateway.fetch_stock(code)
-
-            name = stock.name if stock is not None else None
+            stock_name = self.gateway.fetch_stock_name(symbol)
 
             # ==================================================
             # 股本
             #
             # 注意：
-            # Quote 不保存 total_shares /
-            # circulating_shares。
+            # Quote 不保存 total_shares / float_shares。
             #
             # 这里只是为了计算：
             #
@@ -148,7 +121,7 @@ class YinheQuote:
             # ==================================================
 
             total_shares = None
-            circulating_shares = None
+            float_shares = None
 
             equity = self.gateway.info_data.get_equity_structure(
                 [code],
@@ -183,7 +156,7 @@ class YinheQuote:
                     value = row["FLOAT_SHARE"]
 
                     if pandas.notna(value):
-                        circulating_shares = float(value) * TEN_THOUSAND
+                        float_shares = float(value) * TEN_THOUSAND
 
             # ==================================================
             # 市值
@@ -191,13 +164,13 @@ class YinheQuote:
 
             market_cap = None
 
-            if total_shares is not None and price is not None:
-                market_cap = total_shares * price
+            if total_shares is not None and last_price is not None:
+                market_cap = total_shares * last_price
 
             float_market_cap = None
 
-            if circulating_shares is not None and price is not None:
-                float_market_cap = circulating_shares * price
+            if float_shares is not None and last_price is not None:
+                float_market_cap = float_shares * last_price
 
             # ==================================================
             # 成交量
@@ -239,11 +212,11 @@ class YinheQuote:
             turnover = None
 
             if (
-                circulating_shares is not None
-                and circulating_shares != 0
+                float_shares is not None
+                and float_shares != 0
                 and volume is not None
             ):
-                turnover = volume / circulating_shares * 100
+                turnover = volume / float_shares * 100
 
             # ==================================================
             # 量比
@@ -290,14 +263,14 @@ class YinheQuote:
 
             return Quote(
                 symbol=code,
-                name=name,
+                name=stock_name,
                 timestamp=latest.timestamp,
                 source="yinhe",
                 currency="CNY",
                 # ----------------------------------------------
                 # 价格
                 # ----------------------------------------------
-                last_price=price,
+                last_price=last_price,
                 previous_close=prev_close,
                 open_price=open_price,
                 high_price=high_price,
@@ -314,7 +287,7 @@ class YinheQuote:
                 volume=volume,
                 amount=amount,
                 average_price=average_price,
-                turnover_rate=turnover,
+                turnover=turnover,
                 volume_ratio=volume_ratio,
                 # ----------------------------------------------
                 # 市值

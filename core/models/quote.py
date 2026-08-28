@@ -184,7 +184,6 @@ class Quote:
     成交均价。
     """
 
-    turnover_rate: Optional[float] = None
     """
     换手率，单位：%。
 
@@ -193,48 +192,24 @@ class Quote:
         0.1981
         5.32
     """
+    turnover: Optional[float] = None
 
+    # 量比
     volume_ratio: Optional[float] = None
-    """
-    量比。
-    """
 
-    # ==========================================================
-    # 市值
-    # ==========================================================
-
+    # 总市值
     market_cap: Optional[float] = None
-    """
-    总市值。
 
-    单位：元。
-    """
-
+    # 流通市值
     float_market_cap: Optional[float] = None
-    """
-    流通市值。
 
-    单位：元。
-    """
-
-    # ==========================================================
-    # 涨跌停
-    # ==========================================================
-
+    # 涨停价
     limit_up: Optional[float] = None
-    """
-    涨停价。
-    """
 
+    # 跌停价
     limit_down: Optional[float] = None
-    """
-    跌停价。
-    """
 
-    # ==========================================================
     # 市场状态
-    # ==========================================================
-
     status: Optional[str] = None
     """
     当前交易状态。
@@ -355,7 +330,7 @@ class Quote:
         # 基础信息
         # ======================================================
 
-        print("最新行情")
+        print("✅ 最新行情")
         print(f"股票代码: {fmt(self.symbol)}")
         print(f"股票名称: {fmt(self.name)}")
         print(f"时间: {fmt_datetime(self.timestamp)}")
@@ -387,7 +362,7 @@ class Quote:
         print(f"成交量: {fmt_number(self.volume)}")
         print(f"成交额: {fmt_amount(self.amount)}")
         print(f"成交均价: {fmt_price(self.average_price)}")
-        print(f"换手率: {fmt_percent(self.turnover_rate)}")
+        print(f"换手率: {fmt_percent(self.turnover)}")
         print(f"量比: {fmt_number(self.volume_ratio)}")
 
         # ======================================================
