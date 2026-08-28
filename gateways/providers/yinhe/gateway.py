@@ -741,7 +741,7 @@ class YinheGateway(StockDataGateway):
                 if profit_ttm > 0:
 
                     return round(
-                        market_cap / (profit_ttm / 1e8),
+                        market_cap / profit_ttm,
                         2,
                     )
 
@@ -757,7 +757,7 @@ class YinheGateway(StockDataGateway):
                 if last_full_year > 0:
 
                     return round(
-                        market_cap / (last_full_year / 1e8),
+                        market_cap / last_full_year,
                         2,
                     )
 
@@ -775,7 +775,7 @@ class YinheGateway(StockDataGateway):
                     annual_profit = curr_q_cum / q_num * 4
 
                     return round(
-                        market_cap / (annual_profit / 1e8),
+                        market_cap / annual_profit,
                         2,
                     )
 
