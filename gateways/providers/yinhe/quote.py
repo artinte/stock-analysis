@@ -119,7 +119,6 @@ class YinheQuote:
             #
             # 计算完成后不进入 Quote。
             # ==================================================
-
             total_shares = None
             float_shares = None
 
@@ -136,10 +135,7 @@ class YinheQuote:
 
                 row = equity.iloc[-1]
 
-                # ----------------------------------------------
                 # 总股本
-                # ----------------------------------------------
-
                 if "TOT_SHARE" in equity.columns:
 
                     value = row["TOT_SHARE"]
@@ -147,10 +143,7 @@ class YinheQuote:
                     if pandas.notna(value):
                         total_shares = float(value) * TEN_THOUSAND
 
-                # ----------------------------------------------
                 # 流通股本
-                # ----------------------------------------------
-
                 if "FLOAT_SHARE" in equity.columns:
 
                     value = row["FLOAT_SHARE"]
@@ -172,50 +165,22 @@ class YinheQuote:
             if float_shares is not None and last_price is not None:
                 float_market_cap = float_shares * last_price
 
-            # ==================================================
             # 成交量
-            # ==================================================
-
             volume = latest.volume
 
-            # ==================================================
             # 成交额
-            # ==================================================
-
             amount = latest.amount
 
-            # ==================================================
-            # 成交均价
-            #
             # 成交均价 = 成交额 / 成交量
-            #
-            # A 股：
-            #
-            #     amount -> 元
-            #     volume -> 股
-            #
-            # ==================================================
-
             average_price = None
 
             if amount is not None and volume is not None and volume != 0:
                 average_price = amount / volume
 
-            # ==================================================
-            # 换手率
-            #
-            # turnover =
-            #
-            #     volume / 流通股本 × 100%
-            # ==================================================
-
+            # 换手率 = volume / 流通股本 × 100%
             turnover = None
 
-            if (
-                float_shares is not None
-                and float_shares != 0
-                and volume is not None
-            ):
+            if float_shares is not None and float_shares != 0 and volume is not None:
                 turnover = volume / float_shares * 100
 
             # ==================================================
@@ -229,37 +194,45 @@ class YinheQuote:
             # 后续如果银河数据源提供量比字段，
             # 直接映射即可。
             # ==================================================
-
             volume_ratio = None
+            if len(klines) > 1:
+                volumes = [
+                    k.volume
+                    for k in klines[:-1][-5:]
+                    if k.volume is not None and k.volume > 0
+                ]
 
-            # ==================================================
+                today_volume = latest.volume
+
+                if today_volume is not None and today_volume > 0 and volumes:
+                    average_volume = sum(volumes) / len(volumes)
+
+                    if average_volume > 0:
+                        volume_ratio = today_volume / average_volume
+
             # 涨停 / 跌停
-            #
-            # 单纯使用 K 线无法知道交易所实际涨跌停价格，
-            # 尤其需要考虑：
-            #
-            #     主板
-            #     创业板
-            #     科创板
-            #     ST
-            #     新股
-            #
-            # 因此如果数据源没有直接提供，
-            # 不在这里猜测。
-            # ==================================================
-
+            limit_percent = self._get_limit_percent(code)
             limit_up = None
             limit_down = None
 
-            # ==================================================
+            if prev_close is not None and prev_close > 0 and limit_percent is not None:
+                limit_up = round(
+                    prev_close * (1 + limit_percent),
+                    2,
+                )
+
+                limit_down = round(
+                    prev_close * (1 - limit_percent),
+                    2,
+                )
+
             # 交易状态
-            # ==================================================
-
-            status = None
-
-            # ==================================================
-            # 返回统一 Quote
-            # ==================================================
+            status = self._get_status(
+                last_price=last_price,
+                volume=volume,
+                limit_up=limit_up,
+                limit_down=limit_down,
+            )
 
             return Quote(
                 symbol=code,
@@ -310,3 +283,67 @@ class YinheQuote:
             print(f"[银河行情] 获取失败 {code}: {e}")
 
             return None
+
+    @staticmethod
+    def _get_limit_percent(
+        symbol: str,
+    ) -> float:
+        """
+        根据股票代码判断涨跌停幅度。
+
+        返回：
+            0.05 -> 5%
+            0.10 -> 10%
+            0.20 -> 20%
+            0.30 -> 30%
+        """
+
+        code = symbol.split(".")[0]
+
+        # 北交所
+        if code.startswith(
+            (
+                "8",
+                "4",
+            )
+        ):
+            return 0.30
+
+        # 科创板
+        if code.startswith("688"):
+            return 0.20
+
+        # 创业板
+        if code.startswith(
+            (
+                "300",
+                "301",
+            )
+        ):
+            return 0.20
+
+        # 主板
+        return 0.10
+
+    @staticmethod
+    def _get_status(
+        *,
+        last_price: float | None,
+        volume: float | None,
+        limit_up: float | None,
+        limit_down: float | None,
+    ) -> str:
+
+        if last_price is None:
+            return "unknown"
+
+        if limit_up is not None and last_price >= limit_up:
+            return "limit_up"
+
+        if limit_down is not None and last_price <= limit_down:
+            return "limit_down"
+
+        if volume is not None and volume == 0:
+            return "suspended"
+
+        return "trading"
