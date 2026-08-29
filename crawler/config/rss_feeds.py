@@ -110,98 +110,6 @@ class RSSFeed:
 
 
 # ============================================================
-# 经济观察网
-# ============================================================
-#
-# 经济观察网官方 RSS 页面提供多个频道。
-#
-# 重点：
-#   政经要闻
-#   金融投资
-#   公司产业
-#   观察家
-#   首页
-#   专题
-#   今日头条
-#
-# ============================================================
-
-EEO_FEEDS: list[RSSFeed] = [
-    RSSFeed(
-        name="经济观察网",
-        url=("http://www.eeo.com.cn/" "sypd/rss.xml"),
-        category="财经",
-        description="经济观察网首页新闻",
-        priority=1,
-        license="经济观察网 RSS",
-    ),
-    RSSFeed(
-        name="经济观察网政经",
-        url=("http://www.eeo.com.cn/" "Politics/rss.xml"),
-        category="宏观政策",
-        description="经济观察网政经要闻",
-        priority=1,
-        license="经济观察网 RSS",
-    ),
-    RSSFeed(
-        name="经济观察网金融",
-        url=("http://www.eeo.com.cn/" "finance/rss.xml"),
-        category="金融",
-        description="经济观察网金融投资频道",
-        priority=1,
-        license="经济观察网 RSS",
-    ),
-    RSSFeed(
-        name="经济观察网公司产业",
-        url=("http://www.eeo.com.cn/" "industry/rss.xml"),
-        category="公司产业",
-        description="经济观察网公司与产业新闻",
-        priority=1,
-        license="经济观察网 RSS",
-    ),
-    RSSFeed(
-        name="经济观察网观察家",
-        url=("http://www.eeo.com.cn/" "observer/rss.xml"),
-        category="观点",
-        description="经济观察网观察家栏目",
-        priority=2,
-        license="经济观察网 RSS",
-    ),
-    RSSFeed(
-        name="经济观察网今日媒体",
-        url=("http://www.eeo.com.cn/" "today_media/rss.xml"),
-        category="财经资讯",
-        description="经济观察网今日媒体",
-        priority=2,
-        license="经济观察网 RSS",
-    ),
-    RSSFeed(
-        name="经济观察网专题",
-        url=("http://www.eeo.com.cn/" "sypd/sdbd/rss.xml"),
-        category="专题",
-        description="经济观察网专题报道",
-        priority=2,
-        license="经济观察网 RSS",
-    ),
-    RSSFeed(
-        name="经济观察网今日头条",
-        url=("http://www.eeo.com.cn/" "sypd/jrtt/rss.xml"),
-        category="重要新闻",
-        description="经济观察网今日头条",
-        priority=1,
-        license="经济观察网 RSS",
-    ),
-]
-
-
-# ============================================================
-# 合并
-# ============================================================
-
-CHINESE_FINANCE_FEEDS: list[RSSFeed] =  EEO_FEEDS
-
-
-# ============================================================
 # Google News
 # ============================================================
 
@@ -330,54 +238,7 @@ CHINANEWS_FEEDS: list[RSSFeed] = [
         tags=("国际", "宏观"),
         license="中国新闻网 RSS",
     ),
-    RSSFeed(
-        name="中国新闻网IT",
-        url=("https://www.chinanews.com.cn/" "rss/it.xml"),
-        category="科技",
-        description="中国新闻网 IT 科技新闻",
-        priority=1,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("科技", "AI", "半导体"),
-        license="中国新闻网 RSS",
-    ),
-    RSSFeed(
-        name="中国新闻网房产",
-        url=("https://www.chinanews.com.cn/" "rss/estate.xml"),
-        category="房地产",
-        description="中国新闻网房地产新闻",
-        priority=2,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("房地产", "地产"),
-        license="中国新闻网 RSS",
-    ),
-    RSSFeed(
-        name="中国新闻网汽车",
-        url=("https://www.chinanews.com.cn/" "rss/auto.xml"),
-        category="汽车",
-        description="中国新闻网汽车行业新闻",
-        priority=2,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("汽车", "新能源车"),
-        license="中国新闻网 RSS",
-    ),
-    RSSFeed(
-        name="中国新闻网台湾",
-        url=("https://www.chinanews.com.cn/" "rss/taiwan.xml"),
-        category="台湾",
-        description="中国新闻网台湾新闻",
-        priority=3,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("台湾", "台股"),
-        license="中国新闻网 RSS",
-    ),
+    
 ]
 
 
@@ -481,69 +342,6 @@ YAHOO_TW_FEEDS: list[RSSFeed] = [
         source_type="official",
         tags=("理财", "基金", "投资"),
         license="Yahoo 股市 RSS",
-    ),
-]
-
-
-# ============================================================
-# 中央社 CNA
-#
-# 官方：
-#   產經證券
-#   科技
-#   國際
-#   兩岸
-# ============================================================
-
-
-CNA_FEEDS: list[RSSFeed] = [
-    RSSFeed(
-        name="中央社产经证券",
-        url=("https://feeds.feedburner.com/" "rsscna/finance"),
-        category="产经证券",
-        description="中央社產經證券新聞",
-        priority=1,
-        language="zh-TW",
-        region="TW",
-        source_type="official",
-        tags=("台股", "证券", "财经"),
-        license="中央社 RSS",
-    ),
-    RSSFeed(
-        name="中央社科技",
-        url=("https://feeds.feedburner.com/" "rsscna/technology"),
-        category="科技",
-        description="中央社科技新聞",
-        priority=1,
-        language="zh-TW",
-        region="TW",
-        source_type="official",
-        tags=("科技", "AI", "半导体"),
-        license="中央社 RSS",
-    ),
-    RSSFeed(
-        name="中央社国际",
-        url=("https://feeds.feedburner.com/" "rsscna/intworld"),
-        category="国际",
-        description="中央社國際新聞",
-        priority=2,
-        language="zh-TW",
-        region="TW",
-        source_type="official",
-        tags=("国际", "宏观"),
-        license="中央社 RSS",
-    ),
-    RSSFeed(
-        name="中央社两岸",
-        url=("https://feeds.feedburner.com/" "rsscna/mainland"),
-        category="两岸",
-        description="中央社兩岸新聞",
-        priority=2,
-        language="zh-TW",
-        region="TW",
-        source_type="official",
-        tags=("两岸", "中国", "宏观"),
-        license="中央社 RSS",
     ),
 ]
 
@@ -898,12 +696,9 @@ GLOBAL_FEEDS: list[RSSFeed] = [
 
 
 RSS_FEEDS: list[RSSFeed] = [
-    # 中国
-    *CHINESE_FINANCE_FEEDS,
     *CHINANEWS_FEEDS,
     # 台湾
     *YAHOO_TW_FEEDS,
-    *CNA_FEEDS,
     # Google 搜索型
     *GOOGLE_NEWS_FEEDS,
     # 海外
