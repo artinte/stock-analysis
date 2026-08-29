@@ -4,8 +4,6 @@ import asyncio
 import time
 from dataclasses import dataclass
 
-from playwright.async_api import Page
-
 from crawler.config.rss_feeds import RSSFeed
 from crawler.core.models import ArticleItem
 from crawler.spiders.rss.rss_feed import RSSFeedSpider
@@ -42,19 +40,24 @@ class RSSFeedManager:
         feeds: list[RSSFeed],
         concurrency: int = 4,
     ):
-        self.feeds = [feed for feed in feeds if feed.enabled]
+        self.feeds = [
+            feed
+            for feed in feeds
+            if feed.enabled
+        ]
 
         self.concurrency = concurrency
 
     async def run(
         self,
-        page_factory,
     ) -> tuple[
         list[ArticleItem],
         list[RSSResult],
     ]:
 
-        semaphore = asyncio.Semaphore(self.concurrency)
+        semaphore = asyncio.Semaphore(
+            self.concurrency
+        )
 
         async def worker(
             feed: RSSFeed,
@@ -64,17 +67,18 @@ class RSSFeedManager:
 
                 start = time.perf_counter()
 
-                page: Page | None = None
-
                 try:
 
-                    page = await page_factory()
+                    spider = RSSFeedSpider(
+                        feed
+                    )
 
-                    spider = RSSFeedSpider(feed)
+                    items = await spider.parse()
 
-                    items = await spider.parse(page)
-
-                    elapsed = time.perf_counter() - start
+                    elapsed = (
+                        time.perf_counter()
+                        - start
+                    )
 
                     return RSSResult(
                         name=feed.name,
@@ -85,7 +89,10 @@ class RSSFeedManager:
 
                 except Exception as e:
 
-                    elapsed = time.perf_counter() - start
+                    elapsed = (
+                        time.perf_counter()
+                        - start
+                    )
 
                     return RSSResult(
                         name=feed.name,
@@ -95,16 +102,19 @@ class RSSFeedManager:
                         error=str(e),
                     )
 
-                finally:
-
-                    if page is not None:
-                        await page.close()
-
-        results = await asyncio.gather(*[worker(feed) for feed in self.feeds])
+        results = await asyncio.gather(
+            *[
+                worker(feed)
+                for feed in self.feeds
+            ]
+        )
 
         all_items: list[ArticleItem] = []
 
         for result in results:
-            all_items.extend(result.items)
+            all_items.extend(
+                result.items
+            )
 
         return all_items, results
+

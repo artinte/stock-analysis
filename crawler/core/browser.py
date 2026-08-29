@@ -25,6 +25,15 @@ class BrowserManager:
         )
         return await context.new_page()
 
+    async def close_page(self, page: Page):
+        """关闭 Page 及其对应的 Context"""
+        context = page.context
+
+        try:
+            await page.close()
+        finally:
+            await context.close()
+
     async def stop(self):
         if self._browser:
             await self._browser.close()
