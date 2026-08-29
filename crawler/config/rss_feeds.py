@@ -110,6 +110,98 @@ class RSSFeed:
 
 
 # ============================================================
+# 经济观察网
+# ============================================================
+#
+# 经济观察网官方 RSS 页面提供多个频道。
+#
+# 重点：
+#   政经要闻
+#   金融投资
+#   公司产业
+#   观察家
+#   首页
+#   专题
+#   今日头条
+#
+# ============================================================
+
+EEO_FEEDS: list[RSSFeed] = [
+    RSSFeed(
+        name="经济观察网",
+        url=("http://www.eeo.com.cn/" "sypd/rss.xml"),
+        category="财经",
+        description="经济观察网首页新闻",
+        priority=1,
+        license="经济观察网 RSS",
+    ),
+    RSSFeed(
+        name="经济观察网政经",
+        url=("http://www.eeo.com.cn/" "Politics/rss.xml"),
+        category="宏观政策",
+        description="经济观察网政经要闻",
+        priority=1,
+        license="经济观察网 RSS",
+    ),
+    RSSFeed(
+        name="经济观察网金融",
+        url=("http://www.eeo.com.cn/" "finance/rss.xml"),
+        category="金融",
+        description="经济观察网金融投资频道",
+        priority=1,
+        license="经济观察网 RSS",
+    ),
+    RSSFeed(
+        name="经济观察网公司产业",
+        url=("http://www.eeo.com.cn/" "industry/rss.xml"),
+        category="公司产业",
+        description="经济观察网公司与产业新闻",
+        priority=1,
+        license="经济观察网 RSS",
+    ),
+    RSSFeed(
+        name="经济观察网观察家",
+        url=("http://www.eeo.com.cn/" "observer/rss.xml"),
+        category="观点",
+        description="经济观察网观察家栏目",
+        priority=2,
+        license="经济观察网 RSS",
+    ),
+    RSSFeed(
+        name="经济观察网今日媒体",
+        url=("http://www.eeo.com.cn/" "today_media/rss.xml"),
+        category="财经资讯",
+        description="经济观察网今日媒体",
+        priority=2,
+        license="经济观察网 RSS",
+    ),
+    RSSFeed(
+        name="经济观察网专题",
+        url=("http://www.eeo.com.cn/" "sypd/sdbd/rss.xml"),
+        category="专题",
+        description="经济观察网专题报道",
+        priority=2,
+        license="经济观察网 RSS",
+    ),
+    RSSFeed(
+        name="经济观察网今日头条",
+        url=("http://www.eeo.com.cn/" "sypd/jrtt/rss.xml"),
+        category="重要新闻",
+        description="经济观察网今日头条",
+        priority=1,
+        license="经济观察网 RSS",
+    ),
+]
+
+
+# ============================================================
+# 合并
+# ============================================================
+
+CHINESE_FINANCE_FEEDS: list[RSSFeed] =  EEO_FEEDS
+
+
+# ============================================================
 # Google News
 # ============================================================
 
@@ -157,124 +249,6 @@ def google_news(
         license="Google News RSS",
         attribution_required=True,
     )
-
-
-# ============================================================
-# 新浪财经
-#
-# 新浪官方 RSS 页面目前列出：
-#
-#   财经要闻汇总
-#   焦点新闻
-#   股市及时雨
-#   股票要闻汇总
-#   基金要闻
-#   理财要闻
-#   美股快报
-#   港股快讯
-#   期货要闻
-#
-# ============================================================
-
-
-SINA_FEEDS: list[RSSFeed] = [
-    RSSFeed(
-        name="新浪财经要闻",
-        url=("https://rss.sina.com.cn/" "roll/finance/hot_roll.xml"),
-        category="财经要闻",
-        description="新浪财经财经要闻汇总",
-        priority=1,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("财经", "宏观", "A股"),
-        license="新浪 RSS",
-    ),
-    RSSFeed(
-        name="新浪财经焦点",
-        url=("https://rss.sina.com.cn/" "news/allnews/finance.xml"),
-        category="财经焦点",
-        description="新浪财经频道焦点新闻",
-        priority=1,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("财经", "市场"),
-        license="新浪 RSS",
-    ),
-    RSSFeed(
-        name="新浪股市及时雨",
-        url=("https://rss.sina.com.cn/" "finance/jsy.xml"),
-        category="A股",
-        description="新浪财经股市及时雨",
-        priority=1,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("A股", "股票", "市场"),
-        license="新浪 RSS",
-    ),
-    RSSFeed(
-        name="新浪股票要闻",
-        url=("https://rss.sina.com.cn/" "roll/stock/hot_roll.xml"),
-        category="股票",
-        description="新浪股票要闻汇总",
-        priority=1,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("A股", "股票", "上市公司"),
-        license="新浪 RSS",
-    ),
-    RSSFeed(
-        name="新浪基金",
-        url=("https://rss.sina.com.cn/" "finance/fund.xml"),
-        category="基金",
-        description="新浪财经基金要闻",
-        priority=2,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("基金", "ETF"),
-        license="新浪 RSS",
-    ),
-    RSSFeed(
-        name="新浪美股",
-        url=("https://rss.sina.com.cn/" "finance/usstock.xml"),
-        category="美股",
-        description="新浪财经美股快报",
-        priority=2,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("美股", "纳斯达克", "标普"),
-        license="新浪 RSS",
-    ),
-    RSSFeed(
-        name="新浪港股",
-        url=("https://rss.sina.com.cn/" "finance/hkstock.xml"),
-        category="港股",
-        description="新浪财经港股快讯",
-        priority=2,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("港股", "恒生"),
-        license="新浪 RSS",
-    ),
-    RSSFeed(
-        name="新浪期货",
-        url=("https://rss.sina.com.cn/" "finance/future.xml"),
-        category="期货",
-        description="新浪财经期货要闻",
-        priority=2,
-        language="zh-CN",
-        region="CN",
-        source_type="official",
-        tags=("期货", "商品", "大宗"),
-        license="新浪 RSS",
-    ),
-]
 
 
 # ============================================================
@@ -925,7 +899,7 @@ GLOBAL_FEEDS: list[RSSFeed] = [
 
 RSS_FEEDS: list[RSSFeed] = [
     # 中国
-    *SINA_FEEDS,
+    *CHINESE_FINANCE_FEEDS,
     *CHINANEWS_FEEDS,
     # 台湾
     *YAHOO_TW_FEEDS,
