@@ -30,15 +30,19 @@ class RSSFeedManager:
 
         - 批量抓取
         - 并发控制
+        - 自动重试
         - 错误隔离
         - 耗时统计
         - 最终汇总
+
+    RSS 本身通过 HTTP 抓取。
     """
 
     def __init__(
         self,
         feeds: list[RSSFeed],
         concurrency: int = 4,
+        retries: int = 2,
     ):
         self.feeds = [
             feed
@@ -46,7 +50,15 @@ class RSSFeedManager:
             if feed.enabled
         ]
 
-        self.concurrency = concurrency
+        self.concurrency = max(
+            1,
+            concurrency,
+        )
+
+        self.retries = max(
+            0,
+            retries,
+        )
 
     async def run(
         self,
@@ -66,41 +78,87 @@ class RSSFeedManager:
             async with semaphore:
 
                 start = time.perf_counter()
+                last_error = ""
 
-                try:
+                for attempt in range(
+                    self.retries + 1
+                ):
 
-                    spider = RSSFeedSpider(
-                        feed
-                    )
+                    try:
 
-                    items = await spider.parse()
+                        print(
+                            f"  → [{feed.name}] "
+                            f"正在抓取 "
+                            f"(第 {attempt + 1} 次)"
+                        )
 
-                    elapsed = (
-                        time.perf_counter()
-                        - start
-                    )
+                        spider = RSSFeedSpider(
+                            feed
+                        )
 
-                    return RSSResult(
-                        name=feed.name,
-                        success=True,
-                        items=items,
-                        elapsed=elapsed,
-                    )
+                        items = await spider.parse()
 
-                except Exception as e:
+                        elapsed = (
+                            time.perf_counter()
+                            - start
+                        )
 
-                    elapsed = (
-                        time.perf_counter()
-                        - start
-                    )
+                        print(
+                            f"  ✓ [{feed.name}] "
+                            f"{len(items)} 条 "
+                            f"({elapsed:.2f}s)"
+                        )
 
-                    return RSSResult(
-                        name=feed.name,
-                        success=False,
-                        items=[],
-                        elapsed=elapsed,
-                        error=str(e),
-                    )
+                        return RSSResult(
+                            name=feed.name,
+                            success=True,
+                            items=items,
+                            elapsed=elapsed,
+                        )
+
+                    except Exception as e:
+
+                        last_error = (
+                            f"{type(e).__name__}: {e}"
+                        )
+
+                        print(
+                            f"  ⚠️ [{feed.name}] "
+                            f"第 {attempt + 1} 次失败: "
+                            f"{last_error}"
+                        )
+
+                        # 还可以重试
+                        if attempt < self.retries:
+
+                            # 1s、2s、4s……
+                            delay = min(
+                                2 ** attempt,
+                                8,
+                            )
+
+                            await asyncio.sleep(
+                                delay
+                            )
+
+                elapsed = (
+                    time.perf_counter()
+                    - start
+                )
+
+                print(
+                    f"  ❌ [{feed.name}] "
+                    f"最终失败 "
+                    f"({elapsed:.2f}s)"
+                )
+
+                return RSSResult(
+                    name=feed.name,
+                    success=False,
+                    items=[],
+                    elapsed=elapsed,
+                    error=last_error,
+                )
 
         results = await asyncio.gather(
             *[
@@ -117,4 +175,3 @@ class RSSFeedManager:
             )
 
         return all_items, results
-

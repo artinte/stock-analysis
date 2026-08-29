@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import time
-from typing import Optional
-
 import httpx
 
 from crawler.config.rss_feeds import RSSFeed
@@ -12,37 +9,50 @@ from crawler.spiders.rss.rss_parser import RSSParser
 
 class RSSFeedSpider:
     """
-    通用 RSS 爬虫。
+    通用 RSS / Atom 爬虫。
 
-    RSS 是纯 HTTP + XML 数据，
-    不使用 Playwright。
+    RSS 抓取采用 HTTP 方式。
 
-    负责：
+    流程：
 
-        HTTP 请求
-        ↓
-        XML
-        ↓
+        RSSFeed
+            ↓
+        HTTP GET
+            ↓
+        RSS XML
+            ↓
         RSSParser
-        ↓
+            ↓
         ArticleItem
     """
 
-    def __init__(
-        self,
-        feed: RSSFeed,
-        retries: int = 2,
-    ):
+    def __init__(self, feed: RSSFeed):
         self.feed = feed
-        self.retries = retries
-
-        self.name = feed.name
 
     async def parse(self) -> list[ArticleItem]:
+        """
+        获取并解析 RSS。
+        """
 
-        start_time = time.perf_counter()
+        xml_text = await self._fetch()
 
-        last_error: Optional[Exception] = None
+        items = RSSParser.parse(
+            xml_text=xml_text,
+            source_name=self.feed.name,
+            category=self.feed.category,
+            max_items=self.feed.max_items,
+        )
+
+        print(
+            f"    RSSParser: 找到 {len(items)} 个条目"
+        )
+
+        return items
+
+    async def _fetch(self) -> str:
+        """
+        HTTP 获取 RSS XML。
+        """
 
         headers = {
             "User-Agent": (
@@ -50,103 +60,57 @@ class RSSFeedSpider:
                 "(Windows NT 10.0; Win64; x64) "
                 "AppleWebKit/537.36 "
                 "(KHTML, like Gecko) "
-                "Chrome/122.0.0.0 "
-                "Safari/537.36"
+                "Chrome/131.0.0.0 Safari/537.36"
             ),
             "Accept": (
-                "application/rss+xml, "
-                "application/xml, "
-                "text/xml, "
+                "application/rss+xml,"
+                "application/atom+xml,"
+                "application/xml,"
+                "text/xml,"
                 "*/*"
+            ),
+            "Accept-Language": (
+                "zh-CN,zh;q=0.9,en;q=0.8"
             ),
         }
 
         timeout = httpx.Timeout(
-            self.feed.timeout / 1000
+            self.feed.timeout
         )
 
         async with httpx.AsyncClient(
-            headers=headers,
             timeout=timeout,
+            headers=headers,
             follow_redirects=True,
         ) as client:
 
-            for attempt in range(
-                1,
-                self.retries + 2,
-            ):
+            response = await client.get(
+                self.feed.url
+            )
 
-                try:
+            print(
+                f"    HTTP {response.status_code}"
+            )
 
-                    print(
-                        f"  → [{self.name}] "
-                        f"正在抓取 "
-                        f"(第 {attempt} 次)"
-                    )
+            content_type = response.headers.get(
+                "content-type",
+                "",
+            )
 
-                    response = await client.get(
-                        self.feed.url
-                    )
+            print(
+                f"    Content-Type: {content_type}"
+            )
 
-                    response.raise_for_status()
+            print(
+                f"    Content-Length: "
+                f"{len(response.content)}"
+            )
 
-                    xml_text = response.text
+            response.raise_for_status()
 
-                    if not xml_text:
-                        raise RuntimeError(
-                            "RSS 内容为空"
-                        )
+            if not response.content:
+                raise ValueError(
+                    "RSS 返回内容为空"
+                )
 
-                    print(
-                        f"  Content-Type: "
-                        f"{response.headers.get('content-type')}"
-                    )
-
-                    print(
-                        f"  Content-Length: "
-                        f"{len(xml_text)}"
-                    )
-
-                    items = RSSParser.parse(
-                        xml_text=xml_text,
-                        source_name=self.feed.name,
-                        category=self.feed.category,
-                        max_items=self.feed.max_items,
-                    )
-
-                    elapsed = (
-                        time.perf_counter()
-                        - start_time
-                    )
-
-                    print(
-                        f"  ✓ [{self.name}] "
-                        f"{len(items)} 条 "
-                        f"({elapsed:.2f}s)"
-                    )
-
-                    return items
-
-                except Exception as e:
-
-                    last_error = e
-
-                    print(
-                        f"  ⚠️ [{self.name}] "
-                        f"第 {attempt} 次失败: {e}"
-                    )
-
-        elapsed = (
-            time.perf_counter()
-            - start_time
-        )
-
-        print(
-            f"  ❌ [{self.name}] "
-            f"最终失败 "
-            f"({elapsed:.2f}s): "
-            f"{last_error}"
-        )
-
-        return []
-
+            return response.text

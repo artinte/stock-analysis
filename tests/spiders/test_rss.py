@@ -12,12 +12,12 @@ async def main():
     # RSS 数据源
     # ============================================================
 
-    # 测试单个 RSS 时：
     feeds = get_enabled_feeds()
 
-
     print()
-    print(f"RSS 数据源: {len(feeds)} 个")
+    print(
+        f"RSS 数据源: {len(feeds)} 个"
+    )
     print()
 
     # ============================================================
@@ -27,6 +27,7 @@ async def main():
     manager = RSSFeedManager(
         feeds=feeds,
         concurrency=4,
+        retries=3,
     )
 
     # ============================================================
@@ -43,14 +44,24 @@ async def main():
     print("RSS 抓取完成")
     print()
 
-    success_count = 0
-    failed_count = 0
+    success_count = sum(
+        1
+        for result in results
+        if result.success
+    )
+
+    failed_count = (
+        len(results)
+        - success_count
+    )
+
+    # ============================================================
+    # 数据源结果
+    # ============================================================
 
     for result in results:
 
         if result.success:
-
-            success_count += 1
 
             print(
                 f"✓ {result.name:<20}"
@@ -60,27 +71,38 @@ async def main():
 
         else:
 
-            failed_count += 1
-
-            print(f"✗ {result.name:<20}" f"失败 " f"{result.elapsed:>6.2f}s")
+            print(
+                f"✗ {result.name:<20}"
+                f"失败 "
+                f"{result.elapsed:>6.2f}s"
+            )
 
             if result.error:
-                print(f"    {result.error}")
+
+                print(
+                    f"    {result.error}"
+                )
 
     # ============================================================
     # 汇总
     # ============================================================
 
     print()
-    print(f"成功: {success_count}  " f"失败: {failed_count}")
+    print(
+        f"成功: {success_count}  "
+        f"失败: {failed_count}"
+    )
 
-    print(f"新闻总数: {len(items)}")
+    print(
+        f"新闻总数: {len(items)}"
+    )
 
     # ============================================================
     # 新闻预览
     # ============================================================
 
     if not items:
+
         print()
         print("没有获取到新闻")
         return
@@ -90,25 +112,44 @@ async def main():
     print("-" * 70)
 
     for i, item in enumerate(
-        items,
+        items[:20],
         1,
     ):
 
-        print(f"{i}. {item.title}")
+        print(
+            f"{i}. {item.title}"
+        )
 
-        print(f"   来源: " f"{item.source_name}")
+        print(
+            f"   来源: "
+            f"{item.source_name}"
+        )
 
-        print(f"   时间: " f"{item.published_at}")
+        print(
+            f"   时间: "
+            f"{item.published_at}"
+        )
 
-        print(f"   分类: " f"{item.category}")
+        print(
+            f"   分类: "
+            f"{item.category}"
+        )
 
-        print(f"   URL: " f"{item.url}")
+        print(
+            f"   URL: "
+            f"{item.url}"
+        )
 
         if item.summary:
-            print(f"   摘要: " f"{item.summary}")
+
+            print(
+                f"   摘要: "
+                f"{item.summary}"
+            )
 
         print()
 
 
 if __name__ == "__main__":
     asyncio.run(main())
+
