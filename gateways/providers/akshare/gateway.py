@@ -8,7 +8,7 @@ import akshare as ak
 from common.constants import Interval
 from gateways.gateway import StockDataGateway
 from gateways.registry import GatewayRegistry
-from core.models.financial import Financial
+from core.models.financial.financial import Financial
 from core.models.kline import Kline
 from core.models.quote import Quote
 from core.models.stock import Stock

@@ -5,6 +5,13 @@ from datetime import datetime
 from typing import Optional
 
 from common.constants import Interval
+from core.models.financial.balance_sheet import BalanceSheet
+from core.models.financial.cash_flow import CashFlowStatement
+from core.models.financial.financial import Financial
+from core.models.financial.income_statement import IncomeStatement
+from core.models.kline import Kline
+from core.models.quote import Quote
+from core.models.stock import Stock
 
 
 class StockDataGateway(ABC):
@@ -44,21 +51,7 @@ class StockDataGateway(ABC):
     def fetch_stock(
         self,
         symbol: str,
-    ):
-        raise NotImplementedError
-
-    @abstractmethod
-    def fetch_quote(
-        self,
-        symbol: str,
-    ):
-        raise NotImplementedError
-
-    @abstractmethod
-    def fetch_quotes(
-        self,
-        symbols: list[str],
-    ):
+    ) -> Stock:
         raise NotImplementedError
 
     @abstractmethod
@@ -69,18 +62,53 @@ class StockDataGateway(ABC):
         start_time: Optional[datetime] = None,
         end_time: Optional[datetime] = None,
         limit: int = 1000,
+    ) -> Kline:
+        raise NotImplementedError
+
+    @abstractmethod
+    def fetch_quote(
+        self,
+        symbol: str,
+    ) -> Quote:
+        raise NotImplementedError
+
+    @abstractmethod
+    def fetch_quotes(
+        self,
+        symbols: list[str],
     ):
         raise NotImplementedError
 
     @abstractmethod
-    def fetch_valuation(
+    def fetch_balance_sheet(
         self,
         symbol: str,
-    ):
+    ) -> BalanceSheet:
+        raise NotImplementedError
+
+    @abstractmethod
+    def fetch_income_statement(
+        self,
+        symbol: str,
+    ) -> IncomeStatement:
+        raise NotImplementedError
+
+    @abstractmethod
+    def fetch_cash_flow(
+        self,
+        symbol: str,
+    ) -> CashFlowStatement:
         raise NotImplementedError
 
     @abstractmethod
     def fetch_financial(
+        self,
+        symbol: str,
+    ) -> Financial:
+        raise NotImplementedError
+
+    @abstractmethod
+    def fetch_valuation(
         self,
         symbol: str,
     ):

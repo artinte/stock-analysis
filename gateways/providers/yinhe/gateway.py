@@ -11,7 +11,7 @@ import tgw
 
 from gateways.gateway import StockDataGateway
 from common.constants import Interval, TEN_THOUSAND
-from core.models.financial import Financial
+from core.models.financial.financial import Financial
 from core.models.kline import Kline
 from core.models.valuation import Valuation
 from core.models.quote import Quote
