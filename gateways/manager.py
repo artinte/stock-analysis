@@ -3,6 +3,7 @@ import pandas
 from typing import Optional
 from dotenv import load_dotenv
 
+from core.models.financial.income_statement import IncomeStatement
 from gateways.gateway import StockDataGateway
 from core.models.stock import Stock
 from core.models.industry import Industry
@@ -272,11 +273,95 @@ class DataManager:
     ):
         return self.gateway.fetch_valuation(symbol)
 
-    def get_income_statement(
+    def fetch_income_statement(
         self,
         symbol: str,
-    ):
-        return self.gateway.fetch_income_statement(symbol)
+        start_year: Optional[int] = None,
+        start_quarter: Optional[int] = None,
+        end_year: Optional[int] = None,
+        end_quarter: Optional[int] = None,
+    ) -> list[IncomeStatement]:
+        """
+        获取指定股票的利润表数据。
+
+        按财务报告期的“年份 + 季度”进行查询。
+
+        查询范围为闭区间，开始季度和结束季度均包含在结果中。
+
+        参数：
+            symbol:
+                股票代码，例如：
+                    "600519.SH"
+
+            start_year:
+                起始财务年度。
+                与 start_quarter 配合使用。
+                不指定时，表示不限制起始时间。
+
+            start_quarter:
+                起始财务季度。
+                可选值：
+                    1：第一季度
+                    2：第二季度
+                    3：第三季度
+                    4：第四季度
+
+            end_year:
+                结束财务年度。
+                与 end_quarter 配合使用。
+                不指定时，表示不限制结束时间。
+
+            end_quarter:
+                结束财务季度。
+                可选值：
+                    1：第一季度
+                    2：第二季度
+                    3：第三季度
+                    4：第四季度
+
+        查询示例：
+
+            不指定任何时间：
+                获取全部历史利润表数据。
+
+            指定开始季度：
+                start_year=2025,
+                start_quarter=2
+
+                获取 2025Q2 至最新季度的数据。
+
+            指定结束季度：
+                end_year=2025,
+                end_quarter=3
+
+                获取历史数据至 2025Q3。
+
+            指定完整范围：
+                start_year=2024,
+                start_quarter=3,
+                end_year=2025,
+                end_quarter=2
+
+                获取：
+                    2024Q3
+                    2024Q4
+                    2025Q1
+                    2025Q2
+
+                其中开始季度和结束季度均包含。
+
+        返回：
+            list[IncomeStatement]:
+                符合查询条件的利润表数据。
+                如果没有匹配数据，则返回空列表。
+        """
+        return self.gateway.fetch_income_statement(
+            symbol,
+            start_year,
+            start_quarter,
+            end_year,
+            end_quarter,
+        )
 
     def get_balance_sheet(
         self,
