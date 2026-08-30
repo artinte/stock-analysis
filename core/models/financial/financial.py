@@ -172,7 +172,7 @@ class Financial:
         # 利润表
         # ======================================================
 
-        print()
+        print("-" * 80)
         print("【利润表】")
 
         if self.income is not None:
@@ -184,7 +184,7 @@ class Financial:
         # 资产负债表
         # ======================================================
 
-        print()
+        print("-" * 80)
         print("【资产负债表】")
 
         if self.balance is not None:
@@ -196,7 +196,7 @@ class Financial:
         # 现金流量表
         # ======================================================
 
-        print()
+        print("-" * 80)
         print("【现金流量表】")
 
         if self.cash_flow is not None:
@@ -208,7 +208,7 @@ class Financial:
         # 财务分析指标
         # ======================================================
 
-        print()
+        print("-" * 80)
         print("【财务指标】")
 
         if self.indicators is not None:

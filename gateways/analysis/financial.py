@@ -2,13 +2,11 @@ from __future__ import annotations
 
 from typing import Optional
 
-from core.models.financial import (
-    BalanceSheet,
-    CashFlowStatement,
-    Financial,
-    FinancialIndicators,
-    IncomeStatement,
-)
+from core.models.financial.balance_sheet import BalanceSheet
+from core.models.financial.cash_flow import CashFlowStatement
+from core.models.financial.financial import Financial
+from core.models.financial.income_statement import IncomeStatement
+from core.models.financial.financial_indicators import FinancialIndicators
 
 
 class FinancialAnalyzer:
@@ -64,124 +62,74 @@ class FinancialAnalyzer:
         cash_flow = current.cash_flow
 
         return FinancialIndicators(
-
             # ==================================================
             # 盈利能力
             # ==================================================
-
             gross_margin=self._calculate_gross_margin(income),
-
-            operating_margin=self._calculate_operating_margin(
-                income
-            ),
-
-            net_margin=self._calculate_net_margin(
-                income
-            ),
-
+            operating_margin=self._calculate_operating_margin(income),
+            net_margin=self._calculate_net_margin(income),
             roe=self._calculate_roe(
                 income,
                 balance,
             ),
-
             roa=self._calculate_roa(
                 income,
                 balance,
             ),
-
             roic=self._calculate_roic(
                 income,
                 balance,
             ),
-
             # ==================================================
             # 成长能力
             # ==================================================
-
             revenue_growth=self._calculate_growth(
                 income.revenue if income else None,
-                (
-                    previous.income.revenue
-                    if previous and previous.income
-                    else None
-                ),
+                (previous.income.revenue if previous and previous.income else None),
             ),
-
             revenue_yoy=self._calculate_growth(
                 income.revenue if income else None,
-                (
-                    previous.income.revenue
-                    if previous and previous.income
-                    else None
-                ),
+                (previous.income.revenue if previous and previous.income else None),
             ),
-
             profit_growth=self._calculate_growth(
                 income.net_profit if income else None,
-                (
-                    previous.income.net_profit
-                    if previous and previous.income
-                    else None
-                ),
+                (previous.income.net_profit if previous and previous.income else None),
             ),
-
             net_profit_yoy=self._calculate_growth(
                 income.net_profit if income else None,
-                (
-                    previous.income.net_profit
-                    if previous and previous.income
-                    else None
-                ),
+                (previous.income.net_profit if previous and previous.income else None),
             ),
-
             # ==================================================
             # 财务健康
             # ==================================================
-
-            debt_to_asset_ratio=self._calculate_debt_to_asset_ratio(
-                balance
-            ),
-
-            current_ratio=self._calculate_current_ratio(
-                balance
-            ),
-
-            quick_ratio=self._calculate_quick_ratio(
-                balance
-            ),
-
+            debt_to_asset_ratio=self._calculate_debt_to_asset_ratio(balance),
+            current_ratio=self._calculate_current_ratio(balance),
+            quick_ratio=self._calculate_quick_ratio(balance),
             # ==================================================
             # 营运能力
             # ==================================================
-
             receivable_turnover=self._calculate_receivable_turnover(
                 income,
                 balance,
             ),
-
             inventory_turnover=self._calculate_inventory_turnover(
                 income,
                 balance,
             ),
-
             # ==================================================
             # 现金流质量
             # ==================================================
-
             cash_flow_quality=self._calculate_cash_flow_quality(
                 income,
                 cash_flow,
             ),
-
             # ==================================================
             # 每股指标
             # ==================================================
-
             book_value_per_share=self._calculate_book_value_per_share(
                 balance,
                 current,
             ),
-
             operating_cash_flow_per_share=(
                 self._calculate_operating_cash_flow_per_share(
                     cash_flow,
@@ -217,11 +165,7 @@ class FinancialAnalyzer:
         if income.revenue == 0:
             return None
 
-        return (
-            income.gross_profit
-            / income.revenue
-            * 100
-        )
+        return income.gross_profit / income.revenue * 100
 
     @staticmethod
     def _calculate_operating_margin(
@@ -246,11 +190,7 @@ class FinancialAnalyzer:
         if income.revenue == 0:
             return None
 
-        return (
-            income.operating_profit
-            / income.revenue
-            * 100
-        )
+        return income.operating_profit / income.revenue * 100
 
     @staticmethod
     def _calculate_net_margin(
@@ -275,11 +215,7 @@ class FinancialAnalyzer:
         if income.revenue == 0:
             return None
 
-        return (
-            income.net_profit
-            / income.revenue
-            * 100
-        )
+        return income.net_profit / income.revenue * 100
 
     @staticmethod
     def _calculate_roe(
@@ -309,11 +245,7 @@ class FinancialAnalyzer:
         if balance.shareholders_equity == 0:
             return None
 
-        return (
-            income.net_profit
-            / balance.shareholders_equity
-            * 100
-        )
+        return income.net_profit / balance.shareholders_equity * 100
 
     @staticmethod
     def _calculate_roa(
@@ -341,11 +273,7 @@ class FinancialAnalyzer:
         if balance.total_assets == 0:
             return None
 
-        return (
-            income.net_profit
-            / balance.total_assets
-            * 100
-        )
+        return income.net_profit / balance.total_assets * 100
 
     @staticmethod
     def _calculate_roic(
@@ -389,11 +317,7 @@ class FinancialAnalyzer:
         if previous == 0:
             return None
 
-        return (
-            (current - previous)
-            / abs(previous)
-            * 100
-        )
+        return (current - previous) / abs(previous) * 100
 
     # ==========================================================
     # 财务健康
@@ -422,11 +346,7 @@ class FinancialAnalyzer:
         if balance.total_assets == 0:
             return None
 
-        return (
-            balance.total_liabilities
-            / balance.total_assets
-            * 100
-        )
+        return balance.total_liabilities / balance.total_assets * 100
 
     @staticmethod
     def _calculate_current_ratio(
@@ -491,10 +411,7 @@ class FinancialAnalyzer:
         if balance.accounts_receivable == 0:
             return None
 
-        return (
-            income.revenue
-            / balance.accounts_receivable
-        )
+        return income.revenue / balance.accounts_receivable
 
     @staticmethod
     def _calculate_inventory_turnover(
@@ -521,10 +438,7 @@ class FinancialAnalyzer:
         if balance.inventory == 0:
             return None
 
-        return (
-            income.operating_cost
-            / balance.inventory
-        )
+        return income.operating_cost / balance.inventory
 
     # ==========================================================
     # 现金流质量
@@ -554,10 +468,7 @@ class FinancialAnalyzer:
         if income.net_profit == 0:
             return None
 
-        return (
-            cash_flow.operating_cash_flow
-            / income.net_profit
-        )
+        return cash_flow.operating_cash_flow / income.net_profit
 
     # ==========================================================
     # 每股指标

@@ -18,7 +18,7 @@ from core.models.financial.financial import Financial
 from core.models.kline import Kline
 from core.models.valuation import Valuation
 from core.models.quote import Quote
-from core.models.industry import Industry
+from gateways.analysis.financial import FinancialAnalyzer
 from gateways.providers.yinhe.financial import YinheFinancial
 from gateways.providers.yinhe.kline import YinheKline
 from gateways.providers.yinhe.quote import YinheQuote
@@ -165,6 +165,8 @@ class YinheGateway(StockDataGateway):
         self.financial = YinheFinancial(self)
 
         self.valuation = YinheValuation(self)
+
+        self.financial_analyzer = FinancialAnalyzer()
 
     # ==========================================================
     # 生命周期
@@ -569,7 +571,6 @@ class YinheGateway(StockDataGateway):
         """
 
         self._ensure_started()
-        now = datetime.datetime.now()
         symbol = normalize_symbol(symbol)
 
         try:
@@ -885,7 +886,7 @@ class YinheGateway(StockDataGateway):
             # 组合 Financial
             # ======================================================
 
-            return Financial(
+            financial = Financial(
                 symbol=symbol,
                 report_date=report_date,
                 report_type=report_type,
@@ -898,6 +899,13 @@ class YinheGateway(StockDataGateway):
                 # 财务指标由 FinancialAnalyzer 计算
                 indicators=None,
             )
+
+            # 计算财务指标
+            indicators = self.financial_analyzer.analyze(current=financial)
+
+            financial.indicators = indicators
+
+            return financial
 
         except Exception as exc:
             print(f"[银河] 获取财务数据失败 " f"{symbol}: {exc}")
