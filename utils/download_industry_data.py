@@ -80,7 +80,18 @@ def get_csindex_industry_data(
     download_dir=os.path.join(os.getcwd(), "temp"),
     force_update=False,
 ):
-    """外部调用核心入口函数。"""
+    """
+    获取中证指数行业数据。
+
+    Args:
+        download_dir: 下载文件保存目录。
+        force_update: 是否强制更新。
+
+    Returns:
+        行业数据。
+    """
+    os.makedirs(download_dir, exist_ok=True)
+        
     today_str = datetime.datetime.now().strftime("%Y%m%d")
 
     expected_file = None

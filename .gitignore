@@ -3,6 +3,8 @@
 .infodata/
 .basedata/
 
+.DS_Store
+
 # 私有配置
 temp/
 private_config.txt
