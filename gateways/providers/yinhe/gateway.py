@@ -664,17 +664,135 @@ class YinheGateway(StockDataGateway):
     def fetch_cash_flow(
         self,
         symbol: str,
-    ):
+    ) -> CashFlowStatement | None:
         """
-        Mock：获取现金流量表。
+        获取现金流量表。
+
+        银河 get_cash_flow() 返回：
+
+            {
+                "600519.SH": DataFrame
+            }
+
+        转换为统一 CashFlowStatement 模型。
         """
-        return CashFlowStatement(
-            symbol=symbol,
-            operating_cash_flow=45_000_000.0,
-            investing_cash_flow=-20_000_000.0,
-            financing_cash_flow=5_000_000.0,
-            free_cash_flow=25_000_000.0,
-        )
+
+        self._ensure_started()
+
+        symbol = normalize_symbol(symbol)
+
+        try:
+            result = self.info_data.get_cash_flow(
+                [symbol],
+                local_path=self.local_path,
+                is_local=False,
+            )
+
+            if not result:
+                print(f"[银河] 未获取到现金流量表数据: " f"{symbol}")
+                return None
+
+            df = result.get(symbol)
+
+            if df is None:
+                print(f"[银河] 未找到现金流量表: " f"{symbol}")
+                return None
+
+            if df.empty:
+                print(f"[银河] 现金流量表为空: " f"{symbol}")
+                return None
+
+            print(f"[银河] get_cash_flow: " f"shape={df.shape}")
+
+            print(f"[银河] get_cash_flow columns: " f"{list(df.columns)}")
+
+            row = df.iloc[0]
+
+            return CashFlowStatement(
+                # ==================================================
+                # 基础信息
+                # ==================================================
+                symbol=symbol,
+                report_date=self._to_str(row.get("REPORTING_PERIOD")),
+                report_type=self._to_str(row.get("REPORT_TYPE")),
+                statement_type=self._to_str(row.get("STATEMENT_TYPE")),
+                announcement_date=self._to_str(row.get("ANN_DATE")),
+                currency=self._to_str(row.get("CURRENCY_CODE")),
+                # ==================================================
+                # 经营活动
+                # ==================================================
+                operating_cash_flow=self._to_float(row.get("NET_CASH_FLOWS_OPERA_ACT")),
+                cash_flow_from_operations=self._to_float(
+                    row.get("IND_NET_CASH_FLOWS_OPERA_ACT")
+                ),
+                operating_cash_inflow=self._to_float(
+                    row.get("TOT_CASH_INFLOW_OPERA_ACT")
+                ),
+                operating_cash_outflow=self._to_float(
+                    row.get("TOT_CASH_OUTFLOW_OPERA_ACT")
+                ),
+                cash_received_from_sales=self._to_float(row.get("CASH_RECP_SG_AND_RS")),
+                cash_paid_for_goods=self._to_float(row.get("CASH_PAY_GOODS_SERVICES")),
+                cash_paid_to_employees=self._to_float(row.get("CASH_PAY_EMPLOYEE")),
+                taxes_paid=self._to_float(row.get("PAY_ALL_TAX")),
+                tax_refund_received=self._to_float(row.get("RECP_TAX_REFUND")),
+                # ==================================================
+                # 投资活动
+                # ==================================================
+                investing_cash_flow=self._to_float(row.get("NET_CASH_FLOWS_INV_ACT")),
+                investing_cash_inflow=self._to_float(
+                    row.get("TOT_CASH_INFLOW_INV_ACT")
+                ),
+                investing_cash_outflow=self._to_float(
+                    row.get("TOT_CASH_OUTFLOW_INV_ACT")
+                ),
+                capital_expenditure=self._to_float(
+                    row.get("CASH_PAID_PUR_CONST_FIOLTA")
+                ),
+                cash_received_from_investments=self._to_float(
+                    row.get("CASH_RECP_RECOV_INV")
+                ),
+                investment_income_received=self._to_float(
+                    row.get("CASH_RECP_INV_INCOME")
+                ),
+                # ==================================================
+                # 筹资活动
+                # ==================================================
+                financing_cash_flow=self._to_float(row.get("NET_CASH_FLOWS_FIN_ACT")),
+                financing_cash_inflow=self._to_float(
+                    row.get("TOT_CASH_INFLOW_FIN_ACT")
+                ),
+                financing_cash_outflow=self._to_float(
+                    row.get("TOT_CASH_OUTFLOW_FIN_ACT")
+                ),
+                cash_received_from_borrowings=self._to_float(
+                    row.get("CASH_RECE_BORROW")
+                ),
+                cash_paid_for_debt=self._to_float(row.get("CASH_PAY_FOR_DEBT")),
+                dividends_interest_paid=self._to_float(
+                    row.get("CASH_PAY_DIST_DIV_PRO_INT")
+                ),
+                cash_from_equity_investment=self._to_float(
+                    row.get("ABSORB_CASH_RECP_INV")
+                ),
+                # ==================================================
+                # 现金及现金等价物
+                # ==================================================
+                beginning_cash_balance=self._to_float(row.get("BEG_BAL_CASH_CASH_EQU")),
+                ending_cash_balance=self._to_float(row.get("END_BAL_CASH_CASH_EQU")),
+                net_change_in_cash=self._to_float(
+                    row.get("NET_INCR_CASH_AND_CASH_EQU")
+                ),
+                exchange_rate_effect=self._to_float(row.get("EFF_FX_FLUC_CASH")),
+                # ==================================================
+                # 自由现金流
+                # ==================================================
+                free_cash_flow=self._to_float(row.get("FREE_CASH_FLOW")),
+            )
+
+        except Exception as exc:
+            print(f"[银河] 获取现金流量表失败 " f"{symbol}: {exc}")
+            return None
 
     def fetch_financial(
         self,
