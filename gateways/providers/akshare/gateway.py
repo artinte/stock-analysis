@@ -396,7 +396,7 @@ class AkShareGateway(StockDataGateway):
 
             return None
 
-    def fetch_income_statement(
+    def fetch_income_statement_abandon(
         self,
         symbol: str,
     ):

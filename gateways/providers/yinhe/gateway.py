@@ -401,7 +401,7 @@ class YinheGateway(StockDataGateway):
 
         return df.iloc[-1]
 
-    def fetch_income_statement(
+    def fetch_income_statement_abandon(
         self,
         symbol: str,
     ) -> IncomeStatement | None:
@@ -621,6 +621,12 @@ class YinheGateway(StockDataGateway):
 
             df = result.get(symbol)
 
+            if "REPORTING_PERIOD" in df.columns:
+                for period in df["REPORTING_PERIOD"]:
+                    print(f"    {period}")
+            else:
+                print("[银河] 未找到 REPORTING_PERIOD 字段")
+
             if df is None:
                 print(f"[银河] 未找到股票利润表: {symbol}")
                 return []
@@ -639,10 +645,10 @@ class YinheGateway(StockDataGateway):
 
             selected_rows = []
 
+            
             for _, row in df.iterrows():
 
                 report_date = self._to_str(row.get("REPORTING_PERIOD"))
-
                 if not report_date:
                     continue
 
@@ -1068,7 +1074,7 @@ class YinheGateway(StockDataGateway):
             # 1. 利润表
             # ======================================================
 
-            income = self.fetch_income_statement(symbol)
+            income = self.fetch_income_statement_abandon(symbol)
 
             # ======================================================
             # 2. 资产负债表
@@ -1174,6 +1180,93 @@ class YinheGateway(StockDataGateway):
             return None
 
         return revenue - cost
+    
+    @staticmethod
+    def _parse_report_period(
+        report_date: str,
+    ) -> tuple[int, int]:
+        """
+        将报告期转换为报告年度和季度。
+
+        支持以下格式：
+
+            20260630
+            2026-06-30
+            2026/06/30
+
+        返回：
+
+            (2026, 2)
+
+        对应：
+
+            03-31 -> Q1
+            06-30 -> Q2
+            09-30 -> Q3
+            12-31 -> Q4
+        """
+
+        if report_date is None:
+            raise ValueError("报告期不能为空")
+
+        value = str(report_date).strip()
+
+        # ==========================================================
+        # 统一日期格式
+        # ==========================================================
+
+        value = value.replace("-", "")
+        value = value.replace("/", "")
+
+        if len(value) != 8 or not value.isdigit():
+            raise ValueError(
+                f"无效的财务报告期: {report_date}"
+            )
+
+        # ==========================================================
+        # 提取年月日
+        # ==========================================================
+
+        year = int(value[:4])
+        month = int(value[4:6])
+        day = int(value[6:8])
+
+        # ==========================================================
+        # 根据报告期月份判断季度
+        # ==========================================================
+
+        quarter_map = {
+            (3, 31): 1,
+            (6, 30): 2,
+            (9, 30): 3,
+            (12, 31): 4,
+        }
+
+        quarter = quarter_map.get((month, day))
+
+        if quarter is None:
+            raise ValueError(
+                f"无效的财务报告期: {report_date}"
+            )
+
+        return year, quarter
+    
+    @staticmethod
+    def _quarter_index(
+        year: int,
+        quarter: int,
+    ) -> int:
+        """
+        将报告年度和季度转换为连续季度序号。
+
+        用于报告期之间的先后比较。
+
+        示例：
+            2025Q1 < 2025Q2
+            2025Q4 < 2026Q1
+        """
+
+        return year * 4 + quarter - 1
 
     @staticmethod
     def _to_float(

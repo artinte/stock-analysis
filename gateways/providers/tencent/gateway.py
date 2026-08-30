@@ -524,7 +524,7 @@ class TencentGateway(StockDataGateway):
     # K 线
     # ==========================================================
 
-    def fetch_income_statement(
+    def fetch_income_statement_abandon(
         self,
         symbol: str,
     ):
