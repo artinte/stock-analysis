@@ -3,6 +3,7 @@ from gateways.manager import DataManager
 from tests.gateways.test_quote import run_quote_test
 from tests.gateways.test_stock import run_stock_test
 from tests.gateways.test_kline import run_kline_test
+from tests.gateways.test_financial import run_financial_test
 from tests.gateways.test_valuation import run_valuation_test
 
 
@@ -26,7 +27,7 @@ def main():
         run_quote_test(data_manager, symbol)
         
         print("=" * 80)
-        
+        run_financial_test(data_manager, symbol)
 
         print("=" * 80)
         run_valuation_test(data_manager, symbol)

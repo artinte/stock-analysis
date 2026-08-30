@@ -3,10 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional
 
-from .balance_sheet import BalanceSheet
-from .cash_flow import CashFlowStatement
-from .financial_indicators import FinancialIndicators
-from .income_statement import IncomeStatement
+from core.models.financial.balance_sheet import BalanceSheet
+from core.models.financial.cash_flow import CashFlowStatement
+from core.models.financial.financial_indicators import FinancialIndicators
+from core.models.financial.income_statement import IncomeStatement
 
 
 @dataclass(slots=True)
