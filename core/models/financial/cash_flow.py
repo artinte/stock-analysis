@@ -16,6 +16,8 @@ class CashFlowStatement:
     # ==========================================================
     # 经营活动
     # ==========================================================
+    
+    symbol: str
 
     operating_cash_flow: Optional[float] = None
     """

@@ -272,6 +272,24 @@ class DataManager:
     ):
         return self.gateway.fetch_valuation(symbol)
 
+    def get_income_statement(
+        self,
+        symbol: str,
+    ):
+        return self.gateway.fetch_income_statement(symbol)
+
+    def get_balance_sheet(
+        self,
+        symbol: str,
+    ):
+        return self.gateway.fetch_balance_sheet(symbol)
+
+    def get_cash_flow(
+        self,
+        symbol: str,
+    ):
+        return self.gateway.fetch_cash_flow(symbol)
+
     def get_financial(
         self,
         symbol: str,

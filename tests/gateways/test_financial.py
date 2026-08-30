@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from core.models.financial import Financial
+from core.models.financial.financial import Financial
 from gateways.manager import DataManager
 
 """
@@ -45,12 +45,12 @@ def run_financial_test(
     print("\n[1] 利润表")
 
     try:
-        income = data.fetch_income_statement(symbol)
+        income = data.get_income_statement(symbol)
 
-        if income is None:
-            print("❌ 未获取到利润表数据")
+        if income:
+            income.display()
         else:
-            print(income)
+            print("❌ 未获取到利润表数据")
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现利润表接口")
@@ -65,12 +65,12 @@ def run_financial_test(
     print("\n[2] 资产负债表")
 
     try:
-        balance_sheet = data.fetch_balance_sheet(symbol)
+        balance_sheet = data.get_balance_sheet(symbol)
 
-        if balance_sheet is None:
-            print("❌ 未获取到资产负债表数据")
+        if balance_sheet:
+            balance_sheet.display()
         else:
-            print(balance_sheet)
+            print("❌ 未获取到资产负债表数据")
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现资产负债表接口")
@@ -85,12 +85,12 @@ def run_financial_test(
     print("\n[3] 现金流量表")
 
     try:
-        cash_flow = data.fetch_cash_flow(symbol)
+        cash_flow = data.get_cash_flow(symbol)
 
-        if cash_flow is None:
-            print("❌ 未获取到现金流量表数据")
+        if cash_flow:
+            cash_flow.display()
         else:
-            print(cash_flow)
+            print("❌ 未获取到现金流量表数据")
 
     except NotImplementedError:
         print("⚠️ 当前数据源暂未实现现金流量表接口")
@@ -162,7 +162,7 @@ def main() -> None:
     """
 
     test_financial(
-        provider_name="akshare",
+        provider_name="yinhe",
         symbol="600519.SH",
     )
 
