@@ -16,7 +16,7 @@ def test_stock_industry_category(symbol: str = "600519"):
     result = get_stock_industry_category(symbol)
 
     print("\n[1] 直接打印结果:")
-    print(result)
+    result.display()
 
     print("\n[2] 三级行业摘要:")
     print(result.summary(level=3))
@@ -131,13 +131,16 @@ def test_all_category_examples():
     return l1, l2, l3
 
 
+def run_industry_test(symbol):
+    industry = get_stock_industry_category(symbol)
+    industry.display()
+
 def main():
     """
     统一测试入口。
     """
 
-    # 1. 个股行业
-    test_stock_industry_category("600519")
+    run_industry_test("600519")
 
     # 2. 行业成份股：全层级模糊匹配
     test_category_stocks(

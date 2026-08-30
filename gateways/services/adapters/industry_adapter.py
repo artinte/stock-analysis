@@ -26,7 +26,7 @@ class IndustryAdapter:
         row = df.iloc[0]
 
         return Industry(
-            code=str(row.get("code", "")),
+            symbol=str(row.get("code", "")),
             name=row.get("l3") or row.get("l2") or row.get("l1"),
             level_1=row.get("l1"),
             level_2=row.get("l2"),

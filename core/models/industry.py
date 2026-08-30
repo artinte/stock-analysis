@@ -8,7 +8,7 @@ from common.constants import IndustryStandard
 class Industry:
     """股票所属行业。"""
 
-    code: Optional[str] = None
+    symbol: Optional[str] = None
     name: Optional[str] = None
 
     level_1: Optional[str] = None
@@ -24,7 +24,7 @@ class Industry:
         """打印行业信息。"""
 
         print("✅ 行业分类")
-        print(f"  行业代码：{self.code or '-'}")
+        print(f"  行业代码：{self.symbol or '-'}")
         print(f"  行业名称：{self.name or '-'}")
 
         if self.standard is not None:
