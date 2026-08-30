@@ -14,17 +14,17 @@ class Financial:
     """
     公司财务数据。
 
-    Financial 是一个财务报告的统一容器，
-    本身不直接保存大量财务字段。
+    Financial 是公司财务数据的统一容器。
 
-    具体数据分别由：
+    包含：
 
-        BalanceSheet
-        IncomeStatement
-        CashFlowStatement
-        FinancialIndicators
+        - 利润表
+        - 资产负债表
+        - 现金流量表
+        - 财务分析指标
 
-    表示。
+    Financial 本身不保存具体财务科目，
+    具体数据由对应的 Model 表示。
     """
 
     # ==========================================================
@@ -41,6 +41,7 @@ class Financial:
 
         2025-12-31
         2026-03-31
+        2026-06-30
     """
 
     report_type: Optional[str] = None
@@ -50,8 +51,10 @@ class Financial:
     例如：
 
         annual
-        quarterly
         interim
+        quarterly
+
+    具体值由数据源决定。
     """
 
     period: Optional[str] = None
@@ -118,31 +121,100 @@ class Financial:
     indicators: Optional[FinancialIndicators] = None
     """
     财务分析指标。
+
+    由 FinancialAnalyzer 根据财务报表计算得到。
     """
 
+    # ==========================================================
+    # Display
+    # ==========================================================
+
     def display(self) -> None:
-        print("财务数据")
+        """
+        显示完整财务数据。
 
-        print(f"股票代码       : {self.symbol}")
-        print(f"报告日期       : {self.report_date or '-'}")
-        print(f"报告类型       : {self.report_type or '-'}")
-        print(f"报告周期       : {self.period or '-'}")
-        print(f"币种           : {self.currency or '-'}")
-        print(f"公告日期       : {self.announcement_date or '-'}")
-        print(f"数据来源       : {self.source or '-'}")
+        显示内容：
 
-        if self.income:
-            print()
+            - 基础报告信息
+            - 利润表
+            - 资产负债表
+            - 现金流量表
+            - 财务分析指标
+
+        当某一部分数据不存在时，
+        显示 "-"，而不是直接跳过。
+        """
+
+        print("📊 公司财务数据")
+        print("=" * 80)
+
+        # ======================================================
+        # 报告信息
+        # ======================================================
+
+        print("【报告信息】")
+
+        print(f"  股票代码       : " f"{self.symbol}")
+
+        print(f"  报告期         : " f"{self.report_date or '-'}")
+
+        print(f"  报告类型       : " f"{self.report_type or '-'}")
+
+        print(f"  财务周期       : " f"{self.period or '-'}")
+
+        print(f"  币种           : " f"{self.currency or '-'}")
+
+        print(f"  公告日期       : " f"{self.announcement_date or '-'}")
+
+        print(f"  数据来源       : " f"{self.source or '-'}")
+
+        # ======================================================
+        # 利润表
+        # ======================================================
+
+        print()
+        print("【利润表】")
+
+        if self.income is not None:
             self.income.display()
+        else:
+            print("  -")
 
-        if self.balance:
-            print()
+        # ======================================================
+        # 资产负债表
+        # ======================================================
+
+        print()
+        print("【资产负债表】")
+
+        if self.balance is not None:
             self.balance.display()
+        else:
+            print("  -")
 
-        if self.cash_flow:
-            print()
+        # ======================================================
+        # 现金流量表
+        # ======================================================
+
+        print()
+        print("【现金流量表】")
+
+        if self.cash_flow is not None:
             self.cash_flow.display()
+        else:
+            print("  -")
 
-        if self.indicators:
-            print()
+        # ======================================================
+        # 财务分析指标
+        # ======================================================
+
+        print()
+        print("【财务指标】")
+
+        if self.indicators is not None:
             self.indicators.display()
+        else:
+            print("  -")
+
+        print()
+        print("=" * 80)

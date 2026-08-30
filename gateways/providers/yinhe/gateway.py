@@ -576,7 +576,7 @@ class YinheGateway(StockDataGateway):
             result = self.info_data.get_balance_sheet(
                 [symbol],
                 local_path=self.local_path,
-                is_local=False,
+                is_local=True,
             )
             if not result:
                 print(f"[银河] 未获取到资产负债表数据: {symbol}")
@@ -799,22 +799,109 @@ class YinheGateway(StockDataGateway):
         symbol: str,
     ) -> Financial | None:
         """
-        获取股票财务数据。
+        获取完整财务数据。
 
-        将银河证券返回的财务指标 DataFrame
+        由以下三个财务报表接口组合：
+
+            fetch_income_statement()
+            fetch_balance_sheet()
+            fetch_cash_flow()
+
         转换为统一 Financial 模型。
 
         数据流：
 
             AmazingData
                 |
-                ↓
-            DataFrame
+                +--> IncomeStatement
                 |
-                ↓
-            Financial
+                +--> BalanceSheet
+                |
+                +--> CashFlowStatement
+                        |
+                        v
+                    Financial
         """
-        return self.financial.fetch_financial(symbol)
+
+        self._ensure_started()
+
+        symbol = normalize_symbol(symbol)
+
+        try:
+            # ======================================================
+            # 1. 利润表
+            # ======================================================
+
+            income = self.fetch_income_statement(symbol)
+
+            # ======================================================
+            # 2. 资产负债表
+            # ======================================================
+
+            balance = self.fetch_balance_sheet(symbol)
+
+            # ======================================================
+            # 3. 现金流量表
+            # ======================================================
+
+            cash_flow = self.fetch_cash_flow(symbol)
+
+            # ======================================================
+            # 三张报表全部没有获取到
+            # ======================================================
+
+            if income is None and balance is None and cash_flow is None:
+                print(f"[银河] 未获取到完整财务数据: " f"{symbol}")
+                return None
+
+            # ======================================================
+            # 以实际获取到的报表作为基础信息来源
+            # ======================================================
+
+            report_date = None
+            report_type = None
+            currency = None
+            announcement_date = None
+
+            if income is not None:
+                report_date = income.report_date
+                report_type = income.report_type
+                currency = income.currency
+                announcement_date = income.announcement_date
+
+            elif balance is not None:
+                report_date = balance.report_date
+                report_type = balance.report_type
+                currency = balance.currency
+                announcement_date = balance.announcement_date
+
+            elif cash_flow is not None:
+                report_date = cash_flow.report_date
+                report_type = cash_flow.report_type
+                currency = cash_flow.currency
+                announcement_date = cash_flow.announcement_date
+
+            # ======================================================
+            # 组合 Financial
+            # ======================================================
+
+            return Financial(
+                symbol=symbol,
+                report_date=report_date,
+                report_type=report_type,
+                currency=currency,
+                announcement_date=announcement_date,
+                source=self.name,
+                income=income,
+                balance=balance,
+                cash_flow=cash_flow,
+                # 财务指标由 FinancialAnalyzer 计算
+                indicators=None,
+            )
+
+        except Exception as exc:
+            print(f"[银河] 获取财务数据失败 " f"{symbol}: {exc}")
+            return None
 
     def _ensure_started(self) -> None:
         """
