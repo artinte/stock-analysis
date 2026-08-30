@@ -57,14 +57,14 @@ class YinheQuote:
 
         self.gateway._ensure_started()
 
-        code = normalize_symbol(symbol)
+        symbol = normalize_symbol(symbol)
 
         try:
             now = datetime.datetime.now()
 
             # 最近 K 线
             klines = self.gateway.kline.fetch_kline(
-                symbol=code,
+                symbol=symbol,
                 interval=Interval.DAY_1,
                 start_time=(now - pandas.Timedelta(days=30)),
                 end_time=now,
@@ -123,7 +123,7 @@ class YinheQuote:
             float_shares = None
 
             equity = self.gateway.info_data.get_equity_structure(
-                [code],
+                [symbol],
                 local_path=self.gateway.local_path,
                 is_local=False,
             )
@@ -211,7 +211,7 @@ class YinheQuote:
                         volume_ratio = today_volume / average_volume
 
             # 涨停 / 跌停
-            limit_percent = self._get_limit_percent(code)
+            limit_percent = self._get_limit_percent(symbol)
             limit_up = None
             limit_down = None
 
@@ -235,7 +235,7 @@ class YinheQuote:
             )
 
             return Quote(
-                symbol=code,
+                symbol=symbol,
                 name=stock_name,
                 timestamp=latest.timestamp,
                 source="yinhe",
@@ -280,7 +280,7 @@ class YinheQuote:
 
         except Exception as e:
 
-            print(f"[银河行情] 获取失败 {code}: {e}")
+            print(f"[银河行情] 获取失败 {symbol}: {e}")
 
             return None
 

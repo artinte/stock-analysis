@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 import os
-from typing import Optional
+from typing import Any, Optional
 
 import AmazingData
 import pandas
@@ -402,20 +402,155 @@ class YinheGateway(StockDataGateway):
     def fetch_income_statement(
         self,
         symbol: str,
-    ):
+    ) -> IncomeStatement | None:
         """
-        Mock：获取利润表。
+        获取利润表。
+
+        银河 get_income() 返回：
+
+            {
+                "600519.SH": DataFrame
+            }
+
+        将指定股票最新一条利润表数据转换为
+        统一 IncomeStatement 模型。
         """
 
-        return IncomeStatement(
-            symbol=symbol,
-            operating_income=100_000_000.0,
-            operating_cost=70_000_000.0,
-            total_profit=35_000_000.0,
-            net_profit=30_000_000.0,
-            net_profit_attributable=28_000_000.0,
-            eps=1.20,
-        )
+        self._ensure_started()
+
+        symbol = normalize_symbol(symbol)
+
+        try:
+            # ======================================================
+            # 获取银河原始数据
+            # ======================================================
+
+            result = self.info_data.get_income(
+                [symbol],
+                local_path=self.local_path,
+                is_local=False,
+            )
+
+            if not result:
+                print(f"[银河] 未获取到利润表数据: {symbol}")
+                return None
+
+            # ======================================================
+            # 从 dict 中取出当前股票 DataFrame
+            # ======================================================
+
+            df = result.get(symbol)
+
+            if df is None:
+                print(f"[银河] 未找到股票利润表: {symbol}")
+                return None
+
+            if df.empty:
+                print(f"[银河] 利润表为空: {symbol}")
+                return None
+
+            # ======================================================
+            # 输出调试信息
+            # ======================================================
+
+            print(f"[银河] get_income: " f"shape={df.shape}")
+
+            print(f"[银河] get_income columns: " f"{list(df.columns)}")
+
+            # ======================================================
+            # 选择记录
+            #
+            # 当前先取第一条。
+            # 后续如果需要指定报告期，
+            # 再根据 REPORTING_PERIOD /
+            # REPORT_TYPE / STATEMENT_TYPE 筛选。
+            # ======================================================
+
+            row = df.iloc[0]
+
+            # ======================================================
+            # 转换为标准 IncomeStatement
+            # ======================================================
+
+            return IncomeStatement(
+                # ==========================================================
+                # 基础信息
+                # ==========================================================
+                symbol=symbol,
+                report_date=self._to_str(row.get("REPORTING_PERIOD")),
+                report_type=self._to_str(row.get("REPORT_TYPE")),
+                statement_type=self._to_str(row.get("STATEMENT_TYPE")),
+                announcement_date=self._to_str(row.get("ANN_DATE")),
+                currency=self._to_str(row.get("CURRENCY_CODE")),
+                # ==========================================================
+                # 收入
+                # ==========================================================
+                revenue=self._to_float(row.get("OPERA_REV")),
+                total_operating_income=self._to_float(row.get("TOT_OPERA_REV")),
+                # ==========================================================
+                # 成本费用
+                # ==========================================================
+                operating_cost=self._to_float(row.get("LESS_OPERA_COST")),
+                total_operating_cost=self._to_float(row.get("TOT_OPERA_COST")),
+                selling_expense=self._to_float(row.get("LESS_SELLING_EXP")),
+                administrative_expense=self._to_float(row.get("LESS_ADMIN_EXP")),
+                financial_expense=self._to_float(row.get("LESS_FIN_EXP")),
+                rd_expense=self._to_float(row.get("RD_EXP")),
+                business_tax_and_surcharge=self._to_float(
+                    row.get("LESS_BUS_TAX_SURCHARGE")
+                ),
+                asset_impairment_loss=self._to_float(
+                    row.get("LESS_ASSETS_IMPAIR_LOSS")
+                ),
+                credit_impairment_loss=self._to_float(row.get("CREDIT_IMPAIR_LOSS")),
+                # ==========================================================
+                # 收益项目
+                # ==========================================================
+                investment_income=self._to_float(row.get("PLUS_NET_INV_INC")),
+                fair_value_change_income=self._to_float(
+                    row.get("PLUS_NET_GAIN_CHG_FV")
+                ),
+                exchange_income=self._to_float(row.get("PLUS_NET_FX_INC")),
+                other_income=self._to_float(row.get("OTH_INCOME")),
+                # ==========================================================
+                # 利润
+                # ==========================================================
+                gross_profit=self._calculate_gross_profit(row),
+                operating_profit=self._to_float(row.get("OPERA_PROFIT")),
+                total_profit=self._to_float(row.get("TOTAL_PROFIT")),
+                income_tax=self._to_float(row.get("INCOME_TAX")),
+                net_profit=self._to_float(row.get("NET_PRO_INCL_MIN_INT_INC")),
+                net_profit_attributable=self._to_float(
+                    row.get("NET_PRO_EXCL_MIN_INT_INC")
+                ),
+                non_recurring_net_profit=self._first_float(
+                    row.get("NET_PRO_AFTER_DED_NR_GL"),
+                    row.get("NET_PRO_AFTER_DED_NR_GL_COR"),
+                ),
+                # ==========================================================
+                # 营业外收支
+                # ==========================================================
+                non_operating_income=self._to_float(row.get("PLUS_NON_OPER_A_REV")),
+                non_operating_expense=self._to_float(row.get("LESS_NON_OPER_A_EXP")),
+                # ==========================================================
+                # 其他综合收益
+                # ==========================================================
+                other_comprehensive_income=self._to_float(row.get("OTH_COMPRE_INC")),
+                # ==========================================================
+                # EBIT / EBITDA
+                # ==========================================================
+                ebit=self._to_float(row.get("EBIT")),
+                ebitda=self._to_float(row.get("EBITDA")),
+                # ==========================================================
+                # 每股收益
+                # ==========================================================
+                eps=self._to_float(row.get("BASIC_EPS")),
+                diluted_eps=self._to_float(row.get("DILUTED_EPS")),
+            )
+
+        except Exception as exc:
+            print(f"[银河] 获取利润表失败 " f"{symbol}: {exc}")
+            return None
 
     def fetch_balance_sheet(
         self,
@@ -480,6 +615,80 @@ class YinheGateway(StockDataGateway):
 
         if not self._started:
             raise RuntimeError("银河数据源尚未启动，" "请先调用 DataManager.start()")
+
+    @classmethod
+    def _calculate_gross_profit(
+        cls,
+        row: pandas.Series,
+    ) -> float | None:
+        """
+        计算毛利润。
+
+        Gross Profit =
+            营业收入 - 营业成本
+        """
+
+        revenue = cls._to_float(row.get("OPERA_REV"))
+
+        cost = cls._to_float(row.get("LESS_OPERA_COST"))
+
+        if revenue is None or cost is None:
+            return None
+
+        return revenue - cost
+
+    @staticmethod
+    def _to_float(
+        value: Any,
+    ) -> float | None:
+        """
+        将数据源字段安全转换为 float。
+        """
+
+        if value is None:
+            return None
+
+        try:
+            if pandas.isna(value):
+                return None
+        except (TypeError, ValueError):
+            pass
+
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _to_str(
+        value: object,
+    ) -> str | None:
+        """
+        安全转换为字符串。
+        """
+
+        if value is None:
+            return None
+
+        try:
+            if pandas.isna(value):
+                return None
+        except (TypeError, ValueError):
+            pass
+
+        value = str(value).strip()
+
+        return value or None
+
+    @staticmethod
+    def _first_float(*values: object) -> float | None:
+        for value in values:
+            result = YinheGateway._to_float(value)
+
+            if result is not None:
+                return result
+
+        return None
 
     @property
     def version(self) -> str:
