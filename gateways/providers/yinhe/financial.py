@@ -1,6 +1,7 @@
 from core.models.financial.financial import Financial
 from utils.stock_mapping import normalize_symbol
 
+
 class YinheFinancial:
     """
     银河证券财务数据适配。
