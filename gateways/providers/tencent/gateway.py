@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import datetime
+from datetime import datetime
 import re
 from typing import Any, Optional
 import requests
@@ -10,6 +10,7 @@ from common.constants import Interval
 from core.models.kline import Kline
 from core.models.quote import Quote
 from core.models.valuation import Valuation
+
 from gateways.registry import GatewayRegistry
 
 """
@@ -445,25 +446,18 @@ class TencentGateway(StockDataGateway):
                 name=raw.get("name"),
                 timestamp=raw.get("timestamp"),
                 last_price=price,
-                prev_close=prev_close,
-                open=open_price,
-                high=high,
-                low=low,
+                previous_close=prev_close,
+                open_price=open_price,
+                high_price=high,
+                low_price=low,
                 change=change,
                 change_percent=change_percent,
                 volume=volume,
                 amount=amount,
                 turnover=turnover,
                 volume_ratio=raw.get("volume_ratio"),
-                total_shares=total_shares,
-                circulating_shares=float_shares,
                 market_cap=market_cap,
-                circulating_market_cap=(circulating_market_cap),
-                pe_dynamic=pe_dynamic,
-                pe_ttm=pe_ttm,
-                pb=pb,
-                high_limit=high_limit,
-                low_limit=low_limit,
+                float_market_cap=(circulating_market_cap),
                 average_price=average_price,
                 amplitude=amplitude,
             )
@@ -530,12 +524,76 @@ class TencentGateway(StockDataGateway):
     # K 线
     # ==========================================================
 
+    def fetch_income_statement(
+        self,
+        symbol: str,
+    ):
+        """
+        Mock：获取利润表。
+        """
+
+        return {
+            "symbol": symbol,
+            "report_date": "2025-12-31",
+            "report_type": "annual",
+            "operating_income": 100_000_000.0,
+            "operating_cost": 70_000_000.0,
+            "total_profit": 35_000_000.0,
+            "net_profit": 30_000_000.0,
+            "net_profit_attributable": 28_000_000.0,
+            "eps": 1.20,
+            "source": "akshare_mock",
+            "timestamp": datetime.now(),
+        }
+
+    def fetch_balance_sheet(
+        self,
+        symbol: str,
+    ):
+        """
+        Mock：获取资产负债表。
+        """
+
+        return {
+            "symbol": symbol,
+            "report_date": "2025-12-31",
+            "report_type": "annual",
+            "total_assets": 500_000_000.0,
+            "total_liabilities": 200_000_000.0,
+            "total_equity": 300_000_000.0,
+            "cash": 80_000_000.0,
+            "accounts_receivable": 50_000_000.0,
+            "inventory": 60_000_000.0,
+            "fixed_assets": 150_000_000.0,
+            "source": "akshare_mock",
+            "timestamp": datetime.now(),
+        }
+
+    def fetch_cash_flow(
+        self,
+        symbol: str,
+    ):
+        """
+        Mock：获取现金流量表。
+        """
+        return {
+            "symbol": symbol,
+            "report_date": "2025-12-31",
+            "report_type": "annual",
+            "operating_cash_flow": 45_000_000.0,
+            "investing_cash_flow": -20_000_000.0,
+            "financing_cash_flow": 5_000_000.0,
+            "free_cash_flow": 25_000_000.0,
+            "source": "akshare_mock",
+            "timestamp": datetime.now(),
+        }
+
     def fetch_kline(
         self,
         symbol: str,
         interval: Interval = Interval.DAY_1,
-        start_time: Optional[datetime.datetime] = None,
-        end_time: Optional[datetime.datetime] = None,
+        start_time: Optional[datetime] = None,
+        end_time: Optional[datetime] = None,
         limit: int = 1000,
     ) -> list[Kline]:
         """
@@ -791,12 +849,12 @@ class TencentGateway(StockDataGateway):
 
             return Valuation(
                 symbol=self._to_standard_symbol(formatted_symbol),
-                timestamp=datetime.datetime.now(),
+                timestamp=datetime.now(),
             )
 
         return Valuation(
             symbol=quote.symbol,
-            timestamp=(quote.timestamp or datetime.datetime.now()),
+            timestamp=(quote.timestamp or datetime.now()),
             price=quote.price,
             market_cap=quote.market_cap,
             pe_static=None,
@@ -992,9 +1050,9 @@ class TencentGateway(StockDataGateway):
         return {
             "symbol": symbol,
             "name": name,
-            "timestamp": datetime.datetime.now(),
+            "timestamp": datetime.now(),
             "last_price": price,
-            "prev_close": prev_close,
+            "previous_close": prev_close,
             "open": open_price,
             "high": high,
             "low": low,
@@ -1072,25 +1130,18 @@ class TencentGateway(StockDataGateway):
             name=raw.get("name"),
             timestamp=raw.get("timestamp"),
             price=price,
-            prev_close=prev_close,
-            open=open_price,
-            high=high,
-            low=low,
+            previous_close=prev_close,
+            open_price=open_price,
+            high_price=high,
+            low_price=low,
             change=change,
             change_percent=change_percent,
             volume=volume,
             amount=amount,
             turnover=raw.get("turnover"),
             volume_ratio=raw.get("volume_ratio"),
-            total_shares=raw.get("total_shares"),
-            circulating_shares=raw.get("float_shares"),
             market_cap=raw.get("market_cap"),
-            circulating_market_cap=None,
-            pe_dynamic=raw.get("pe_dynamic"),
-            pe_ttm=raw.get("pe_ttm"),
-            pb=raw.get("pb"),
-            high_limit=high_limit,
-            low_limit=low_limit,
+            float_market_cap=None,
             average_price=average_price,
             amplitude=amplitude,
         )
@@ -1367,7 +1418,7 @@ class TencentGateway(StockDataGateway):
 
     @staticmethod
     def _format_date(
-        value: Optional[datetime.datetime],
+        value: Optional[datetime],
     ) -> str:
         """
         转换日期。
@@ -1383,14 +1434,14 @@ class TencentGateway(StockDataGateway):
     @staticmethod
     def _parse_datetime(
         value: Any,
-    ) -> datetime.datetime:
+    ) -> datetime:
         """
         解析腾讯日期。
         """
 
         if isinstance(
             value,
-            datetime.datetime,
+            datetime,
         ):
             return value
 
@@ -1403,7 +1454,7 @@ class TencentGateway(StockDataGateway):
 
         text = str(value)
 
-        return datetime.datetime.strptime(
+        return datetime.strptime(
             text[:10],
             "%Y-%m-%d",
         )
@@ -1558,7 +1609,7 @@ def main() -> None:
 
             print(f"价格: {quote.price}")
 
-            print(f"昨收: {quote.prev_close}")
+            print(f"昨收: {quote.previous_close}")
 
             print(f"开盘: {quote.open}")
 

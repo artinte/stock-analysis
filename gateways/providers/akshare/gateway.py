@@ -396,6 +396,70 @@ class AkShareGateway(StockDataGateway):
 
             return None
 
+    def fetch_income_statement(
+        self,
+        symbol: str,
+    ):
+        """
+        Mock：获取利润表。
+        """
+
+        return {
+            "symbol": symbol,
+            "report_date": "2025-12-31",
+            "report_type": "annual",
+            "operating_income": 100_000_000.0,
+            "operating_cost": 70_000_000.0,
+            "total_profit": 35_000_000.0,
+            "net_profit": 30_000_000.0,
+            "net_profit_attributable": 28_000_000.0,
+            "eps": 1.20,
+            "source": "akshare_mock",
+            "timestamp": datetime.now(),
+        }
+
+    def fetch_balance_sheet(
+        self,
+        symbol: str,
+    ):
+        """
+        Mock：获取资产负债表。
+        """
+
+        return {
+            "symbol": symbol,
+            "report_date": "2025-12-31",
+            "report_type": "annual",
+            "total_assets": 500_000_000.0,
+            "total_liabilities": 200_000_000.0,
+            "total_equity": 300_000_000.0,
+            "cash": 80_000_000.0,
+            "accounts_receivable": 50_000_000.0,
+            "inventory": 60_000_000.0,
+            "fixed_assets": 150_000_000.0,
+            "source": "akshare_mock",
+            "timestamp": datetime.now(),
+        }
+
+    def fetch_cash_flow(
+        self,
+        symbol: str,
+    ):
+        """
+        Mock：获取现金流量表。
+        """
+        return {
+            "symbol": symbol,
+            "report_date": "2025-12-31",
+            "report_type": "annual",
+            "operating_cash_flow": 45_000_000.0,
+            "investing_cash_flow": -20_000_000.0,
+            "financing_cash_flow": 5_000_000.0,
+            "free_cash_flow": 25_000_000.0,
+            "source": "akshare_mock",
+            "timestamp": datetime.now(),
+        }
+
     # ==========================================================
     # 财务数据
     # ==========================================================

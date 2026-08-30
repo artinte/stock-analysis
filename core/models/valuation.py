@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from core.models.valuation.valuation_metrics import ValuationMetrics
+from core.models.valuation_metrics import ValuationMetrics
 
 
 @dataclass(slots=True)

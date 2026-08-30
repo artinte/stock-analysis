@@ -24,6 +24,9 @@ def main():
 
         print("=" * 80)
         run_quote_test(data_manager, symbol)
+        
+        print("=" * 80)
+        
 
         print("=" * 80)
         run_valuation_test(data_manager, symbol)
