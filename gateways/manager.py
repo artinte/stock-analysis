@@ -199,6 +199,10 @@ DataManager 本身不需要知道具体 Gateway 的实现细节。
 使整个数据访问层具备较好的可扩展性、可维护性和可测试性。
 """
 
+class QuoteLevel(Enum):
+    LEVEL_1 = "L1"
+    LEVEL_2 = "L2"
+
 
 class DataManager:
     """
@@ -242,8 +246,9 @@ class DataManager:
     def get_quote(
         self,
         symbol: str,
-    ):
-        return self.gateway.fetch_quote(symbol)
+        level: QuoteLevel = QuoteLevel.LEVEL_1,
+    ) -> Quote:
+        return self.gateway.fetch_quote(symbol, level)
 
     def get_quotes(
         self,
