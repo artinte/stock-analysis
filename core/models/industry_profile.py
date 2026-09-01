@@ -109,7 +109,7 @@ class IndustryProfile:
         # ------------------------------------------------------
 
         print(f"行业：{self.industry.name or '-'}")
-        print(f"行业代码：{self.industry.code or '-'}")
+        print(f"行业代码：{self.industry.symbol or '-'}")
 
         print(
             f"分类标准："

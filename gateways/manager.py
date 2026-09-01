@@ -199,6 +199,10 @@ DataManager 本身不需要知道具体 Gateway 的实现细节。
 使整个数据访问层具备较好的可扩展性、可维护性和可测试性。
 """
 
+class QuoteLevel(Enum):
+    LEVEL_1 = "L1"
+    LEVEL_2 = "L2"
+
 
 class DataManager:
     """
@@ -242,8 +246,9 @@ class DataManager:
     def get_quote(
         self,
         symbol: str,
-    ):
-        return self.gateway.fetch_quote(symbol)
+        level: QuoteLevel = QuoteLevel.LEVEL_1,
+    ) -> Quote:
+        return self.gateway.fetch_quote(symbol, level)
 
     def get_quotes(
         self,
@@ -273,7 +278,7 @@ class DataManager:
     ):
         return self.gateway.fetch_valuation(symbol)
 
-    def fetch_income_statement(
+    def get_income_statement(
         self,
         symbol: str,
         start_year: Optional[int] = None,
@@ -285,7 +290,6 @@ class DataManager:
         获取指定股票的利润表数据。
 
         按财务报告期的“年份 + 季度”进行查询。
-
         查询范围为闭区间，开始季度和结束季度均包含在结果中。
 
         参数：
@@ -366,14 +370,178 @@ class DataManager:
     def get_balance_sheet(
         self,
         symbol: str,
-    ):
-        return self.gateway.fetch_balance_sheet(symbol)
+        start_year: Optional[int] = None,
+        start_quarter: Optional[int] = None,
+        end_year: Optional[int] = None,
+        end_quarter: Optional[int] = None,
+    ) -> list[BalanceSheet]:
+        """
+        获取指定股票的资产负债表数据。
+
+        按财务报告期的“年份 + 季度”进行查询。
+
+        查询范围为闭区间，开始季度和结束季度均包含在结果中。
+        如果不指定结束时间，默认以当前最新的财报时间作为结束点。
+
+        参数：
+            symbol:
+                股票代码，例如：
+                    "600519.SH"
+
+            start_year:
+                起始财务年度。
+                与 start_quarter 配合使用。
+                不指定时，表示不限制起始时间。
+
+            start_quarter:
+                起始财务季度。
+                可选值：
+                    1：第一季度（一季报/时点值）
+                    2：第二季度（半年报/时点值）
+                    3：第三季度（三季报/时点值）
+                    4：第四季度（年报/时点值）
+
+            end_year:
+                结束财务年度。
+                与 end_quarter 配合使用。
+                不指定时，默认使用当前最新可用的财务年度。
+
+            end_quarter:
+                结束财务季度。
+                可选值同上。
+                不指定时，默认使用当前最新可用的财务季度。
+
+        查询示例：
+
+            不指定任何时间：
+                获取从最远历史数据至当前最新时间的所有资产负债表数据。
+
+            指定开始季度：
+                start_year=2025,
+                start_quarter=2
+
+                获取 2025Q2 至当前最新季度的数据。
+
+            指定结束季度：
+                end_year=2025,
+                end_quarter=3
+
+                获取历史数据至 2025Q3。
+
+            指定完整范围：
+                start_year=2024,
+                start_quarter=3,
+                end_year=2025,
+                end_quarter=2
+
+                获取：
+                    2024Q3
+                    2024Q4
+                    2025Q1
+                    2025Q2
+
+                其中开始季度和结束季度均包含。
+
+        返回：
+            list[BalanceSheet]:
+                符合查询条件的资产负债表数据列表。
+                如果没有匹配数据，则返回空列表。
+        """
+        return self.gateway.fetch_balance_sheet(
+            symbol,
+            start_year,
+            start_quarter,
+            end_year,
+            end_quarter,
+        )
 
     def get_cash_flow(
         self,
         symbol: str,
-    ):
-        return self.gateway.fetch_cash_flow(symbol)
+        start_year: Optional[int] = None,
+        start_quarter: Optional[int] = None,
+        end_year: Optional[int] = None,
+        end_quarter: Optional[int] = None,
+    ) -> list[CashFlowStatement]:
+        """
+        获取指定股票的现金流量表数据。
+
+        按财务报告期的“年份 + 季度”进行查询。
+
+        查询范围为闭区间，开始季度和结束季度均包含在结果中。
+        如果不指定结束时间，默认以当前最新的财报时间作为结束点。
+
+        参数：
+            symbol:
+                股票代码，例如：
+                    "600519.SH"
+
+            start_year:
+                起始财务年度。
+                与 start_quarter 配合使用。
+                不指定时，表示不限制起始时间。
+
+            start_quarter:
+                起始财务季度。
+                可选值：
+                    1：第一季度
+                    2：第二季度
+                    3：第三季度
+                    4：第四季度
+
+            end_year:
+                结束财务年度。
+                与 end_quarter 配合使用。
+                不指定时，默认使用当前最新可用的财务年度。
+
+            end_quarter:
+                结束财务季度。
+                可选值同上。
+                不指定时，默认使用当前最新可用的财务季度。
+
+        查询示例：
+
+            不指定任何时间：
+                获取从最远历史数据至当前最新时间的所有现金流量表数据。
+
+            指定开始季度：
+                start_year=2025,
+                start_quarter=2
+
+                获取 2025Q2 至当前最新季度的数据。
+
+            指定结束季度：
+                end_year=2025,
+                end_quarter=3
+
+                获取历史数据至 2025Q3。
+
+            指定完整范围：
+                start_year=2024,
+                start_quarter=3,
+                end_year=2025,
+                end_quarter=2
+
+                获取：
+                    2024Q3
+                    2024Q4
+                    2025Q1
+                    2025Q2
+
+                其中开始季度和结束季度均包含。
+
+        返回：
+            list[CashFlowStatement]:
+                符合查询条件的现金流量表数据列表。
+                如果没有匹配数据，则返回空列表。
+        """
+        return self.gateway.fetch_cash_flow(
+            symbol,
+            start_year,
+            start_quarter,
+            end_year,
+            end_quarter,
+        )
 
     def get_financial(
         self,
