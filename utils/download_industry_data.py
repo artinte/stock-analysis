@@ -47,7 +47,7 @@ import datetime
 import pandas
 import warnings
 import concurrent.futures
-import playwright
+from playwright.sync_api import sync_playwright
 
 
 def download_csindex_industry_data(
@@ -64,7 +64,7 @@ def download_csindex_industry_data(
 
     os.makedirs(download_dir, exist_ok=True)
 
-    with playwright.sync_api.sync_playwright() as p:
+    with sync_playwright() as p:
         print("正在启动自动化浏览器...")
         browser = p.chromium.launch(headless=True)
         context = browser.new_context(

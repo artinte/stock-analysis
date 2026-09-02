@@ -199,8 +199,7 @@ def _get_cached_data() -> pd.DataFrame:
         rename_dict[f"中证{lvl_zh}级行业分类代码"] = f"l{lvl_num}_code"
 
     df = df.rename(columns=rename_dict)
-    df["code"] = df["code"].astype(str).str.split(
-        ".").str[0].str.strip().str.zfill(6)
+    df["code"] = df["code"].astype(str).str.split(".").str[0].str.strip().str.zfill(6)
     df["name"] = df["name"].astype(str).str.strip()
     return df
 
@@ -246,10 +245,7 @@ def get_stock_industry_category(
         else:
             target_names.append(value)
 
-    mask = (
-        df["code"].isin(target_codes)
-        | df["name"].isin(target_names)
-    )
+    mask = df["code"].isin(target_codes) | df["name"].isin(target_names)
 
     res = df[mask]
 
@@ -288,13 +284,11 @@ def get_category_stocks(
     lvl_num = _parse_level(level)
 
     if lvl_num is not None:
-        target_col = f"l{lvl_num}_code" if clean_cat.isdigit(
-        ) else f"l{lvl_num}"
+        target_col = f"l{lvl_num}_code" if clean_cat.isdigit() else f"l{lvl_num}"
         if target_col in df.columns:
             res = df[df[target_col].astype(str).str.strip() == clean_cat]
             if res.empty and not clean_cat.isdigit():
-                res = df[df[target_col].astype(
-                    str).str.contains(clean_cat, na=False)]
+                res = df[df[target_col].astype(str).str.contains(clean_cat, na=False)]
         else:
             res = df.iloc[0:0]
     else:
@@ -309,8 +303,7 @@ def get_category_stocks(
                 .any(axis=1)
             )
         else:
-            name_cols = [c for c in ["l1", "l2",
-                                     "l3", "l4"] if c in df.columns]
+            name_cols = [c for c in ["l1", "l2", "l3", "l4"] if c in df.columns]
             mask = (
                 df[name_cols]
                 .astype(str)
@@ -339,8 +332,7 @@ def get_all_category(
 
     if return_code and code_col in df.columns:
         res_df = (
-            df[[code_col, name_col]].dropna(
-            ).drop_duplicates().reset_index(drop=True)
+            df[[code_col, name_col]].dropna().drop_duplicates().reset_index(drop=True)
         )
         res_df.columns = ["category_code", "category_name"]
         if top:
