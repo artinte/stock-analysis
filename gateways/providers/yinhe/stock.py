@@ -110,6 +110,16 @@ class YinheStock:
             print(f"[银河网关] 获取股票信息失败 {symbols}: {e}")
             return []
 
+    def fetch_stock_by_name(
+        self,
+        name: str,
+    ) -> Optional[Stock]:
+        """
+        根据股票名称获取股票基础信息。
+        """
+
+        self.gateway._ensure_started()
+
     def fetch_stock_name(
         self,
         symbol: str,

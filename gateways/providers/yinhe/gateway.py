@@ -293,7 +293,7 @@ class YinheGateway(StockDataGateway):
             }
         """
         return self.stock.fetch_stock(symbol)
-    
+
     def fetch_stocks(
         self,
         symbols: list[str],
@@ -302,6 +302,22 @@ class YinheGateway(StockDataGateway):
         批量获取股票基础信息。
         """
         return self.stock.fetch_stocks(symbols)
+
+    def fetch_stock_by_name(
+        self,
+        name: str,
+    ) -> Stock:
+        """
+        根据股票名称获取股票基础信息。
+
+        当前返回：
+
+            {
+                "symbol": "...",
+                "name": "..."
+            }
+        """
+        return self.stock.fetch_stock_by_name(name)
 
     def fetch_stock_name(
         self,
@@ -655,7 +671,6 @@ class YinheGateway(StockDataGateway):
 
             selected_rows = []
 
-            
             for _, row in df.iterrows():
 
                 report_date = self._to_str(row.get("REPORTING_PERIOD"))
@@ -1190,7 +1205,7 @@ class YinheGateway(StockDataGateway):
             return None
 
         return revenue - cost
-    
+
     @staticmethod
     def _parse_report_period(
         report_date: str,
@@ -1229,9 +1244,7 @@ class YinheGateway(StockDataGateway):
         value = value.replace("/", "")
 
         if len(value) != 8 or not value.isdigit():
-            raise ValueError(
-                f"无效的财务报告期: {report_date}"
-            )
+            raise ValueError(f"无效的财务报告期: {report_date}")
 
         # ==========================================================
         # 提取年月日
@@ -1255,12 +1268,10 @@ class YinheGateway(StockDataGateway):
         quarter = quarter_map.get((month, day))
 
         if quarter is None:
-            raise ValueError(
-                f"无效的财务报告期: {report_date}"
-            )
+            raise ValueError(f"无效的财务报告期: {report_date}")
 
         return year, quarter
-    
+
     @staticmethod
     def _quarter_index(
         year: int,

@@ -257,6 +257,15 @@ class DataManager:
         批量获取股票基础信息。
         """
         return self.gateway.fetch_stocks(symbols)
+    
+    def get_stock_by_name(
+        self,
+        name: str,
+    ) -> Stock:
+        """
+        根据股票名称获取股票基础信息。
+        """
+        return self.gateway.fetch_stock_by_name(name)
 
     def get_quote(
         self,

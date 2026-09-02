@@ -12,13 +12,13 @@ python -m tests.gateways.test_stock
 
 
 def run_stock_test(
-    data: DataManager,
+    manager: DataManager,
     symbol: str,
 ) -> None:
     print(f"【股票基础信息】{symbol}")
 
     try:
-        stock: Stock | None = data.get_stock(symbol)
+        stock: Stock | None = manager.get_stock(symbol)
 
         if stock is None:
             print("❌ 未获取到股票信息")
@@ -33,13 +33,13 @@ def run_stock_test(
 
 
 def run_stocks_test(
-    data: DataManager,
+    manager: DataManager,
     symbols: list[str],
 ) -> None:
     print(f"【批量股票基础信息】{symbols}")
 
     try:
-        stocks: list[Stock] = data.get_stocks(symbols)
+        stocks: list[Stock] = manager.get_stocks(symbols)
 
         if not stocks:
             print("❌ 未获取到股票信息")
@@ -57,10 +57,10 @@ def run_stocks_test(
 def main() -> None:
     provider_name = "yinhe"
 
-    data = DataManager(provider_name)
+    manager = DataManager(provider_name)
 
     try:
-        data.start()
+        manager.start()
 
         print("=" * 80)
         print(f"【股票基础信息测试】{provider_name}")
@@ -68,7 +68,7 @@ def main() -> None:
 
         # 单个股票
         run_stock_test(
-            data,
+            manager,
             "600519.SH",
         )
 
@@ -76,7 +76,7 @@ def main() -> None:
 
         # 批量股票
         run_stocks_test(
-            data,
+            manager,
             [
                 "600519.SH",
                 "000001.SZ",
@@ -89,7 +89,7 @@ def main() -> None:
 
     finally:
         try:
-            data.stop()
+            manager.stop()
             print("✅ 数据源已关闭")
         except Exception as exc:
             print(f"⚠️ 关闭数据源失败：{exc}")

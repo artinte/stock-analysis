@@ -59,7 +59,13 @@ class StockDataGateway(ABC):
         self,
         symbols: list[str],
     ) -> list[Stock]:
-        """批量获取股票基础信息。"""
+        raise NotImplementedError
+
+    @abstractmethod
+    def fetch_stock_by_name(
+        self,
+        name: str,
+    ) -> Stock:
         raise NotImplementedError
 
     @abstractmethod
