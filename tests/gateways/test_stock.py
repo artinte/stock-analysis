@@ -15,18 +15,15 @@ def run_stock_test(
     data: DataManager,
     symbol: str,
 ) -> None:
-    """
-    使用已有 DataManager 测试股票信息。
-
-    用于集成测试。
-    """
     print(f"【股票基础信息】{symbol}")
 
     try:
         stock: Stock | None = data.get_stock(symbol)
+
         if stock is None:
             print("❌ 未获取到股票信息")
             return
+
         stock.display()
 
     except NotImplementedError:
@@ -35,42 +32,67 @@ def run_stock_test(
         print(f"❌ 获取股票基础信息失败：{exc}")
 
 
-def test_stock(
-    provider_name: str,
-    symbol: str,
+def run_stocks_test(
+    data: DataManager,
+    symbols: list[str],
 ) -> None:
-    """
-    独立测试入口。
-
-    自己管理 DataManager 生命周期。
-    """
-    print(f"【股票基础信息测试】" f"{provider_name} / {symbol}")
-
-    data: DataManager | None = None
+    print(f"【批量股票基础信息】{symbols}")
 
     try:
-        data = DataManager(provider_name)
-        data.start()
+        stocks: list[Stock] = data.get_stocks(symbols)
 
-        run_stock_test(
-            data,
-            symbol,
-        )
+        if not stocks:
+            print("❌ 未获取到股票信息")
+            return
 
-    finally:
-        if data is not None:
-            try:
-                data.stop()
-                print("✅ 数据源已关闭")
-            except Exception as exc:
-                print(f"⚠️ 关闭数据源失败：{exc}")
+        for stock in stocks:
+            stock.display()
+
+    except NotImplementedError:
+        print("⚠️ 当前数据源暂未实现批量股票基础信息")
+    except Exception as exc:
+        print(f"❌ 批量获取股票基础信息失败：{exc}")
 
 
 def main() -> None:
-    test_stock(
-        provider_name="yinhe",
-        symbol="600519.SH",
-    )
+    provider_name = "yinhe"
+
+    data = DataManager(provider_name)
+
+    try:
+        data.start()
+
+        print("=" * 80)
+        print(f"【股票基础信息测试】{provider_name}")
+        print("=" * 80)
+
+        # 单个股票
+        run_stock_test(
+            data,
+            "600519.SH",
+        )
+
+        print("=" * 80)
+
+        # 批量股票
+        run_stocks_test(
+            data,
+            [
+                "600519.SH",
+                "000001.SZ",
+                "300750.SZ",
+                "688981.SH",
+            ],
+        )
+
+        print("=" * 80)
+
+    finally:
+        try:
+            data.stop()
+            print("✅ 数据源已关闭")
+        except Exception as exc:
+            print(f"⚠️ 关闭数据源失败：{exc}")
 
 
 if __name__ == "__main__":

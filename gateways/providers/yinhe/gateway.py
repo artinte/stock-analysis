@@ -9,6 +9,7 @@ import pandas
 from dotenv import load_dotenv
 import tgw
 
+from core.models.stock import Stock
 from gateways.gateway import StockDataGateway
 from common.constants import Interval, TEN_THOUSAND
 from core.models.financial.financial import IncomeStatement
@@ -280,7 +281,7 @@ class YinheGateway(StockDataGateway):
     def fetch_stock(
         self,
         symbol: str,
-    ):
+    ) -> Stock:
         """
         获取股票基础信息。
 
@@ -292,6 +293,15 @@ class YinheGateway(StockDataGateway):
             }
         """
         return self.stock.fetch_stock(symbol)
+    
+    def fetch_stocks(
+        self,
+        symbols: list[str],
+    ) -> list[Stock]:
+        """
+        批量获取股票基础信息。
+        """
+        return self.stock.fetch_stocks(symbols)
 
     def fetch_stock_name(
         self,

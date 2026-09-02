@@ -54,51 +54,61 @@ class YinheStock:
         """
         获取股票基础信息。
         """
+        stocks = self.fetch_stocks([symbol])
+        return stocks[0] if stocks else None
+
+    def fetch_stocks(
+        self,
+        symbols: list[str],
+    ) -> list[Stock]:
+        """
+        批量获取股票基础信息。
+        """
 
         self.gateway._ensure_started()
 
-        code = normalize_symbol(symbol)
+        if not symbols:
+            return []
+
+        symbols = [normalize_symbol(symbol) for symbol in symbols]
 
         try:
+            stock_basic = self.gateway.info_data.get_stock_basic(symbols)
 
-            stock_basic = self.gateway.info_data.get_stock_basic([code])
+            if stock_basic is None or stock_basic.empty:
+                return []
 
-            if stock_basic is None:
-                return None
+            stocks: list[Stock] = []
 
-            if hasattr(
-                stock_basic,
-                "empty",
-            ):
-                if stock_basic is None or stock_basic.empty:
-                    return None
+            for _, row in stock_basic.iterrows():
 
-                row = stock_basic.iloc[0]
+                symbol = row.get("MARKET_CODE") or "-"
+                stock_name = row.get("SECURITY_NAME") or "-"
 
-                # 获取交易所代号
-                exchange = get_exchange(code)
+                exchange = get_exchange(symbol) if symbol != "-" else "-"
 
-                stock_name = row.get("SECURITY_NAME")
+                if stock_name != "-":
+                    self._stock_name_cache[symbol] = stock_name
 
-                if stock_name:
-                    self._stock_name_cache[code] = stock_name
-
-                return Stock(
-                    symbol=row["MARKET_CODE"],
-                    name=stock_name,
-                    company_name=row.get("COMP_NAME"),
-                    exchange=exchange,
-                    market=row.get("LISTPLATE_NAME"),
-                    listing_date=row.get("LISTDATE"),
-                    delisting_date=row.get("DELISTDATE"),
-                    listed_status=row.get("IS_LISTED"),
-                    source=self.gateway.display_name,
+                stocks.append(
+                    Stock(
+                        symbol=symbol,
+                        name=stock_name,
+                        company_name=row.get("COMP_NAME") or "-",
+                        exchange=exchange,
+                        market=row.get("LISTPLATE_NAME") or "-",
+                        listing_date=row.get("LISTDATE") or "-",
+                        delisting_date=row.get("DELISTDATE") or "-",
+                        listed_status=row.get("IS_LISTED") or "-",
+                        source=self.gateway.display_name,
+                    )
                 )
-            return None
+
+            return stocks
 
         except Exception as e:
-            print(f"[银河网关] 获取股票信息失败 " f"{code}: {e}")
-            return None
+            print(f"[银河网关] 获取股票信息失败 {symbols}: {e}")
+            return []
 
     def fetch_stock_name(
         self,

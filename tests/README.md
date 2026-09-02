@@ -1,0 +1,1 @@
+- [x] `tests.gateways.test_stock`

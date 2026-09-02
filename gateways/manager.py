@@ -1,13 +1,14 @@
-import os
-import pandas
 from typing import Optional
-from dotenv import load_dotenv
 
 from core.models.financial.income_statement import IncomeStatement
-from gateways.gateway import StockDataGateway
 from core.models.stock import Stock
+from core.models.quote import Quote
 from core.models.industry import Industry
+from core.models.financial.balance_sheet import BalanceSheet
+from core.models.financial.cash_flow import CashFlowStatement
 from core.models.industry_profile import IndustryProfile
+from common.enums.quote_level import QuoteLevel
+from gateways.gateway import StockDataGateway
 from gateways.registry import GatewayRegistry
 from gateways.services.industry_service import IndustryService
 
@@ -199,10 +200,6 @@ DataManager 本身不需要知道具体 Gateway 的实现细节。
 使整个数据访问层具备较好的可扩展性、可维护性和可测试性。
 """
 
-class QuoteLevel(Enum):
-    LEVEL_1 = "L1"
-    LEVEL_2 = "L2"
-
 
 class DataManager:
     """
@@ -241,7 +238,25 @@ class DataManager:
         self,
         symbol: str,
     ) -> Stock:
+        """
+        获取股票基础信息。
+
+        Args:
+            symbol: 股票代码。
+
+        Returns:
+            Stock: 股票基础信息。
+        """
         return self.gateway.fetch_stock(symbol)
+
+    def get_stocks(
+        self,
+        symbols: list[str],
+    ) -> list[Stock]:
+        """
+        批量获取股票基础信息。
+        """
+        return self.gateway.fetch_stocks(symbols)
 
     def get_quote(
         self,
