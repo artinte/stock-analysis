@@ -1,0 +1,1613 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Stock Lab · A股股票研究中心</title>
+
+    <link rel="stylesheet" href="./css/global.css">
+</head>
+
+<body>
+
+<!-- =========================================================
+     顶部导航
+========================================================= -->
+
+<header class="topbar">
+
+    <div class="topbar-inner">
+
+        <div class="brand" onclick="switchMainPage('market')">
+
+            <div class="brand-mark">
+                S
+            </div>
+
+            <div class="brand-text">
+                <div class="brand-name">
+                    STOCK LAB
+                </div>
+
+                <div class="brand-subtitle">
+                    A股股票研究中心
+                </div>
+            </div>
+
+        </div>
+
+
+        <nav class="main-nav">
+
+            <button
+                class="nav-item active"
+                data-page="market"
+                onclick="switchMainPage('market')"
+            >
+                市场
+            </button>
+
+            <button
+                class="nav-item"
+                data-page="stock"
+                onclick="switchMainPage('stock')"
+            >
+                股票
+            </button>
+
+            <button
+                class="nav-item"
+                data-page="news"
+                onclick="switchMainPage('news')"
+            >
+                资讯
+            </button>
+
+            <button
+                class="nav-item"
+                data-page="ai"
+                onclick="switchMainPage('ai')"
+            >
+                AI研究
+            </button>
+
+            <button
+                class="nav-item"
+                data-page="trade"
+                onclick="switchMainPage('trade')"
+            >
+                交易
+            </button>
+
+        </nav>
+
+
+        <div class="header-right">
+
+            <button
+                class="ai-top-button"
+                onclick="switchMainPage('ai-chat')"
+            >
+                <span>✦</span>
+                AI 投研助手
+            </button>
+
+
+            <div class="global-search">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+                <input
+                    id="searchInput"
+                    autocomplete="off"
+                    placeholder="搜索股票 / 代码"
+                >
+
+                <button id="searchBtn">
+                    查询
+                </button>
+
+                <div
+                    id="searchDropdown"
+                    class="search-dropdown"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     页面主体
+========================================================= -->
+
+<main class="page">
+
+
+<!-- =========================================================
+     市场
+========================================================= -->
+
+<section
+    id="marketPage"
+    class="main-page"
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="page-eyebrow">
+                MARKET OVERVIEW
+            </div>
+
+            <h1>
+                市场
+            </h1>
+
+            <p>
+                实时掌握 A 股行情、市场情绪与热点机会
+            </p>
+
+        </div>
+
+        <div class="market-status">
+
+            <span class="status-light"></span>
+
+            <span>
+                模拟行情
+            </span>
+
+            <span class="status-time">
+                09:30 — 15:00
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= 指数 ================= -->
+
+    <section class="market-indices">
+
+        <div class="market-index">
+
+            <div class="index-top">
+                <span>上证指数</span>
+                <span class="index-code">000001</span>
+            </div>
+
+            <div class="index-price">
+                3,812.54
+            </div>
+
+            <div class="index-bottom">
+                <span class="positive">+25.67</span>
+                <span class="positive">+0.68%</span>
+            </div>
+
+        </div>
+
+
+        <div class="market-index">
+
+            <div class="index-top">
+                <span>深证成指</span>
+                <span class="index-code">399001</span>
+            </div>
+
+            <div class="index-price">
+                11,943.21
+            </div>
+
+            <div class="index-bottom">
+                <span class="positive">+108.21</span>
+                <span class="positive">+0.92%</span>
+            </div>
+
+        </div>
+
+
+        <div class="market-index">
+
+            <div class="index-top">
+                <span>创业板指</span>
+                <span class="index-code">399006</span>
+            </div>
+
+            <div class="index-price">
+                2,671.83
+            </div>
+
+            <div class="index-bottom">
+                <span class="positive">+30.61</span>
+                <span class="positive">+1.16%</span>
+            </div>
+
+        </div>
+
+
+        <div class="market-index">
+
+            <div class="index-top">
+                <span>科创50</span>
+                <span class="index-code">000688</span>
+            </div>
+
+            <div class="index-price">
+                1,094.26
+            </div>
+
+            <div class="index-bottom">
+                <span class="negative">-2.31</span>
+                <span class="negative">-0.21%</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= 主行情区域 ================= -->
+
+    <section class="market-main-grid">
+
+
+        <!-- 左边 -->
+
+        <div class="panel market-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <h2>市场行情</h2>
+                    <span>MARKET DATA</span>
+                </div>
+
+                <button class="panel-action">
+                    更多 →
+                </button>
+
+            </div>
+
+
+            <div class="market-overview">
+
+                <div class="market-number">
+
+                    <strong>
+                        72
+                    </strong>
+
+                    <span>
+                        市场热度
+                    </span>
+
+                </div>
+
+
+                <div class="heat-area">
+
+                    <div class="heat-title">
+                        市场情绪偏积极
+                    </div>
+
+                    <div class="heat-track">
+                        <div
+                            class="heat-value"
+                            style="width:72%"
+                        ></div>
+                    </div>
+
+                    <div class="heat-labels">
+                        <span>悲观</span>
+                        <span>中性</span>
+                        <span>积极</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="market-stats">
+
+                <div>
+                    <strong class="positive">
+                        3,218
+                    </strong>
+                    <span>上涨</span>
+                </div>
+
+                <div>
+                    <strong class="negative">
+                        1,496
+                    </strong>
+                    <span>下跌</span>
+                </div>
+
+                <div>
+                    <strong>
+                        187
+                    </strong>
+                    <span>涨停</span>
+                </div>
+
+                <div>
+                    <strong>
+                        14
+                    </strong>
+                    <span>跌停</span>
+                </div>
+
+                <div>
+                    <strong>
+                        1.42万亿
+                    </strong>
+                    <span>成交额</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 右边 AI -->
+
+        <div class="panel ai-market-panel">
+
+            <div class="panel-heading">
+
+                <div>
+
+                    <h2>
+                        <span class="ai-star">✦</span>
+                        AI 市场研判
+                    </h2>
+
+                    <span>
+                        AI MARKET INSIGHT
+                    </span>
+
+                </div>
+
+                <span class="ai-online">
+                    AI ONLINE
+                </span>
+
+            </div>
+
+
+            <div class="ai-market-content">
+
+                <h3>
+                    当前市场整体偏强
+                </h3>
+
+                <p>
+                    沪深主要指数维持震荡偏强格局，科技成长方向表现相对活跃。
+                    当前市场成交保持较高水平，资金关注度主要集中于科技、
+                    半导体与高端制造方向。
+                </p>
+
+            </div>
+
+
+            <div class="ai-tags">
+
+                <span>科技成长</span>
+                <span>成交活跃</span>
+                <span>结构性行情</span>
+
+            </div>
+
+
+            <button
+                class="ai-deep-button"
+                onclick="switchMainPage('ai-chat')"
+            >
+                让 AI 深度分析 →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= 热门股票 ================= -->
+
+    <section class="panel">
+
+        <div class="panel-heading">
+
+            <div>
+                <h2>热门股票</h2>
+                <span>HOT STOCKS</span>
+            </div>
+
+            <button
+                class="panel-action"
+                onclick="switchMainPage('stock')"
+            >
+                查看全部 →
+            </button>
+
+        </div>
+
+
+        <div class="stock-table">
+
+            <div class="stock-table-head">
+                <span>股票</span>
+                <span>最新价</span>
+                <span>涨跌</span>
+                <span>涨跌幅</span>
+                <span>成交额</span>
+                <span></span>
+            </div>
+
+
+            <div class="stock-table-row">
+
+                <div class="stock-name">
+
+                    <strong>
+                        中国化学
+                    </strong>
+
+                    <span>
+                        601117.SH
+                    </span>
+
+                </div>
+
+                <strong>
+                    9.86
+                </strong>
+
+                <span class="positive">
+                    +0.31
+                </span>
+
+                <strong class="positive">
+                    +3.25%
+                </strong>
+
+                <span>
+                    18.32亿
+                </span>
+
+                <button
+                    onclick="openStock('601117','中国化学')"
+                >
+                    查看
+                </button>
+
+            </div>
+
+
+            <div class="stock-table-row">
+
+                <div class="stock-name">
+
+                    <strong>
+                        贵州茅台
+                    </strong>
+
+                    <span>
+                        600519.SH
+                    </span>
+
+                </div>
+
+                <strong>
+                    1,438.00
+                </strong>
+
+                <span class="positive">
+                    +16.48
+                </span>
+
+                <strong class="positive">
+                    +1.16%
+                </strong>
+
+                <span>
+                    42.15亿
+                </span>
+
+                <button
+                    onclick="openStock('600519','贵州茅台')"
+                >
+                    查看
+                </button>
+
+            </div>
+
+
+            <div class="stock-table-row">
+
+                <div class="stock-name">
+
+                    <strong>
+                        宁德时代
+                    </strong>
+
+                    <span>
+                        300750.SZ
+                    </span>
+
+                </div>
+
+                <strong>
+                    312.50
+                </strong>
+
+                <span class="negative">
+                    -2.64
+                </span>
+
+                <strong class="negative">
+                    -0.84%
+                </strong>
+
+                <span>
+                    56.72亿
+                </span>
+
+                <button
+                    onclick="openStock('300750','宁德时代')"
+                >
+                    查看
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= 下方 ================= -->
+
+    <section class="two-column">
+
+
+        <div class="panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <h2>热门行业</h2>
+                    <span>HOT INDUSTRIES</span>
+                </div>
+
+            </div>
+
+
+            <div class="industry-list">
+
+                <div class="industry-row">
+                    <span>半导体</span>
+                    <strong class="positive">+2.83%</strong>
+                </div>
+
+                <div class="industry-row">
+                    <span>商业航天</span>
+                    <strong class="positive">+2.41%</strong>
+                </div>
+
+                <div class="industry-row">
+                    <span>通信设备</span>
+                    <strong class="positive">+1.92%</strong>
+                </div>
+
+                <div class="industry-row">
+                    <span>医药生物</span>
+                    <strong class="negative">-0.32%</strong>
+                </div>
+
+                <div class="industry-row">
+                    <span>新能源</span>
+                    <strong class="positive">+0.87%</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <h2>最新资讯</h2>
+                    <span>LATEST NEWS</span>
+                </div>
+
+                <button
+                    class="panel-action"
+                    onclick="switchMainPage('news')"
+                >
+                    更多 →
+                </button>
+
+            </div>
+
+
+            <div class="news-list">
+
+                <div class="news-row">
+
+                    <span class="news-category">
+                        市场
+                    </span>
+
+                    <div>
+                        科技成长方向持续活跃
+                    </div>
+
+                    <time>
+                        10:32
+                    </time>
+
+                </div>
+
+
+                <div class="news-row">
+
+                    <span class="news-category">
+                        政策
+                    </span>
+
+                    <div>
+                        资本市场改革持续推进
+                    </div>
+
+                    <time>
+                        09:48
+                    </time>
+
+                </div>
+
+
+                <div class="news-row">
+
+                    <span class="news-category">
+                        行业
+                    </span>
+
+                    <div>
+                        半导体产业链景气度受到关注
+                    </div>
+
+                    <time>
+                        09:15
+                    </time>
+
+                </div>
+
+
+                <div class="news-row">
+
+                    <span class="news-category">
+                        公司
+                    </span>
+
+                    <div>
+                        多家公司披露最新经营数据
+                    </div>
+
+                    <time>
+                        08:56
+                    </time>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<!-- =========================================================
+     股票
+========================================================= -->
+
+<section
+    id="stockPage"
+    class="main-page"
+    hidden
+>
+
+    <div id="emptyState" class="empty-state">
+
+        <div class="empty-mark">
+            +
+        </div>
+
+        <div class="page-eyebrow">
+            STOCK RESEARCH
+        </div>
+
+        <h1>
+            输入股票，开始研究
+        </h1>
+
+        <p>
+            从行情、财务、估值、行业到新闻公告，
+            在一个页面完成股票研究。
+        </p>
+
+        <div class="stock-examples">
+
+            <button onclick="openStock('601117','中国化学')">
+                中国化学
+                <small>601117</small>
+            </button>
+
+            <button onclick="openStock('600028','中国石化')">
+                中国石化
+                <small>600028</small>
+            </button>
+
+            <button onclick="openStock('300750','宁德时代')">
+                宁德时代
+                <small>300750</small>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        id="stockDetail"
+        hidden
+    >
+
+        <div class="stock-detail-head">
+
+            <div>
+
+                <div class="stock-title">
+
+                    <h1 id="stockName">
+                        -
+                    </h1>
+
+                    <span id="stockCode">
+                        -
+                    </span>
+
+                </div>
+
+                <div
+                    id="stockSub"
+                    class="stock-meta"
+                >
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="stock-price-area">
+
+                <div
+                    id="stockPrice"
+                    class="stock-price"
+                >
+                    -
+                </div>
+
+                <div
+                    id="stockChange"
+                    class="stock-change"
+                >
+                    -
+                </div>
+
+                <button
+                    class="stock-ai-button"
+                    onclick="analyzeCurrentStock()"
+                >
+                    ✦ AI分析
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="summaryCards"
+            class="summary-grid"
+        ></div>
+
+
+        <div
+            id="tabbar"
+            class="stock-tabs"
+        >
+
+            <button
+                class="stock-tab active"
+                data-tab="overview"
+                onclick="switchStockTab('overview')"
+            >
+                基本信息
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="quote"
+                onclick="switchStockTab('quote')"
+            >
+                行情
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="financial"
+                onclick="switchStockTab('financial')"
+            >
+                财务
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="valuation"
+                onclick="switchStockTab('valuation')"
+            >
+                估值
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="industry"
+                onclick="switchStockTab('industry')"
+            >
+                行业
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="etf"
+                onclick="switchStockTab('etf')"
+            >
+                ETF
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="index"
+                onclick="switchStockTab('index')"
+            >
+                指数
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="news"
+                onclick="switchStockTab('news')"
+            >
+                新闻
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="announcement"
+                onclick="switchStockTab('announcement')"
+            >
+                公告
+            </button>
+
+            <button
+                class="stock-tab"
+                data-tab="ai"
+                onclick="switchStockTab('ai')"
+            >
+                ✦ AI研究
+            </button>
+
+        </div>
+
+
+        <div
+            id="moduleContent"
+            class="module-content"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     资讯
+========================================================= -->
+
+<section
+    id="newsPage"
+    class="main-page"
+    hidden
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="page-eyebrow">
+                NEWS
+            </div>
+
+            <h1>
+                财经资讯
+            </h1>
+
+            <p>
+                汇聚市场、政策、公司、行业与公告信息
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="news-filter">
+
+        <button class="active">
+            全部
+        </button>
+
+        <button>财经</button>
+        <button>政策</button>
+        <button>公司</button>
+        <button>行业</button>
+        <button>公告</button>
+
+    </div>
+
+
+    <div class="panel news-page-list">
+
+        <article class="news-article">
+
+            <span class="news-category">
+                市场
+            </span>
+
+            <div>
+
+                <h2>
+                    科技成长方向持续活跃，市场风险偏好有所回升
+                </h2>
+
+                <p>
+                    市场资金继续关注科技成长方向，成交量与板块热度出现一定变化。
+                </p>
+
+                <time>
+                    2026-09-05 10:32
+                </time>
+
+            </div>
+
+        </article>
+
+
+        <article class="news-article">
+
+            <span class="news-category">
+                行业
+            </span>
+
+            <div>
+
+                <h2>
+                    半导体产业链景气度受到市场关注
+                </h2>
+
+                <p>
+                    多家产业链公司近期受到投资者关注。
+                </p>
+
+                <time>
+                    2026-09-05 09:48
+                </time>
+
+            </div>
+
+        </article>
+
+
+        <article class="news-article">
+
+            <span class="news-category">
+                政策
+            </span>
+
+            <div>
+
+                <h2>
+                    资本市场改革相关政策持续推进
+                </h2>
+
+                <p>
+                    市场继续关注政策对长期资金与市场结构的影响。
+                </p>
+
+                <time>
+                    2026-09-05 09:15
+                </time>
+
+            </div>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     AI研究
+========================================================= -->
+
+<section
+    id="aiPage"
+    class="main-page"
+    hidden
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="page-eyebrow">
+                AI RESEARCH
+            </div>
+
+            <h1>
+                AI 研究中心
+            </h1>
+
+            <p>
+                让 AI 帮你完成市场、股票、行业与舆情研究
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="research-grid">
+
+        <div
+            class="research-item"
+            onclick="switchMainPage('ai-chat'); usePrompt('帮我分析当前A股市场')"
+        >
+
+            <span class="research-number">
+                01
+            </span>
+
+            <div class="research-icon">
+                ↗
+            </div>
+
+            <h2>
+                市场分析
+            </h2>
+
+            <p>
+                分析指数、成交量、市场热度、热点方向与资金情绪。
+            </p>
+
+            <span class="research-link">
+                开始分析 →
+            </span>
+
+        </div>
+
+
+        <div
+            class="research-item"
+            onclick="switchMainPage('ai-chat'); usePrompt('帮我分析一只股票')"
+        >
+
+            <span class="research-number">
+                02
+            </span>
+
+            <div class="research-icon">
+                ◇
+            </div>
+
+            <h2>
+                股票分析
+            </h2>
+
+            <p>
+                从基本面、财务、估值和技术面分析个股。
+            </p>
+
+            <span class="research-link">
+                开始分析 →
+            </span>
+
+        </div>
+
+
+        <div
+            class="research-item"
+            onclick="switchMainPage('ai-chat'); usePrompt('帮我分析最近市场舆情')"
+        >
+
+            <span class="research-number">
+                03
+            </span>
+
+            <div class="research-icon">
+                ≋
+            </div>
+
+            <h2>
+                舆情分析
+            </h2>
+
+            <p>
+                总结新闻、公告与市场舆论变化。
+            </p>
+
+            <span class="research-link">
+                开始分析 →
+            </span>
+
+        </div>
+
+
+        <div
+            class="research-item"
+            onclick="switchMainPage('ai-chat'); usePrompt('帮我分析一个行业')"
+        >
+
+            <span class="research-number">
+                04
+            </span>
+
+            <div class="research-icon">
+                ◎
+            </div>
+
+            <h2>
+                行业分析
+            </h2>
+
+            <p>
+                分析行业景气度、竞争格局与代表性公司。
+            </p>
+
+            <span class="research-link">
+                开始分析 →
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="ai-large-entry">
+
+        <div>
+
+            <span class="ai-large-star">
+                ✦
+            </span>
+
+            <div>
+
+                <h2>
+                    不知道研究什么？
+                </h2>
+
+                <p>
+                    直接告诉 AI 你想了解的问题。
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <button onclick="switchMainPage('ai-chat')">
+            开始 AI 对话 →
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     交易
+========================================================= -->
+
+<section
+    id="tradePage"
+    class="main-page"
+    hidden
+>
+
+    <div class="page-heading">
+
+        <div>
+
+            <div class="page-eyebrow">
+                PORTFOLIO
+            </div>
+
+            <h1>
+                交易中心
+            </h1>
+
+            <p>
+                管理持仓、成交、收益与交易记录
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="trade-stats">
+
+        <div>
+            <span>持仓市值</span>
+            <strong>¥286,420</strong>
+        </div>
+
+        <div>
+            <span>今日盈亏</span>
+            <strong class="positive">
+                +¥3,286
+            </strong>
+        </div>
+
+        <div>
+            <span>累计收益</span>
+            <strong class="positive">
+                +18.62%
+            </strong>
+        </div>
+
+        <div>
+            <span>持仓数量</span>
+            <strong>
+                8
+            </strong>
+        </div>
+
+    </div>
+
+
+    <div class="empty-module">
+
+        <div class="empty-mark">
+            ◫
+        </div>
+
+        <h2>
+            交易模块
+        </h2>
+
+        <p>
+            后续可接入券商账户，实现持仓、成交与收益数据同步。
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     AI 对话
+========================================================= -->
+
+<section
+    id="aiChatPage"
+    class="main-page ai-chat-page"
+    hidden
+>
+
+    <div class="ai-chat-layout">
+
+
+        <!-- 左侧历史 -->
+
+        <aside class="ai-sidebar">
+
+            <button
+                class="new-chat-btn"
+                onclick="newAIChat()"
+            >
+                ＋ 新建对话
+            </button>
+
+
+            <div class="history-title">
+                最近研究
+            </div>
+
+
+            <div class="chat-history">
+
+                <button class="history-item active">
+                    中国化学投资价值分析
+                </button>
+
+                <button class="history-item">
+                    A股半导体行业分析
+                </button>
+
+                <button class="history-item">
+                    今天市场为什么上涨？
+                </button>
+
+                <button class="history-item">
+                    商业航天行业研究
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- 中间 -->
+
+        <main class="ai-chat-main">
+
+            <header class="ai-chat-header">
+
+                <div class="ai-chat-title">
+
+                    <div class="ai-avatar">
+                        ✦
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            AI 投研助手
+                        </strong>
+
+                        <span>
+                            行情 · 财务 · 估值 · 行业 · 资讯
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="clear-button"
+                    onclick="clearAIChat()"
+                >
+                    清空
+                </button>
+
+            </header>
+
+
+            <div
+                id="chatMessages"
+                class="chat-messages"
+            >
+
+                <div class="message ai-message">
+
+                    <div class="message-avatar">
+                        ✦
+                    </div>
+
+                    <div class="message-content-wrap">
+
+                        <div class="message-name">
+                            AI 投研助手
+                        </div>
+
+                        <div class="message-content">
+
+                            <p>
+                                你好，我是你的 AI 投研助手。
+                            </p>
+
+                            <p>
+                                你可以直接告诉我想研究什么。
+                            </p>
+
+
+                            <div class="welcome-prompts">
+
+                                <button onclick="usePrompt('帮我分析一下中国化学')">
+                                    分析一只股票
+                                </button>
+
+                                <button onclick="usePrompt('今天A股市场怎么样？')">
+                                    今天市场怎么样？
+                                </button>
+
+                                <button onclick="usePrompt('分析一下半导体行业')">
+                                    分析一个行业
+                                </button>
+
+                                <button onclick="usePrompt('最近市场有哪些重要新闻？')">
+                                    总结最新资讯
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="ai-input-area">
+
+                <div class="quick-prompts">
+
+                    <button onclick="usePrompt('分析今日A股市场')">
+                        市场分析
+                    </button>
+
+                    <button onclick="usePrompt('分析中国化学')">
+                        股票分析
+                    </button>
+
+                    <button onclick="usePrompt('分析半导体行业')">
+                        行业分析
+                    </button>
+
+                    <button onclick="usePrompt('总结最近市场资讯')">
+                        舆情分析
+                    </button>
+
+                </div>
+
+
+                <div class="ai-input-box">
+
+                    <textarea
+                        id="aiInput"
+                        rows="1"
+                        placeholder="输入你的研究问题..."
+                    ></textarea>
+
+                    <button
+                        id="aiSendBtn"
+                        onclick="sendAIMessage()"
+                    >
+                        ↑
+                    </button>
+
+                </div>
+
+
+                <div class="ai-disclaimer">
+                    AI 生成内容仅供研究参考，不构成投资建议
+                </div>
+
+            </div>
+
+        </main>
+
+
+        <!-- 右侧 -->
+
+        <aside class="ai-context">
+
+            <div class="context-title">
+                当前研究
+            </div>
+
+
+            <div class="context-block">
+
+                <span>
+                    当前股票
+                </span>
+
+                <strong id="aiContextStock">
+                    未选择
+                </strong>
+
+            </div>
+
+
+            <div class="context-block">
+
+                <span>
+                    数据来源
+                </span>
+
+                <strong>
+                    银河证券 · 腾讯
+                </strong>
+
+            </div>
+
+
+            <div class="context-block">
+
+                <span>
+                    可用数据
+                </span>
+
+                <div class="context-tags">
+
+                    <span>行情</span>
+                    <span>K线</span>
+                    <span>财务</span>
+                    <span>估值</span>
+                    <span>行业</span>
+                    <span>资讯</span>
+
+                </div>
+
+            </div>
+
+
+            <div class="context-block">
+
+                <span>
+                    AI能力
+                </span>
+
+                <div class="capability-list">
+
+                    <div>✓ 基本面分析</div>
+                    <div>✓ 财务数据解读</div>
+                    <div>✓ 估值分析</div>
+                    <div>✓ 行业分析</div>
+                    <div>✓ 新闻舆情总结</div>
+                    <div>✓ 市场趋势分析</div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<script src="./js/api.js"></script>
+<script src="./js/app.js"></script>
+
+</body>
+</html>
