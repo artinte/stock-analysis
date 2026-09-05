@@ -1,0 +1,2785 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>股票的起源与发展 - STOCK LAB</title>
+
+    <!-- 全局样式 -->
+    <link rel="stylesheet" href="../../css/global.css">
+
+    <!-- 学习文档样式 -->
+    <link rel="stylesheet" href="../../css/document.css">
+
+    <style>
+        /* =====================================================
+           股票基础文章
+        ===================================================== */
+
+        .article-page {
+
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+            padding: 34px 32px 80px;
+
+        }
+
+
+        /* =====================================================
+           文章头部
+        ===================================================== */
+
+        .article-header {
+
+            padding-bottom: 30px;
+
+            margin-bottom: 32px;
+
+            border-bottom: 1px solid var(--border-color);
+
+        }
+
+
+        .article-category {
+
+            margin-bottom: 12px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.6px;
+
+            opacity: 0.42;
+
+        }
+
+
+        .article-header h1 {
+
+            margin: 0 0 14px;
+
+            font-size: 34px;
+
+            line-height: 1.35;
+
+        }
+
+
+        .article-description {
+
+            max-width: 820px;
+
+            margin: 0;
+
+            font-size: 15px;
+
+            line-height: 1.8;
+
+            opacity: 0.58;
+
+        }
+
+
+        /* =====================================================
+           文章布局
+        ===================================================== */
+
+        .article-layout {
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr) 250px;
+
+            gap: 44px;
+
+            align-items: start;
+
+        }
+
+
+        /* =====================================================
+           正文
+        ===================================================== */
+
+        .article-content {
+
+            min-width: 0;
+
+        }
+
+
+        .article-content h2 {
+
+            margin: 46px 0 18px;
+
+            padding-bottom: 10px;
+
+            border-bottom: 1px solid var(--border-color);
+
+            font-size: 24px;
+
+            line-height: 1.4;
+
+        }
+
+
+        .article-content h2:first-child {
+
+            margin-top: 0;
+
+        }
+
+
+        .article-content h3 {
+
+            margin: 32px 0 12px;
+
+            font-size: 18px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .article-content h4 {
+
+            margin: 24px 0 10px;
+
+            font-size: 15px;
+
+            line-height: 1.5;
+
+        }
+
+
+        .article-content p {
+
+            margin: 0 0 16px;
+
+            font-size: 15px;
+
+            line-height: 1.95;
+
+            color: inherit;
+
+            opacity: 0.82;
+
+        }
+
+
+        .article-content strong {
+
+            font-weight: 700;
+
+            opacity: 1;
+
+        }
+
+
+        .article-content ul,
+        .article-content ol {
+
+            margin: 12px 0 20px;
+
+            padding-left: 24px;
+
+        }
+
+
+        .article-content li {
+
+            margin-bottom: 9px;
+
+            font-size: 14px;
+
+            line-height: 1.8;
+
+            opacity: 0.8;
+
+        }
+
+
+        /* =====================================================
+           引导说明
+        ===================================================== */
+
+        .article-intro {
+
+            padding: 20px 22px;
+
+            margin-bottom: 28px;
+
+            border-left: 3px solid var(--accent-color);
+
+            border-top: 1px solid var(--border-color);
+
+            border-right: 1px solid var(--border-color);
+
+            border-bottom: 1px solid var(--border-color);
+
+            border-radius: 8px;
+
+            background: var(--panel-bg);
+
+        }
+
+
+        .article-intro p {
+
+            margin: 0;
+
+        }
+
+
+        /* =====================================================
+           时间线
+        ===================================================== */
+
+        .history-timeline {
+
+            position: relative;
+
+            margin: 26px 0 30px;
+
+            padding-left: 30px;
+
+        }
+
+
+        .history-timeline::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 6px;
+
+            top: 6px;
+
+            bottom: 6px;
+
+            width: 1px;
+
+            background: var(--border-color);
+
+        }
+
+
+        .timeline-item {
+
+            position: relative;
+
+            margin-bottom: 26px;
+
+        }
+
+
+        .timeline-item:last-child {
+
+            margin-bottom: 0;
+
+        }
+
+
+        .timeline-item::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: -28px;
+
+            top: 7px;
+
+            width: 9px;
+
+            height: 9px;
+
+            border-radius: 50%;
+
+            background: var(--panel-bg);
+
+            border: 2px solid var(--accent-color);
+
+            box-sizing: border-box;
+
+        }
+
+
+        .timeline-year {
+
+            margin-bottom: 5px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.5px;
+
+            opacity: 0.45;
+
+        }
+
+
+        .timeline-title {
+
+            margin-bottom: 5px;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+        }
+
+
+        .timeline-text {
+
+            margin: 0;
+
+            font-size: 14px;
+
+            line-height: 1.8;
+
+            opacity: 0.68;
+
+        }
+
+
+        /* =====================================================
+           信息卡片
+        ===================================================== */
+
+        .info-card {
+
+            margin: 22px 0;
+
+            padding: 20px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 9px;
+
+            background: var(--panel-bg);
+
+        }
+
+
+        .info-card-title {
+
+            margin-bottom: 9px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+        }
+
+
+        .info-card p {
+
+            margin: 0;
+
+            font-size: 13px;
+
+            line-height: 1.8;
+
+        }
+
+
+        /* =====================================================
+           对比表格
+        ===================================================== */
+
+        .article-table-wrapper {
+
+            width: 100%;
+
+            margin: 22px 0 28px;
+
+            overflow-x: auto;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 8px;
+
+        }
+
+
+        .article-table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 600px;
+
+        }
+
+
+        .article-table th,
+        .article-table td {
+
+            padding: 13px 15px;
+
+            text-align: left;
+
+            border-bottom: 1px solid var(--border-color);
+
+            font-size: 13px;
+
+            line-height: 1.65;
+
+        }
+
+
+        .article-table th {
+
+            font-weight: 700;
+
+            background: var(--panel-bg);
+
+        }
+
+
+        .article-table tr:last-child td {
+
+            border-bottom: none;
+
+        }
+
+
+        /* =====================================================
+           公式 / 概念
+        ===================================================== */
+
+        .concept-box {
+
+            margin: 20px 0;
+
+            padding: 18px 20px;
+
+            border-radius: 8px;
+
+            background: var(--panel-bg);
+
+            border: 1px solid var(--border-color);
+
+        }
+
+
+        .concept-box .concept-title {
+
+            margin-bottom: 7px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+        }
+
+
+        .concept-box p {
+
+            margin: 0;
+
+            font-size: 13px;
+
+            line-height: 1.8;
+
+        }
+
+
+        /* =====================================================
+           目录
+        ===================================================== */
+
+        .article-toc {
+
+            position: sticky;
+
+            top: 90px;
+
+            padding: 18px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 10px;
+
+            background: var(--panel-bg);
+
+        }
+
+
+        .article-toc-title {
+
+            margin-bottom: 13px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+        }
+
+
+        .article-toc a {
+
+            display: block;
+
+            padding: 6px 0;
+
+            color: inherit;
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+
+            opacity: 0.58;
+
+            transition: opacity 0.2s ease;
+
+        }
+
+
+        .article-toc a:hover {
+
+            opacity: 1;
+
+        }
+
+
+        .article-toc .toc-sub {
+
+            padding-left: 12px;
+
+            font-size: 11px;
+
+            opacity: 0.45;
+
+        }
+
+
+        /* =====================================================
+           文章结尾
+        ===================================================== */
+
+        .article-summary {
+
+            margin-top: 48px;
+
+            padding: 24px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 10px;
+
+            background: var(--panel-bg);
+
+        }
+
+
+        .article-summary h3 {
+
+            margin: 0 0 12px;
+
+            font-size: 17px;
+
+        }
+
+
+        .article-summary ul {
+
+            margin: 0;
+
+        }
+
+
+        /* =====================================================
+           返回
+        ===================================================== */
+
+        .article-back {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            margin-bottom: 24px;
+
+            color: inherit;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            opacity: 0.55;
+
+        }
+
+
+        .article-back:hover {
+
+            opacity: 1;
+
+        }
+
+
+        /* =====================================================
+           响应式
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .article-layout {
+
+                grid-template-columns: 1fr;
+
+                gap: 30px;
+
+            }
+
+
+            .article-toc {
+
+                position: static;
+
+                order: -1;
+
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .article-page {
+
+                padding: 24px 16px 50px;
+
+            }
+
+
+            .article-header h1 {
+
+                font-size: 28px;
+
+            }
+
+
+            .article-description {
+
+                font-size: 14px;
+
+            }
+
+
+            .article-content h2 {
+
+                font-size: 21px;
+
+            }
+
+
+            .article-content h3 {
+
+                font-size: 17px;
+
+            }
+
+
+            .article-content p {
+
+                font-size: 14px;
+
+                line-height: 1.85;
+
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+     顶部导航
+========================================================= -->
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+
+            <div class="brand" onclick="goHome()">
+
+                <div class="brand-mark">
+                    S
+                </div>
+
+                <div class="brand-text">
+
+                    <div class="brand-name">
+                        STOCK LAB
+                    </div>
+
+                    <div class="brand-subtitle">
+                        股票研究中心
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <nav class="main-nav">
+
+                <button class="nav-item" onclick="goHome('market')">
+                    市场
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('stock')">
+                    股票
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('news')">
+                    资讯
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('ai')">
+                    AI研究
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('trade')">
+                    交易
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('tool')">
+                    工具
+                </button>
+
+
+                <button class="nav-item active">
+                    学习文档
+                </button>
+
+            </nav>
+
+
+            <div class="header-right">
+
+
+                <button class="ai-top-button" onclick="goHome('ai-chat')">
+
+                    <span>✦</span>
+
+                    AI 投研助手
+
+                </button>
+
+
+                <div class="global-search">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input id="searchInput" autocomplete="off" placeholder="搜索股票 / 代码">
+
+                    <button id="searchBtn">
+                        查询
+                    </button>
+
+                    <div id="searchDropdown" class="search-dropdown"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================================
+     文章主体
+========================================================= -->
+
+    <main class="article-page">
+
+
+        <!-- 返回学习中心 -->
+
+        <a class="article-back" href="../">
+            ← 返回学习中心
+        </a>
+
+
+
+        <!-- =====================================================
+         文章标题
+    ====================================================== -->
+
+        <header class="article-header">
+
+            <div class="article-category">
+                BEGINNER · STOCK BASICS
+            </div>
+
+
+            <h1>
+                股票的起源与发展
+            </h1>
+
+
+            <p class="article-description">
+                从早期商业合伙、股份制度的形成，到近代证券交易所的诞生，
+                再到今天全球股票市场的形成。理解股票为什么会出现，
+                是理解现代资本市场最重要的第一步。
+            </p>
+
+        </header>
+
+
+
+        <!-- =====================================================
+         文章布局
+    ====================================================== -->
+
+        <div class="article-layout">
+
+
+            <!-- =================================================
+             正文
+        ================================================== -->
+
+            <article class="article-content">
+
+
+                <!-- =================================================
+                 开篇
+            ================================================== -->
+
+                <div class="article-intro">
+
+                    <p>
+                        今天我们看到的股票，是一种非常成熟的金融工具。
+                        一家公司可以通过发行股票筹集资金，投资者可以买入股票成为公司的股东，
+                        股票又可以在证券交易所中自由买卖，价格则随着市场中的供求关系不断变化。
+                        但这种制度并不是一开始就存在的。
+                    </p>
+
+                    <p style="margin-top: 14px;">
+
+                        股票的产生，本质上是一个非常现实的问题：
+                        <strong>
+                            当一个商业项目需要的资金越来越多，而一个人又无法独自承担全部风险时，
+                            应该怎么办？
+                        </strong>
+                    </p>
+
+                    <p style="margin-top: 14px;">
+
+                        人类最终找到的解决方案，就是把一个大型商业项目的所有权拆分成许多份，
+                        让不同的人共同出资、共同承担风险，并按照约定分享收益。
+                        这就是股份制度和现代股票制度最重要的思想基础。
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 第一章
+            ================================================== -->
+
+                <h2 id="chapter-1">
+                    一、为什么会出现股票？
+                </h2>
+
+
+                <h3>
+                    1.1 早期商业面临的核心问题
+                </h3>
+
+
+                <p>
+                    在现代金融市场出现之前，人类社会同样存在商业活动。
+                    商人购买商品、进行长途贸易、开采资源、建设工厂或者组织船队，
+                    都需要资本。
+                </p>
+
+
+                <p>
+                    在小规模商业时代，一个商人可能凭借自己的财富就能够完成一次交易。
+                    例如，一个商人拥有100枚金币，他可以用这100枚金币购买商品，
+                    再到另一个城市出售。
+                </p>
+
+
+                <p>
+                    但是，当商业规模扩大之后，问题就出现了。
+                    如果一次远洋贸易需要10万枚金币，而一个商人只有1万枚金币，
+                    他就无法独立完成这个项目。
+                </p>
+
+
+                <p>
+                    此时最简单的办法就是寻找其他人共同出资。
+                    如果10个人各投入1万枚金币，那么整个项目就获得了10万枚金币。
+                </p>
+
+
+                <div class="concept-box">
+
+                    <div class="concept-title">
+                        一个非常重要的思想
+                    </div>
+
+                    <p>
+                        <strong>
+                            股票并不是凭空产生的，它来自“多人共同出资、共同承担风险、共同分享收益”的商业需求。
+                        </strong>
+                    </p>
+
+                </div>
+
+
+
+                <h3>
+                    1.2 从“合伙”到“股份”
+                </h3>
+
+
+                <p>
+                    最早的多人出资形式，本质上更接近今天所说的合伙。
+                    几个人共同投资一个项目，并按照协议约定收益和风险。
+                </p>
+
+
+                <p>
+                    但是，传统合伙存在一个问题：
+                    如果参与者越来越多，单纯依靠一份复杂的合伙协议来管理所有权会变得非常困难。
+                </p>
+
+
+                <p>
+                    因此，人们逐渐发展出一种更加标准化的方式：
+                    <strong>
+                        把企业的所有权划分成许多份。
+                    </strong>
+                </p>
+
+
+                <p>
+                    每一份就是一种标准化的权益单位。
+                    投资者持有多少份，就代表其拥有企业多少比例的权益。
+                </p>
+
+
+                <p>
+                    这就是现代“股份”概念的基本思想。
+                </p>
+
+
+
+                <!-- =================================================
+                 第二章
+            ================================================== -->
+
+                <h2 id="chapter-2">
+                    二、股票出现之前：股份公司的思想
+                </h2>
+
+
+                <h3>
+                    2.1 商业规模为什么不断扩大？
+                </h3>
+
+
+                <p>
+                    股票制度真正出现之前，世界贸易经历了一个重要变化：
+                    <strong>
+                        商业活动开始从个人、小型家族企业逐渐走向大型组织。
+                    </strong>
+                </p>
+
+
+                <p>
+                    特别是远距离贸易的发展，使商业项目需要越来越多的资金。
+                    船只、船员、货物、武器、港口、仓储以及漫长的航行时间，
+                    都需要大量资本投入。
+                </p>
+
+
+                <p>
+                    同时，远洋贸易具有极高的不确定性。
+                    船只可能遭遇风暴，也可能遭遇海盗；
+                    商品价格可能上涨，也可能暴跌；
+                    航行可能成功，也可能完全失败。
+                </p>
+
+
+                <p>
+                    因此，远洋贸易天然需要一种能够
+                    <strong>
+                        分散风险
+                    </strong>
+                    的资本组织方式。
+                </p>
+
+
+                <h3>
+                    2.2 风险分散是股票制度的重要基础
+                </h3>
+
+
+                <p>
+                    假设一个远洋贸易项目需要100万美元。
+                    如果由一个人承担，那么项目失败时，这个人可能损失全部100万美元。
+                </p>
+
+
+                <p>
+                    如果100个人每个人投入1万美元，那么单个投资者承担的风险就被显著分散了。
+                </p>
+
+
+                <p>
+                    从经济学角度看，这种机制具有重要意义：
+                    <strong>
+                        大规模项目可以通过聚集大量投资者的资金来完成，
+                        而单个投资者则可以通过分散投资降低单个项目失败带来的影响。
+                    </strong>
+                </p>
+
+
+
+                <!-- =================================================
+                 第三章
+            ================================================== -->
+
+                <h2 id="chapter-3">
+                    三、1602年：现代股票市场发展史上的重要里程碑
+                </h2>
+
+
+                <h3>
+                    3.1 荷兰东印度公司的出现
+                </h3>
+
+
+                <p>
+                    17世纪初，欧洲海上贸易快速发展。
+                    荷兰在当时的国际贸易体系中占据重要地位。
+                </p>
+
+
+                <p>
+                    1602年，荷兰成立了
+                    <strong>
+                        荷兰东印度公司（Dutch East India Company，VOC）
+                    </strong>
+                    。
+                </p>
+
+
+                <p>
+                    VOC 是现代公司制度和资本市场发展史上极其重要的案例。
+                    它通过股份形式筹集资本，使大量投资者能够参与一个规模巨大的商业组织。
+                </p>
+
+
+                <p>
+                    这里需要特别注意一个历史表述：
+                    人们经常把VOC称为“世界第一只股票”的来源，
+                    但从严格的金融史角度来说，更准确的说法是：
+                    <strong>
+                        VOC的股份制度和后续形成的交易市场，是现代公开股票市场发展史上的关键里程碑。
+                    </strong>
+                </p>
+
+
+                <h3>
+                    3.2 为什么VOC如此重要？
+                </h3>
+
+
+                <p>
+                    VOC的重要性并不仅仅在于它发行了股份。
+                    更重要的是，它把几个此前分散存在的金融思想结合在了一起：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        大量投资者共同出资。
+                    </li>
+
+                    <li>
+                        企业所有权被划分成标准化的股份。
+                    </li>
+
+                    <li>
+                        投资者可以持有自己的股份权益。
+                    </li>
+
+                    <li>
+                        股份具有转让和交易的可能。
+                    </li>
+
+                    <li>
+                        企业本身可以持续经营，而不因为某个投资者退出而立即结束。
+                    </li>
+
+                    <li>
+                        投资者可以分享企业经营所产生的收益。
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    这些特征与现代股份有限公司和股票市场的基本逻辑已经非常接近。
+                </p>
+
+
+
+                <h3>
+                    3.3 为什么“可转让”如此重要？
+                </h3>
+
+
+                <p>
+                    如果投资者投入资金之后，只能一直持有到企业结束，
+                    那么这笔投资的流动性就非常低。
+                </p>
+
+
+                <p>
+                    而如果投资者能够把自己的股份转让给其他人，
+                    那么情况就完全不同了。
+                </p>
+
+
+                <p>
+                    投资者不需要等企业结束，就可能通过出售股份退出投资。
+                </p>
+
+
+                <div class="concept-box">
+
+                    <div class="concept-title">
+                        流动性
+                    </div>
+
+                    <p>
+                        流动性可以简单理解为一种资产能够以较低成本、较快速度转换成现金的能力。
+                        股票市场之所以能够发展起来，一个非常重要的原因就是股票具有较强的可交易性。
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 第四章
+            ================================================== -->
+
+                <h2 id="chapter-4">
+                    四、证券交易市场是如何出现的？
+                </h2>
+
+
+                <h3>
+                    4.1 有股票以后，还需要一个交易的地方
+                </h3>
+
+
+                <p>
+                    当越来越多的人持有股份之后，一个新的问题出现了：
+                    如果有人想卖出股票，而另一个人想买入股票，
+                    他们应该在哪里完成交易？
+                </p>
+
+
+                <p>
+                    最初，这种交易并不一定发生在今天意义上的证券交易所。
+                    商人可能在交易场所、咖啡馆、街道或者其他商业聚集地进行证券交易。
+                </p>
+
+
+                <p>
+                    随着交易数量增加，市场逐渐需要更加标准化的规则：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        谁可以买卖？
+                    </li>
+
+                    <li>
+                        如何报价？
+                    </li>
+
+                    <li>
+                        如何确定成交价格？
+                    </li>
+
+                    <li>
+                        如何记录交易？
+                    </li>
+
+                    <li>
+                        如何保证交易双方履约？
+                    </li>
+
+                    <li>
+                        出现纠纷时由谁处理？
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    于是，证券市场开始逐渐走向制度化。
+                </p>
+
+
+
+                <h3>
+                    4.2 从私人交易到公开市场
+                </h3>
+
+
+                <p>
+                    一个成熟的股票市场，本质上需要把大量买方和卖方集中到一个市场体系中。
+                </p>
+
+
+                <p>
+                    买方愿意支付的最高价格，可以理解为买入报价；
+                    卖方愿意接受的最低价格，可以理解为卖出报价。
+                </p>
+
+
+                <p>
+                    当买卖双方的报价能够匹配时，就产生交易。
+                </p>
+
+
+                <div class="concept-box">
+
+                    <div class="concept-title">
+                        股票价格是怎么产生的？
+                    </div>
+
+                    <p>
+                        股票价格并不是公司简单规定出来的。
+                        在公开市场中，价格主要通过买卖双方的订单和交易行为不断形成。
+                        当愿意买入的人更多，需求增强，价格可能上涨；
+                        当愿意卖出的人更多，供给增强，价格可能下跌。
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 第五章
+            ================================================== -->
+
+                <h2 id="chapter-5">
+                    五、证券交易所为什么会出现？
+                </h2>
+
+
+                <h3>
+                    5.1 交易所解决了什么问题？
+                </h3>
+
+
+                <p>
+                    证券交易所并不是简单的“股票交易大厅”。
+                    它真正解决的是一个更加复杂的问题：
+                    <strong>
+                        如何让大量陌生的投资者能够在统一规则下进行证券交易。
+                    </strong>
+                </p>
+
+
+                <p>
+                    一个现代交易所通常需要解决几个核心问题：
+                </p>
+
+
+                <div class="article-table-wrapper">
+
+                    <table class="article-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    问题
+                                </th>
+
+                                <th>
+                                    交易所提供的解决方案
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    买卖双方在哪里相遇？
+                                </td>
+
+                                <td>
+                                    提供集中化的交易市场
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    股票价格如何确定？
+                                </td>
+
+                                <td>
+                                    通过统一交易机制形成价格
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    如何保证交易规则一致？
+                                </td>
+
+                                <td>
+                                    制定统一交易规则
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    如何提高信息透明度？
+                                </td>
+
+                                <td>
+                                    发布行情、交易及相关市场信息
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    如何管理上市公司？
+                                </td>
+
+                                <td>
+                                    设置上市条件和持续监管要求
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 第六章
+            ================================================== -->
+
+                <h2 id="chapter-6">
+                    六、从欧洲市场到现代证券交易所
+                </h2>
+
+
+                <h3>
+                    6.1 阿姆斯特丹与早期证券市场
+                </h3>
+
+
+                <p>
+                    随着荷兰商业和金融活动的发展，阿姆斯特丹逐渐成为欧洲重要的金融中心。
+                </p>
+
+
+                <p>
+                    早期证券交易的发展，使投资者不再只能参与商品贸易，
+                    还可以参与企业权益和债权等金融资产的交易。
+                </p>
+
+
+                <p>
+                    这意味着资本开始拥有更强的流动性：
+                    一个人可以把自己的资金投入企业，也可以在未来通过出售证券退出。
+                </p>
+
+
+
+                <h3>
+                    6.2 英国资本市场的发展
+                </h3>
+
+
+                <p>
+                    随着英国商业、航运、银行和工业的发展，
+                    股票和债券市场也不断成熟。
+                </p>
+
+
+                <p>
+                    英国资本市场的发展对于后来的工业革命具有重要意义。
+                    大规模基础设施、铁路、银行以及工业企业都需要巨额资本，
+                    而股份制度能够把大量社会资金集中起来。
+                </p>
+
+
+                <p>
+                    这也是股票市场最重要的经济功能之一：
+                    <strong>
+                        把分散在社会中的储蓄转化为企业和经济发展的长期资本。
+                    </strong>
+                </p>
+
+
+
+                <!-- =================================================
+                 第七章
+            ================================================== -->
+
+                <h2 id="chapter-7">
+                    七、美国股票市场的形成
+                </h2>
+
+
+                <h3>
+                    7.1 从街头交易到华尔街
+                </h3>
+
+
+                <p>
+                    美国资本市场的发展与美国经济本身的成长密切相关。
+                </p>
+
+
+                <p>
+                    在早期，美国的证券交易也经历了从非正式交易到制度化市场的发展过程。
+                </p>
+
+
+                <p>
+                    1792年5月17日，24名股票经纪人在纽约签署
+                    <strong>
+                        Buttonwood Agreement（梧桐树协议）
+                    </strong>
+                    ，这通常被视为纽约证券交易所历史上的正式起点。
+                </p>
+
+
+                <p>
+                    根据纽约证券交易所的历史资料，
+                    这一协议规定了经纪人之间的交易规则以及佣金安排，
+                    目的之一就是提高交易秩序和市场参与者之间的信任。
+                </p>
+
+
+                <h3>
+                    7.2 1817年：纽约证券交易市场进一步制度化
+                </h3>
+
+
+                <p>
+                    1817年，纽约的证券经纪人正式建立
+                    <strong>
+                        New York Stock & Exchange Board
+                    </strong>
+                    ，也就是今天纽约证券交易所的前身。
+                </p>
+
+
+                <p>
+                    纽约证券交易所官方历史资料记载，
+                    早期交易仍然受到咖啡馆等非正式交易场所影响，
+                    随着市场规模扩大，经纪人最终建立了更加正式的组织和交易规则。
+                </p>
+
+
+                <h3>
+                    7.3 股票市场与美国工业化
+                </h3>
+
+
+                <p>
+                    19世纪美国经济快速扩张，
+                    银行、保险公司、铁路以及大量基础设施项目都需要资本。
+                </p>
+
+
+                <p>
+                    股票市场为这些企业提供了一种非常重要的融资方式。
+                </p>
+
+
+                <p>
+                    企业可以发行证券获得资金，
+                    投资者则通过购买证券参与企业未来的收益。
+                </p>
+
+
+                <p>
+                    这形成了现代资本市场最基本的循环：
+                </p>
+
+
+                <div class="concept-box">
+
+                    <div class="concept-title">
+                        资本市场的基本循环
+                    </div>
+
+                    <p>
+                        居民和机构储蓄 → 投资股票 → 企业获得资本 →
+                        企业投资、生产和扩张 → 企业创造利润 →
+                        股东获得分红或资本收益
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 第八章
+            ================================================== -->
+
+                <h2 id="chapter-8">
+                    八、股票为什么能够帮助企业融资？
+                </h2>
+
+
+                <h3>
+                    8.1 企业为什么需要股票？
+                </h3>
+
+
+                <p>
+                    假设一家企业准备建设一家新工厂，需要10亿元资金。
+                    企业有几种可能的融资方式。
+                </p>
+
+
+                <ol>
+
+                    <li>
+                        使用企业自己的利润和现金。
+                    </li>
+
+                    <li>
+                        向银行贷款。
+                    </li>
+
+                    <li>
+                        发行债券。
+                    </li>
+
+                    <li>
+                        发行股票。
+                    </li>
+
+                </ol>
+
+
+                <p>
+                    股票融资与债务融资最大的区别之一在于：
+                    <strong>
+                        股票代表所有权，而债券和贷款通常代表债权关系。
+                    </strong>
+                </p>
+
+
+                <div class="article-table-wrapper">
+
+                    <table class="article-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    对比
+                                </th>
+
+                                <th>
+                                    股票
+                                </th>
+
+                                <th>
+                                    债券 / 贷款
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    投资者身份
+                                </td>
+
+                                <td>
+                                    股东
+                                </td>
+
+                                <td>
+                                    债权人
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    是否拥有公司所有权
+                                </td>
+
+                                <td>
+                                    是
+                                </td>
+
+                                <td>
+                                    通常不是
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    收益
+                                </td>
+
+                                <td>
+                                    股价上涨、分红等
+                                </td>
+
+                                <td>
+                                    利息、本金偿还
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    投资风险
+                                </td>
+
+                                <td>
+                                    通常较高
+                                </td>
+
+                                <td>
+                                    通常具有约定的偿付结构
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    是否有到期日
+                                </td>
+
+                                <td>
+                                    普通股通常没有固定到期日
+                                </td>
+
+                                <td>
+                                    通常存在期限
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 第九章
+            ================================================== -->
+
+                <h2 id="chapter-9">
+                    九、IPO：公司为什么要上市？
+                </h2>
+
+
+                <h3>
+                    9.1 什么是IPO？
+                </h3>
+
+
+                <p>
+                    IPO 是
+                    <strong>
+                        Initial Public Offering
+                    </strong>
+                    的缩写，即首次公开发行。
+                </p>
+
+
+                <p>
+                    简单来说，就是一家原本不是公开上市公司的企业，
+                    第一次向公众投资者公开发行股票，并在证券市场开始交易。
+                </p>
+
+
+                <p>
+                    IPO 是企业从私人公司走向公开资本市场的重要过程。
+                </p>
+
+
+                <h3>
+                    9.2 公司为什么要上市？
+                </h3>
+
+
+                <p>
+                    公司上市最直接的目的之一是获得资本。
+                    通过公开发行股票，公司可以向大量投资者筹集资金。
+                </p>
+
+
+                <p>
+                    这些资金可能用于：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        建设工厂
+                    </li>
+
+                    <li>
+                        研发新产品
+                    </li>
+
+                    <li>
+                        扩大市场
+                    </li>
+
+                    <li>
+                        并购其他公司
+                    </li>
+
+                    <li>
+                        补充营运资金
+                    </li>
+
+                    <li>
+                        降低部分融资压力
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    另一方面，上市也意味着企业必须面对更加严格的信息披露、
+                    公司治理以及监管要求。
+                </p>
+
+
+
+                <!-- =================================================
+                 第十章
+            ================================================== -->
+
+                <h2 id="chapter-10">
+                    十、股票价格为什么会不断变化？
+                </h2>
+
+
+                <h3>
+                    10.1 最基础的答案：供求关系
+                </h3>
+
+
+                <p>
+                    股票价格最基本的变化机制来自市场中的买卖力量。
+                </p>
+
+
+                <p>
+                    如果市场中愿意买入的人明显增加，而卖方愿意出售的股票数量有限，
+                    买方可能不断提高自己的报价，价格就可能上涨。
+                </p>
+
+
+                <p>
+                    反过来，如果大量投资者希望卖出，而愿意买入的人较少，
+                    卖方可能降低报价寻找买家，价格就可能下跌。
+                </p>
+
+
+                <div class="concept-box">
+
+                    <div class="concept-title">
+                        股票价格的核心逻辑
+                    </div>
+
+                    <p>
+                        短期价格由市场中的买卖力量决定；
+                        长期价格又会受到企业盈利能力、成长性、资产质量、
+                        利率、风险偏好以及宏观经济环境等因素影响。
+                    </p>
+
+                </div>
+
+
+
+                <h3>
+                    10.2 为什么股票价格有时候与公司价值不同？
+                </h3>
+
+
+                <p>
+                    这是学习股票时非常重要的问题。
+                </p>
+
+
+                <p>
+                    公司价值和股票市场价格并不是完全相同的概念。
+                </p>
+
+
+                <p>
+                    市场价格是当前市场参与者愿意成交的价格，
+                    而企业价值则需要考虑企业未来能够创造多少现金流、利润和经济利益。
+                </p>
+
+
+                <p>
+                    因此，市场价格可能暂时高于或者低于投资者认为的合理价值。
+                </p>
+
+
+                <p>
+                    这也是为什么后来会出现
+                    <strong>
+                        基本面分析、价值投资、技术分析和量化分析
+                    </strong>
+                    等不同的股票研究方法。
+                </p>
+
+
+
+                <!-- =================================================
+                 第十一章
+            ================================================== -->
+
+                <h2 id="chapter-11">
+                    十一、股票市场从人工交易走向电子交易
+                </h2>
+
+
+                <h3>
+                    11.1 早期人工交易
+                </h3>
+
+
+                <p>
+                    早期证券市场主要依靠人工完成报价和交易。
+                    经纪人聚集在交易场所，通过喊价、手势以及人工记录完成交易。
+                </p>
+
+
+                <p>
+                    这种方式能够完成交易，但效率有限。
+                    当市场规模越来越大，投资者越来越多，
+                    人工交易很难处理巨大的信息量。
+                </p>
+
+
+                <h3>
+                    11.2 股票行情传播
+                </h3>
+
+
+                <p>
+                    股票市场的发展同时推动了金融信息传播技术的发展。
+                </p>
+
+
+                <p>
+                    19世纪，美国股票市场出现股票行情自动传输技术，
+                    股票报价可以比过去更快地传播到远方。
+                </p>
+
+
+                <p>
+                    纽约证券交易所的历史资料指出，
+                    1867年股票行情机（stock ticker）的出现显著改变了市场信息传播，
+                    缩小了华尔街与其他地区投资者之间的信息时间差。
+                </p>
+
+
+                <h3>
+                    11.3 电子交易
+                </h3>
+
+
+                <p>
+                    随着计算机和通信技术发展，
+                    股票交易逐渐从人工喊价走向电子化。
+                </p>
+
+
+                <p>
+                    今天的股票市场已经高度数字化。
+                    投资者可以通过互联网提交订单，
+                    交易系统可以在极短时间内完成订单匹配，
+                    行情数据也可以实时传播。
+                </p>
+
+
+                <p>
+                    现代交易所甚至可以保存非常详细的订单和成交数据，
+                    包括买卖报价、成交以及订单簿等信息。
+                </p>
+
+
+
+                <!-- =================================================
+                 第十二章
+            ================================================== -->
+
+                <h2 id="chapter-12">
+                    十二、中国股票市场的发展
+                </h2>
+
+
+                <h3>
+                    12.1 中国现代股票市场的重新发展
+                </h3>
+
+
+                <p>
+                    中国传统社会历史上并不缺少合伙经营、商帮和股份性质的商业实践，
+                    但今天意义上的现代证券交易市场，
+                    是近现代经济制度发展中的产物。
+                </p>
+
+
+                <p>
+                    改革开放之后，中国经济市场化程度不断提高，
+                    企业融资和资本市场制度也逐步发展。
+                </p>
+
+
+                <p>
+                    1990年前后，
+                    上海证券交易所和深圳证券交易所相继建立，
+                    中国现代股票市场进入新的发展阶段。
+                </p>
+
+
+                <p>
+                    此后，中国股票市场不断扩容，
+                    上市公司数量、投资者数量以及市场交易规模持续增长。
+                </p>
+
+
+                <h3>
+                    12.2 A股是什么？
+                </h3>
+
+
+                <p>
+                    在今天的语境中，
+                    “A股”通常指中国境内证券交易所上市的人民币普通股票。
+                </p>
+
+
+                <p>
+                    主要股票交易场所包括：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        上海证券交易所
+                    </li>
+
+                    <li>
+                        深圳证券交易所
+                    </li>
+
+                    <li>
+                        北京证券交易所
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    A股市场进一步形成了主板、科创板、创业板、北交所等不同市场板块，
+                    不同板块在上市条件、投资者适当性、交易制度等方面存在差异。
+                </p>
+
+
+
+                <!-- =================================================
+                 第十三章
+            ================================================== -->
+
+                <h2 id="chapter-13">
+                    十三、股票到底代表什么？
+                </h2>
+
+
+                <p>
+                    到这里，我们可以重新回答一个最基本的问题：
+                </p>
+
+
+                <div class="article-intro">
+
+                    <p>
+                        <strong>
+                            股票，本质上是一种代表公司股东权益的证券。
+                        </strong>
+                    </p>
+
+                </div>
+
+
+                <p>
+                    当你购买一家公司的股票时，
+                    从法律和经济意义上来说，
+                    你获得的是与这家公司相对应的一部分股东权益。
+                </p>
+
+
+                <p>
+                    这种权益通常可能包含：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        参与公司利润分配的可能性
+                    </li>
+
+                    <li>
+                        股价上涨带来的资本收益可能性
+                    </li>
+
+                    <li>
+                        在符合条件的情况下参与股东大会等公司治理活动
+                    </li>
+
+                    <li>
+                        对公司剩余资产享有相应权益
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    但是需要注意：
+                    股票不是一种“保证赚钱”的资产。
+                    股东收益具有不确定性，
+                    股票价格也可能大幅波动甚至长期下跌。
+                </p>
+
+
+
+                <!-- =================================================
+                 第十四章
+            ================================================== -->
+
+                <h2 id="chapter-14">
+                    十四、从一张股票看懂整个资本市场
+                </h2>
+
+
+                <p>
+                    如果把整个股票市场抽象一下，
+                    其实可以看到几个非常重要的参与者。
+                </p>
+
+
+                <div class="article-table-wrapper">
+
+                    <table class="article-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    参与者
+                                </th>
+
+                                <th>
+                                    主要作用
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    上市公司
+                                </td>
+
+                                <td>
+                                    通过资本市场获得资金，并经营企业
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    个人投资者
+                                </td>
+
+                                <td>
+                                    参与股票投资和交易
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    机构投资者
+                                </td>
+
+                                <td>
+                                    使用专业资金进行投资和资产配置
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    证券公司
+                                </td>
+
+                                <td>
+                                    提供经纪、承销、研究等金融服务
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    证券交易所
+                                </td>
+
+                                <td>
+                                    提供证券交易市场和交易制度
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>
+                                    监管机构
+                                </td>
+
+                                <td>
+                                    维护市场秩序、投资者保护和市场监管
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 第十五章
+            ================================================== -->
+
+                <h2 id="chapter-15">
+                    十五、股票市场发展的完整历史脉络
+                </h2>
+
+
+                <div class="history-timeline">
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            早期商业社会
+                        </div>
+
+                        <div class="timeline-title">
+                            合伙与共同投资
+                        </div>
+
+                        <p class="timeline-text">
+                            商人通过共同出资开展规模更大的商业活动，
+                            风险和收益由多个参与者共同承担。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            近代早期
+                        </div>
+
+                        <div class="timeline-title">
+                            股份制度逐渐成熟
+                        </div>
+
+                        <p class="timeline-text">
+                            大型贸易项目需要越来越多资本，
+                            股份化成为集中资本和分散风险的重要方式。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            1602
+                        </div>
+
+                        <div class="timeline-title">
+                            荷兰东印度公司
+                        </div>
+
+                        <p class="timeline-text">
+                            VOC的股份制度以及后续证券交易市场的发展，
+                            成为现代公开股票市场历史上的重要里程碑。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            17—18世纪
+                        </div>
+
+                        <div class="timeline-title">
+                            欧洲证券市场发展
+                        </div>
+
+                        <p class="timeline-text">
+                            股票、债券等证券交易逐渐制度化，
+                            阿姆斯特丹、伦敦等城市逐渐成为重要金融中心。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            1792
+                        </div>
+
+                        <div class="timeline-title">
+                            Buttonwood Agreement
+                        </div>
+
+                        <p class="timeline-text">
+                            纽约24名经纪人签署梧桐树协议，
+                            成为纽约证券交易所历史上的重要起点。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            1817
+                        </div>
+
+                        <div class="timeline-title">
+                            New York Stock & Exchange Board
+                        </div>
+
+                        <p class="timeline-text">
+                            纽约证券交易市场进一步组织化和制度化，
+                            成为后来NYSE的重要前身。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            19世纪
+                        </div>
+
+                        <div class="timeline-title">
+                            工业革命与资本市场
+                        </div>
+
+                        <p class="timeline-text">
+                            铁路、工业企业、银行等大型项目需要巨额资本，
+                            股票市场成为现代工业化的重要融资渠道。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            20世纪
+                        </div>
+
+                        <div class="timeline-title">
+                            大众投资时代
+                        </div>
+
+                        <p class="timeline-text">
+                            股票市场逐渐从少数专业投资者参与，
+                            发展到更多普通居民、机构和基金参与。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            20世纪末—21世纪
+                        </div>
+
+                        <div class="timeline-title">
+                            电子化与全球化
+                        </div>
+
+                        <p class="timeline-text">
+                            计算机、互联网和现代通信技术推动股票交易全面电子化，
+                            全球资本市场联系越来越紧密。
+                        </p>
+
+                    </div>
+
+
+                    <div class="timeline-item">
+
+                        <div class="timeline-year">
+                            今天
+                        </div>
+
+                        <div class="timeline-title">
+                            数据驱动的资本市场
+                        </div>
+
+                        <p class="timeline-text">
+                            股票市场已经成为一个由交易所、券商、基金、
+                            银行、机构投资者、个人投资者以及数据和技术系统共同组成的复杂金融生态。
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                 第十六章
+            ================================================== -->
+
+                <h2 id="chapter-16">
+                    十六、股票市场为什么对现代经济如此重要？
+                </h2>
+
+
+                <p>
+                    股票市场并不仅仅是一个让投资者买卖股票的地方。
+                    从宏观经济角度来看，它承担着资本配置的重要功能。
+                </p>
+
+
+                <h3>
+                    16.1 帮助企业获得资本
+                </h3>
+
+
+                <p>
+                    企业可以通过股票市场筹集长期资金，
+                    用于投资、研发、扩张和并购。
+                </p>
+
+
+                <h3>
+                    16.2 帮助投资者分享经济增长
+                </h3>
+
+
+                <p>
+                    如果企业持续成长并创造利润，
+                    股东可能通过股价上涨和股息等方式分享企业增长成果。
+                </p>
+
+
+                <h3>
+                    16.3 提高资本流动效率
+                </h3>
+
+
+                <p>
+                    股票市场把大量分散资金集中起来，
+                    并通过市场价格将资金引导到不同企业和行业。
+                </p>
+
+
+                <h3>
+                    16.4 提供价格发现机制
+                </h3>
+
+
+                <p>
+                    股票价格会不断反映投资者对于企业未来盈利、
+                    风险以及经济环境的预期。
+                </p>
+
+
+                <p>
+                    因此，股票价格不仅仅是一个数字，
+                    它实际上包含了大量市场参与者的信息和预期。
+                </p>
+
+
+
+                <!-- =================================================
+                 第十七章
+            ================================================== -->
+
+                <h2 id="chapter-17">
+                    十七、从股票起源理解今天的投资
+                </h2>
+
+
+                <p>
+                    回到最开始的问题：
+                    <strong>
+                        为什么人类会创造股票？
+                    </strong>
+                </p>
+
+
+                <p>
+                    因为大型商业活动需要资本，
+                    而单个人无法承担全部资本和风险。
+                </p>
+
+
+                <p>
+                    于是，人们把一个企业的所有权拆分成许多份，
+                    让更多人能够共同投资。
+                </p>
+
+
+                <p>
+                    当这些股份能够自由转让时，
+                    投资就拥有了流动性。
+                </p>
+
+
+                <p>
+                    当越来越多的买方和卖方参与交易时，
+                    市场就逐渐形成。
+                </p>
+
+
+                <p>
+                    当市场需要统一规则、统一报价和统一交易机制时，
+                    证券交易所就逐渐出现。
+                </p>
+
+
+                <p>
+                    最终，股票、证券交易所、券商、基金、银行、
+                    监管机构以及各种金融基础设施共同构成了今天复杂的资本市场。
+                </p>
+
+
+                <div class="article-intro">
+
+                    <p>
+                        <strong>
+                            所以，股票的历史本质上是一部“如何让资本更有效地被组织、流动和配置”的历史。
+                        </strong>
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                 知识总结
+            ================================================== -->
+
+                <div class="article-summary">
+
+                    <h3>
+                        本章知识总结
+                    </h3>
+
+
+                    <ul>
+
+                        <li>
+                            股票产生的底层原因是大型商业活动对资本的需求。
+                        </li>
+
+                        <li>
+                            股份制度通过把企业所有权拆分成许多份，实现多人共同投资。
+                        </li>
+
+                        <li>
+                            风险分散是股份制度能够发展的重要原因。
+                        </li>
+
+                        <li>
+                            1602年的荷兰东印度公司是现代股票市场发展史上的重要里程碑。
+                        </li>
+
+                        <li>
+                            股份能够转让，使投资者获得更强的投资流动性。
+                        </li>
+
+                        <li>
+                            证券交易所的出现，使证券交易逐渐走向标准化和制度化。
+                        </li>
+
+                        <li>
+                            1792年的Buttonwood Agreement是纽约证券交易所历史上的重要起点。
+                        </li>
+
+                        <li>
+                            工业革命推动了股票市场的发展，因为大型工业项目需要巨额资本。
+                        </li>
+
+                        <li>
+                            IPO使企业能够进入公开资本市场筹集资金。
+                        </li>
+
+                        <li>
+                            股票价格在短期内主要通过市场中的买卖力量形成。
+                        </li>
+
+                        <li>
+                            股票市场不仅服务投资者，也承担企业融资和资本配置功能。
+                        </li>
+
+                        <li>
+                            今天的股票市场已经发展成为高度电子化、全球化和数据化的资本市场体系。
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+            </article>
+
+
+
+            <!-- =================================================
+             右侧目录
+        ================================================== -->
+
+            <aside class="article-toc">
+
+                <div class="article-toc-title">
+                    本章目录
+                </div>
+
+
+                <a href="#chapter-1">
+                    一、为什么会出现股票？
+                </a>
+
+
+                <a href="#chapter-2">
+                    二、股份公司的思想
+                </a>
+
+
+                <a href="#chapter-3">
+                    三、1602年与VOC
+                </a>
+
+
+                <a href="#chapter-4">
+                    四、证券交易市场
+                </a>
+
+
+                <a href="#chapter-5">
+                    五、证券交易所
+                </a>
+
+
+                <a href="#chapter-6">
+                    六、欧洲资本市场
+                </a>
+
+
+                <a href="#chapter-7">
+                    七、美国股票市场
+                </a>
+
+
+                <a href="#chapter-8">
+                    八、股票与企业融资
+                </a>
+
+
+                <a href="#chapter-9">
+                    九、IPO
+                </a>
+
+
+                <a href="#chapter-10">
+                    十、股票价格
+                </a>
+
+
+                <a href="#chapter-11">
+                    十一、电子交易
+                </a>
+
+
+                <a href="#chapter-12">
+                    十二、中国股票市场
+                </a>
+
+
+                <a href="#chapter-13">
+                    十三、股票代表什么
+                </a>
+
+
+                <a href="#chapter-14">
+                    十四、资本市场参与者
+                </a>
+
+
+                <a href="#chapter-15">
+                    十五、历史时间线
+                </a>
+
+
+                <a href="#chapter-16">
+                    十六、股票市场的作用
+                </a>
+
+
+                <a href="#chapter-17">
+                    十七、从历史理解投资
+                </a>
+
+            </aside>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =========================================================
+     页面脚本
+========================================================= -->
+
+    <script>
+
+
+        /* =========================================================
+           返回主站
+        ========================================================= */
+
+        function goHome(page = 'market') {
+
+            window.location.href = `../../?page=${page}`;
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
