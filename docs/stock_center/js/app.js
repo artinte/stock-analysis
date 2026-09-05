@@ -46,8 +46,8 @@ function switchMainPage(page) {
         "news": "newsPage",
         "ai": "aiPage",
         "trade": "tradePage",
-        "ai-chat": "aiChatPage"
-
+        "ai-chat": "aiChatPage",
+        "tool": "toolPage",
     };
 
 

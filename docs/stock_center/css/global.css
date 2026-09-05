@@ -1,6 +1,6 @@
 /* =========================================================
    STOCK LAB
-   A股股票研究中心
+   股票研究中心
 ========================================================= */
 
 :root {
@@ -732,11 +732,9 @@ textarea:focus-visible {
 
 .ai-market-panel {
     background:
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #111827 0%,
-            #182334 100%
-        );
+            #182334 100%);
 
     border-color: #202b3c;
 
@@ -744,7 +742,7 @@ textarea:focus-visible {
 }
 
 .ai-market-panel .panel-heading {
-    border-color: rgba(255,255,255,0.08);
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 .ai-market-panel .panel-heading h2 {
@@ -805,8 +803,8 @@ textarea:focus-visible {
 
     color: #b7c8df;
 
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 
     border-radius: 4px;
 
@@ -821,8 +819,8 @@ textarea:focus-visible {
 
     color: #ffffff;
 
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
     border-radius: 5px;
 
@@ -832,7 +830,7 @@ textarea:focus-visible {
 }
 
 .ai-deep-button:hover {
-    background: rgba(255,255,255,0.14);
+    background: rgba(255, 255, 255, 0.14);
 }
 
 
@@ -844,12 +842,7 @@ textarea:focus-visible {
 .stock-table-row {
     display: grid;
     grid-template-columns:
-        2fr
-        1fr
-        1fr
-        1fr
-        1.2fr
-        70px;
+        2fr 1fr 1fr 1fr 1.2fr 70px;
 
     align-items: center;
 }
@@ -880,7 +873,7 @@ textarea:focus-visible {
     background: #fafcff;
 }
 
-.stock-table-row > strong {
+.stock-table-row>strong {
     font-family:
         ui-monospace,
         SFMono-Regular,
@@ -1482,7 +1475,7 @@ textarea:focus-visible {
     border-radius: var(--radius);
 }
 
-.ai-large-entry > div {
+.ai-large-entry>div {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -1513,9 +1506,9 @@ textarea:focus-visible {
 
     color: #ffffff;
 
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
 
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
     border-radius: 5px;
 
@@ -1539,13 +1532,13 @@ textarea:focus-visible {
     overflow: hidden;
 }
 
-.trade-stats > div {
+.trade-stats>div {
     padding: 22px;
 
     border-right: 1px solid var(--line);
 }
 
-.trade-stats > div:last-child {
+.trade-stats>div:last-child {
     border-right: 0;
 }
 
@@ -1995,7 +1988,7 @@ textarea:focus-visible {
     border-bottom: 1px solid var(--line);
 }
 
-.context-block > span {
+.context-block>span {
     display: block;
 
     margin-bottom: 6px;
@@ -2193,9 +2186,9 @@ textarea:focus-visible {
         padding: 12px 15px;
     }
 
-    .stock-table-row > span:nth-of-type(1),
-    .stock-table-row > span:nth-of-type(2),
-    .stock-table-row > strong:nth-of-type(1) {
+    .stock-table-row>span:nth-of-type(1),
+    .stock-table-row>span:nth-of-type(2),
+    .stock-table-row>strong:nth-of-type(1) {
         display: none;
     }
 
@@ -2211,7 +2204,7 @@ textarea:focus-visible {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .trade-stats > div:nth-child(2) {
+    .trade-stats>div:nth-child(2) {
         border-right: 0;
     }
 
