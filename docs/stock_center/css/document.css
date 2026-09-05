@@ -1,0 +1,462 @@
+/* ============================================================
+   学习文档页面
+============================================================ */
+
+.document-page {
+
+    max-width: 1400px;
+
+    margin: 0 auto;
+
+    padding: 48px 40px 80px;
+
+}
+
+
+/* ============================================================
+   Hero
+============================================================ */
+
+.document-hero {
+
+    padding: 56px 60px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 18px;
+
+    background: var(--panel-bg);
+
+    margin-bottom: 24px;
+
+}
+
+
+.document-hero-content {
+
+    max-width: 760px;
+
+}
+
+
+.document-badge {
+
+    display: inline-block;
+
+    margin-bottom: 16px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    opacity: 0.55;
+
+}
+
+
+.document-hero h1 {
+
+    margin: 0 0 14px;
+
+    font-size: 42px;
+
+    line-height: 1.2;
+
+}
+
+
+.document-hero p {
+
+    margin: 0;
+
+    font-size: 16px;
+
+    line-height: 1.8;
+
+    opacity: 0.65;
+
+}
+
+
+/* ============================================================
+   搜索
+============================================================ */
+
+.document-search {
+
+    margin-bottom: 50px;
+
+}
+
+
+.document-search-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    height: 52px;
+
+    padding: 0 18px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 12px;
+
+    background: var(--panel-bg);
+
+}
+
+
+.search-icon {
+
+    font-size: 18px;
+
+    opacity: 0.55;
+
+}
+
+
+.document-search-box input {
+
+    flex: 1;
+
+    height: 100%;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: inherit;
+
+    font-size: 15px;
+
+}
+
+
+.document-search-box input::placeholder {
+
+    opacity: 0.45;
+
+}
+
+
+/* ============================================================
+   Section
+============================================================ */
+
+.document-section {
+
+    margin-bottom: 60px;
+
+}
+
+
+.section-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-end;
+
+    margin-bottom: 24px;
+
+}
+
+
+.section-header h2 {
+
+    margin: 0 0 8px;
+
+    font-size: 24px;
+
+}
+
+
+.section-header p {
+
+    margin: 0;
+
+    font-size: 14px;
+
+    opacity: 0.55;
+
+}
+
+
+/* ============================================================
+   文档卡片
+============================================================ */
+
+.document-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+}
+
+
+.document-card {
+
+    min-height: 260px;
+
+    padding: 26px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 14px;
+
+    background: var(--panel-bg);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.document-card:hover {
+
+    transform: translateY(-4px);
+
+    border-color: var(--accent-color);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.08);
+
+}
+
+
+.document-card-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    border-radius: 12px;
+
+    background: var(--page-bg);
+
+    font-size: 22px;
+
+}
+
+
+.document-card-content {
+
+    display: flex;
+
+    flex-direction: column;
+
+    height: calc(100% - 66px);
+
+}
+
+
+.document-card-tag {
+
+    margin-bottom: 8px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    opacity: 0.45;
+
+}
+
+
+.document-card h3 {
+
+    margin: 0 0 10px;
+
+    font-size: 18px;
+
+}
+
+
+.document-card p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+    opacity: 0.6;
+
+}
+
+
+.document-card a {
+
+    margin-top: auto;
+
+    padding-top: 20px;
+
+    color: inherit;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    opacity: 0.7;
+
+}
+
+
+.document-card a:hover {
+
+    opacity: 1;
+
+}
+
+
+/* ============================================================
+   学习路线
+============================================================ */
+
+.learning-path {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+
+}
+
+
+.learning-step {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 22px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 12px;
+
+    background: var(--panel-bg);
+
+}
+
+
+.step-number {
+
+    flex-shrink: 0;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    opacity: 0.35;
+
+}
+
+
+.learning-step h3 {
+
+    margin: 0 0 5px;
+
+    font-size: 15px;
+
+}
+
+
+.learning-step p {
+
+    margin: 0;
+
+    font-size: 12px;
+
+    opacity: 0.5;
+
+}
+
+
+/* ============================================================
+   响应式
+============================================================ */
+
+@media (max-width: 1100px) {
+
+    .document-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+    .learning-path {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .document-page {
+
+        padding: 30px 18px 60px;
+
+    }
+
+    .document-hero {
+
+        padding: 36px 26px;
+
+    }
+
+    .document-hero h1 {
+
+        font-size: 32px;
+
+    }
+
+    .document-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .learning-path {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}

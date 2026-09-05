@@ -1260,3 +1260,16 @@ document.addEventListener(
 
     }
 );
+
+
+function navigateMainPage(page) {
+
+    if (page === 'document') {
+
+        window.location.href = './document/';
+
+        return;
+    }
+
+    // 其它页面暂时继续使用原来的 switchMainPage
+}

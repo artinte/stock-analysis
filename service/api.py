@@ -236,6 +236,15 @@ app.mount(
     name="js",
 )
 
+app.mount(
+    "/document",
+    StaticFiles(
+        directory=FRONTEND_DIR / "document",
+        html=True,
+    ),
+    name="document",
+)
+
 
 # ============================================================
 # 首页
