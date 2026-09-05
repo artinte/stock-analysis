@@ -19,7 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     bindAIInput();
 
-    switchMainPage("market");
+    const params = new URLSearchParams(window.location.search);
+    const page = params.get("page") || "market";
+
+    switchMainPage(page);
 
 });
 
@@ -47,7 +50,6 @@ function switchMainPage(page) {
         "ai": "aiPage",
         "trade": "tradePage",
         "ai-chat": "aiChatPage",
-        "tool": "toolPage",
     };
 
 
@@ -1269,7 +1271,7 @@ function navigateMainPage(page) {
         return;
     }
 
-    if (page === 'tool') {
+    if (page === 'tools') {
         window.location.href = './tools/';
         return;
     }
