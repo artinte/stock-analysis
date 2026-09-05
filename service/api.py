@@ -245,6 +245,15 @@ app.mount(
     name="document",
 )
 
+app.mount(
+    "/tools",
+    StaticFiles(
+        directory=FRONTEND_DIR / "tools",
+        html=True,
+    ),
+    name="tools",
+)
+
 
 # ============================================================
 # 首页

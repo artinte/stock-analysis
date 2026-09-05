@@ -1,0 +1,1311 @@
+/* =========================================================
+   STOCK LAB
+   Tool Center
+========================================================= */
+
+
+/* =========================================================
+   页面
+========================================================= */
+
+.tool-page {
+
+    max-width: 1320px;
+
+    margin: 0 auto;
+
+    padding: 32px 24px 90px;
+
+}
+
+
+/* =========================================================
+   Hero
+========================================================= */
+
+.tool-hero {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        320px;
+
+    gap: 32px;
+
+    margin-bottom: 30px;
+
+    padding: 52px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 16px;
+
+    background: var(--panel-bg);
+
+}
+
+
+.tool-hero-main {
+
+    min-width: 0;
+
+}
+
+
+.tool-eyebrow,
+.section-eyebrow {
+
+    margin-bottom: 12px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.8px;
+
+    color: var(--accent-color);
+
+}
+
+
+.tool-hero h1 {
+
+    margin: 0 0 18px;
+
+    font-size: 42px;
+
+    line-height: 1.25;
+
+    letter-spacing: -0.5px;
+
+}
+
+
+.tool-hero p {
+
+    max-width: 760px;
+
+    margin: 0;
+
+    font-size: 17px;
+
+    line-height: 1.9;
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-hero-subtitle {
+
+    margin-top: 8px !important;
+
+    font-size: 14px !important;
+
+}
+
+
+.tool-hero-actions {
+
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 30px;
+
+}
+
+
+.tool-primary-button,
+.tool-secondary-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    min-height: 44px;
+
+    padding: 0 20px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        background .2s ease;
+
+}
+
+
+.tool-primary-button {
+
+    border: 1px solid var(--accent-color);
+
+    background: var(--accent-color);
+
+    color: #fff;
+
+}
+
+
+.tool-secondary-button {
+
+    border: 1px solid var(--border-color);
+
+    background: transparent;
+
+    color: var(--text-primary);
+
+}
+
+
+.tool-primary-button:hover,
+.tool-secondary-button:hover {
+
+    transform: translateY(-1px);
+
+}
+
+
+.tool-secondary-button:hover {
+
+    border-color: var(--accent-color);
+
+}
+
+
+/* =========================================================
+   Hero 右侧数据
+========================================================= */
+
+.tool-hero-side {
+
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 10px;
+
+}
+
+
+.hero-metric {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        auto;
+
+    align-items: center;
+
+    column-gap: 14px;
+
+    padding: 16px 18px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 10px;
+
+}
+
+
+.hero-metric span {
+
+    grid-column: 1;
+
+    font-size: 12px;
+
+    color: var(--text-secondary);
+
+}
+
+
+.hero-metric strong {
+
+    grid-column: 2;
+
+    grid-row: 1 / span 2;
+
+    font-size: 22px;
+
+    color: var(--text-primary);
+
+}
+
+
+.hero-metric small {
+
+    grid-column: 1;
+
+    margin-top: 3px;
+
+    font-size: 11px;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* =========================================================
+   搜索区域
+========================================================= */
+
+.tool-search-section {
+
+    margin-bottom: 46px;
+
+}
+
+
+.tool-search-heading {
+
+    margin-bottom: 18px;
+
+}
+
+
+.tool-search-heading h2 {
+
+    margin: 0 0 6px;
+
+    font-size: 25px;
+
+}
+
+
+.tool-search-heading p {
+
+    margin: 0;
+
+    font-size: 14px;
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-search-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-height: 52px;
+
+    padding: 0 16px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 10px;
+
+    background: var(--panel-bg);
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.tool-search-box:focus-within {
+
+    border-color: var(--accent-color);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0, 0, 0, 0.04);
+
+}
+
+
+.tool-search-box > span {
+
+    font-size: 18px;
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-search-box input {
+
+    flex: 1;
+
+    min-width: 0;
+
+    height: 50px;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: var(--text-primary);
+
+    font-size: 14px;
+
+}
+
+
+.tool-search-box button {
+
+    padding: 6px 10px;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    cursor: pointer;
+
+}
+
+
+.tool-search-box button:hover {
+
+    color: var(--accent-color);
+
+}
+
+
+/* =========================================================
+   分类筛选
+========================================================= */
+
+.tool-filter {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-top: 14px;
+
+}
+
+
+.tool-filter-item {
+
+    padding: 8px 14px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 20px;
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease;
+
+}
+
+
+.tool-filter-item:hover {
+
+    border-color: var(--accent-color);
+
+    color: var(--accent-color);
+
+}
+
+
+.tool-filter-item.active {
+
+    border-color: var(--accent-color);
+
+    background: var(--accent-color);
+
+    color: #fff;
+
+}
+
+
+/* =========================================================
+   Section
+========================================================= */
+
+.tool-section {
+
+    margin-top: 52px;
+
+}
+
+
+.tool-section-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.tool-section-header h2 {
+
+    margin: 0 0 7px;
+
+    font-size: 26px;
+
+}
+
+
+.tool-section-header p {
+
+    margin: 0;
+
+    font-size: 14px;
+
+    line-height: 1.7;
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-section-count {
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.5px;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* =========================================================
+   工具卡片
+========================================================= */
+
+.tool-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+}
+
+
+.tool-card {
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-height: 330px;
+
+    padding: 24px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 12px;
+
+    background: var(--panel-bg);
+
+    cursor: pointer;
+
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+
+}
+
+
+.tool-card:hover {
+
+    transform: translateY(-3px);
+
+    border-color: var(--accent-color);
+
+    box-shadow:
+        0 12px 30px
+        rgba(0, 0, 0, .06);
+
+}
+
+
+.tool-card-featured {
+
+    border-color:
+        color-mix(
+            in srgb,
+            var(--accent-color) 35%,
+            var(--border-color)
+        );
+
+}
+
+
+.tool-card-top {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+}
+
+
+.tool-number {
+
+    font-family:
+        "Consolas",
+        monospace;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-status {
+
+    padding: 4px 7px;
+
+    border-radius: 4px;
+
+    font-family:
+        "Consolas",
+        monospace;
+
+    font-size: 9px;
+
+    font-weight: 700;
+
+    letter-spacing: .7px;
+
+}
+
+
+.tool-status.active {
+
+    background: rgba(0, 160, 100, .08);
+
+    color: #16835d;
+
+}
+
+
+.tool-status.planned {
+
+    background: rgba(120, 120, 120, .08);
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-icon {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 48px;
+
+    height: 48px;
+
+    margin: 26px 0 22px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 10px;
+
+    font-size: 22px;
+
+    color: var(--accent-color);
+
+}
+
+
+.tool-card-body {
+
+    flex: 1;
+
+}
+
+
+.tool-card-category {
+
+    margin-bottom: 8px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+
+    color: var(--accent-color);
+
+}
+
+
+.tool-card h3 {
+
+    margin: 0 0 12px;
+
+    font-size: 20px;
+
+    line-height: 1.4;
+
+}
+
+
+.tool-card p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.9;
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-card-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 26px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid var(--border-color);
+
+}
+
+
+.tool-card-footer span {
+
+    font-size: 11px;
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-card-footer strong {
+
+    font-size: 12px;
+
+    color: var(--text-primary);
+
+}
+
+
+/* =========================================================
+   计算器
+========================================================= */
+
+.calculator-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+
+}
+
+
+.calculator-card {
+
+    display: grid;
+
+    grid-template-columns:
+        54px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 22px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 12px;
+
+    background: var(--panel-bg);
+
+}
+
+
+.calculator-icon {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 48px;
+
+    height: 48px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 9px;
+
+    font-size: 19px;
+
+    color: var(--accent-color);
+
+}
+
+
+.calculator-card span {
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    color: var(--accent-color);
+
+}
+
+
+.calculator-card h3 {
+
+    margin: 5px 0 5px;
+
+    font-size: 17px;
+
+}
+
+
+.calculator-card p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.7;
+
+    color: var(--text-secondary);
+
+}
+
+
+.calculator-card button {
+
+    padding: 7px 11px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 6px;
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================================
+   量化面板
+========================================================= */
+
+.quant-panel {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    padding: 30px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 13px;
+
+    background: var(--panel-bg);
+
+}
+
+
+.quant-panel-main {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 22px;
+
+}
+
+
+.quant-mark {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex: 0 0 auto;
+
+    width: 56px;
+
+    height: 56px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 11px;
+
+    font-family:
+        "Consolas",
+        monospace;
+
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: var(--accent-color);
+
+}
+
+
+.quant-panel h3 {
+
+    margin: 5px 0 10px;
+
+    font-size: 21px;
+
+}
+
+
+.quant-panel p {
+
+    max-width: 720px;
+
+    margin: 0;
+
+    font-size: 14px;
+
+    line-height: 1.9;
+
+    color: var(--text-secondary);
+
+}
+
+
+.quant-tags {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+    margin-top: 18px;
+
+}
+
+
+.quant-tags span {
+
+    padding: 5px 9px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 5px;
+
+    font-size: 11px;
+
+    color: var(--text-secondary);
+
+}
+
+
+.quant-panel-action {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-end;
+
+    gap: 7px;
+
+    flex: 0 0 auto;
+
+}
+
+
+.quant-panel-action span {
+
+    font-family:
+        "Consolas",
+        monospace;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+    color: var(--text-secondary);
+
+}
+
+
+.quant-panel-action strong {
+
+    font-size: 13px;
+
+    color: var(--text-primary);
+
+}
+
+
+/* =========================================================
+   平台能力
+========================================================= */
+
+.tool-platform-section {
+
+    padding-top: 10px;
+
+}
+
+
+.platform-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+
+}
+
+
+.platform-item {
+
+    min-height: 190px;
+
+    padding: 22px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 10px;
+
+    background: var(--panel-bg);
+
+}
+
+
+.platform-number {
+
+    display: block;
+
+    margin-bottom: 28px;
+
+    font-family:
+        "Consolas",
+        monospace;
+
+    font-size: 11px;
+
+    color: var(--accent-color);
+
+}
+
+
+.platform-item h3 {
+
+    margin: 0 0 10px;
+
+    font-size: 17px;
+
+}
+
+
+.platform-item p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.85;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* =========================================================
+   Bottom CTA
+========================================================= */
+
+.tool-bottom-cta {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-top: 60px;
+
+    padding: 34px;
+
+    border: 1px solid var(--border-color);
+
+    border-radius: 13px;
+
+    background: var(--panel-bg);
+
+}
+
+
+.tool-bottom-cta h2 {
+
+    margin: 0 0 8px;
+
+    font-size: 23px;
+
+}
+
+
+.tool-bottom-cta p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+    color: var(--text-secondary);
+
+}
+
+
+.tool-bottom-actions {
+
+    display: flex;
+
+    gap: 10px;
+
+    flex: 0 0 auto;
+
+}
+
+
+/* =========================================================
+   Responsive
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .tool-hero {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .tool-hero-side {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+    }
+
+
+    .tool-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+
+    .platform-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+@media (max-width: 760px) {
+
+    .tool-page {
+
+        padding:
+            20px
+            14px
+            60px;
+
+    }
+
+
+    .tool-hero {
+
+        padding: 30px 24px;
+
+    }
+
+
+    .tool-hero h1 {
+
+        font-size: 31px;
+
+    }
+
+
+    .tool-hero-actions {
+
+        flex-direction: column;
+
+    }
+
+
+    .tool-hero-side {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .tool-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .calculator-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .calculator-card {
+
+        grid-template-columns:
+            48px
+            minmax(0, 1fr);
+
+    }
+
+
+    .calculator-card button {
+
+        grid-column: 2;
+
+        justify-self: start;
+
+    }
+
+
+    .quant-panel {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+
+    .quant-panel-action {
+
+        align-items: flex-start;
+
+    }
+
+
+    .platform-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .tool-bottom-cta {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+
+    .tool-bottom-actions {
+
+        flex-direction: column;
+
+        width: 100%;
+
+    }
+
+}
+

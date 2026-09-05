@@ -1,0 +1,1625 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>工具中心 - STOCK LAB</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/tool.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     顶部导航
+========================================================= -->
+
+<header class="topbar">
+
+    <div class="topbar-inner">
+
+
+        <!-- 品牌 -->
+
+        <div
+            class="brand"
+            onclick="goHome('market')"
+        >
+
+            <div class="brand-mark">
+                S
+            </div>
+
+
+            <div class="brand-text">
+
+                <div class="brand-name">
+                    STOCK LAB
+                </div>
+
+
+                <div class="brand-subtitle">
+                    股票研究中心
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 主导航 -->
+
+        <nav class="main-nav">
+
+            <button
+                class="nav-item"
+                onclick="goHome('market')"
+            >
+                市场
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="goHome('stock')"
+            >
+                股票
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="goHome('news')"
+            >
+                资讯
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="goHome('ai')"
+            >
+                AI研究
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="goHome('trade')"
+            >
+                交易
+            </button>
+
+
+            <button
+                class="nav-item active"
+            >
+                工具
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="goDocument()"
+            >
+                学习文档
+            </button>
+
+        </nav>
+
+
+        <!-- 右侧 -->
+
+        <div class="header-right">
+
+
+            <button
+                class="ai-top-button"
+                onclick="goHome('ai-chat')"
+            >
+
+                <span>
+                    ✦
+                </span>
+
+                AI 投研助手
+
+            </button>
+
+
+            <div class="global-search">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+
+                <input
+                    id="searchInput"
+                    autocomplete="off"
+                    placeholder="搜索股票 / 代码"
+                >
+
+
+                <button id="searchBtn">
+                    查询
+                </button>
+
+
+                <div
+                    id="searchDropdown"
+                    class="search-dropdown">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     工具中心
+========================================================= -->
+
+<main class="tool-page">
+
+
+    <!-- =====================================================
+         Hero
+    ====================================================== -->
+
+    <section class="tool-hero">
+
+        <div class="tool-hero-main">
+
+
+            <div class="tool-eyebrow">
+                STOCK LAB · TOOLS
+            </div>
+
+
+            <h1>
+                投资研究工具中心
+            </h1>
+
+
+            <p>
+                面向股票研究、行业分析、估值判断、
+                数据查询与投资计算的一站式工具平台。
+            </p>
+
+
+            <p class="tool-hero-subtitle">
+                从一只股票，到一个行业，再到整个市场，
+                用结构化工具快速完成研究工作。
+            </p>
+
+
+            <div class="tool-hero-actions">
+
+                <button
+                    class="tool-primary-button"
+                    onclick="openIndustry()"
+                >
+                    行业查询
+                    <span>→</span>
+                </button>
+
+
+                <button
+                    class="tool-secondary-button"
+                    onclick="document.getElementById('toolSearch').focus()"
+                >
+                    查找工具
+                    <span>⌕</span>
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="tool-hero-side">
+
+
+            <div class="hero-metric">
+
+                <span>
+                    工具模块
+                </span>
+
+                <strong>
+                    10+
+                </strong>
+
+                <small>
+                    持续扩展
+                </small>
+
+            </div>
+
+
+            <div class="hero-metric">
+
+                <span>
+                    数据能力
+                </span>
+
+                <strong>
+                    统一
+                </strong>
+
+                <small>
+                    API / Gateway
+                </small>
+
+            </div>
+
+
+            <div class="hero-metric">
+
+                <span>
+                    研究方向
+                </span>
+
+                <strong>
+                    多维
+                </strong>
+
+                <small>
+                    股票 · 行业 · 市场
+                </small>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         工具搜索
+    ====================================================== -->
+
+    <section class="tool-search-section">
+
+
+        <div class="tool-search-heading">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    TOOL SEARCH
+                </div>
+
+                <h2>
+                    找到你需要的工具
+                </h2>
+
+                <p>
+                    根据工具名称、研究方向或关键词快速筛选。
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="tool-search-box">
+
+            <span>
+                ⌕
+            </span>
+
+
+            <input
+                id="toolSearch"
+                type="text"
+                autocomplete="off"
+                placeholder="搜索工具，例如：行业、估值、收益、K线、ETF..."
+            >
+
+
+            <button
+                id="clearToolSearch"
+                type="button"
+            >
+                清除
+            </button>
+
+        </div>
+
+
+        <div class="tool-filter">
+
+            <button
+                class="tool-filter-item active"
+                data-filter="all"
+            >
+                全部
+            </button>
+
+
+            <button
+                class="tool-filter-item"
+                data-filter="research"
+            >
+                股票研究
+            </button>
+
+
+            <button
+                class="tool-filter-item"
+                data-filter="data"
+            >
+                数据工具
+            </button>
+
+
+            <button
+                class="tool-filter-item"
+                data-filter="analysis"
+            >
+                分析工具
+            </button>
+
+
+            <button
+                class="tool-filter-item"
+                data-filter="calculator"
+            >
+                投资计算
+            </button>
+
+
+            <button
+                class="tool-filter-item"
+                data-filter="quant"
+            >
+                量化工具
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         核心工具
+    ====================================================== -->
+
+    <section class="tool-section">
+
+
+        <div class="tool-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    CORE TOOLS
+                </div>
+
+                <h2>
+                    核心研究工具
+                </h2>
+
+                <p>
+                    高频使用、直接服务于股票研究流程的核心工具。
+                </p>
+
+            </div>
+
+
+            <span class="tool-section-count">
+                CORE
+            </span>
+
+        </div>
+
+
+        <div class="tool-grid">
+
+
+            <!-- =================================================
+                 01 股票研究
+            ================================================== -->
+
+            <article
+                class="tool-card tool-card-featured"
+                data-category="research"
+                data-keywords="股票研究 股票 行情 财务 估值 行业 新闻 公告"
+                onclick="goHome('stock')"
+            >
+
+                <div class="tool-card-top">
+
+                    <span class="tool-number">
+                        01
+                    </span>
+
+                    <span class="tool-status active">
+                        AVAILABLE
+                    </span>
+
+                </div>
+
+
+                <div class="tool-icon">
+                    ◇
+                </div>
+
+
+                <div class="tool-card-body">
+
+                    <div class="tool-card-category">
+                        STOCK RESEARCH
+                    </div>
+
+
+                    <h3>
+                        股票研究
+                    </h3>
+
+
+                    <p>
+                        输入股票代码或名称，
+                        从实时行情、财务数据、估值、
+                        行业、ETF、新闻与公告等多个维度
+                        建立完整的个股研究视图。
+                    </p>
+
+                </div>
+
+
+                <div class="tool-card-footer">
+
+                    <span>
+                        综合研究入口
+                    </span>
+
+                    <strong>
+                        开始研究 →
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 02 行业查询
+            ================================================== -->
+
+            <article
+                class="tool-card tool-card-featured"
+                data-category="research"
+                data-keywords="行业 行业查询 股票行业 行业分类 所属行业 产业"
+                onclick="openIndustry()"
+            >
+
+                <div class="tool-card-top">
+
+                    <span class="tool-number">
+                        02
+                    </span>
+
+                    <span class="tool-status active">
+                        AVAILABLE
+                    </span>
+
+                </div>
+
+
+                <div class="tool-icon">
+                    ◎
+                </div>
+
+
+                <div class="tool-card-body">
+
+                    <div class="tool-card-category">
+                        INDUSTRY
+                    </div>
+
+
+                    <h3>
+                        行业查询
+                    </h3>
+
+
+                    <p>
+                        输入股票代码或股票名称，
+                        快速查看股票所属行业，
+                        作为个股研究、行业比较和产业链分析的数据入口。
+                    </p>
+
+                </div>
+
+
+                <div class="tool-card-footer">
+
+                    <span>
+                        行业数据工具
+                    </span>
+
+                    <strong>
+                        查看行业 →
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 03 估值分析
+            ================================================== -->
+
+            <article
+                class="tool-card"
+                data-category="analysis"
+                data-keywords="估值 PE PB PS PEG 股息率 市值 估值分析"
+            >
+
+                <div class="tool-card-top">
+
+                    <span class="tool-number">
+                        03
+                    </span>
+
+                    <span class="tool-status planned">
+                        PLANNED
+                    </span>
+
+                </div>
+
+
+                <div class="tool-icon">
+                    %
+                </div>
+
+
+                <div class="tool-card-body">
+
+                    <div class="tool-card-category">
+                        VALUATION
+                    </div>
+
+
+                    <h3>
+                        估值分析
+                    </h3>
+
+
+                    <p>
+                        围绕 PE、PB、PS、PEG、
+                        股息率以及历史估值区间，
+                        构建股票相对估值与历史估值分析工具。
+                    </p>
+
+                </div>
+
+
+                <div class="tool-card-footer">
+
+                    <span>
+                        估值研究
+                    </span>
+
+                    <strong>
+                        即将上线
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 04 技术分析
+            ================================================== -->
+
+            <article
+                class="tool-card"
+                data-category="analysis"
+                data-keywords="技术分析 技术指标 MA MACD RSI KDJ BOLL K线 趋势"
+            >
+
+                <div class="tool-card-top">
+
+                    <span class="tool-number">
+                        04
+                    </span>
+
+                    <span class="tool-status planned">
+                        PLANNED
+                    </span>
+
+                </div>
+
+
+                <div class="tool-icon">
+                    ≋
+                </div>
+
+
+                <div class="tool-card-body">
+
+                    <div class="tool-card-category">
+                        TECHNICAL
+                    </div>
+
+
+                    <h3>
+                        技术分析
+                    </h3>
+
+
+                    <p>
+                        基于历史行情计算 MA、MACD、
+                        RSI、KDJ、布林带等技术指标，
+                        用于趋势、动量与价格结构分析。
+                    </p>
+
+                </div>
+
+
+                <div class="tool-card-footer">
+
+                    <span>
+                        技术研究
+                    </span>
+
+                    <strong>
+                        即将上线
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         数据工具
+    ====================================================== -->
+
+    <section class="tool-section">
+
+
+        <div class="tool-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    DATA TOOLS
+                </div>
+
+                <h2>
+                    数据工具
+                </h2>
+
+                <p>
+                    面向股票数据查询、行情处理与数据研究的工具集合。
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="tool-grid">
+
+
+            <!-- =================================================
+                 05 行情查询
+            ================================================== -->
+
+            <article
+                class="tool-card"
+                data-category="data"
+                data-keywords="行情 实时行情 股票价格 行情查询 quote"
+            >
+
+                <div class="tool-card-top">
+
+                    <span class="tool-number">
+                        05
+                    </span>
+
+                    <span class="tool-status planned">
+                        PLANNED
+                    </span>
+
+                </div>
+
+
+                <div class="tool-icon">
+                    ↗
+                </div>
+
+
+                <div class="tool-card-body">
+
+                    <div class="tool-card-category">
+                        MARKET DATA
+                    </div>
+
+
+                    <h3>
+                        行情查询
+                    </h3>
+
+
+                    <p>
+                        查询股票最新价格、涨跌幅、
+                        成交量、成交额、市值等核心行情字段，
+                        后续支持更多市场数据。
+                    </p>
+
+                </div>
+
+
+                <div class="tool-card-footer">
+
+                    <span>
+                        实时数据
+                    </span>
+
+                    <strong>
+                        即将上线
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 06 K线查询
+            ================================================== -->
+
+            <article
+                class="tool-card"
+                data-category="data"
+                data-keywords="K线 日K 周K 月K 分钟K 历史行情 OHLC"
+            >
+
+                <div class="tool-card-top">
+
+                    <span class="tool-number">
+                        06
+                    </span>
+
+                    <span class="tool-status planned">
+                        PLANNED
+                    </span>
+
+                </div>
+
+
+                <div class="tool-icon">
+                    ▥
+                </div>
+
+
+                <div class="tool-card-body">
+
+                    <div class="tool-card-category">
+                        KLINE
+                    </div>
+
+
+                    <h3>
+                        K线数据
+                    </h3>
+
+
+                    <p>
+                        查询股票不同时间周期的历史 K 线，
+                        支持日线、周线、月线以及分钟级行情，
+                        为技术分析与量化研究提供基础数据。
+                    </p>
+
+                </div>
+
+
+                <div class="tool-card-footer">
+
+                    <span>
+                        历史行情
+                    </span>
+
+                    <strong>
+                        即将上线
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 07 数据查询
+            ================================================== -->
+
+            <article
+                class="tool-card"
+                data-category="data"
+                data-keywords="数据查询 财务 行情 行业 ETF 新闻 公告 API 数据源"
+            >
+
+                <div class="tool-card-top">
+
+                    <span class="tool-number">
+                        07
+                    </span>
+
+                    <span class="tool-status planned">
+                        PLANNED
+                    </span>
+
+                </div>
+
+
+                <div class="tool-icon">
+                    ⌕
+                </div>
+
+
+                <div class="tool-card-body">
+
+                    <div class="tool-card-category">
+                        DATA QUERY
+                    </div>
+
+
+                    <h3>
+                        数据查询
+                    </h3>
+
+
+                    <p>
+                        提供统一的数据查询入口，
+                        后续可覆盖行情、K线、财务、
+                        行业、ETF、资讯等数据模块。
+                    </p>
+
+                </div>
+
+
+                <div class="tool-card-footer">
+
+                    <span>
+                        统一数据服务
+                    </span>
+
+                    <strong>
+                        即将上线
+                    </strong>
+
+                </div>
+
+            </article>
+
+
+            <!-- =================================================
+                 08 股票代码工具
+            ================================================== -->
+
+            <article
+                class="tool-card"
+                data-category="data"
+                data-keywords="股票代码 代码转换 SH SZ BJ symbol code"
+            >
+
+                <div class="tool-card-top">
+
+                    <span class="tool-number">
+                        08
+                    </span>
+
+                    <span class="tool-status planned">
+                        PLANNED
+                    </span>
+
+                </div>
+
+
+                <div class="tool-icon">
+                    #
+                </div>
+
+
+                <div class="tool-card-body">
+
+                    <div class="tool-card-category">
+                        SYMBOL
+                    </div>
+
+
+                    <h3>
+                        股票代码工具
+                    </h3>
+
+
+                    <p>
+                        在不同市场与数据源使用的股票代码格式之间进行转换，
+                        统一处理 SH、SZ、BJ 等市场标识。
+                    </p>
+
+                </div>
+
+
+                <div class="tool-card-footer">
+
+                    <span>
+                        数据标准化
+                    </span>
+
+                    <strong>
+                        即将上线
+                    </strong>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         投资计算
+    ====================================================== -->
+
+    <section class="tool-section">
+
+
+        <div class="tool-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    INVESTMENT CALCULATOR
+                </div>
+
+                <h2>
+                    投资计算工具
+                </h2>
+
+                <p>
+                    将常见的投资计算独立出来，减少手工计算。
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="calculator-grid">
+
+
+            <article
+                class="calculator-card"
+                data-category="calculator"
+                data-keywords="收益 收益率 盈亏 成本价 投资收益"
+            >
+
+                <div class="calculator-icon">
+                    ↗
+                </div>
+
+
+                <div>
+
+                    <span>
+                        RETURN
+                    </span>
+
+                    <h3>
+                        收益计算
+                    </h3>
+
+                    <p>
+                        计算持仓成本、当前盈亏、
+                        收益率以及目标价格对应收益。
+                    </p>
+
+                </div>
+
+
+                <button>
+                    即将上线
+                </button>
+
+            </article>
+
+
+            <article
+                class="calculator-card"
+                data-category="calculator"
+                data-keywords="复利 复利计算 投资增长 年化收益"
+            >
+
+                <div class="calculator-icon">
+                    Σ
+                </div>
+
+
+                <div>
+
+                    <span>
+                        COMPOUND
+                    </span>
+
+                    <h3>
+                        复利计算
+                    </h3>
+
+                    <p>
+                        根据本金、收益率、
+                        投资周期计算长期复利结果。
+                    </p>
+
+                </div>
+
+
+                <button>
+                    即将上线
+                </button>
+
+            </article>
+
+
+            <article
+                class="calculator-card"
+                data-category="calculator"
+                data-keywords="估值 目标价格 PE EPS 市值"
+            >
+
+                <div class="calculator-icon">
+                    %
+                </div>
+
+
+                <div>
+
+                    <span>
+                        TARGET PRICE
+                    </span>
+
+                    <h3>
+                        目标价格测算
+                    </h3>
+
+                    <p>
+                        根据盈利、估值倍数等参数，
+                        辅助进行目标价格情景测算。
+                    </p>
+
+                </div>
+
+
+                <button>
+                    即将上线
+                </button>
+
+            </article>
+
+
+            <article
+                class="calculator-card"
+                data-category="calculator"
+                data-keywords="分红 股息 股息率 分红收益"
+            >
+
+                <div class="calculator-icon">
+                    ¥
+                </div>
+
+
+                <div>
+
+                    <span>
+                        DIVIDEND
+                    </span>
+
+                    <h3>
+                        分红收益计算
+                    </h3>
+
+                    <p>
+                        计算股息收益率、
+                        持仓分红金额以及长期分红收益。
+                    </p>
+
+                </div>
+
+
+                <button>
+                    即将上线
+                </button>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         量化工具
+    ====================================================== -->
+
+    <section class="tool-section">
+
+
+        <div class="tool-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    QUANT
+                </div>
+
+                <h2>
+                    量化研究工具
+                </h2>
+
+                <p>
+                    将数据、指标与策略条件组合起来，
+                    为后续量化选股系统提供工具入口。
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="quant-panel">
+
+
+            <div class="quant-panel-main">
+
+                <div class="quant-mark">
+                    Q
+                </div>
+
+
+                <div>
+
+                    <div class="tool-card-category">
+                        QUANT RESEARCH
+                    </div>
+
+
+                    <h3>
+                        多因子股票筛选
+                    </h3>
+
+
+                    <p>
+                        根据估值、成长、盈利能力、
+                        技术指标、成交量、市值等多个维度，
+                        构建可配置的股票筛选条件。
+                    </p>
+
+
+                    <div class="quant-tags">
+
+                        <span>
+                            基本面
+                        </span>
+
+                        <span>
+                            估值
+                        </span>
+
+                        <span>
+                            技术指标
+                        </span>
+
+                        <span>
+                            成交量
+                        </span>
+
+                        <span>
+                            市值
+                        </span>
+
+                        <span>
+                            多因子
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="quant-panel-action">
+
+                <span>
+                    QUANT ENGINE
+                </span>
+
+                <strong>
+                    规划中
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         工具能力说明
+    ====================================================== -->
+
+    <section class="tool-section tool-platform-section">
+
+
+        <div class="tool-section-header">
+
+            <div>
+
+                <div class="section-eyebrow">
+                    PLATFORM
+                </div>
+
+                <h2>
+                    不只是工具，更是研究基础设施
+                </h2>
+
+                <p>
+                    STOCK LAB 的工具体系会逐步与统一数据服务、
+                    股票研究和 AI 能力连接起来。
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="platform-grid">
+
+
+            <div class="platform-item">
+
+                <span class="platform-number">
+                    01
+                </span>
+
+                <h3>
+                    统一数据
+                </h3>
+
+                <p>
+                    工具不直接绑定单一数据源，
+                    通过统一数据接口获取行情、财务、
+                    行业与其他研究数据。
+                </p>
+
+            </div>
+
+
+            <div class="platform-item">
+
+                <span class="platform-number">
+                    02
+                </span>
+
+                <h3>
+                    模块化设计
+                </h3>
+
+                <p>
+                    每一个工具都可以独立开发、
+                    独立测试和独立扩展，
+                    后续可以持续增加新的研究能力。
+                </p>
+
+            </div>
+
+
+            <div class="platform-item">
+
+                <span class="platform-number">
+                    03
+                </span>
+
+                <h3>
+                    数据驱动
+                </h3>
+
+                <p>
+                    工具最终不仅负责展示结果，
+                    还可以成为股票研究、策略计算和 AI 分析的数据入口。
+                </p>
+
+            </div>
+
+
+            <div class="platform-item">
+
+                <span class="platform-number">
+                    04
+                </span>
+
+                <h3>
+                    面向研究
+                </h3>
+
+                <p>
+                    从单只股票到行业、市场和量化策略，
+                    所有工具最终服务于完整的投资研究流程。
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         底部 CTA
+    ====================================================== -->
+
+    <section class="tool-bottom-cta">
+
+        <div>
+
+            <div class="section-eyebrow">
+                STOCK LAB RESEARCH
+            </div>
+
+
+            <h2>
+                从一个问题开始你的研究
+            </h2>
+
+
+            <p>
+                不确定应该使用什么工具？
+                直接进入股票研究，或者让 AI 帮你找到研究方向。
+            </p>
+
+        </div>
+
+
+        <div class="tool-bottom-actions">
+
+            <button
+                class="tool-primary-button"
+                onclick="goHome('stock')"
+            >
+                股票研究 →
+            </button>
+
+
+            <button
+                class="tool-secondary-button"
+                onclick="goHome('ai-chat')"
+            >
+                ✦ AI 投研助手
+            </button>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script>
+
+
+    /* =========================================================
+       页面导航
+    ========================================================= */
+
+    function goHome(page = 'market') {
+
+        window.location.href =
+            `../?page=${page}`;
+
+    }
+
+
+    function goDocument() {
+
+        window.location.href =
+            `../document/`;
+
+    }
+
+
+    function openIndustry() {
+
+        window.location.href =
+            './industry.html';
+
+    }
+
+
+    /* =========================================================
+       工具搜索
+    ========================================================= */
+
+    const toolSearch =
+        document.getElementById('toolSearch');
+
+    const clearToolSearch =
+        document.getElementById('clearToolSearch');
+
+    const toolCards =
+        document.querySelectorAll(
+            '.tool-card, .calculator-card'
+        );
+
+
+    let currentFilter = 'all';
+
+
+    function filterTools() {
+
+        const keyword =
+            toolSearch
+                ? toolSearch.value
+                    .trim()
+                    .toLowerCase()
+                : '';
+
+
+        toolCards.forEach(card => {
+
+            const category =
+                card.dataset.category || '';
+
+
+            const text =
+                card.textContent.toLowerCase();
+
+
+            const keywords =
+                (
+                    card.dataset.keywords || ''
+                ).toLowerCase();
+
+
+            const matchKeyword =
+                !keyword ||
+                text.includes(keyword) ||
+                keywords.includes(keyword);
+
+
+            const matchCategory =
+                currentFilter === 'all' ||
+                category === currentFilter;
+
+
+            card.style.display =
+                matchKeyword && matchCategory
+                    ? ''
+                    : 'none';
+
+        });
+
+    }
+
+
+    if (toolSearch) {
+
+        toolSearch.addEventListener(
+            'input',
+            filterTools
+        );
+
+    }
+
+
+    if (clearToolSearch) {
+
+        clearToolSearch.addEventListener(
+            'click',
+            () => {
+
+                toolSearch.value = '';
+
+                filterTools();
+
+                toolSearch.focus();
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       分类筛选
+    ========================================================= */
+
+    document
+        .querySelectorAll('.tool-filter-item')
+        .forEach(button => {
+
+            button.addEventListener(
+                'click',
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            '.tool-filter-item'
+                        )
+                        .forEach(item => {
+
+                            item.classList.remove(
+                                'active'
+                            );
+
+                        });
+
+
+                    button.classList.add(
+                        'active'
+                    );
+
+
+                    currentFilter =
+                        button.dataset.filter ||
+                        'all';
+
+
+                    filterTools();
+
+                }
+            );
+
+        });
+
+
+    /* =========================================================
+       初始状态
+    ========================================================= */
+
+    filterTools();
+
+</script>
+
+
+</body>
+
+</html>
+
