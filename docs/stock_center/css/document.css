@@ -2,28 +2,41 @@
    学习文档页面
 ============================================================ */
 
+
+/* ============================================================
+   页面主体
+============================================================ */
+
 .document-page {
 
-    max-width: 1400px;
+    width: 100%;
+
+    max-width: 1280px;
 
     margin: 0 auto;
 
-    padding: 48px 40px 80px;
+    padding: 30px 32px 60px;
+
+    box-sizing: border-box;
 
 }
 
 
 /* ============================================================
-   Hero
+   学习中心 Banner
 ============================================================ */
 
 .document-hero {
 
-    padding: 56px 60px;
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 28px 34px;
 
     border: 1px solid var(--border-color);
 
-    border-radius: 18px;
+    border-radius: 14px;
 
     background: var(--panel-bg);
 
@@ -34,35 +47,18 @@
 
 .document-hero-content {
 
-    max-width: 760px;
-
-}
-
-
-.document-badge {
-
-    display: inline-block;
-
-    margin-bottom: 16px;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    letter-spacing: 2px;
-
-    opacity: 0.55;
+    max-width: 800px;
 
 }
 
 
 .document-hero h1 {
 
-    margin: 0 0 14px;
+    margin: 0 0 8px;
 
-    font-size: 42px;
+    font-size: 30px;
 
-    line-height: 1.2;
+    line-height: 1.3;
 
 }
 
@@ -71,22 +67,25 @@
 
     margin: 0;
 
-    font-size: 16px;
+    font-size: 14px;
 
-    line-height: 1.8;
+    line-height: 1.7;
 
-    opacity: 0.65;
+    opacity: 0.58;
 
 }
 
 
+
 /* ============================================================
-   搜索
+   文档搜索
 ============================================================ */
 
 .document-search {
 
-    margin-bottom: 50px;
+    width: 100%;
+
+    margin-top: 22px;
 
 }
 
@@ -99,24 +98,54 @@
 
     gap: 12px;
 
-    height: 52px;
+    width: 100%;
 
-    padding: 0 18px;
+    height: 48px;
+
+    padding: 0 16px;
+
+    box-sizing: border-box;
 
     border: 1px solid var(--border-color);
 
-    border-radius: 12px;
+    border-radius: 9px;
 
-    background: var(--panel-bg);
+    background: var(--page-bg);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 
 }
 
 
-.search-icon {
+.document-search-box:hover {
 
-    font-size: 18px;
+    border-color: var(--accent-color);
 
-    opacity: 0.55;
+}
+
+
+.document-search-box:focus-within {
+
+    border-color: var(--accent-color);
+
+    box-shadow:
+        0 0 0 3px rgba(0, 0, 0, 0.04);
+
+}
+
+
+.document-search-box .search-icon {
+
+    flex-shrink: 0;
+
+    font-size: 16px;
+
+    line-height: 1;
+
+    opacity: 0.5;
 
 }
 
@@ -125,7 +154,15 @@
 
     flex: 1;
 
+    width: 100%;
+
+    min-width: 0;
+
     height: 100%;
+
+    padding: 0;
+
+    margin: 0;
 
     border: none;
 
@@ -135,16 +172,19 @@
 
     color: inherit;
 
-    font-size: 15px;
+    font-family: inherit;
+
+    font-size: 14px;
 
 }
 
 
 .document-search-box input::placeholder {
 
-    opacity: 0.45;
+    opacity: 0.4;
 
 }
+
 
 
 /* ============================================================
@@ -153,7 +193,7 @@
 
 .document-section {
 
-    margin-bottom: 60px;
+    margin-bottom: 42px;
 
 }
 
@@ -162,20 +202,22 @@
 
     display: flex;
 
-    justify-content: space-between;
-
     align-items: flex-end;
 
-    margin-bottom: 24px;
+    justify-content: space-between;
+
+    margin-bottom: 17px;
 
 }
 
 
 .section-header h2 {
 
-    margin: 0 0 8px;
+    margin: 0 0 5px;
 
-    font-size: 24px;
+    font-size: 21px;
+
+    line-height: 1.35;
 
 }
 
@@ -184,15 +226,18 @@
 
     margin: 0;
 
-    font-size: 14px;
+    font-size: 13px;
 
-    opacity: 0.55;
+    line-height: 1.5;
+
+    opacity: 0.52;
 
 }
 
 
+
 /* ============================================================
-   文档卡片
+   学习内容卡片
 ============================================================ */
 
 .document-grid {
@@ -202,20 +247,26 @@
     grid-template-columns:
         repeat(4, minmax(0, 1fr));
 
-    gap: 18px;
+    gap: 16px;
 
 }
 
 
 .document-card {
 
-    min-height: 260px;
+    display: flex;
 
-    padding: 26px;
+    flex-direction: column;
+
+    min-height: 205px;
+
+    padding: 21px;
+
+    box-sizing: border-box;
 
     border: 1px solid var(--border-color);
 
-    border-radius: 14px;
+    border-radius: 12px;
 
     background: var(--panel-bg);
 
@@ -229,21 +280,22 @@
 
 .document-card:hover {
 
-    transform: translateY(-4px);
+    transform: translateY(-3px);
 
     border-color: var(--accent-color);
 
     box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.08);
+        0 10px 24px rgba(0, 0, 0, 0.06);
 
 }
 
 
+
+/* ============================================================
+   卡片图标
+============================================================ */
+
 .document-card-icon {
-
-    width: 46px;
-
-    height: 46px;
 
     display: flex;
 
@@ -251,16 +303,27 @@
 
     justify-content: center;
 
-    margin-bottom: 20px;
+    width: 42px;
 
-    border-radius: 12px;
+    height: 42px;
+
+    margin-bottom: 15px;
+
+    border-radius: 9px;
 
     background: var(--page-bg);
 
-    font-size: 22px;
+    font-size: 20px;
+
+    line-height: 1;
 
 }
 
+
+
+/* ============================================================
+   卡片内容
+============================================================ */
 
 .document-card-content {
 
@@ -268,31 +331,35 @@
 
     flex-direction: column;
 
-    height: calc(100% - 66px);
+    flex: 1;
 
 }
 
 
 .document-card-tag {
 
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 
     font-size: 10px;
 
+    line-height: 1.2;
+
     font-weight: 700;
 
-    letter-spacing: 1.2px;
+    letter-spacing: 1.1px;
 
-    opacity: 0.45;
+    opacity: 0.4;
 
 }
 
 
 .document-card h3 {
 
-    margin: 0 0 10px;
+    margin: 0 0 7px;
 
-    font-size: 18px;
+    font-size: 17px;
+
+    line-height: 1.4;
 
 }
 
@@ -303,28 +370,32 @@
 
     font-size: 13px;
 
-    line-height: 1.7;
+    line-height: 1.65;
 
-    opacity: 0.6;
+    opacity: 0.57;
 
 }
 
 
 .document-card a {
 
+    display: inline-block;
+
     margin-top: auto;
 
-    padding-top: 20px;
+    padding-top: 15px;
 
     color: inherit;
 
     text-decoration: none;
 
-    font-size: 13px;
+    font-size: 12px;
 
     font-weight: 600;
 
-    opacity: 0.7;
+    opacity: 0.62;
+
+    transition: opacity 0.2s ease;
 
 }
 
@@ -336,8 +407,9 @@
 }
 
 
+
 /* ============================================================
-   学习路线
+   推荐学习路线
 ============================================================ */
 
 .learning-path {
@@ -347,7 +419,7 @@
     grid-template-columns:
         repeat(3, minmax(0, 1fr));
 
-    gap: 16px;
+    gap: 14px;
 
 }
 
@@ -358,37 +430,65 @@
 
     align-items: center;
 
-    gap: 18px;
+    gap: 15px;
 
-    padding: 22px;
+    min-height: 72px;
+
+    padding: 17px 18px;
+
+    box-sizing: border-box;
 
     border: 1px solid var(--border-color);
 
-    border-radius: 12px;
+    border-radius: 10px;
 
     background: var(--panel-bg);
 
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease;
+
 }
 
+
+.learning-step:hover {
+
+    transform: translateY(-2px);
+
+    border-color: var(--accent-color);
+
+}
+
+
+
+/* ============================================================
+   学习步骤编号
+============================================================ */
 
 .step-number {
 
     flex-shrink: 0;
 
-    font-size: 13px;
+    width: 30px;
+
+    font-size: 12px;
+
+    line-height: 1;
 
     font-weight: 700;
 
-    opacity: 0.35;
+    opacity: 0.32;
 
 }
 
 
 .learning-step h3 {
 
-    margin: 0 0 5px;
+    margin: 0 0 4px;
 
-    font-size: 15px;
+    font-size: 14px;
+
+    line-height: 1.4;
 
 }
 
@@ -399,9 +499,12 @@
 
     font-size: 12px;
 
+    line-height: 1.5;
+
     opacity: 0.5;
 
 }
+
 
 
 /* ============================================================
@@ -410,12 +513,20 @@
 
 @media (max-width: 1100px) {
 
+    .document-page {
+
+        padding: 28px 24px 50px;
+
+    }
+
+
     .document-grid {
 
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
 
     }
+
 
     .learning-path {
 
@@ -431,27 +542,61 @@
 
     .document-page {
 
-        padding: 30px 18px 60px;
+        padding: 22px 16px 40px;
 
     }
+
 
     .document-hero {
 
-        padding: 36px 26px;
+        padding: 24px 20px;
+
+        border-radius: 12px;
 
     }
+
 
     .document-hero h1 {
 
-        font-size: 32px;
+        font-size: 26px;
 
     }
+
+
+    .document-hero p {
+
+        font-size: 13px;
+
+    }
+
+
+    .document-search {
+
+        margin-top: 18px;
+
+    }
+
+
+    .document-search-box {
+
+        height: 46px;
+
+    }
+
 
     .document-grid {
 
         grid-template-columns: 1fr;
 
     }
+
+
+    .document-card {
+
+        min-height: 190px;
+
+    }
+
 
     .learning-path {
 
@@ -460,3 +605,4 @@
     }
 
 }
+

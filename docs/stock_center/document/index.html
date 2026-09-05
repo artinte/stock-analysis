@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1"
     >
 
-    <title>学习文档 - A股股票研究中心</title>
+    <title>学习文档 - STOCK LAB</title>
 
     <!-- 全局样式 -->
     <link
@@ -18,7 +18,7 @@
         href="../css/global.css"
     >
 
-    <!-- 文档页面样式 -->
+    <!-- 学习文档页面样式 -->
     <link
         rel="stylesheet"
         href="../css/document.css"
@@ -26,123 +26,229 @@
 
 </head>
 
+
 <body>
 
-<!-- ============================================================
+
+<!-- =========================================================
      顶部导航
-============================================================ -->
+========================================================= -->
 
 <header class="topbar">
 
-    <div class="topbar-left">
+    <div class="topbar-inner">
 
-        <div class="brand">
-            A股股票研究中心
+
+        <!-- 品牌 -->
+
+        <div
+            class="brand"
+            onclick="goHome()"
+        >
+
+            <div class="brand-mark">
+                S
+            </div>
+
+            <div class="brand-text">
+
+                <div class="brand-name">
+                    STOCK LAB
+                </div>
+
+                <div class="brand-subtitle">
+                    股票研究中心
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 主导航 -->
+
+        <nav class="main-nav">
+
+            <button
+                class="nav-item"
+                data-page="market"
+                onclick="goHome('market')"
+            >
+                市场
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-page="stock"
+                onclick="goHome('stock')"
+            >
+                股票
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-page="news"
+                onclick="goHome('news')"
+            >
+                资讯
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-page="ai"
+                onclick="goHome('ai')"
+            >
+                AI研究
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-page="trade"
+                onclick="goHome('trade')"
+            >
+                交易
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-page="tool"
+                onclick="goHome('tool')"
+            >
+                工具
+            </button>
+
+
+            <button
+                class="nav-item active"
+                data-page="document"
+            >
+                学习文档
+            </button>
+
+        </nav>
+
+
+        <!-- 右侧 -->
+
+        <div class="header-right">
+
+
+            <!-- AI 投研助手 -->
+
+            <button
+                class="ai-top-button"
+                onclick="goHome('ai-chat')"
+            >
+
+                <span>
+                    ✦
+                </span>
+
+                AI 投研助手
+
+            </button>
+
+
+            <!-- 全局搜索 -->
+
+            <div class="global-search">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+
+                <input
+                    id="searchInput"
+                    autocomplete="off"
+                    placeholder="搜索股票 / 代码"
+                >
+
+
+                <button id="searchBtn">
+                    查询
+                </button>
+
+
+                <div
+                    id="searchDropdown"
+                    class="search-dropdown"
+                ></div>
+
+            </div>
+
         </div>
 
     </div>
 
-    <nav class="topnav">
-
-        <button
-            class="nav-item"
-            onclick="goHome()"
-        >
-            市场
-        </button>
-
-        <button
-            class="nav-item"
-            onclick="goHome('research')"
-        >
-            研究
-        </button>
-
-        <button
-            class="nav-item"
-            onclick="goHome('trade')"
-        >
-            交易
-        </button>
-
-        <button
-            class="nav-item"
-            onclick="goHome('tool')"
-        >
-            工具
-        </button>
-
-        <button
-            class="nav-item active"
-        >
-            学习文档
-        </button>
-
-    </nav>
-
 </header>
 
 
-<!-- ============================================================
-     页面主体
-============================================================ -->
+
+<!-- =========================================================
+     学习文档主体
+========================================================= -->
 
 <main class="document-page">
 
-    <!-- ========================================================
-         页面头部
-    ======================================================== -->
+
+    <!-- =====================================================
+         Banner
+    ====================================================== -->
 
     <section class="document-hero">
 
+
         <div class="document-hero-content">
 
-            <div class="document-badge">
-                KNOWLEDGE CENTER
-            </div>
-
             <h1>
-                学习文档
+                学习中心
             </h1>
 
             <p>
-                从行情数据、技术分析到基本面研究，
-                系统学习股票研究与量化分析。
+                股票研究、行情数据、技术分析、基本面、量化与 AI 研究知识库
             </p>
 
         </div>
 
-    </section>
+
+        <!-- 文档搜索 -->
+
+        <div class="document-search">
+
+            <div class="document-search-box">
+
+                <span class="search-icon">
+                    🔍
+                </span>
 
 
-    <!-- ========================================================
-         搜索
-    ======================================================== -->
+                <input
+                    id="documentSearch"
+                    type="text"
+                    autocomplete="off"
+                    placeholder="搜索文档、指标、接口、策略..."
+                >
 
-    <section class="document-search">
-
-        <div class="document-search-box">
-
-            <span class="search-icon">
-                🔍
-            </span>
-
-            <input
-                id="documentSearch"
-                type="text"
-                placeholder="搜索文档、指标、接口、策略..."
-            >
+            </div>
 
         </div>
 
     </section>
 
 
-    <!-- ========================================================
-         文档分类
-    ======================================================== -->
+
+    <!-- =====================================================
+         学习内容
+    ====================================================== -->
 
     <section class="document-section">
+
 
         <div class="section-header">
 
@@ -153,7 +259,7 @@
                 </h2>
 
                 <p>
-                    按照研究流程逐步学习股票分析
+                    从股票基础开始，逐步进入专业研究与量化分析
                 </p>
 
             </div>
@@ -161,36 +267,38 @@
         </div>
 
 
+
         <div class="document-grid">
 
 
-            <!-- ==================================================
-                 股票基础
-            ================================================== -->
+            <!-- 股票基础 -->
 
             <article
                 class="document-card"
-                data-keywords="股票基础 A股 股票 市场 基础"
+                data-keywords="股票基础 A股 股票 市场 基础 入门"
             >
 
                 <div class="document-card-icon">
                     📈
                 </div>
 
+
                 <div class="document-card-content">
 
-                    <span class="document-card-tag">
+                    <div class="document-card-tag">
                         BEGINNER
-                    </span>
+                    </div>
+
 
                     <h3>
                         股票基础
                     </h3>
 
+
                     <p>
-                        了解股票、交易所、指数、
-                        市值以及 A 股市场的基本概念。
+                        了解股票、A股市场、交易制度以及常见股票概念。
                     </p>
+
 
                     <a href="#">
                         开始学习 →
@@ -201,33 +309,35 @@
             </article>
 
 
-            <!-- ==================================================
-                 行情数据
-            ================================================== -->
+
+            <!-- 行情数据 -->
 
             <article
                 class="document-card"
-                data-keywords="行情 数据 实时行情 K线 腾讯 银河"
+                data-keywords="行情 数据 实时行情 K线 腾讯 银河 数据源"
             >
 
                 <div class="document-card-icon">
                     📊
                 </div>
 
+
                 <div class="document-card-content">
 
-                    <span class="document-card-tag">
+                    <div class="document-card-tag">
                         DATA
-                    </span>
+                    </div>
+
 
                     <h3>
                         行情数据
                     </h3>
 
+
                     <p>
-                        学习股票实时行情、历史 K 线、
-                        成交量、成交额等市场数据。
+                        了解实时行情、历史行情、K线以及股票市场数据。
                     </p>
+
 
                     <a href="#">
                         开始学习 →
@@ -238,9 +348,8 @@
             </article>
 
 
-            <!-- ==================================================
-                 技术分析
-            ================================================== -->
+
+            <!-- 技术分析 -->
 
             <article
                 class="document-card"
@@ -251,20 +360,23 @@
                     📐
                 </div>
 
+
                 <div class="document-card-content">
 
-                    <span class="document-card-tag">
+                    <div class="document-card-tag">
                         TECHNICAL
-                    </span>
+                    </div>
+
 
                     <h3>
                         技术分析
                     </h3>
 
+
                     <p>
-                        学习均线、MACD、RSI、KDJ、
-                        成交量等常见技术指标。
+                        学习均线、MACD、KDJ、RSI等常用技术分析指标。
                     </p>
+
 
                     <a href="#">
                         开始学习 →
@@ -275,33 +387,35 @@
             </article>
 
 
-            <!-- ==================================================
-                 基本面分析
-            ================================================== -->
+
+            <!-- 基本面 -->
 
             <article
                 class="document-card"
-                data-keywords="基本面 财务 财报 利润 资产负债 PE PB"
+                data-keywords="基本面 财务 财报 利润 资产负债 现金流"
             >
 
                 <div class="document-card-icon">
                     🏢
                 </div>
 
+
                 <div class="document-card-content">
 
-                    <span class="document-card-tag">
+                    <div class="document-card-tag">
                         FUNDAMENTAL
-                    </span>
+                    </div>
+
 
                     <h3>
                         基本面分析
                     </h3>
 
+
                     <p>
-                        学习财务报表、盈利能力、
-                        估值指标以及企业基本面分析。
+                        从财务报表、盈利能力和企业经营情况分析公司基本面。
                     </p>
+
 
                     <a href="#">
                         开始学习 →
@@ -312,33 +426,35 @@
             </article>
 
 
-            <!-- ==================================================
-                 估值分析
-            ================================================== -->
+
+            <!-- 股票估值 -->
 
             <article
                 class="document-card"
-                data-keywords="估值 PE PB PEG 市盈率 市净率 估值"
+                data-keywords="估值 PE PB PEG 市盈率 市净率 估值模型"
             >
 
                 <div class="document-card-icon">
                     💰
                 </div>
 
+
                 <div class="document-card-content">
 
-                    <span class="document-card-tag">
+                    <div class="document-card-tag">
                         VALUATION
-                    </span>
+                    </div>
+
 
                     <h3>
                         股票估值
                     </h3>
 
+
                     <p>
-                        学习 PE、PB、PEG 以及企业价值、
-                        市值和估值方法。
+                        学习PE、PB、PEG等估值指标以及企业价值分析方法。
                     </p>
+
 
                     <a href="#">
                         开始学习 →
@@ -349,33 +465,35 @@
             </article>
 
 
-            <!-- ==================================================
-                 量化分析
-            ================================================== -->
+
+            <!-- 量化 -->
 
             <article
                 class="document-card"
-                data-keywords="量化 量化分析 策略 因子 选股"
+                data-keywords="量化 量化分析 策略 因子 选股 回测"
             >
 
                 <div class="document-card-icon">
                     🧮
                 </div>
 
+
                 <div class="document-card-content">
 
-                    <span class="document-card-tag">
+                    <div class="document-card-tag">
                         QUANT
-                    </span>
+                    </div>
+
 
                     <h3>
                         量化分析
                     </h3>
 
+
                     <p>
-                        从数据筛选、因子分析到策略构建，
-                        学习量化选股方法。
+                        从因子、策略、选股到回测，逐步构建量化研究体系。
                     </p>
+
 
                     <a href="#">
                         开始学习 →
@@ -386,9 +504,8 @@
             </article>
 
 
-            <!-- ==================================================
-                 数据接口
-            ================================================== -->
+
+            <!-- 数据接口 -->
 
             <article
                 class="document-card"
@@ -399,20 +516,23 @@
                     🔌
                 </div>
 
+
                 <div class="document-card-content">
 
-                    <span class="document-card-tag">
+                    <div class="document-card-tag">
                         API
-                    </span>
+                    </div>
+
 
                     <h3>
                         数据接口
                     </h3>
 
+
                     <p>
-                        学习股票数据接口、数据源、
-                        Gateway 以及统一数据访问架构。
+                        了解股票数据接口、数据源以及统一数据访问方式。
                     </p>
+
 
                     <a href="#">
                         开始学习 →
@@ -423,9 +543,8 @@
             </article>
 
 
-            <!-- ==================================================
-                 AI 股票研究
-            ================================================== -->
+
+            <!-- AI -->
 
             <article
                 class="document-card"
@@ -436,20 +555,23 @@
                     🤖
                 </div>
 
+
                 <div class="document-card-content">
 
-                    <span class="document-card-tag">
+                    <div class="document-card-tag">
                         AI
-                    </span>
+                    </div>
+
 
                     <h3>
                         AI 股票研究
                     </h3>
 
+
                     <p>
-                        学习如何利用 AI 进行新闻、
-                        舆情、财报和股票研究。
+                        使用 AI、大模型和舆情分析提升股票研究效率。
                     </p>
+
 
                     <a href="#">
                         开始学习 →
@@ -459,16 +581,19 @@
 
             </article>
 
+
         </div>
 
     </section>
 
 
-    <!-- ========================================================
-         学习路线
-    ======================================================== -->
+
+    <!-- =====================================================
+         推荐学习路线
+    ====================================================== -->
 
     <section class="document-section">
+
 
         <div class="section-header">
 
@@ -487,15 +612,18 @@
         </div>
 
 
+
         <div class="learning-path">
+
 
             <div class="learning-step">
 
-                <span class="step-number">
+                <div class="step-number">
                     01
-                </span>
+                </div>
 
                 <div>
+
                     <h3>
                         股票基础
                     </h3>
@@ -503,18 +631,21 @@
                     <p>
                         了解股票和 A 股市场
                     </p>
+
                 </div>
 
             </div>
 
 
+
             <div class="learning-step">
 
-                <span class="step-number">
+                <div class="step-number">
                     02
-                </span>
+                </div>
 
                 <div>
+
                     <h3>
                         行情与 K 线
                     </h3>
@@ -522,18 +653,21 @@
                     <p>
                         掌握市场数据和价格走势
                     </p>
+
                 </div>
 
             </div>
 
 
+
             <div class="learning-step">
 
-                <span class="step-number">
+                <div class="step-number">
                     03
-                </span>
+                </div>
 
                 <div>
+
                     <h3>
                         技术分析
                     </h3>
@@ -541,18 +675,21 @@
                     <p>
                         掌握常用技术指标
                     </p>
+
                 </div>
 
             </div>
 
 
+
             <div class="learning-step">
 
-                <span class="step-number">
+                <div class="step-number">
                     04
-                </span>
+                </div>
 
                 <div>
+
                     <h3>
                         基本面与估值
                     </h3>
@@ -560,18 +697,21 @@
                     <p>
                         从财务数据分析企业价值
                     </p>
+
                 </div>
 
             </div>
 
 
+
             <div class="learning-step">
 
-                <span class="step-number">
+                <div class="step-number">
                     05
-                </span>
+                </div>
 
                 <div>
+
                     <h3>
                         量化研究
                     </h3>
@@ -585,13 +725,15 @@
             </div>
 
 
+
             <div class="learning-step">
 
-                <span class="step-number">
+                <div class="step-number">
                     06
-                </span>
+                </div>
 
                 <div>
+
                     <h3>
                         AI 研究
                     </h3>
@@ -604,90 +746,95 @@
 
             </div>
 
+
         </div>
 
     </section>
 
+
 </main>
 
 
-<!-- ============================================================
-     JavaScript
-============================================================ -->
+
+<!-- =========================================================
+     页面脚本
+========================================================= -->
 
 <script>
 
-    // ============================================================
-    // 返回主页
-    // ============================================================
 
-    function goHome(page = 'market') {
+/* =========================================================
+   返回主站
+========================================================= */
 
-        if (page === 'market') {
+function goHome(page = 'market') {
 
-            window.location.href = '../';
+    window.location.href = `../?page=${page}`;
 
-            return;
-        }
-
-        window.location.href =
-            `../?page=${page}`;
-    }
+}
 
 
-    // ============================================================
-    // 文档搜索
-    // ============================================================
 
-    const searchInput =
-        document.getElementById('documentSearch');
+/* =========================================================
+   文档搜索
+========================================================= */
 
-    const cards =
-        document.querySelectorAll('.document-card');
+const searchInput =
+    document.getElementById('documentSearch');
 
 
-    if (searchInput) {
+const cards =
+    document.querySelectorAll('.document-card');
 
-        searchInput.addEventListener(
-            'input',
-            () => {
 
-                const keyword =
-                    searchInput.value
-                        .trim()
+if (searchInput) {
+
+    searchInput.addEventListener(
+        'input',
+        () => {
+
+            const keyword =
+                searchInput.value
+                    .trim()
+                    .toLowerCase();
+
+
+            cards.forEach(card => {
+
+                const text =
+                    card.textContent
                         .toLowerCase();
 
-                cards.forEach(card => {
 
-                    const text =
-                        card.textContent
-                            .toLowerCase();
+                const keywords =
+                    (
+                        card.dataset.keywords || ''
+                    ).toLowerCase();
 
-                    const keywords =
-                        (
-                            card.dataset.keywords ||
-                            ''
-                        ).toLowerCase();
 
-                    const matched =
-                        !keyword ||
-                        text.includes(keyword) ||
-                        keywords.includes(keyword);
+                const matched =
+                    !keyword ||
+                    text.includes(keyword) ||
+                    keywords.includes(keyword);
 
-                    card.style.display =
-                        matched
-                            ? ''
-                            : 'none';
 
-                });
+                card.style.display =
+                    matched
+                        ? ''
+                        : 'none';
 
-            }
-        );
+            });
 
-    }
+        }
+    );
+
+}
+
 
 </script>
+
 
 </body>
 
 </html>
+
