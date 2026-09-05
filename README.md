@@ -16,10 +16,10 @@
 
 👉 点击 [股票研究中心](https://artinte.github.io/stock-analysis/stock_center/index.html) 进入项目首页，查看功能介绍与项目详情。
 
-或者进入 `docs/stock_center/` 目录运行：
+或者进入 `stock-analysis` 目录运行：
 
 ```
-python -m http.server 8000 --bind 127.0.0.1
+uvicorn service.api:app --reload
 ```
 
 打开浏览器输入： `http://127.0.0.1:8000/`

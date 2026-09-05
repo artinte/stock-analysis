@@ -1062,15 +1062,39 @@ function renderIndex(index) {
     }
 
     // ============================================================
+    // 两位小数格式化
+    // ============================================================
+
+    function formatNumber(value) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ''
+        ) {
+            return '--';
+        }
+
+        const number = Number(value);
+
+        if (Number.isNaN(number)) {
+            return '--';
+        }
+
+        return number.toFixed(2);
+    }
+
+    // ============================================================
     // 价格
     // ============================================================
 
-    const priceElement = card.querySelector('.index-price');
+    const priceElement =
+        card.querySelector('.index-price');
 
     if (priceElement) {
 
         priceElement.textContent =
-            index.price ?? '--';
+            formatNumber(index.price);
 
     }
 
@@ -1084,12 +1108,18 @@ function renderIndex(index) {
     if (values.length >= 2) {
 
         values[0].textContent =
-            index.change ?? '--';
+            formatNumber(index.change);
+
+        const percent =
+            formatNumber(
+                index.changePercent ??
+                index.change_percent
+            );
 
         values[1].textContent =
-            index.changePercent ??
-            index.change_percent ??
-            '--';
+            percent === '--'
+                ? '--'
+                : `${percent}%`;
     }
 
     // ============================================================
