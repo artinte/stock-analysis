@@ -20,6 +20,7 @@ from core.models.kline import Kline
 from core.models.valuation import Valuation
 from core.models.quote import Quote
 from gateways.analysis.financial import FinancialAnalyzer
+from gateways.providers.yinhe.etf import YinheETF
 from gateways.providers.yinhe.financial import YinheFinancial
 from gateways.providers.yinhe.kline import YinheKline
 from gateways.providers.yinhe.quote import YinheQuote
@@ -166,6 +167,8 @@ class YinheGateway(StockDataGateway):
         self.financial = YinheFinancial(self)
 
         self.valuation = YinheValuation(self)
+
+        self.etf = YinheETF(self)
 
         self.financial_analyzer = FinancialAnalyzer()
 
@@ -405,7 +408,7 @@ class YinheGateway(StockDataGateway):
             TTM PE
         """
         return self.valuation.fetch_valuation(symbol)
-    
+
     def fetch_etf_composition(
         self,
         symbol: str,
