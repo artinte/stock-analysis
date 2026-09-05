@@ -1,0 +1,2637 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>行情数据 - STOCK LAB</title>
+
+    <link rel="stylesheet" href="../../css/global.css">
+
+    <link rel="stylesheet" href="../../css/document.css">
+
+    <style>
+        /* =========================================================
+           文章页面
+        ========================================================= */
+
+        .article-page {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 24px 100px;
+        }
+
+
+        .article-back {
+            display: inline-flex;
+
+            margin-bottom: 20px;
+
+            color: var(--text-secondary);
+
+            text-decoration: none;
+
+            font-size: 14px;
+        }
+
+
+        .article-back:hover {
+            color: var(--accent-color);
+        }
+
+
+        /* =========================================================
+           文章头部
+        ========================================================= */
+
+        .article-header {
+            padding: 48px 52px;
+
+            margin-bottom: 28px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 14px;
+
+            background: var(--panel-bg);
+        }
+
+
+        .article-category {
+            margin-bottom: 14px;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.5px;
+
+            color: var(--accent-color);
+        }
+
+
+        .article-header h1 {
+            margin: 0 0 18px;
+
+            font-size: 40px;
+
+            line-height: 1.3;
+        }
+
+
+        .article-description {
+            max-width: 900px;
+
+            margin: 0;
+
+            font-size: 16px;
+
+            line-height: 1.9;
+
+            color: var(--text-secondary);
+        }
+
+
+        /* =========================================================
+           正文布局
+        ========================================================= */
+
+        .article-layout {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr) 260px;
+
+            gap: 28px;
+
+            align-items: start;
+        }
+
+
+        .article-content {
+            min-width: 0;
+
+            padding: 48px 52px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 14px;
+
+            background: var(--panel-bg);
+        }
+
+
+        /* =========================================================
+           标题
+        ========================================================= */
+
+        .article-content h2 {
+            margin: 46px 0 20px;
+
+            padding-bottom: 12px;
+
+            border-bottom: 1px solid var(--border-color);
+
+            font-size: 26px;
+
+            line-height: 1.45;
+        }
+
+
+        .article-content h2:first-child {
+            margin-top: 0;
+        }
+
+
+        .article-content h3 {
+            margin: 34px 0 14px;
+
+            font-size: 19px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           正文
+        ========================================================= */
+
+        .article-content p {
+            margin: 15px 0;
+
+            font-size: 15px;
+
+            line-height: 2;
+
+            color: var(--text-secondary);
+        }
+
+
+        .article-content strong {
+            color: var(--text-primary);
+        }
+
+
+        .article-content ul,
+        .article-content ol {
+            margin: 18px 0;
+
+            padding-left: 28px;
+        }
+
+
+        .article-content li {
+            margin: 10px 0;
+
+            font-size: 15px;
+
+            line-height: 1.9;
+
+            color: var(--text-secondary);
+        }
+
+
+        /* =========================================================
+           信息提示
+        ========================================================= */
+
+        .article-note {
+            margin: 28px 0;
+
+            padding: 22px 24px;
+
+            border: 1px solid var(--border-color);
+
+            border-left: 4px solid var(--accent-color);
+
+            border-radius: 8px;
+
+            background: var(--panel-bg);
+        }
+
+
+        .article-note-title {
+            margin-bottom: 8px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: var(--text-primary);
+        }
+
+
+        .article-note p {
+            margin: 0;
+
+            font-size: 14px;
+
+            line-height: 1.9;
+        }
+
+
+        /* =========================================================
+           数据表格
+        ========================================================= */
+
+        .article-table-wrapper {
+            margin: 26px 0;
+
+            overflow-x: auto;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 8px;
+        }
+
+
+        .article-table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 620px;
+        }
+
+
+        .article-table th,
+        .article-table td {
+            padding: 13px 16px;
+
+            border-bottom: 1px solid var(--border-color);
+
+            text-align: left;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+
+        .article-table th {
+            font-weight: 700;
+
+            color: var(--text-primary);
+
+            background: var(--panel-bg);
+        }
+
+
+        .article-table td {
+            color: var(--text-secondary);
+        }
+
+
+        .article-table tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        /* =========================================================
+           数据结构展示
+        ========================================================= */
+
+        .data-structure {
+            margin: 24px 0;
+
+            padding: 22px 24px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 8px;
+
+            background: var(--panel-bg);
+
+            font-family:
+                "Consolas",
+                "SFMono-Regular",
+                monospace;
+
+            font-size: 14px;
+
+            line-height: 1.9;
+
+            color: var(--text-secondary);
+
+            overflow-x: auto;
+        }
+
+
+        .data-structure strong {
+            font-family: inherit;
+        }
+
+
+        /* =========================================================
+           重点结论
+        ========================================================= */
+
+        .article-summary {
+            margin-top: 42px;
+
+            padding: 26px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 10px;
+
+            background: var(--panel-bg);
+        }
+
+
+        .article-summary-title {
+            margin-bottom: 14px;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            color: var(--text-primary);
+        }
+
+
+        .article-summary p {
+            margin: 8px 0;
+
+            font-size: 14px;
+
+            line-height: 1.9;
+        }
+
+
+        /* =========================================================
+           右侧目录
+        ========================================================= */
+
+        .article-toc {
+            position: sticky;
+
+            top: 90px;
+
+            padding: 22px;
+
+            border: 1px solid var(--border-color);
+
+            border-radius: 12px;
+
+            background: var(--panel-bg);
+        }
+
+
+        .article-toc-title {
+            margin-bottom: 15px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: var(--text-primary);
+        }
+
+
+        .article-toc a {
+            display: block;
+
+            padding: 7px 0;
+
+            color: var(--text-secondary);
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            transition: color 0.2s;
+        }
+
+
+        .article-toc a:hover {
+            color: var(--accent-color);
+        }
+
+
+        /* =========================================================
+           响应式
+        ========================================================= */
+
+        @media (max-width: 1000px) {
+
+            .article-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .article-toc {
+                position: static;
+
+                order: -1;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .article-page {
+                padding: 20px 14px 60px;
+            }
+
+
+            .article-header {
+                padding: 30px 24px;
+            }
+
+
+            .article-header h1 {
+                font-size: 30px;
+            }
+
+
+            .article-content {
+                padding: 30px 22px;
+            }
+
+
+            .article-content h2 {
+                font-size: 23px;
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+     顶部导航
+========================================================= -->
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+
+            <div class="brand" onclick="goHome()">
+
+                <div class="brand-mark">
+                    S
+                </div>
+
+                <div class="brand-text">
+
+                    <div class="brand-name">
+                        STOCK LAB
+                    </div>
+
+                    <div class="brand-subtitle">
+                        股票研究中心
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <nav class="main-nav">
+
+                <button class="nav-item" onclick="goHome('market')">
+                    市场
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('stock')">
+                    股票
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('news')">
+                    资讯
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('ai')">
+                    AI研究
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('trade')">
+                    交易
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('tool')">
+                    工具
+                </button>
+
+
+                <button class="nav-item active">
+                    学习文档
+                </button>
+
+            </nav>
+
+
+            <div class="header-right">
+
+                <button class="ai-top-button" onclick="goHome('ai-chat')">
+
+                    <span>✦</span>
+
+                    AI 投研助手
+
+                </button>
+
+
+                <div class="global-search">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+
+                    <input id="searchInput" autocomplete="off" placeholder="搜索股票 / 代码">
+
+
+                    <button id="searchBtn">
+                        查询
+                    </button>
+
+
+                    <div id="searchDropdown" class="search-dropdown">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+     文章
+========================================================= -->
+
+    <main class="article-page">
+
+
+        <a class="article-back" href="../">
+            ← 返回学习中心
+        </a>
+
+
+        <!-- =====================================================
+         文章头部
+    ====================================================== -->
+
+        <header class="article-header">
+
+            <div class="article-category">
+                DATA · MARKET DATA · CHAPTER 01
+            </div>
+
+
+            <h1>
+                行情数据
+            </h1>
+
+
+            <p class="article-description">
+                股票研究的第一层基础。
+                从股票价格、成交量和成交额开始，
+                建立对实时行情、历史行情、K线以及市场数据体系的完整认识。
+            </p>
+
+        </header>
+
+
+        <div class="article-layout">
+
+
+            <!-- =====================================================
+             正文
+        ====================================================== -->
+
+            <article class="article-content">
+
+
+                <!-- =================================================
+                 01
+            ================================================== -->
+
+                <h2 id="what-is-data">
+                    一、什么是股票行情数据？
+                </h2>
+
+
+                <p>
+                    当我们打开股票软件，看到一只股票当前价格为 100 元，
+                    今日上涨 2%，成交量为 50 万手，成交额为 5 亿元时，
+                    这些数字并不是孤立存在的。
+                </p>
+
+
+                <p>
+                    它们共同构成了我们通常所说的
+                    <strong>股票行情数据</strong>。
+                </p>
+
+
+                <p>
+                    从最简单的角度理解，
+                    行情数据就是对股票市场交易状态和交易结果进行数字化描述的数据。
+                    它记录了一只股票在某个时间点或者某个时间区间内，
+                    发生了什么价格变化、发生了多少交易，以及市场处于什么状态。
+                </p>
+
+
+                <p>
+                    因此，行情数据并不仅仅是一个“当前股价”。
+                    一个完整的行情系统通常需要同时处理价格、
+                    时间、成交量、成交额、涨跌幅、最高价、最低价、
+                    开盘价、昨收价等大量字段。
+                </p>
+
+
+                <div class="article-note">
+
+                    <div class="article-note-title">
+                        核心理解
+                    </div>
+
+                    <p>
+                        行情数据回答的是一个非常基础的问题：
+                        <strong>市场现在发生了什么，以及过去发生过什么？</strong>
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                 02
+            ================================================== -->
+
+                <h2 id="market-data-role">
+                    二、为什么行情数据是股票研究的基础？
+                </h2>
+
+
+                <p>
+                    股票研究通常包含很多不同方向。
+                    我们可以研究公司的收入和利润，
+                    可以研究行业的发展趋势，
+                    可以研究股票的估值，
+                    也可以研究价格趋势和市场情绪。
+                </p>
+
+
+                <p>
+                    但是无论采用哪一种研究方法，
+                    <strong>行情数据往往都是最基础的数据入口之一。</strong>
+                </p>
+
+
+                <p>
+                    例如，当我们研究贵州茅台时，
+                    如果想判断股票近期走势，
+                    首先需要知道它的价格。
+                </p>
+
+
+                <p>
+                    如果想研究过去一年表现，
+                    就需要历史价格。
+                </p>
+
+
+                <p>
+                    如果想研究趋势，
+                    就需要连续的历史行情。
+                </p>
+
+
+                <p>
+                    如果想研究市场交易活跃程度，
+                    就需要成交量和成交额。
+                </p>
+
+
+                <p>
+                    如果想进一步计算移动平均线、MACD、RSI、
+                    波动率等技术指标，
+                    同样需要行情数据作为输入。
+                </p>
+
+
+                <p>
+                    因此可以把股票研究理解成一条数据链：
+                </p>
+
+
+                <div class="data-structure">
+
+                    行情数据
+                    <br>
+                    ↓
+                    <br>
+                    数据清洗与标准化
+                    <br>
+                    ↓
+                    <br>
+                    指标计算
+                    <br>
+                    ↓
+                    <br>
+                    技术分析 / 量化分析
+                    <br>
+                    ↓
+                    <br>
+                    股票研究与决策
+
+                </div>
+
+
+                <!-- =================================================
+                 03
+            ================================================== -->
+
+                <h2 id="data-types">
+                    三、行情数据有哪些类型？
+                </h2>
+
+
+                <p>
+                    股票行情数据并不是一种固定的数据形式。
+                    根据时间维度、用途和数据粒度不同，
+                    可以划分为多个层次。
+                </p>
+
+
+                <p>
+                    对于股票研究系统来说，
+                    最重要的几个类别包括：
+                </p>
+
+
+                <div class="article-table-wrapper">
+
+                    <table class="article-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    类型
+                                </th>
+
+                                <th>
+                                    主要内容
+                                </th>
+
+                                <th>
+                                    典型用途
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    实时行情
+                                </td>
+
+                                <td>
+                                    当前价格、涨跌幅、成交量等
+                                </td>
+
+                                <td>
+                                    实时监控、盘中分析
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    历史行情
+                                </td>
+
+                                <td>
+                                    过去交易日的价格与成交数据
+                                </td>
+
+                                <td>
+                                    趋势分析、回测
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    K线数据
+                                </td>
+
+                                <td>
+                                    开盘、最高、最低、收盘等
+                                </td>
+
+                                <td>
+                                    技术分析、量化研究
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    分时数据
+                                </td>
+
+                                <td>
+                                    日内不同时间点的行情变化
+                                </td>
+
+                                <td>
+                                    盘中走势研究
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    成交数据
+                                </td>
+
+                                <td>
+                                    成交量、成交额等
+                                </td>
+
+                                <td>
+                                    流动性与资金活跃度分析
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <p>
+                    这些数据并不是互相独立的。
+                    它们实际上是在不同时间粒度下，
+                    对同一个市场交易过程进行描述。
+                </p>
+
+
+                <!-- =================================================
+                 04
+            ================================================== -->
+
+                <h2 id="quote">
+                    四、什么是股票实时行情？
+                </h2>
+
+
+                <p>
+                    实时行情可以理解为股票市场当前状态的一个“快照”。
+                </p>
+
+
+                <p>
+                    例如：
+                </p>
+
+
+                <div class="data-structure">
+
+                    股票代码：600519.SH
+                    <br>
+                    股票名称：贵州茅台
+                    <br>
+                    当前价格：……
+                    <br>
+                    昨日收盘：……
+                    <br>
+                    今日开盘：……
+                    <br>
+                    今日最高：……
+                    <br>
+                    今日最低：……
+                    <br>
+                    涨跌：……
+                    <br>
+                    涨跌幅：……
+                    <br>
+                    成交量：……
+                    <br>
+                    成交额：……
+
+                </div>
+
+
+                <p>
+                    在真实市场中，这些数据会随着交易不断发生变化。
+                    因此实时行情和历史行情最大的区别之一，
+                    就是<strong>时间状态不同</strong>。
+                </p>
+
+
+                <p>
+                    实时行情强调“现在”，
+                    历史行情强调“过去”。
+                </p>
+
+
+                <p>
+                    在交易系统中，实时行情通常用于股票监控、
+                    行情页面、预警系统以及盘中策略。
+                </p>
+
+
+                <p>
+                    在研究系统中，实时行情还可以用于更新当前股票状态，
+                    例如计算当前涨跌幅、当前市值、
+                    当前价格相对于历史区间的位置等。
+                </p>
+
+
+                <!-- =================================================
+                 05
+            ================================================== -->
+
+                <h2 id="historical">
+                    五、什么是历史行情？
+                </h2>
+
+
+                <p>
+                    如果实时行情回答的是“股票现在怎么样”，
+                    那么历史行情回答的就是：
+                    <strong>股票过去发生过什么？</strong>
+                </p>
+
+
+                <p>
+                    例如，我们希望研究一只股票过去三年的走势，
+                    就需要获取连续的历史交易数据。
+                </p>
+
+
+                <p>
+                    历史行情通常按照交易日或者更细的时间周期保存。
+                    最常见的是日线数据，也可以进一步细分为分钟级数据。
+                </p>
+
+
+                <p>
+                    历史行情的价值非常大，因为很多研究工作都不是只观察当前价格。
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        判断股票长期趋势；
+                    </li>
+
+                    <li>
+                        研究历史最大回撤；
+                    </li>
+
+                    <li>
+                        计算历史波动率；
+                    </li>
+
+                    <li>
+                        研究价格与成交量关系；
+                    </li>
+
+                    <li>
+                        进行技术指标计算；
+                    </li>
+
+                    <li>
+                        进行量化策略回测；
+                    </li>
+
+                    <li>
+                        分析不同市场阶段的表现。
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    因此，一个真正的股票研究系统，
+                    不可能只保存当天的行情。
+                    它必须具备稳定的历史数据体系。
+                </p>
+
+
+                <!-- =================================================
+                 06
+            ================================================== -->
+
+                <h2 id="kline">
+                    六、什么是 K 线？
+                </h2>
+
+
+                <p>
+                    K 线是股票行情数据中最重要的数据结构之一。
+                </p>
+
+
+                <p>
+                    一根 K 线并不是一个单独的价格，
+                    而是对某一个时间周期内价格变化过程的总结。
+                </p>
+
+
+                <p>
+                    一根标准 K 线通常包含四个核心价格：
+                </p>
+
+
+                <div class="article-table-wrapper">
+
+                    <table class="article-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    字段
+                                </th>
+
+                                <th>
+                                    含义
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    Open
+                                </td>
+
+                                <td>
+                                    该周期的开盘价
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    High
+                                </td>
+
+                                <td>
+                                    该周期内最高价
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    Low
+                                </td>
+
+                                <td>
+                                    该周期内最低价
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    Close
+                                </td>
+
+                                <td>
+                                    该周期的收盘价
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    Volume
+                                </td>
+
+                                <td>
+                                    该周期成交量
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    Amount
+                                </td>
+
+                                <td>
+                                    该周期成交额
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <p>
+                    例如，一根日 K 线代表一个交易日。
+                    它告诉我们这一天股票从什么价格开始，
+                    最高涨到了哪里，最低跌到了哪里，
+                    最终又收在什么位置。
+                </p>
+
+
+                <p>
+                    因此 K 线实际上把一个时间段内复杂的价格变化，
+                    压缩成了一组结构化数据。
+                </p>
+
+
+                <p>
+                    后续的技术分析，本质上也是在这些结构化数据之上进行计算。
+                </p>
+
+
+                <!-- =================================================
+                 07
+            ================================================== -->
+
+                <h2 id="interval">
+                    七、不同时间周期的行情数据
+                </h2>
+
+
+                <p>
+                    同一只股票可以按照不同的时间粒度进行观察。
+                </p>
+
+
+                <p>
+                    常见的周期包括：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        1分钟；
+                    </li>
+
+                    <li>
+                        5分钟；
+                    </li>
+
+                    <li>
+                        15分钟；
+                    </li>
+
+                    <li>
+                        30分钟；
+                    </li>
+
+                    <li>
+                        60分钟；
+                    </li>
+
+                    <li>
+                        日线；
+                    </li>
+
+                    <li>
+                        周线；
+                    </li>
+
+                    <li>
+                        月线。
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    不同周期并不存在简单的“哪个更好”。
+                    它们服务于不同的研究目的。
+                </p>
+
+
+                <p>
+                    例如，分钟级数据更加适合研究日内价格变化，
+                    日线适合观察中短期趋势，
+                    周线和月线则更适合观察长期价格结构。
+                </p>
+
+
+                <div class="article-note">
+
+                    <div class="article-note-title">
+                        一个重要概念
+                    </div>
+
+                    <p>
+                        时间周期改变之后，
+                        同一段市场历史会被重新组织。
+                        因此 1 分钟 K 线、日 K 线和月 K 线虽然来自同一个市场，
+                        但表达的是不同层次的信息。
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                 08
+            ================================================== -->
+
+                <h2 id="price">
+                    八、如何理解股票价格？
+                </h2>
+
+
+                <p>
+                    股票价格是行情数据中最直观的字段，
+                    但“价格”本身并不能代表股票的全部信息。
+                </p>
+
+
+                <p>
+                    例如，一只股票价格是 10 元，
+                    另一只股票价格是 100 元，
+                    我们不能因此判断 10 元的股票更便宜。
+                </p>
+
+
+                <p>
+                    因为股票价格只是<strong>每一股对应的交易价格</strong>。
+                </p>
+
+
+                <p>
+                    真正研究股票价值时，
+                    还需要结合总股本、流通股本、
+                    市值、利润、资产以及估值指标等信息。
+                </p>
+
+
+                <p>
+                    这也是为什么行情数据虽然非常重要，
+                    但行情数据本身并不等于完整的股票研究。
+                </p>
+
+
+                <!-- =================================================
+                 09
+            ================================================== -->
+
+                <h2 id="volume">
+                    九、什么是成交量？
+                </h2>
+
+
+                <p>
+                    成交量描述的是某一个时间周期内，
+                    股票实际成交了多少数量。
+                </p>
+
+
+                <p>
+                    在 A 股市场中，
+                    股票行情软件经常使用“手”作为展示单位。
+                    1 手通常对应 100 股。
+                </p>
+
+
+                <p>
+                    例如，一只股票当天成交量为 100 万手，
+                    可以理解为当天市场发生了大量股票数量上的成交。
+                </p>
+
+
+                <p>
+                    成交量非常重要，因为价格只能告诉我们交易价格发生了什么变化，
+                    而成交量能够帮助我们观察：
+                    <strong>这个价格变化伴随着多少交易活动。</strong>
+                </p>
+
+
+                <p>
+                    因此在技术分析中，
+                    价格和成交量经常会结合起来观察。
+                </p>
+
+
+                <!-- =================================================
+                 10
+            ================================================== -->
+
+                <h2 id="amount">
+                    十、什么是成交额？
+                </h2>
+
+
+                <p>
+                    成交额表示某一个时间周期内，
+                    市场实际完成的成交金额。
+                </p>
+
+
+                <p>
+                    它和成交量并不是同一个概念。
+                </p>
+
+
+                <p>
+                    成交量强调的是“成交了多少股”，
+                    成交额强调的是“这些交易对应了多少钱”。
+                </p>
+
+
+                <p>
+                    因此，在研究市场活跃度时，
+                    成交额也是一个非常重要的指标。
+                </p>
+
+
+                <div class="article-table-wrapper">
+
+                    <table class="article-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    指标
+                                </th>
+
+                                <th>
+                                    关注点
+                                </th>
+
+                                <th>
+                                    常见用途
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    成交量
+                                </td>
+
+                                <td>
+                                    成交股票数量
+                                </td>
+
+                                <td>
+                                    交易活跃度、量价分析
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    成交额
+                                </td>
+
+                                <td>
+                                    成交金额
+                                </td>
+
+                                <td>
+                                    资金规模、市场活跃度
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =================================================
+                 11
+            ================================================== -->
+
+                <h2 id="change">
+                    十一、什么是涨跌和涨跌幅？
+                </h2>
+
+
+                <p>
+                    股票行情中经常出现两个非常相似的概念：
+                    <strong>涨跌</strong>和<strong>涨跌幅</strong>。
+                </p>
+
+
+                <p>
+                    涨跌通常表示当前价格相对于参考价格变化了多少金额。
+                </p>
+
+
+                <p>
+                    涨跌幅则表示这种变化相对于参考价格的百分比。
+                </p>
+
+
+                <p>
+                    最常见的参考价格就是前一个交易日的收盘价。
+                </p>
+
+
+                <p>
+                    例如：
+                </p>
+
+
+                <div class="data-structure">
+
+                    昨日收盘：100 元
+                    <br>
+                    当前价格：105 元
+                    <br>
+                    涨跌：+5 元
+                    <br>
+                    涨跌幅：+5%
+
+                </div>
+
+
+                <p>
+                    涨跌幅能够帮助投资者快速比较不同股票的价格变化程度。
+                </p>
+
+
+                <!-- =================================================
+                 12
+            ================================================== -->
+
+                <h2 id="adjust">
+                    十二、为什么历史行情会出现复权？
+                </h2>
+
+
+                <p>
+                    在研究历史股票价格时，
+                    一个非常重要的问题就是：
+                    <strong>股票历史价格为什么有时候和以前看到的不一样？</strong>
+                </p>
+
+
+                <p>
+                    原因之一是上市公司可能发生分红、送股、
+                    转增、配股等公司行为。
+                </p>
+
+
+                <p>
+                    如果直接使用未经处理的历史价格，
+                    某些公司行为可能会导致价格序列出现不连续的变化。
+                </p>
+
+
+                <p>
+                    因此在历史数据分析中，
+                    经常会出现：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        不复权；
+                    </li>
+
+                    <li>
+                        前复权；
+                    </li>
+
+                    <li>
+                        后复权。
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    复权并不是简单地“修改真实价格”，
+                    而是一种为了让历史价格序列更加适合比较和分析的数据处理方式。
+                </p>
+
+
+                <p>
+                    例如在研究长期趋势、计算技术指标或者进行历史回测时，
+                    复权方式会直接影响计算结果。
+                </p>
+
+
+                <div class="article-note">
+
+                    <div class="article-note-title">
+                        为什么这一点重要？
+                    </div>
+
+                    <p>
+                        如果不同的数据源采用不同的复权方式，
+                        那么同一只股票的历史价格可能出现不同结果。
+                        因此量化系统必须明确记录行情数据的复权口径。
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                 13
+            ================================================== -->
+
+                <h2 id="data-quality">
+                    十三、行情数据为什么会出现差异？
+                </h2>
+
+
+                <p>
+                    很多初学者会认为：
+                    “股票价格就是一个数字，所以所有数据源应该完全一样。”
+                </p>
+
+
+                <p>
+                    实际上，一个成熟的数据系统必须认真处理数据差异问题。
+                </p>
+
+
+                <p>
+                    不同数据源可能在以下方面存在区别：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        数据更新频率不同；
+                    </li>
+
+                    <li>
+                        字段命名不同；
+                    </li>
+
+                    <li>
+                        时间格式不同；
+                    </li>
+
+                    <li>
+                        股票代码格式不同；
+                    </li>
+
+                    <li>
+                        复权方式不同；
+                    </li>
+
+                    <li>
+                        历史数据覆盖范围不同；
+                    </li>
+
+                    <li>
+                        停牌数据处理方式不同；
+                    </li>
+
+                    <li>
+                        公司行为处理方式不同；
+                    </li>
+
+                    <li>
+                        实时数据延迟程度不同。
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    所以，在商业化股票研究系统中，
+                    “能获取数据”只是第一步。
+                </p>
+
+
+                <p>
+                    更重要的是：
+                    <strong>能否稳定、统一、准确地管理这些数据。</strong>
+                </p>
+
+
+                <!-- =================================================
+                 14
+            ================================================== -->
+
+                <h2 id="standardization">
+                    十四、为什么股票系统需要统一行情数据模型？
+                </h2>
+
+
+                <p>
+                    如果一个系统只接入一个数据源，
+                    数据管理相对简单。
+                </p>
+
+
+                <p>
+                    但如果系统未来需要同时接入多个数据提供商，
+                    问题就会逐渐出现。
+                </p>
+
+
+                <p>
+                    不同数据源可能使用完全不同的字段名称。
+                </p>
+
+
+                <p>
+                    例如，一个数据源可能叫：
+                </p>
+
+
+                <div class="data-structure">
+
+                    price
+                    <br>
+                    volume
+                    <br>
+                    amount
+
+                </div>
+
+
+                <p>
+                    另一个数据源可能叫：
+                </p>
+
+
+                <div class="data-structure">
+
+                    last_price
+                    <br>
+                    vol
+                    <br>
+                    turnover
+
+                </div>
+
+
+                <p>
+                    如果前端和业务逻辑直接依赖这些底层字段，
+                    一旦更换数据源，
+                    整个系统就需要大量修改。
+                </p>
+
+
+                <p>
+                    更合理的方式是建立统一的数据模型。
+                </p>
+
+
+                <div class="data-structure">
+
+                    Stock
+                    <br>
+                    └── Quote
+                    <br>
+                    ├── symbol
+                    <br>
+                    ├── name
+                    <br>
+                    ├── timestamp
+                    <br>
+                    ├── last_price
+                    <br>
+                    ├── previous_close
+                    <br>
+                    ├── open_price
+                    <br>
+                    ├── high_price
+                    <br>
+                    ├── low_price
+                    <br>
+                    ├── change
+                    <br>
+                    ├── change_percent
+                    <br>
+                    ├── volume
+                    <br>
+                    └── amount
+
+                </div>
+
+
+                <p>
+                    这样，无论底层使用哪一家数据源，
+                    最终都可以转换成统一的数据结构。
+                </p>
+
+
+                <p>
+                    这也是一个商业化股票数据系统非常重要的架构思想：
+                    <strong>数据源和业务逻辑应该解耦。</strong>
+                </p>
+
+
+                <!-- =================================================
+                 15
+            ================================================== -->
+
+                <h2 id="data-source">
+                    十五、股票行情数据从哪里来？
+                </h2>
+
+
+                <p>
+                    股票行情数据通常来自不同类型的数据提供方。
+                </p>
+
+
+                <p>
+                    对于一个股票研究平台来说，
+                    数据源可以按照用途分成多个层次。
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        券商数据；
+                    </li>
+
+                    <li>
+                        专业金融数据服务；
+                    </li>
+
+                    <li>
+                        互联网行情接口；
+                    </li>
+
+                    <li>
+                        开源数据接口；
+                    </li>
+
+                    <li>
+                        自建数据采集系统。
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    不同数据源的稳定性、覆盖范围、
+                    更新频率、权限以及数据质量都可能不同。
+                </p>
+
+
+                <p>
+                    因此一个真正面向生产环境的系统，
+                    不应该把整个系统完全绑定在某一个数据源上。
+                </p>
+
+
+                <p>
+                    更合理的设计是：
+                </p>
+
+
+                <div class="data-structure">
+
+                    数据源 A
+                    <br>
+                    数据源 B
+                    <br>
+                    数据源 C
+                    <br>
+                    ↓
+                    <br>
+                    Gateway / Adapter
+                    <br>
+                    ↓
+                    <br>
+                    统一行情模型
+                    <br>
+                    ↓
+                    <br>
+                    Stock Research System
+
+                </div>
+
+
+                <!-- =================================================
+                 16
+            ================================================== -->
+
+                <h2 id="data-flow">
+                    十六、一套股票行情系统是如何工作的？
+                </h2>
+
+
+                <p>
+                    当我们在股票软件中看到一只股票的最新价格时，
+                    背后实际上经过了多个环节。
+                </p>
+
+
+                <p>
+                    一个简化的数据流程可以表示为：
+                </p>
+
+
+                <div class="data-structure">
+
+                    数据源
+                    <br>
+                    ↓
+                    <br>
+                    数据采集
+                    <br>
+                    ↓
+                    <br>
+                    数据解析
+                    <br>
+                    ↓
+                    <br>
+                    股票代码标准化
+                    <br>
+                    ↓
+                    <br>
+                    数据字段标准化
+                    <br>
+                    ↓
+                    <br>
+                    数据校验
+                    <br>
+                    ↓
+                    <br>
+                    缓存 / 数据库
+                    <br>
+                    ↓
+                    <br>
+                    API
+                    <br>
+                    ↓
+                    <br>
+                    前端行情页面
+                    <br>
+                    ↓
+                    <br>
+                    股票研究 / 技术分析 / AI分析
+
+                </div>
+
+
+                <p>
+                    这意味着一个股票行情页面本身只是整个数据链路的最后一层。
+                </p>
+
+
+                <p>
+                    真正重要的是后面的数据基础设施。
+                </p>
+
+
+                <!-- =================================================
+                 17
+            ================================================== -->
+
+                <h2 id="research-system">
+                    十七、行情数据如何进入股票研究系统？
+                </h2>
+
+
+                <p>
+                    在一个完整的股票研究平台中，
+                    行情数据通常不会直接被最终用户使用。
+                </p>
+
+
+                <p>
+                    它会继续进入各种分析模块。
+                </p>
+
+
+                <div class="article-table-wrapper">
+
+                    <table class="article-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    数据
+                                </th>
+
+                                <th>
+                                    后续处理
+                                </th>
+
+                                <th>
+                                    研究用途
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    实时行情
+                                </td>
+
+                                <td>
+                                    实时计算
+                                </td>
+
+                                <td>
+                                    盘中监控、预警
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    历史 K 线
+                                </td>
+
+                                <td>
+                                    指标计算
+                                </td>
+
+                                <td>
+                                    技术分析
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    历史价格
+                                </td>
+
+                                <td>
+                                    收益率计算
+                                </td>
+
+                                <td>
+                                    策略研究
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    成交量
+                                </td>
+
+                                <td>
+                                    量价关系分析
+                                </td>
+
+                                <td>
+                                    市场行为研究
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    行情 + 基本面
+                                </td>
+
+                                <td>
+                                    多维数据融合
+                                </td>
+
+                                <td>
+                                    综合股票研究
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =================================================
+                 18
+            ================================================== -->
+
+                <h2 id="data-and-ai">
+                    十八、行情数据与 AI 股票研究
+                </h2>
+
+
+                <p>
+                    随着 AI 股票研究系统的发展，
+                    行情数据的重要性并没有下降，
+                    反而变得更加明显。
+                </p>
+
+
+                <p>
+                    AI 可以帮助我们阅读新闻、分析财务报告、
+                    总结公司信息和提取市场情绪，
+                    但这些分析最终仍然需要与结构化市场数据结合。
+                </p>
+
+
+                <p>
+                    例如：
+                </p>
+
+
+                <ul>
+
+                    <li>
+                        AI 判断某家公司基本面发生变化；
+                    </li>
+
+                    <li>
+                        行情系统观察股票价格是否同步变化；
+                    </li>
+
+                    <li>
+                        技术分析模块观察成交量和趋势；
+                    </li>
+
+                    <li>
+                        估值模块判断当前价格处于什么估值水平；
+                    </li>
+
+                    <li>
+                        最终形成更加完整的股票研究结果。
+                    </li>
+
+                </ul>
+
+
+                <p>
+                    因此，在一个现代化股票研究平台中，
+                    行情数据、基本面数据、新闻数据和 AI 分析并不是互相独立的。
+                </p>
+
+
+                <p>
+                    它们最终会汇聚成一个完整的研究体系。
+                </p>
+
+
+                <!-- =================================================
+                 19
+            ================================================== -->
+
+                <h2 id="data-quality-control">
+                    十九、什么是高质量的行情数据？
+                </h2>
+
+
+                <p>
+                    判断行情数据质量，
+                    不能只看“有没有价格”。
+                </p>
+
+
+                <p>
+                    一个真正可靠的数据系统，
+                    至少需要关注以下几个方面。
+                </p>
+
+
+                <h3>
+                    1. 完整性
+                </h3>
+
+
+                <p>
+                    需要尽可能保证目标股票和目标时间范围内的数据完整。
+                </p>
+
+
+                <h3>
+                    2. 准确性
+                </h3>
+
+
+                <p>
+                    价格、成交量、成交额以及时间等关键字段必须可靠。
+                </p>
+
+
+                <h3>
+                    3. 一致性
+                </h3>
+
+
+                <p>
+                    同一只股票在不同模块中应该使用统一的代码、
+                    时间和字段定义。
+                </p>
+
+
+                <h3>
+                    4. 时效性
+                </h3>
+
+
+                <p>
+                    实时行情尤其关注数据延迟。
+                </p>
+
+
+                <h3>
+                    5. 可追溯性
+                </h3>
+
+
+                <p>
+                    系统应该能够知道某一条数据来自哪个数据源，
+                    在什么时候获取，以及经过了什么处理。
+                </p>
+
+
+                <h3>
+                    6. 可扩展性
+                </h3>
+
+
+                <p>
+                    当未来增加新的数据源或者新的行情周期时，
+                    不应该迫使整个系统重新设计。
+                </p>
+
+
+                <div class="article-note">
+
+                    <div class="article-note-title">
+                        商业化系统的核心区别
+                    </div>
+
+                    <p>
+                        普通程序关注的是“数据能不能拿到”。
+                        商业化系统关注的是“数据能不能长期稳定地拿到，
+                        并且能够被统一管理、验证和复用”。
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                 20
+            ================================================== -->
+
+                <h2 id="architecture">
+                    二十、从行情数据开始构建股票数据基础设施
+                </h2>
+
+
+                <p>
+                    如果把 STOCK LAB 看成一个完整的股票研究平台，
+                    那么行情数据应该位于整个系统的底层。
+                </p>
+
+
+                <p>
+                    上层的股票页面、技术分析、
+                    量化策略、AI研究以及交易工具，
+                    都可以建立在统一的数据基础之上。
+                </p>
+
+
+                <div class="data-structure">
+
+                    ┌──────────────────────────────┐
+                    <br>
+                    │ STOCK LAB │
+                    <br>
+                    ├──────────────────────────────┤
+                    <br>
+                    │ 股票研究 │ 技术分析 │ AI研究 │
+                    <br>
+                    ├──────────────────────────────┤
+                    <br>
+                    │ 统一数据服务层 │
+                    <br>
+                    ├──────────────────────────────┤
+                    <br>
+                    │ Quote │ Kline │ Fundamental │
+                    <br>
+                    ├──────────────────────────────┤
+                    <br>
+                    │ 数据标准化 / 缓存 / 校验 │
+                    <br>
+                    ├──────────────────────────────┤
+                    <br>
+                    │ 数据源 A │ 数据源 B │ 数据源 C │
+                    <br>
+                    └──────────────────────────────┘
+
+                </div>
+
+
+                <p>
+                    这种架构的价值在于，
+                    上层业务不需要关心底层数据究竟来自哪一家服务。
+                </p>
+
+
+                <p>
+                    只要最终能够转换成统一的数据模型，
+                    上层的股票研究模块就可以持续复用。
+                </p>
+
+
+                <!-- =================================================
+                 21
+            ================================================== -->
+
+                <h2 id="chapter-summary">
+                    二十一、本章总结
+                </h2>
+
+
+                <p>
+                    到这里，我们已经建立了对股票行情数据的整体认识。
+                </p>
+
+
+                <p>
+                    行情数据并不只是股票软件上的一个价格数字。
+                    它实际上是对市场交易状态进行结构化描述的一整套数据体系。
+                </p>
+
+
+                <p>
+                    从最基础的实时行情，
+                    到历史行情和 K 线，
+                    再到成交量、成交额以及不同时间周期的数据，
+                    它们共同构成了股票研究的重要数据基础。
+                </p>
+
+
+                <p>
+                    更进一步，
+                    当这些数据经过标准化、清洗、存储和计算之后，
+                    就可以进入技术分析、量化研究、
+                    股票筛选、估值分析以及 AI 投研等更高级的系统。
+                </p>
+
+
+                <div class="article-summary">
+
+                    <div class="article-summary-title">
+                        本章需要掌握的核心概念
+                    </div>
+
+
+                    <p>
+                        ✓ 行情数据是股票市场交易信息的数字化记录。
+                    </p>
+
+
+                    <p>
+                        ✓ 实时行情描述股票当前状态。
+                    </p>
+
+
+                    <p>
+                        ✓ 历史行情描述股票过去的交易状态。
+                    </p>
+
+
+                    <p>
+                        ✓ K 线用 OHLC 等字段描述一个时间周期内的价格变化。
+                    </p>
+
+
+                    <p>
+                        ✓ 成交量描述成交数量，成交额描述成交金额。
+                    </p>
+
+
+                    <p>
+                        ✓ 不同时间周期适用于不同类型的市场研究。
+                    </p>
+
+
+                    <p>
+                        ✓ 复权方式会影响历史价格序列和技术分析结果。
+                    </p>
+
+
+                    <p>
+                        ✓ 不同数据源可能存在字段、时间、复权和数据质量差异。
+                    </p>
+
+
+                    <p>
+                        ✓ 商业化系统需要通过统一数据模型实现数据源与业务逻辑解耦。
+                    </p>
+
+
+                    <p>
+                        ✓ 行情数据是技术分析、量化研究和 AI 投研的重要基础。
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                 22
+            ================================================== -->
+
+                <h2 id="next">
+                    二十二、下一步学习什么？
+                </h2>
+
+
+                <p>
+                    本章只负责建立对“行情数据”这一体系的整体认识。
+                    后面的章节会把其中的重要概念分别拆开，
+                    一篇一篇深入学习。
+                </p>
+
+
+                <p>
+                    推荐按照下面的顺序继续：
+                </p>
+
+
+                <ol>
+
+                    <li>
+                        实时行情：股票当前价格是如何产生的？
+                    </li>
+
+                    <li>
+                        历史行情：如何获取和理解股票历史数据？
+                    </li>
+
+                    <li>
+                        K线：一根 K 线到底包含什么信息？
+                    </li>
+
+                    <li>
+                        日 K、周 K、月 K：不同周期有什么区别？
+                    </li>
+
+                    <li>
+                        成交量：如何理解股票的交易数量？
+                    </li>
+
+                    <li>
+                        成交额：如何理解市场成交金额？
+                    </li>
+
+                    <li>
+                        涨跌幅：股票价格变化如何计算？
+                    </li>
+
+                    <li>
+                        前复权、后复权与不复权：历史价格为什么不同？
+                    </li>
+
+                    <li>
+                        行情数据接口：程序如何获取股票数据？
+                    </li>
+
+                    <li>
+                        多数据源：如何设计统一行情数据接口？
+                    </li>
+
+                </ol>
+
+
+                <div class="article-note">
+
+                    <div class="article-note-title">
+                        STOCK LAB 学习路线
+                    </div>
+
+                    <p>
+                        本章 → 实时行情 → 历史行情 → K线 →
+                        技术指标 → 基本面 → 估值 →
+                        量化分析 → AI 股票研究
+                    </p>
+
+                </div>
+
+
+            </article>
+
+
+            <!-- =====================================================
+             右侧目录
+        ====================================================== -->
+
+            <aside class="article-toc">
+
+                <div class="article-toc-title">
+                    本章目录
+                </div>
+
+
+                <a href="#what-is-data">
+                    一、什么是股票行情数据？
+                </a>
+
+
+                <a href="#market-data-role">
+                    二、为什么行情数据是股票研究的基础？
+                </a>
+
+
+                <a href="#data-types">
+                    三、行情数据有哪些类型？
+                </a>
+
+
+                <a href="#quote">
+                    四、什么是股票实时行情？
+                </a>
+
+
+                <a href="#historical">
+                    五、什么是历史行情？
+                </a>
+
+
+                <a href="#kline">
+                    六、什么是 K 线？
+                </a>
+
+
+                <a href="#interval">
+                    七、不同时间周期的行情数据
+                </a>
+
+
+                <a href="#price">
+                    八、如何理解股票价格？
+                </a>
+
+
+                <a href="#volume">
+                    九、什么是成交量？
+                </a>
+
+
+                <a href="#amount">
+                    十、什么是成交额？
+                </a>
+
+
+                <a href="#change">
+                    十一、什么是涨跌和涨跌幅？
+                </a>
+
+
+                <a href="#adjust">
+                    十二、为什么历史行情会出现复权？
+                </a>
+
+
+                <a href="#data-quality">
+                    十三、为什么行情数据会出现差异？
+                </a>
+
+
+                <a href="#standardization">
+                    十四、为什么股票系统需要统一行情数据模型？
+                </a>
+
+
+                <a href="#data-source">
+                    十五、股票行情数据从哪里来？
+                </a>
+
+
+                <a href="#data-flow">
+                    十六、一套股票行情系统是如何工作的？
+                </a>
+
+
+                <a href="#research-system">
+                    十七、行情数据如何进入股票研究系统？
+                </a>
+
+
+                <a href="#data-and-ai">
+                    十八、行情数据与 AI 股票研究
+                </a>
+
+
+                <a href="#data-quality-control">
+                    十九、什么是高质量的行情数据？
+                </a>
+
+
+                <a href="#architecture">
+                    二十、构建股票数据基础设施
+                </a>
+
+
+                <a href="#chapter-summary">
+                    二十一、本章总结
+                </a>
+
+
+                <a href="#next">
+                    二十二、下一步学习什么？
+                </a>
+
+            </aside>
+
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        function goHome(page = 'market') {
+
+            window.location.href = `../../?page=${page}`;
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
