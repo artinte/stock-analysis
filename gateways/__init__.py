@@ -9,7 +9,7 @@
     4. 自动完成数据源注册
 """
 
-from .manager import DataManager
+from .data_manager import DataManager
 from .registry import GatewayRegistry
 
 # ============================================================

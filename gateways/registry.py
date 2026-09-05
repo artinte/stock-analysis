@@ -1,6 +1,6 @@
 from typing import Type
 
-from gateways.gateway import StockDataGateway
+from gateways.data_gateway import StockDataGateway
 
 
 class GatewayRegistry:

@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 import tgw
 
 from core.models.stock import Stock
-from gateways.gateway import StockDataGateway
+from gateways.data_gateway import StockDataGateway
 from common.constants import Interval, TEN_THOUSAND
 from core.models.financial.financial import IncomeStatement
 from core.models.financial.financial import CashFlowStatement
@@ -405,6 +405,13 @@ class YinheGateway(StockDataGateway):
             TTM PE
         """
         return self.valuation.fetch_valuation(symbol)
+    
+    def fetch_etf_composition(
+        self,
+        symbol: str,
+        trade_date: datetime.date | None = None,
+    ):
+        return self.etf.fetch_etf_composition(symbol, trade_date)
 
     def _get_latest_financial_row(
         self,

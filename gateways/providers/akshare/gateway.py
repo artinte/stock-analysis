@@ -6,7 +6,7 @@ from typing import Any, Optional
 import akshare as ak
 
 from common.constants import Interval
-from gateways.gateway import StockDataGateway
+from gateways.data_gateway import StockDataGateway
 from gateways.registry import GatewayRegistry
 from core.models.financial.financial import Financial
 from core.models.kline import Kline

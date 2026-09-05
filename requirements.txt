@@ -2,3 +2,4 @@ openai
 playwright
 selenium
 webdriver_manager
+google-api-python-client

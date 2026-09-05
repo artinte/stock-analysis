@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from gateways.manager import DataManager
+from gateways.data_manager import DataManager
 from core.models.stock import Stock
 
 """

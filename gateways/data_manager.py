@@ -1,3 +1,5 @@
+from abc import abstractmethod
+from datetime import date
 from typing import Optional
 
 from core.models.financial.income_statement import IncomeStatement
@@ -257,7 +259,7 @@ class DataManager:
         批量获取股票基础信息。
         """
         return self.gateway.fetch_stocks(symbols)
-    
+
     def get_stock_by_name(
         self,
         name: str,
@@ -572,6 +574,26 @@ class DataManager:
         symbol: str,
     ):
         return self.gateway.fetch_financial(symbol)
+
+    def get_etf_composition(
+        self,
+        symbol: str,
+        trade_date: date | None = None,
+    ):
+        """
+        获取 ETF 成分及申赎信息。
+
+        Args:
+            symbol: ETF 代码，例如 510300.SH、159919.SZ。
+            trade_date: 交易日期，None 表示最新数据。
+
+        Returns:
+            ETF 成分及申赎信息。
+        """
+        return self.gateway.fetch_etf_composition(
+            symbol,
+            trade_date,
+        )
 
     @classmethod
     def available_providers(

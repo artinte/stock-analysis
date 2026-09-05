@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from core.models.valuation import Valuation
-from gateways.manager import DataManager
+from gateways.data_manager import DataManager
 
 """
 股票估值数据测试。

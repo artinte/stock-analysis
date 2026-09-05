@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from core.models.quote import Quote
-from gateways.manager import DataManager
+from gateways.data_manager import DataManager
 
 """
 股票行情数据测试。

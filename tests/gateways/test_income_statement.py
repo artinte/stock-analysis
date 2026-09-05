@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from gateways.manager import DataManager
+from gateways.data_manager import DataManager
 from core.models.financial.income_statement import IncomeStatement
 
 """

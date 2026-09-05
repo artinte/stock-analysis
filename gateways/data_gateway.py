@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import Optional
 
+from polars import date
+
 from common.constants import Interval
 from core.models.financial.balance_sheet import BalanceSheet
 from core.models.financial.cash_flow import CashFlowStatement
@@ -122,6 +124,13 @@ class StockDataGateway(ABC):
             end_year,
             end_quarter,
         )
+
+    def fetch_etf_composition(
+        self,
+        symbol: str,
+        trade_date: date | None = None,
+    ):
+        return self.gateway.fetch_etf_composition(symbol, trade_date)
 
     @abstractmethod
     def _fetch_income_statement(

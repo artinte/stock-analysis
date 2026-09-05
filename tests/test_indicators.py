@@ -3,9 +3,8 @@ import os
 from dotenv import load_dotenv
 import pandas
 from gateways.analysis.valuation import ValuationAnalyzer
-from gateways.manager import DataManager
+from gateways.data_manager import DataManager
 from gateways.providers.yinhe.gateway import YinheGateway
-from gateways.models.constants import Interval
 from gateways.indicators.volatility import calculate_bollinger_bands
 from gateways.indicators.macd import calculate_macd
 from gateways.indicators.moving_average import calculate_moving_averages

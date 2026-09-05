@@ -5,7 +5,7 @@ import re
 from typing import Any, Optional
 import requests
 
-from gateways.gateway import StockDataGateway
+from gateways.data_gateway import StockDataGateway
 from common.constants import Interval
 from core.models.kline import Kline
 from core.models.quote import Quote

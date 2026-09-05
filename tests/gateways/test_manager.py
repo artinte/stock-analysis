@@ -1,4 +1,4 @@
-from gateways.manager import DataManager
+from gateways.data_manager import DataManager
 
 
 def main() -> None:

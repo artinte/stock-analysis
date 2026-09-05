@@ -1,10 +1,11 @@
+import os
 import time
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # ==================== 配置区域 ====================
 # 1. 填入您免费申请的 Google API Key
-API_KEY = "YOUR_YOUTUBE_API_KEY"
+API_KEY = os.getenv("youtube_api_key")
 
 # 2. 填入你想监控的名人频道 ID（支持同时监控多个）
 # 频道 ID 获取方法：打开名人 YouTube 主页，URL 后面或者简介里通常有一串以 UC 开头的 24 位代码

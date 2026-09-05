@@ -1,4 +1,4 @@
-from gateways.manager import DataManager
+from gateways.data_manager import DataManager
 
 from tests.gateways.test_quote import run_quote_test
 from tests.gateways.test_stock import run_stock_test

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from core.models.financial.financial import Financial
-from gateways.manager import DataManager
+from gateways.data_manager import DataManager
 
 """
 股票财务数据测试。
