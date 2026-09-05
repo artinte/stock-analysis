@@ -3,8 +3,10 @@ from __future__ import annotations
 import datetime
 
 import pandas
+from pyparsing import Optional
 
 from common.constants import Interval, TEN_THOUSAND
+from common.enums.quote_level import QuoteLevel
 from core.models.quote import Quote
 
 from utils.stock_mapping import normalize_symbol
@@ -40,6 +42,7 @@ class YinheQuote:
     def fetch_quote(
         self,
         symbol: str,
+        quote_level: Optional[QuoteLevel] = None,
     ) -> Quote | None:
         """
         获取股票最新行情。

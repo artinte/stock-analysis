@@ -7,6 +7,7 @@ from typing import Optional
 from polars import date
 
 from common.constants import Interval
+from common.enums.quote_level import QuoteLevel
 from core.models.financial.balance_sheet import BalanceSheet
 from core.models.financial.cash_flow import CashFlowStatement
 from core.models.financial.financial import Financial
@@ -85,6 +86,7 @@ class StockDataGateway(ABC):
     def fetch_quote(
         self,
         symbol: str,
+        level: Optional[QuoteLevel] = None,
     ) -> Quote:
         raise NotImplementedError
 
@@ -92,6 +94,7 @@ class StockDataGateway(ABC):
     def fetch_quotes(
         self,
         symbols: list[str],
+        level: Optional[QuoteLevel] = None,
     ):
         raise NotImplementedError
 

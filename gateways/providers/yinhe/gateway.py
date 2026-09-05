@@ -9,6 +9,7 @@ import pandas
 from dotenv import load_dotenv
 import tgw
 
+from common.enums.quote_level import QuoteLevel
 from core.models.stock import Stock
 from gateways.data_gateway import StockDataGateway
 from common.constants import Interval, TEN_THOUSAND
@@ -337,6 +338,7 @@ class YinheGateway(StockDataGateway):
     def fetch_quote(
         self,
         symbol: str,
+        quote_level: Optional[QuoteLevel] = None,
     ) -> Optional[Quote]:
         """
         获取股票最新行情。
@@ -352,7 +354,7 @@ class YinheGateway(StockDataGateway):
         注意：
             这里不是实时行情。
         """
-        return self.quote.fetch_quote(symbol=symbol)
+        return self.quote.fetch_quote(symbol=symbol, quote_level=quote_level)
 
     def fetch_kline(
         self,

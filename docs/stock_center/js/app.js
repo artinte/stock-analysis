@@ -192,10 +192,9 @@ function openStock(symbol, name) {
 
 
     change.className =
-        `stock-change ${
-            data.change.startsWith("-")
-                ? "negative"
-                : "positive"
+        `stock-change ${data.change.startsWith("-")
+            ? "negative"
+            : "positive"
         }`;
 
 
@@ -1042,3 +1041,192 @@ function debounce(fn, delay) {
     };
 
 }
+
+function renderIndex(index) {
+
+    // 后端如果返回 000001.SH / 399001.SZ
+    // 这里统一取前面的纯代码
+    const code = String(index.code || index.symbol || '')
+        .split('.')[0];
+
+    const card = document.querySelector(
+        `.market-index[data-index="${code}"]`
+    );
+
+    if (!card) {
+        console.warn(
+            `找不到指数卡片：${code}`,
+            index
+        );
+        return;
+    }
+
+    // ============================================================
+    // 价格
+    // ============================================================
+
+    const priceElement = card.querySelector('.index-price');
+
+    if (priceElement) {
+
+        priceElement.textContent =
+            index.price ?? '--';
+
+    }
+
+    // ============================================================
+    // 涨跌额和涨跌幅
+    // ============================================================
+
+    const values =
+        card.querySelectorAll('.index-bottom span');
+
+    if (values.length >= 2) {
+
+        values[0].textContent =
+            index.change ?? '--';
+
+        values[1].textContent =
+            index.changePercent ??
+            index.change_percent ??
+            '--';
+    }
+
+    // ============================================================
+    // 涨跌颜色
+    // ============================================================
+
+    const change = Number(index.change);
+
+    let className = '';
+
+    if (!Number.isNaN(change)) {
+
+        if (change > 0) {
+
+            className = 'positive';
+
+        } else if (change < 0) {
+
+            className = 'negative';
+        }
+    }
+
+    values.forEach(element => {
+
+        element.classList.remove(
+            'positive',
+            'negative'
+        );
+
+        if (className) {
+
+            element.classList.add(
+                className
+            );
+        }
+    });
+
+    console.log(
+        `✅ ${code} 指数页面已更新`,
+        index
+    );
+}
+
+
+// ============================================================
+// 获取市场指数
+// ============================================================
+
+// ============================================================
+// 获取市场指数
+// ============================================================
+
+async function loadIndices() {
+
+    try {
+
+        console.log(
+            '📡 正在获取市场指数...'
+        );
+
+        const response = await fetch(
+            '/api/indices'
+        );
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+        }
+
+        const result =
+            await response.json();
+
+        console.log(
+            '📊 后端返回指数数据：',
+            result
+        );
+
+        // ========================================================
+        // 后端返回：
+        //
+        // {
+        //     success: true,
+        //     data: [...]
+        // }
+        // ========================================================
+
+        if (!result.success) {
+
+            throw new Error(
+                result.message ||
+                '获取指数数据失败'
+            );
+        }
+
+        const indices = result.data;
+
+        if (!Array.isArray(indices)) {
+
+            throw new Error(
+                '接口 data 不是数组'
+            );
+        }
+
+        // ========================================================
+        // 更新页面
+        // ========================================================
+
+        indices.forEach(index => {
+
+            renderIndex(index);
+
+        });
+
+        console.log(
+            `✅ 市场指数更新完成，共 ${indices.length} 个`
+        );
+
+    } catch (error) {
+
+        console.error(
+            '❌ 获取市场指数失败：',
+            error
+        );
+    }
+}
+
+// ============================================================
+// 页面加载完成后获取指数
+// ============================================================
+
+document.addEventListener(
+    'DOMContentLoaded',
+    () => {
+
+        loadIndices();
+
+    }
+);
