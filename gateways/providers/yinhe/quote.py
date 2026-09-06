@@ -335,7 +335,7 @@ class YinheQuote:
                 self.gateway.info_data.get_equity_structure(
                     symbols,
                     local_path=self.gateway.local_path,
-                    is_local=False,
+                    is_local=True,
                 )
             )
 
@@ -493,11 +493,12 @@ class YinheQuote:
         # 股票名称
         # =====================================================
 
-        stock_name = (
-            self.gateway.fetch_stock_name(
-                symbol
-            )
-        )
+        # stock_name = (
+        #     self.gateway.fetch_stock_name(
+        #         symbol
+        #     )
+        # )
+        stock_name = ""
 
         # =====================================================
         # 股本

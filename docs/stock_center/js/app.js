@@ -1294,4 +1294,9 @@ function navigateMainPage(page) {
         window.location.href = './tools/';
         return;
     }
+
+    if (page === 'trade') {
+        window.location.href = './trade/';
+        return;
+    }
 }

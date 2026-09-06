@@ -1,0 +1,3056 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>交易中心 - STOCK LAB</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <script src="../js/navigation.js"></script>
+
+    <style>
+
+        /* =========================================================
+           页面基础
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--page-bg, #f5f6f8);
+            color: var(--text-primary, #1f2329);
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+
+        /* =========================================================
+           顶部导航
+        ========================================================= */
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+
+        /* =========================================================
+           主页面
+        ========================================================= */
+
+        .trade-page {
+            width: 100%;
+            min-height: calc(100vh - 60px);
+        }
+
+        .trade-container {
+            width: min(1680px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 28px 0 60px;
+        }
+
+
+        /* =========================================================
+           页面标题
+        ========================================================= */
+
+        .trade-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+
+            margin-bottom: 24px;
+        }
+
+        .trade-title {
+            margin: 0;
+
+            font-size: 30px;
+            font-weight: 750;
+            letter-spacing: -0.5px;
+        }
+
+        .trade-subtitle {
+            margin-top: 7px;
+
+            color: var(--text-secondary, #7b818a);
+            font-size: 14px;
+        }
+
+        .trade-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 13px;
+
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 8px;
+
+            background: var(--panel-bg, #fff);
+
+            color: var(--text-secondary, #7b818a);
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+            background: #16a34a;
+        }
+
+
+        /* =========================================================
+           账户概览
+        ========================================================= */
+
+        .account-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.5fr
+                1fr
+                1fr
+                1fr
+                1fr;
+
+            gap: 14px;
+
+            margin-bottom: 20px;
+        }
+
+        .account-card {
+            min-height: 125px;
+
+            padding: 20px;
+
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 12px;
+
+            background: var(--panel-bg, #fff);
+        }
+
+        .account-card.main {
+            background:
+                linear-gradient(
+                    135deg,
+                    #17191d,
+                    #292d34
+                );
+
+            color: #fff;
+
+            border-color: #17191d;
+        }
+
+        .account-label {
+            margin-bottom: 12px;
+
+            color: var(--text-secondary, #7b818a);
+            font-size: 13px;
+        }
+
+        .account-card.main .account-label {
+            color: rgba(255,255,255,.62);
+        }
+
+        .account-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .account-card.main .account-value {
+            font-size: 30px;
+        }
+
+        .account-extra {
+            margin-top: 8px;
+
+            color: var(--text-secondary, #7b818a);
+            font-size: 12px;
+        }
+
+        .account-card.main .account-extra {
+            color: rgba(255,255,255,.58);
+        }
+
+
+        /* =========================================================
+           数值颜色
+        ========================================================= */
+
+        .positive {
+            color: #ef4444 !important;
+        }
+
+        .negative {
+            color: #16a34a !important;
+        }
+
+
+        /* =========================================================
+           通用面板
+        ========================================================= */
+
+        .panel {
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 12px;
+
+            background: var(--panel-bg, #fff);
+
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            min-height: 58px;
+
+            padding: 0 18px;
+
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .panel-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .panel-action {
+            border: 0;
+            background: transparent;
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 12px;
+        }
+
+        .panel-action:hover {
+            color: var(--text-primary, #1f2329);
+        }
+
+
+        /* =========================================================
+           自选 + 指数
+        ========================================================= */
+
+        .market-grid {
+            display: grid;
+
+            grid-template-columns: 1.5fr 1fr;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+        .watch-list {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+        }
+
+        .watch-item {
+            padding: 17px 18px;
+
+            border-right: 1px solid var(--border-color, #e5e7eb);
+
+            transition: background .15s ease;
+        }
+
+        .watch-item:last-child {
+            border-right: 0;
+        }
+
+        .watch-item:hover {
+            background: var(--hover-bg, #f7f8fa);
+        }
+
+        .watch-name {
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .watch-code {
+            margin-left: 6px;
+
+            color: var(--text-secondary, #8a9099);
+            font-size: 11px;
+        }
+
+        .watch-price {
+            margin-top: 12px;
+
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .watch-change {
+            margin-top: 5px;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
+           指数
+        ========================================================= */
+
+        .index-list {
+            display: grid;
+
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .index-item {
+            min-height: 94px;
+
+            padding: 15px 17px;
+
+            border-right: 1px solid var(--border-color, #e5e7eb);
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .index-item:nth-child(2n) {
+            border-right: 0;
+        }
+
+        .index-item:nth-last-child(-n + 2) {
+            border-bottom: 0;
+        }
+
+        .index-name {
+            color: var(--text-secondary, #7b818a);
+            font-size: 12px;
+        }
+
+        .index-price {
+            margin-top: 7px;
+
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .index-change {
+            margin-top: 4px;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           交易工作区
+        ========================================================= */
+
+        .trade-workspace {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                340px;
+
+            gap: 20px;
+
+            /*
+             * 非常重要：
+             * 不使用 fixed / sticky
+             * 防止股票区域覆盖页面其它内容
+             */
+            align-items: start;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================================
+           左侧行情区域
+        ========================================================= */
+
+        .quote-panel {
+            min-width: 0;
+        }
+
+        /*
+         * 贵州茅台区域
+         *
+         * 原来的问题通常就是这里用了：
+         *
+         * position: fixed;
+         * top: ...
+         *
+         * 现在完全取消定位。
+         */
+        .stock-header {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            min-height: 104px;
+
+            padding: 20px 22px;
+
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+
+            background: var(--panel-bg, #fff);
+        }
+
+        .stock-info {
+            min-width: 0;
+        }
+
+        .stock-name-row {
+            display: flex;
+            align-items: center;
+
+            gap: 9px;
+        }
+
+        .stock-name {
+            font-size: 23px;
+            font-weight: 750;
+        }
+
+        .stock-code {
+            padding: 4px 7px;
+
+            border-radius: 5px;
+
+            background: var(--hover-bg, #f2f3f5);
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 11px;
+        }
+
+        .stock-market {
+            margin-top: 7px;
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 12px;
+        }
+
+        .stock-price-box {
+            text-align: right;
+        }
+
+        .stock-price {
+            font-size: 29px;
+            font-weight: 750;
+        }
+
+        .stock-change {
+            margin-top: 5px;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           K线区域
+        ========================================================= */
+
+        .chart-area {
+            min-height: 370px;
+
+            padding: 18px 20px 22px;
+        }
+
+        .chart-toolbar {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+        }
+
+        .period-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .period-tab {
+            padding: 6px 10px;
+
+            border: 0;
+            border-radius: 5px;
+
+            background: transparent;
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 11px;
+        }
+
+        .period-tab.active {
+            background: var(--hover-bg, #eef0f2);
+            color: var(--text-primary, #1f2329);
+            font-weight: 650;
+        }
+
+        .chart-placeholder {
+            position: relative;
+
+            height: 290px;
+
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 8px;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    to bottom,
+                    transparent 24.5%,
+                    var(--border-color, #e5e7eb) 25%,
+                    transparent 25.5%,
+                    transparent 49.5%,
+                    var(--border-color, #e5e7eb) 50%,
+                    transparent 50.5%,
+                    transparent 74.5%,
+                    var(--border-color, #e5e7eb) 75%,
+                    transparent 75.5%
+                );
+        }
+
+        .chart-placeholder::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            right: 0;
+            bottom: 34px;
+
+            height: 1px;
+
+            background: var(--border-color, #e5e7eb);
+        }
+
+        .chart-line {
+            position: absolute;
+
+            left: 4%;
+            right: 4%;
+
+            top: 24%;
+            height: 48%;
+
+            border-bottom: 2px solid #ef4444;
+
+            transform:
+                skewY(-7deg)
+                rotate(-1deg);
+        }
+
+        .chart-label {
+            position: absolute;
+
+            left: 15px;
+            top: 15px;
+
+            color: var(--text-secondary, #8a9099);
+
+            font-size: 11px;
+        }
+
+        .chart-empty {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            color: var(--text-secondary, #9aa0a8);
+
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
+           五档行情
+        ========================================================= */
+
+        .order-book {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            border-top: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .book-column {
+            padding: 17px 20px;
+        }
+
+        .book-column:first-child {
+            border-right: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .book-title {
+            margin-bottom: 10px;
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 12px;
+        }
+
+        .book-row {
+            display: grid;
+
+            grid-template-columns:
+                35px
+                1fr
+                1fr;
+
+            padding: 5px 0;
+
+            font-size: 12px;
+        }
+
+        .book-row span:nth-child(2),
+        .book-row span:nth-child(3) {
+            text-align: right;
+        }
+
+
+        /* =========================================================
+           右侧快速下单
+        ========================================================= */
+
+        .order-panel {
+            min-width: 0;
+
+            /*
+             * 这里同样不 sticky。
+             * 页面向上滚动时不会盖住下面的内容。
+             */
+        }
+
+        .order-body {
+            padding: 18px;
+        }
+
+        .order-stock {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .order-stock-name {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .order-stock-code {
+            margin-top: 3px;
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 11px;
+        }
+
+        .order-current-price {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .side-tabs {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            margin-bottom: 16px;
+        }
+
+        .side-tab {
+            height: 38px;
+
+            border: 1px solid var(--border-color, #e5e7eb);
+
+            background: var(--panel-bg, #fff);
+
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+        .side-tab:first-child {
+            border-radius: 6px 0 0 6px;
+        }
+
+        .side-tab:last-child {
+            border-radius: 0 6px 6px 0;
+        }
+
+        .side-tab.buy.active {
+            background: #fff1f2;
+            border-color: #fecdd3;
+            color: #dc2626;
+        }
+
+        .side-tab.sell.active {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #16a34a;
+        }
+
+        .form-group {
+            margin-bottom: 13px;
+        }
+
+        .form-label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 11px;
+        }
+
+        .input-row {
+            display: flex;
+        }
+
+        .price-input,
+        .quantity-input {
+            width: 100%;
+            height: 38px;
+
+            padding: 0 10px;
+
+            border: 1px solid var(--border-color, #dfe2e6);
+            border-radius: 6px;
+
+            outline: none;
+
+            background: var(--panel-bg, #fff);
+
+            color: var(--text-primary, #1f2329);
+        }
+
+        .price-input:focus,
+        .quantity-input:focus {
+            border-color: #9ca3af;
+        }
+
+        .quantity-buttons {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 5px;
+
+            margin-top: 7px;
+        }
+
+        .quantity-btn {
+            height: 27px;
+
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 5px;
+
+            background: var(--panel-bg, #fff);
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 10px;
+        }
+
+        .quantity-btn:hover {
+            background: var(--hover-bg, #f5f6f7);
+        }
+
+        .order-summary {
+            margin-top: 18px;
+            padding: 13px;
+
+            border-radius: 7px;
+
+            background: var(--hover-bg, #f6f7f8);
+        }
+
+        .summary-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            margin-bottom: 8px;
+
+            font-size: 11px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-row span:first-child {
+            color: var(--text-secondary, #7b818a);
+        }
+
+        .submit-order {
+            width: 100%;
+            height: 42px;
+
+            margin-top: 14px;
+
+            border: 0;
+            border-radius: 7px;
+
+            background: #dc2626;
+
+            color: #fff;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .submit-order:hover {
+            background: #b91c1c;
+        }
+
+
+        /* =========================================================
+           下方数据区域
+        ========================================================= */
+
+        .bottom-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.4fr
+                1fr
+                1fr;
+
+            gap: 20px;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================================
+           表格
+        ========================================================= */
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            font-size: 12px;
+        }
+
+        th {
+            padding: 12px 14px;
+
+            background: var(--hover-bg, #f7f8fa);
+
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 11px;
+            font-weight: 600;
+
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 13px 14px;
+
+            border-top: 1px solid var(--border-color, #e5e7eb);
+
+            white-space: nowrap;
+        }
+
+        tr:hover td {
+            background: var(--hover-bg, #fafafa);
+        }
+
+        .empty-state {
+            padding: 34px 20px;
+
+            color: var(--text-secondary, #9aa0a8);
+
+            font-size: 12px;
+
+            text-align: center;
+        }
+
+
+        /* =========================================================
+           风险指标
+        ========================================================= */
+
+        .risk-list {
+            padding: 8px 18px 18px;
+        }
+
+        .risk-row {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 13px 0;
+
+            border-bottom: 1px solid var(--border-color, #e5e7eb);
+        }
+
+        .risk-row:last-child {
+            border-bottom: 0;
+        }
+
+        .risk-name {
+            color: var(--text-secondary, #7b818a);
+            font-size: 12px;
+        }
+
+        .risk-value {
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+
+        /* =========================================================
+           交易说明
+        ========================================================= */
+
+        .notice-panel {
+            padding: 18px 20px;
+
+            border: 1px solid var(--border-color, #e5e7eb);
+            border-radius: 12px;
+
+            background: var(--panel-bg, #fff);
+        }
+
+        .notice-title {
+            margin-bottom: 8px;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .notice-text {
+            color: var(--text-secondary, #7b818a);
+
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+
+        /* =========================================================
+           响应式
+        ========================================================= */
+
+        @media (max-width: 1250px) {
+
+            .account-grid {
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+
+            .account-card.main {
+                grid-column: span 2;
+            }
+
+            .market-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .bottom-grid .panel:first-child {
+                grid-column: span 2;
+            }
+
+        }
+
+
+        @media (max-width: 950px) {
+
+            .trade-container {
+                width: min(100% - 24px, 760px);
+                padding-top: 20px;
+            }
+
+            .trade-workspace {
+                grid-template-columns: 1fr;
+            }
+
+            .order-panel {
+                width: 100%;
+            }
+
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bottom-grid .panel:first-child {
+                grid-column: auto;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .trade-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .account-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .account-card.main {
+                grid-column: span 2;
+            }
+
+            .watch-list {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .watch-item:nth-child(2) {
+                border-right: 0;
+            }
+
+            .watch-item:nth-child(3),
+            .watch-item:nth-child(4) {
+                border-top: 1px solid var(--border-color, #e5e7eb);
+            }
+
+            .index-list {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stock-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .stock-price-box {
+                width: 100%;
+                text-align: left;
+            }
+
+            .order-book {
+                grid-template-columns: 1fr;
+            }
+
+            .book-column:first-child {
+                border-right: 0;
+                border-bottom: 1px solid var(--border-color, #e5e7eb);
+            }
+
+        }
+
+
+        @media (max-width: 480px) {
+
+            .trade-container {
+                width: calc(100% - 16px);
+            }
+
+            .account-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .account-card.main {
+                grid-column: auto;
+            }
+
+            .watch-list {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stock-name {
+                font-size: 20px;
+            }
+
+            .stock-price {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     顶部导航
+========================================================= -->
+
+<header class="topbar">
+
+    <div class="topbar-inner">
+
+
+        <!-- 品牌 -->
+
+        <div
+            class="brand"
+            onclick="goHome('market')"
+        >
+
+            <div class="brand-mark">
+                S
+            </div>
+
+
+            <div class="brand-text">
+
+                <div class="brand-name">
+                    STOCK LAB
+                </div>
+
+
+                <div class="brand-subtitle">
+                    股票研究中心
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 主导航 -->
+
+        <nav class="main-nav">
+
+            <button
+                class="nav-item"
+                onclick="goHome('market')"
+            >
+                市场
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="goHome('stock')"
+            >
+                股票
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="goHome('news')"
+            >
+                资讯
+            </button>
+
+
+            <button
+                class="nav-item"
+                onclick="goHome('ai')"
+            >
+                AI研究
+            </button>
+
+
+            <button
+                class="nav-item active"
+                data-page="trade"
+            >
+                交易
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-page="tools"
+                onclick="navigatePage('tools')"
+            >
+                工具
+            </button>
+
+
+            <button
+                class="nav-item"
+                data-page="document"
+                onclick="navigatePage('document')"
+            >
+                学习文档
+            </button>
+
+        </nav>
+
+
+        <!-- 右侧 -->
+
+        <div class="header-right">
+
+
+            <button
+                class="ai-top-button"
+                onclick="goHome('ai-chat')"
+            >
+
+                <span>
+                    ✦
+                </span>
+
+                AI 投研助手
+
+            </button>
+
+
+            <div class="global-search">
+
+                <span class="search-icon">
+                    ⌕
+                </span>
+
+
+                <input
+                    id="searchInput"
+                    autocomplete="off"
+                    placeholder="搜索股票 / 代码"
+                >
+
+
+                <button id="searchBtn">
+                    查询
+                </button>
+
+
+                <div
+                    id="searchDropdown"
+                    class="search-dropdown">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     页面主体
+========================================================= -->
+
+<main class="trade-page">
+
+    <div class="trade-container">
+
+
+        <!-- =====================================================
+             页面标题
+        ====================================================== -->
+
+        <section class="trade-header">
+
+            <div>
+
+                <h1 class="trade-title">
+                    交易中心
+                </h1>
+
+                <div class="trade-subtitle">
+                    账户 · 持仓 · 委托 · 行情 · 风控
+                </div>
+
+            </div>
+
+            <div class="trade-status">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    模拟交易环境
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             账户概览
+        ====================================================== -->
+
+        <section class="account-grid">
+
+            <div class="account-card main">
+
+                <div class="account-label">
+                    总资产
+                </div>
+
+                <div class="account-value">
+                    ¥ 1,286,520.80
+                </div>
+
+                <div class="account-extra">
+                    更新时间：15:00:03
+                </div>
+
+            </div>
+
+
+            <div class="account-card">
+
+                <div class="account-label">
+                    可用资金
+                </div>
+
+                <div class="account-value">
+                    ¥ 428,620.30
+                </div>
+
+                <div class="account-extra">
+                    可买入资金
+                </div>
+
+            </div>
+
+
+            <div class="account-card">
+
+                <div class="account-label">
+                    持仓市值
+                </div>
+
+                <div class="account-value">
+                    ¥ 857,900.50
+                </div>
+
+                <div class="account-extra">
+                    4 只证券
+                </div>
+
+            </div>
+
+
+            <div class="account-card">
+
+                <div class="account-label">
+                    今日盈亏
+                </div>
+
+                <div class="account-value positive">
+                    +¥ 12,580.20
+                </div>
+
+                <div class="account-extra positive">
+                    +0.99%
+                </div>
+
+            </div>
+
+
+            <div class="account-card">
+
+                <div class="account-label">
+                    累计盈亏
+                </div>
+
+                <div class="account-value positive">
+                    +¥ 86,420.70
+                </div>
+
+                <div class="account-extra positive">
+                    +7.20%
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             自选 + 市场指数
+        ====================================================== -->
+
+        <section class="market-grid">
+
+
+            <!-- 自选 -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        自选行情
+                    </div>
+
+                    <button
+                        class="panel-action"
+                        onclick="refreshWatchlist()"
+                    >
+                        刷新
+                    </button>
+
+                </div>
+
+                <div class="watch-list">
+
+
+                    <div
+                        class="watch-item"
+                        onclick="selectStock('600519', '贵州茅台', 1658.20)"
+                    >
+
+                        <div>
+                            <span class="watch-name">
+                                贵州茅台
+                            </span>
+
+                            <span class="watch-code">
+                                600519
+                            </span>
+                        </div>
+
+                        <div class="watch-price">
+                            1658.20
+                        </div>
+
+                        <div class="watch-change positive">
+                            +18.20&nbsp;&nbsp;+1.11%
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="watch-item"
+                        onclick="selectStock('601138', '工业富联', 42.86)"
+                    >
+
+                        <div>
+                            <span class="watch-name">
+                                工业富联
+                            </span>
+
+                            <span class="watch-code">
+                                601138
+                            </span>
+                        </div>
+
+                        <div class="watch-price">
+                            42.86
+                        </div>
+
+                        <div class="watch-change positive">
+                            +0.86&nbsp;&nbsp;+2.05%
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="watch-item"
+                        onclick="selectStock('300750', '宁德时代', 285.60)"
+                    >
+
+                        <div>
+                            <span class="watch-name">
+                                宁德时代
+                            </span>
+
+                            <span class="watch-code">
+                                300750
+                            </span>
+                        </div>
+
+                        <div class="watch-price">
+                            285.60
+                        </div>
+
+                        <div class="watch-change negative">
+                            -2.40&nbsp;&nbsp;-0.83%
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="watch-item"
+                        onclick="selectStock('688981', '中芯国际', 94.32)"
+                    >
+
+                        <div>
+                            <span class="watch-name">
+                                中芯国际
+                            </span>
+
+                            <span class="watch-code">
+                                688981
+                            </span>
+                        </div>
+
+                        <div class="watch-price">
+                            94.32
+                        </div>
+
+                        <div class="watch-change positive">
+                            +1.32&nbsp;&nbsp;+1.42%
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 指数 -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        主要指数
+                    </div>
+
+                    <span class="panel-action">
+                        15:00
+                    </span>
+
+                </div>
+
+                <div class="index-list">
+
+
+                    <div
+                        class="index-item"
+                        data-index="000001"
+                    >
+
+                        <div class="index-name">
+                            上证指数
+                        </div>
+
+                        <div class="index-price">
+                            3381.96
+                        </div>
+
+                        <div class="index-change positive">
+                            +0.42%
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="index-item"
+                        data-index="399001"
+                    >
+
+                        <div class="index-name">
+                            深证成指
+                        </div>
+
+                        <div class="index-price">
+                            10788.49
+                        </div>
+
+                        <div class="index-change positive">
+                            +0.76%
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="index-item"
+                        data-index="399006"
+                    >
+
+                        <div class="index-name">
+                            创业板指
+                        </div>
+
+                        <div class="index-price">
+                            2194.35
+                        </div>
+
+                        <div class="index-change positive">
+                            +1.18%
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="index-item"
+                        data-index="000688"
+                    >
+
+                        <div class="index-name">
+                            科创50
+                        </div>
+
+                        <div class="index-price">
+                            1042.61
+                        </div>
+
+                        <div class="index-change negative">
+                            -0.24%
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             核心交易区域
+        ====================================================== -->
+
+        <section class="trade-workspace">
+
+
+            <!-- =================================================
+                 左侧：股票行情
+            ================================================== -->
+
+            <div class="panel quote-panel">
+
+
+                <!-- 股票信息 -->
+
+                <div class="stock-header">
+
+                    <div class="stock-info">
+
+                        <div class="stock-name-row">
+
+                            <span
+                                class="stock-name"
+                                id="stockName"
+                            >
+                                贵州茅台
+                            </span>
+
+                            <span
+                                class="stock-code"
+                                id="stockCode"
+                            >
+                                600519
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="stock-market"
+                            id="stockMarket"
+                        >
+                            上海证券交易所 · 沪市主板
+                        </div>
+
+                    </div>
+
+
+                    <div class="stock-price-box">
+
+                        <div
+                            class="stock-price"
+                            id="stockPrice"
+                        >
+                            1658.20
+                        </div>
+
+                        <div
+                            class="stock-change positive"
+                            id="stockChange"
+                        >
+                            +18.20&nbsp;&nbsp; +1.11%
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- K线 -->
+
+                <div class="chart-area">
+
+                    <div class="chart-toolbar">
+
+                        <div class="period-tabs">
+
+                            <button
+                                class="period-tab active"
+                            >
+                                分时
+                            </button>
+
+                            <button class="period-tab">
+                                日K
+                            </button>
+
+                            <button class="period-tab">
+                                周K
+                            </button>
+
+                            <button class="period-tab">
+                                月K
+                            </button>
+
+                        </div>
+
+                        <div
+                            class="panel-action"
+                        >
+                            行情数据
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-placeholder">
+
+                        <div class="chart-label">
+                            价格
+                        </div>
+
+                        <div class="chart-line"></div>
+
+                        <div class="chart-empty">
+                            K线图 / 实时行情图表区域
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- 五档 -->
+
+                <div class="order-book">
+
+
+                    <div class="book-column">
+
+                        <div class="book-title">
+                            卖盘
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>卖5</span>
+                            <span>1662.00</span>
+                            <span>120</span>
+
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>卖4</span>
+                            <span>1661.80</span>
+                            <span>86</span>
+
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>卖3</span>
+                            <span>1661.20</span>
+                            <span>152</span>
+
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>卖2</span>
+                            <span>1660.60</span>
+                            <span>92</span>
+
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>卖1</span>
+                            <span>1659.80</span>
+                            <span>64</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="book-column">
+
+                        <div class="book-title">
+                            买盘
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>买1</span>
+                            <span>1658.20</span>
+                            <span>82</span>
+
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>买2</span>
+                            <span>1657.60</span>
+                            <span>110</span>
+
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>买3</span>
+                            <span>1657.00</span>
+                            <span>138</span>
+
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>买4</span>
+                            <span>1656.40</span>
+                            <span>91</span>
+
+                        </div>
+
+                        <div class="book-row">
+
+                            <span>买5</span>
+                            <span>1655.80</span>
+                            <span>176</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 右侧：快速下单
+            ================================================== -->
+
+            <div class="panel order-panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        快速下单
+                    </div>
+
+                    <span class="panel-action">
+                        模拟
+                    </span>
+
+                </div>
+
+
+                <div class="order-body">
+
+
+                    <div class="order-stock">
+
+                        <div>
+
+                            <div
+                                class="order-stock-name"
+                                id="orderStockName"
+                            >
+                                贵州茅台
+                            </div>
+
+                            <div
+                                class="order-stock-code"
+                                id="orderStockCode"
+                            >
+                                600519
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="order-current-price"
+                            id="orderCurrentPrice"
+                        >
+                            1658.20
+                        </div>
+
+                    </div>
+
+
+                    <!-- 买卖 -->
+
+                    <div class="side-tabs">
+
+                        <button
+                            class="side-tab buy active"
+                            id="buyTab"
+                            onclick="setOrderSide('buy')"
+                        >
+                            买入
+                        </button>
+
+                        <button
+                            class="side-tab sell"
+                            id="sellTab"
+                            onclick="setOrderSide('sell')"
+                        >
+                            卖出
+                        </button>
+
+                    </div>
+
+
+                    <!-- 价格 -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            委托价格
+                        </label>
+
+                        <input
+                            id="orderPrice"
+                            class="price-input"
+                            type="number"
+                            step="0.01"
+                            value="1658.20"
+                            oninput="updateOrderSummary()"
+                        >
+
+                    </div>
+
+
+                    <!-- 数量 -->
+
+                    <div class="form-group">
+
+                        <label class="form-label">
+                            委托数量
+                        </label>
+
+                        <input
+                            id="orderQuantity"
+                            class="quantity-input"
+                            type="number"
+                            step="100"
+                            value="100"
+                            oninput="updateOrderSummary()"
+                        >
+
+                        <div class="quantity-buttons">
+
+                            <button
+                                class="quantity-btn"
+                                onclick="setQuantity(100)"
+                            >
+                                100
+                            </button>
+
+                            <button
+                                class="quantity-btn"
+                                onclick="setQuantity(500)"
+                            >
+                                500
+                            </button>
+
+                            <button
+                                class="quantity-btn"
+                                onclick="setQuantity(1000)"
+                            >
+                                1000
+                            </button>
+
+                            <button
+                                class="quantity-btn"
+                                onclick="setQuantity(2000)"
+                            >
+                                2000
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- 摘要 -->
+
+                    <div class="order-summary">
+
+                        <div class="summary-row">
+
+                            <span>
+                                委托金额
+                            </span>
+
+                            <span id="orderAmount">
+                                ¥165,820.00
+                            </span>
+
+                        </div>
+
+                        <div class="summary-row">
+
+                            <span>
+                                可用资金
+                            </span>
+
+                            <span>
+                                ¥428,620.30
+                            </span>
+
+                        </div>
+
+                        <div class="summary-row">
+
+                            <span>
+                                预计手续费
+                            </span>
+
+                            <span id="orderFee">
+                                ¥49.75
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="submit-order"
+                        onclick="submitOrder()"
+                    >
+                        提交买入委托
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             持仓 / 委托 / 风控
+        ====================================================== -->
+
+        <section class="bottom-grid">
+
+
+            <!-- 持仓 -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        当前持仓
+                    </div>
+
+                    <button
+                        class="panel-action"
+                        onclick="refreshPositions()"
+                    >
+                        刷新
+                    </button>
+
+                </div>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>证券</th>
+                                <th>持仓</th>
+                                <th>可用</th>
+                                <th>成本</th>
+                                <th>现价</th>
+                                <th>盈亏</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>贵州茅台</td>
+                                <td>500</td>
+                                <td>500</td>
+                                <td>1602.30</td>
+                                <td>1658.20</td>
+                                <td class="positive">
+                                    +27,950
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>工业富联</td>
+                                <td>3000</td>
+                                <td>3000</td>
+                                <td>39.20</td>
+                                <td>42.86</td>
+                                <td class="positive">
+                                    +10,980
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>宁德时代</td>
+                                <td>1000</td>
+                                <td>1000</td>
+                                <td>290.80</td>
+                                <td>285.60</td>
+                                <td class="negative">
+                                    -5,200
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- 今日委托 -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        今日委托
+                    </div>
+
+                    <button
+                        class="panel-action"
+                        onclick="refreshOrders()"
+                    >
+                        全部
+                    </button>
+
+                </div>
+
+                <div class="table-wrap">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>证券</th>
+                                <th>方向</th>
+                                <th>价格</th>
+                                <th>数量</th>
+                                <th>状态</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>贵州茅台</td>
+
+                                <td class="positive">
+                                    买入
+                                </td>
+
+                                <td>1650.00</td>
+
+                                <td>100</td>
+
+                                <td>
+                                    已成交
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>工业富联</td>
+
+                                <td class="negative">
+                                    卖出
+                                </td>
+
+                                <td>42.80</td>
+
+                                <td>500</td>
+
+                                <td>
+                                    已成交
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td>中芯国际</td>
+
+                                <td class="positive">
+                                    买入
+                                </td>
+
+                                <td>94.00</td>
+
+                                <td>300</td>
+
+                                <td>
+                                    委托中
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- 风控 -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        风险概览
+                    </div>
+
+                    <span class="panel-action">
+                        正常
+                    </span>
+
+                </div>
+
+                <div class="risk-list">
+
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            股票仓位
+                        </span>
+
+                        <span class="risk-value">
+                            66.7%
+                        </span>
+
+                    </div>
+
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            单票最大仓位
+                        </span>
+
+                        <span class="risk-value">
+                            32.1%
+                        </span>
+
+                    </div>
+
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            今日回撤
+                        </span>
+
+                        <span class="risk-value positive">
+                            0.00%
+                        </span>
+
+                    </div>
+
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            风险等级
+                        </span>
+
+                        <span class="risk-value">
+                            低风险
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             成交记录
+        ====================================================== -->
+
+        <section class="panel" style="margin-bottom:20px;">
+
+            <div class="panel-header">
+
+                <div class="panel-title">
+                    今日成交
+                </div>
+
+                <button
+                    class="panel-action"
+                    onclick="refreshFills()"
+                >
+                    刷新
+                </button>
+
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>时间</th>
+                            <th>证券</th>
+                            <th>方向</th>
+                            <th>成交价</th>
+                            <th>成交量</th>
+                            <th>成交金额</th>
+                            <th>状态</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>14:36:21</td>
+                            <td>贵州茅台</td>
+
+                            <td class="positive">
+                                买入
+                            </td>
+
+                            <td>1650.00</td>
+                            <td>100</td>
+                            <td>165,000.00</td>
+
+                            <td>
+                                已成交
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>13:52:09</td>
+                            <td>工业富联</td>
+
+                            <td class="negative">
+                                卖出
+                            </td>
+
+                            <td>42.80</td>
+                            <td>500</td>
+                            <td>21,400.00</td>
+
+                            <td>
+                                已成交
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             交易能力
+        ====================================================== -->
+
+        <section class="bottom-grid">
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        交易能力
+                    </div>
+
+                </div>
+
+                <div class="risk-list">
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            A股
+                        </span>
+
+                        <span class="risk-value">
+                            已支持
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            ETF
+                        </span>
+
+                        <span class="risk-value">
+                            已支持
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            港股
+                        </span>
+
+                        <span class="risk-value">
+                            待接入
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            券商接口
+                        </span>
+
+                        <span class="risk-value">
+                            模拟环境
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        数据状态
+                    </div>
+
+                </div>
+
+                <div class="risk-list">
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            行情数据
+                        </span>
+
+                        <span class="risk-value">
+                            正常
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            账户数据
+                        </span>
+
+                        <span class="risk-value">
+                            正常
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            委托通道
+                        </span>
+
+                        <span class="risk-value">
+                            模拟
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            最后更新
+                        </span>
+
+                        <span class="risk-value">
+                            15:00:03
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <div class="panel-title">
+                        快捷入口
+                    </div>
+
+                </div>
+
+                <div class="risk-list">
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            我的持仓
+                        </span>
+
+                        <span class="risk-value">
+                            →
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            委托记录
+                        </span>
+
+                        <span class="risk-value">
+                            →
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            成交记录
+                        </span>
+
+                        <span class="risk-value">
+                            →
+                        </span>
+
+                    </div>
+
+                    <div class="risk-row">
+
+                        <span class="risk-name">
+                            账户设置
+                        </span>
+
+                        <span class="risk-value">
+                            →
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             风险提示
+        ====================================================== -->
+
+        <section class="notice-panel">
+
+            <div class="notice-title">
+                交易说明
+            </div>
+
+            <div class="notice-text">
+
+                当前页面为 STOCK LAB 交易中心原型，行情、账户、持仓及委托数据目前使用模拟数据。
+                后续可以通过统一的数据接口接入真实行情以及银河证券等券商交易接口。
+                实际交易时请注意市场风险、流动性风险以及交易规则变化，不构成任何投资建议。
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<script>
+
+
+/* =========================================================
+   全局状态
+========================================================= */
+
+let currentStock = {
+
+    code: "600519",
+
+    name: "贵州茅台",
+
+    price: 1658.20
+
+};
+
+let currentOrderSide = "buy";
+
+
+/* =========================================================
+   页面跳转
+========================================================= */
+
+function goHome(page = "market") {
+
+    window.location.href =
+        `../?page=${page}`;
+
+}
+
+
+// function goTools() {
+//     window.location.href =
+//         `../tools/`;
+// }
+
+// function goDocument() {
+
+//     window.location.href =
+//         `../document/`;
+
+// }
+
+
+/* =========================================================
+   股票切换
+========================================================= */
+
+function selectStock(code, name, price) {
+
+    currentStock = {
+
+        code,
+        name,
+        price
+
+    };
+
+    document.getElementById("stockName")
+        .textContent = name;
+
+    document.getElementById("stockCode")
+        .textContent = code;
+
+    document.getElementById("stockPrice")
+        .textContent = Number(price).toFixed(2);
+
+    document.getElementById("orderStockName")
+        .textContent = name;
+
+    document.getElementById("orderStockCode")
+        .textContent = code;
+
+    document.getElementById("orderCurrentPrice")
+        .textContent = Number(price).toFixed(2);
+
+    document.getElementById("orderPrice")
+        .value = Number(price).toFixed(2);
+
+    updateOrderSummary();
+
+}
+
+
+/* =========================================================
+   买卖方向
+========================================================= */
+
+function setOrderSide(side) {
+
+    currentOrderSide = side;
+
+    const buyTab =
+        document.getElementById("buyTab");
+
+    const sellTab =
+        document.getElementById("sellTab");
+
+    const submit =
+        document.querySelector(".submit-order");
+
+
+    buyTab.classList.remove("active");
+
+    sellTab.classList.remove("active");
+
+
+    if (side === "buy") {
+
+        buyTab.classList.add("active");
+
+        submit.textContent =
+            "提交买入委托";
+
+        submit.style.background =
+            "#dc2626";
+
+    } else {
+
+        sellTab.classList.add("active");
+
+        submit.textContent =
+            "提交卖出委托";
+
+        submit.style.background =
+            "#16a34a";
+
+    }
+
+}
+
+
+/* =========================================================
+   设置数量
+========================================================= */
+
+function setQuantity(quantity) {
+
+    document.getElementById("orderQuantity")
+        .value = quantity;
+
+    updateOrderSummary();
+
+}
+
+
+/* =========================================================
+   调整价格
+========================================================= */
+
+function changePrice(delta) {
+
+    const input =
+        document.getElementById("orderPrice");
+
+    const value =
+        Number(input.value || 0);
+
+    input.value =
+        Math.max(
+            0,
+            value + delta
+        ).toFixed(2);
+
+    updateOrderSummary();
+
+}
+
+
+/* =========================================================
+   更新订单摘要
+========================================================= */
+
+function updateOrderSummary() {
+
+    const price =
+        Number(
+            document.getElementById("orderPrice").value
+        ) || 0;
+
+    const quantity =
+        Number(
+            document.getElementById("orderQuantity").value
+        ) || 0;
+
+
+    const amount =
+        price * quantity;
+
+
+    const fee =
+        Math.max(
+            5,
+            amount * 0.0003
+        );
+
+
+    document.getElementById("orderAmount")
+        .textContent =
+        `¥${amount.toLocaleString(
+            "zh-CN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        )}`;
+
+
+    document.getElementById("orderFee")
+        .textContent =
+        `¥${fee.toFixed(2)}`;
+
+}
+
+
+/* =========================================================
+   提交订单
+========================================================= */
+
+function submitOrder() {
+
+    const price =
+        Number(
+            document.getElementById("orderPrice").value
+        ) || 0;
+
+    const quantity =
+        Number(
+            document.getElementById("orderQuantity").value
+        ) || 0;
+
+
+    if (price <= 0) {
+
+        alert("请输入有效的委托价格");
+
+        return;
+
+    }
+
+
+    if (quantity <= 0) {
+
+        alert("请输入有效的委托数量");
+
+        return;
+
+    }
+
+
+    const side =
+        currentOrderSide === "buy"
+            ? "买入"
+            : "卖出";
+
+
+    alert(
+        `模拟${side}委托\n\n` +
+        `${currentStock.name} ${currentStock.code}\n` +
+        `价格：${price.toFixed(2)}\n` +
+        `数量：${quantity}`
+    );
+
+
+    /*
+     * 后续真实接口：
+     *
+     * fetch("/api/trade/order", {
+     *
+     *     method: "POST",
+     *
+     *     headers: {
+     *         "Content-Type":
+     *             "application/json"
+     *     },
+     *
+     *     body: JSON.stringify({
+     *
+     *         symbol:
+     *             currentStock.code,
+     *
+     *         side:
+     *             currentOrderSide,
+     *
+     *         price,
+     *
+     *         quantity
+     *
+     *     })
+     *
+     * });
+     */
+
+}
+
+
+/* =========================================================
+   刷新自选
+========================================================= */
+
+function refreshWatchlist() {
+
+    console.log(
+        "TODO: GET /api/quotes"
+    );
+
+}
+
+
+/* =========================================================
+   刷新持仓
+========================================================= */
+
+function refreshPositions() {
+
+    console.log(
+        "TODO: GET /api/account/positions"
+    );
+
+}
+
+
+/* =========================================================
+   刷新委托
+========================================================= */
+
+function refreshOrders() {
+
+    console.log(
+        "TODO: GET /api/trade/orders"
+    );
+
+}
+
+
+/* =========================================================
+   刷新成交
+========================================================= */
+
+function refreshFills() {
+
+    console.log(
+        "TODO: GET /api/trade/fills"
+    );
+
+}
+
+
+/* =========================================================
+   初始化
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        updateOrderSummary();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
+

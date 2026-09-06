@@ -240,6 +240,15 @@ app.mount(
 )
 
 app.mount(
+    "/trade",
+    StaticFiles(
+        directory=FRONTEND_DIR / "trade",
+        html=True,
+    ),
+    name="trade",
+)
+
+app.mount(
     "/document",
     StaticFiles(
         directory=FRONTEND_DIR / "document",
