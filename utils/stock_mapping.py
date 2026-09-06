@@ -240,29 +240,59 @@ def get_stock_info(identifier: Union[str, int]) -> Optional[Dict[str, str]]:
     }
 
 
-def normalize_symbol(
-    symbol: str,
-) -> str:
+# ============================================================
+# 指数代码
+# ============================================================
+
+INDEX_SYMBOLS = {
+    # A 股主要指数
+    "000001": "000001.SH",  # 上证指数
+    "399001": "399001.SZ",  # 深证成指
+    "399006": "399006.SZ",  # 创业板指
+    "000688": "000688.SH",  # 科创50
+    # 常用指数
+    "000016": "000016.SH",  # 上证50
+    "000300": "000300.SH",  # 沪深300
+    "000905": "000905.SH",  # 中证500
+    "000852": "000852.SH",  # 中证1000
+    "000906": "000906.SH",  # 中证800
+    "399005": "399005.SZ",  # 中小100
+    "399300": "399300.SZ",  # 沪深300（深市指数代码）
+}
+
+
+def normalize_symbol(symbol: str) -> str:
     """
-    标准化股票代码。
+    标准化证券代码。
 
-    支持：
+    内部统一格式：
 
-        600519
-        600519.SH
-        000001
-        000001.SZ
-        300750
-        688981
+        上海股票 -> XXXXX.SH
+        深圳股票 -> XXXXX.SZ
+        北京股票 -> XXXXX.BJ
+        上海指数 -> XXXXX.SH
+        深圳指数 -> XXXXX.SZ
+
+    注意：
+        指数代码优先处理，不能单纯依赖股票代码规则。
     """
 
-    symbol = symbol.strip().upper()
+    symbol = str(symbol).strip().upper()
 
-    # 已经带交易所后缀
+    if not symbol:
+        return symbol
+
+    # 1. 已经是标准格式
     if "." in symbol:
         return symbol
 
-    # 上海证券交易所
+    # 2. 指数特殊处理
+    #
+    # 必须放在股票判断之前
+    if symbol in INDEX_SYMBOLS:
+        return INDEX_SYMBOLS[symbol]
+
+    # 3. 上海股票
     if symbol.startswith(
         (
             "600",
@@ -275,7 +305,7 @@ def normalize_symbol(
     ):
         return f"{symbol}.SH"
 
-    # 深圳证券交易所
+    # 4. 深圳股票
     if symbol.startswith(
         (
             "000",
@@ -288,7 +318,7 @@ def normalize_symbol(
     ):
         return f"{symbol}.SZ"
 
-    # 北京证券交易所
+    # 5. 北京股票
     if symbol.startswith(
         (
             "4",
@@ -297,7 +327,7 @@ def normalize_symbol(
     ):
         return f"{symbol}.BJ"
 
-    # 无法判断时直接返回原代码
+    # 6. 无法判断
     return symbol
 
 
