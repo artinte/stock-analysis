@@ -1284,6 +1284,11 @@ document.addEventListener(
 
 
 function navigateMainPage(page) {
+    if (page === 'stock') {
+        window.location.href = './stock/';
+        return;
+    }
+
     if (page === 'document') {
         window.location.href = './document/';
         return;

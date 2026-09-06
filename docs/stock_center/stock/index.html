@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+
+    <title>
+        股票研究 - STOCK LAB
+    </title>
+
+
+    <link rel="stylesheet" href="../css/global.css">
+
+
+    <link rel="stylesheet" href="../css/stock.css">
+
+
+    <script src="../js/navigation.js"></script>
+
+
+</head>
+
+
+<body>
+
+
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+
+            <div class="brand" onclick="goHome('market')">
+
+
+                <div class="brand-mark">
+                    S
+                </div>
+
+
+                <div class="brand-text">
+
+                    <div class="brand-name">
+                        STOCK LAB
+                    </div>
+
+                    <div class="brand-subtitle">
+                        股票研究中心
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <nav class="main-nav">
+
+
+                <button class="nav-item" onclick="goHome('market')">
+                    市场
+                </button>
+
+
+                <button class="nav-item active">
+                    股票
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('news')">
+                    资讯
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('research')">
+                    AI研究
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('trade')">
+                    交易
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('tools')">
+                    工具
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('document')">
+                    学习文档
+                </button>
+
+
+            </nav>
+
+
+        </div>
+
+    </header>
+
+
+
+
+
+
+    <main class="stock-page">
+
+
+
+        <section class="stock-hero">
+
+
+            <div>
+
+
+                <div class="section-eyebrow">
+                    STOCK RESEARCH
+                </div>
+
+
+                <h1>
+                    股票研究中心
+                </h1>
+
+
+                <p>
+                    从行情、财务、估值、行业、
+                    技术指标到 AI 分析，
+                    建立完整股票研究体系。
+                </p>
+
+
+                <div class="stock-search">
+
+
+                    <input id="stockInput" placeholder="输入股票代码或名称，例如：600519 贵州茅台">
+
+
+                    <button onclick="searchStock()">
+
+                        搜索
+
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="stock-overview-card">
+
+
+                <span>
+                    当前研究
+                </span>
+
+
+                <h2 id="stockName">
+                    贵州茅台
+                </h2>
+
+
+                <p>
+                    600519.SH
+                </p>
+
+
+                <div class="stock-tags">
+
+                    <span>
+                        消费
+                    </span>
+
+                    <span>
+                        白酒
+                    </span>
+
+                    <span>
+                        沪市
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+
+
+
+        <section class="quote-grid">
+
+
+            <div class="quote-card">
+
+                <span>
+                    最新价格
+                </span>
+
+                <strong>
+                    1420.50
+                </strong>
+
+            </div>
+
+
+
+            <div class="quote-card">
+
+                <span>
+                    涨跌幅
+                </span>
+
+                <strong>
+                    +1.25%
+                </strong>
+
+            </div>
+
+
+
+            <div class="quote-card">
+
+                <span>
+                    总市值
+                </span>
+
+                <strong>
+                    1.7万亿
+                </strong>
+
+            </div>
+
+
+
+            <div class="quote-card">
+
+                <span>
+                    PE
+                </span>
+
+                <strong>
+                    25.6
+                </strong>
+
+            </div>
+
+
+        </section>
+
+
+
+
+
+
+
+
+        <section class="research-nav">
+
+
+            <button class="active">
+                综合
+            </button>
+
+            <button>
+                行情
+            </button>
+
+
+            <button>
+                财务
+            </button>
+
+
+            <button>
+                估值
+            </button>
+
+
+            <button>
+                技术
+            </button>
+
+
+            <button>
+                行业
+            </button>
+
+
+            <button>
+                新闻
+            </button>
+
+
+            <button>
+                AI分析
+            </button>
+
+
+        </section>
+
+
+
+
+
+
+
+
+        <section class="stock-layout">
+
+
+
+            <div class="stock-main">
+
+
+
+                <section class="panel">
+
+
+                    <div class="panel-title">
+
+                        <h2>
+                            AI研究摘要
+                        </h2>
+
+                        <span>
+                            AI
+                        </span>
+
+                    </div>
+
+
+                    <p>
+
+                        贵州茅台拥有强品牌壁垒，
+                        盈利能力长期稳定。
+
+                        当前估值处于历史合理区间，
+                        市场关注消费复苏趋势。
+
+                    </p>
+
+
+                </section>
+
+
+
+
+
+
+
+                <section class="panel">
+
+
+                    <div class="panel-title">
+
+                        <h2>
+                            财务表现
+                        </h2>
+
+
+                    </div>
+
+
+                    <div class="chart-placeholder">
+
+                        收入趋势图
+
+                    </div>
+
+
+                </section>
+
+
+
+
+
+
+
+                <section class="panel">
+
+
+                    <div class="panel-title">
+
+                        <h2>
+                            估值分析
+                        </h2>
+
+
+                    </div>
+
+
+                    <div class="valuation-grid">
+
+
+                        <div>
+                            PE
+                            <br>
+                            25.6
+                        </div>
+
+
+                        <div>
+                            PB
+                            <br>
+                            8.2
+                        </div>
+
+
+                        <div>
+                            ROE
+                            <br>
+                            30%
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+
+
+                <section class="panel">
+
+
+                    <h2>
+                        相关新闻
+                    </h2>
+
+
+                    <div class="stock-news">
+
+
+                        <div>
+                            公司发布最新经营公告
+                        </div>
+
+
+                        <div>
+                            行业消费数据改善
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <aside class="stock-sidebar">
+
+
+
+                <section class="panel">
+
+
+                    <h3>
+                        行业信息
+                    </h3>
+
+
+                    <p>
+                        白酒行业
+                    </p>
+
+
+                    <p>
+                        行业排名 TOP3
+                    </p>
+
+
+                </section>
+
+
+
+
+
+
+                <section class="panel">
+
+
+                    <h3>
+                        数据来源
+                    </h3>
+
+
+                    <div class="source-tags">
+
+                        <span>
+                            腾讯行情
+                        </span>
+
+
+                        <span>
+                            银河证券
+                        </span>
+
+
+                        <span>
+                            财务数据库
+                        </span>
+
+                    </div>
+
+
+                </section>
+
+
+
+
+
+                <section class="panel">
+
+
+                    <h3>
+                        研究能力
+                    </h3>
+
+
+                    <ul>
+
+                        <li>
+                            ✓ 财务分析
+                        </li>
+
+                        <li>
+                            ✓ 估值模型
+                        </li>
+
+                        <li>
+                            ✓ AI总结
+                        </li>
+
+                        <li>
+                            ✓ 舆情分析
+                        </li>
+
+                    </ul>
+
+
+                </section>
+
+
+
+            </aside>
+
+
+
+        </section>
+
+
+
+
+
+    </main>
+
+
+
+    <script>
+
+
+        function goHome(page = 'market') {
+
+            window.location.href =
+                `../?page=${page}`;
+
+        }
+
+
+
+        function searchStock() {
+
+            console.log(
+                document.getElementById(
+                    'stockInput'
+                ).value
+            );
+
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>
