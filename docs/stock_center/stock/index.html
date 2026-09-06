@@ -5,22 +5,15 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-
-    <title>
-        股票研究 - STOCK LAB
-    </title>
-
+    <title>股票研究中心 - STOCK LAB</title>
 
     <link rel="stylesheet" href="../css/global.css">
 
-
     <link rel="stylesheet" href="../css/stock.css">
 
-
     <script src="../js/navigation.js"></script>
-
 
 </head>
 
@@ -28,14 +21,18 @@
 <body>
 
 
+    <!-- =========================================================
+     顶部导航
+========================================================= -->
 
     <header class="topbar">
 
         <div class="topbar-inner">
 
 
-            <div class="brand" onclick="goHome('market')">
+            <!-- 品牌 -->
 
+            <div class="brand" onclick="goHome('market')">
 
                 <div class="brand-mark">
                     S
@@ -54,13 +51,12 @@
 
                 </div>
 
-
             </div>
 
 
+            <!-- 主导航 -->
 
             <nav class="main-nav">
-
 
                 <button class="nav-item" onclick="goHome('market')">
                     市场
@@ -96,9 +92,46 @@
                     学习文档
                 </button>
 
-
             </nav>
 
+
+            <!-- 右侧 -->
+
+            <div class="header-right">
+
+
+                <button class="ai-top-button" onclick="goHome('ai-chat')">
+
+                    <span>
+                        ✦
+                    </span>
+
+                    AI 投研助手
+
+                </button>
+
+
+                <div class="global-search">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+
+                    <input id="searchInput" autocomplete="off" placeholder="搜索股票 / 代码">
+
+
+                    <button id="searchBtn" type="button">
+                        查询
+                    </button>
+
+
+                    <div id="searchDropdown" class="search-dropdown">
+                    </div>
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -108,19 +141,26 @@
 
 
 
+    <!-- =========================================================
+     股票研究中心
+========================================================= -->
 
     <main class="stock-page">
 
 
 
+        <!-- =====================================================
+         Hero
+    ====================================================== -->
+
         <section class="stock-hero">
 
 
-            <div>
+            <div class="stock-hero-main">
 
 
-                <div class="section-eyebrow">
-                    STOCK RESEARCH
+                <div class="stock-eyebrow">
+                    STOCK LAB · STOCK RESEARCH
                 </div>
 
 
@@ -130,22 +170,30 @@
 
 
                 <p>
-                    从行情、财务、估值、行业、
-                    技术指标到 AI 分析，
-                    建立完整股票研究体系。
+                    从市场中发现值得研究的股票，
+                    通过行业、基本面、估值与技术指标，
+                    快速建立自己的股票研究池。
                 </p>
 
 
-                <div class="stock-search">
+                <p class="stock-hero-subtitle">
+                    这里负责发现和筛选股票，
+                    进入具体股票后，再查看完整研究信息。
+                </p>
 
 
-                    <input id="stockInput" placeholder="输入股票代码或名称，例如：600519 贵州茅台">
+                <div class="stock-hero-actions">
 
 
-                    <button onclick="searchStock()">
+                    <button class="stock-primary-button" onclick="focusStockSearch()">
+                        搜索股票
+                        <span>⌕</span>
+                    </button>
 
-                        搜索
 
+                    <button class="stock-secondary-button" onclick="scrollToScreening()">
+                        开始筛选
+                        <span>→</span>
                     </button>
 
 
@@ -156,37 +204,56 @@
 
 
 
-            <div class="stock-overview-card">
+            <div class="stock-hero-side">
 
 
-                <span>
-                    当前研究
-                </span>
-
-
-                <h2 id="stockName">
-                    贵州茅台
-                </h2>
-
-
-                <p>
-                    600519.SH
-                </p>
-
-
-                <div class="stock-tags">
+                <div class="stock-metric">
 
                     <span>
-                        消费
+                        股票池
                     </span>
 
-                    <span>
-                        白酒
-                    </span>
+                    <strong>
+                        5000+
+                    </strong>
+
+                    <small>
+                        沪深市场
+                    </small>
+
+                </div>
+
+
+                <div class="stock-metric">
 
                     <span>
-                        沪市
+                        行业
                     </span>
+
+                    <strong>
+                        90+
+                    </strong>
+
+                    <small>
+                        行业分类
+                    </small>
+
+                </div>
+
+
+                <div class="stock-metric">
+
+                    <span>
+                        研究维度
+                    </span>
+
+                    <strong>
+                        8
+                    </strong>
+
+                    <small>
+                        多维研究
+                    </small>
 
                 </div>
 
@@ -200,391 +267,1686 @@
 
 
 
+        <!-- =====================================================
+         股票搜索
+    ====================================================== -->
 
-        <section class="quote-grid">
+        <section class="stock-search-section">
 
 
-            <div class="quote-card">
+            <div class="stock-section-header">
 
-                <span>
-                    最新价格
-                </span>
 
-                <strong>
-                    1420.50
-                </strong>
+                <div>
 
-            </div>
-
-
-
-            <div class="quote-card">
-
-                <span>
-                    涨跌幅
-                </span>
-
-                <strong>
-                    +1.25%
-                </strong>
-
-            </div>
-
-
-
-            <div class="quote-card">
-
-                <span>
-                    总市值
-                </span>
-
-                <strong>
-                    1.7万亿
-                </strong>
-
-            </div>
-
-
-
-            <div class="quote-card">
-
-                <span>
-                    PE
-                </span>
-
-                <strong>
-                    25.6
-                </strong>
-
-            </div>
-
-
-        </section>
-
-
-
-
-
-
-
-
-        <section class="research-nav">
-
-
-            <button class="active">
-                综合
-            </button>
-
-            <button>
-                行情
-            </button>
-
-
-            <button>
-                财务
-            </button>
-
-
-            <button>
-                估值
-            </button>
-
-
-            <button>
-                技术
-            </button>
-
-
-            <button>
-                行业
-            </button>
-
-
-            <button>
-                新闻
-            </button>
-
-
-            <button>
-                AI分析
-            </button>
-
-
-        </section>
-
-
-
-
-
-
-
-
-        <section class="stock-layout">
-
-
-
-            <div class="stock-main">
-
-
-
-                <section class="panel">
-
-
-                    <div class="panel-title">
-
-                        <h2>
-                            AI研究摘要
-                        </h2>
-
-                        <span>
-                            AI
-                        </span>
-
+                    <div class="section-eyebrow">
+                        STOCK SEARCH
                     </div>
-
-
-                    <p>
-
-                        贵州茅台拥有强品牌壁垒，
-                        盈利能力长期稳定。
-
-                        当前估值处于历史合理区间，
-                        市场关注消费复苏趋势。
-
-                    </p>
-
-
-                </section>
-
-
-
-
-
-
-
-                <section class="panel">
-
-
-                    <div class="panel-title">
-
-                        <h2>
-                            财务表现
-                        </h2>
-
-
-                    </div>
-
-
-                    <div class="chart-placeholder">
-
-                        收入趋势图
-
-                    </div>
-
-
-                </section>
-
-
-
-
-
-
-
-                <section class="panel">
-
-
-                    <div class="panel-title">
-
-                        <h2>
-                            估值分析
-                        </h2>
-
-
-                    </div>
-
-
-                    <div class="valuation-grid">
-
-
-                        <div>
-                            PE
-                            <br>
-                            25.6
-                        </div>
-
-
-                        <div>
-                            PB
-                            <br>
-                            8.2
-                        </div>
-
-
-                        <div>
-                            ROE
-                            <br>
-                            30%
-                        </div>
-
-
-                    </div>
-
-
-                </section>
-
-
-
-
-
-                <section class="panel">
 
 
                     <h2>
-                        相关新闻
+                        找到你想研究的股票
                     </h2>
 
 
-                    <div class="stock-news">
+                    <p>
+                        输入股票名称、股票代码或关键词。
+                    </p>
+
+                </div>
 
 
-                        <div>
-                            公司发布最新经营公告
-                        </div>
-
-
-                        <div>
-                            行业消费数据改善
-                        </div>
-
-
-                    </div>
-
-
-                </section>
-
+                <span class="stock-section-count">
+                    SEARCH
+                </span>
 
 
             </div>
 
 
 
+            <div class="stock-search-box">
+
+
+                <span class="stock-search-icon">
+                    ⌕
+                </span>
+
+
+                <input id="stockSearch" type="text" autocomplete="off" placeholder="例如：贵州茅台、600519、半导体、人工智能">
+
+
+                <button id="stockSearchButton" type="button" onclick="searchStockPage()">
+                    查询
+                </button>
+
+
+            </div>
 
 
 
-
-            <aside class="stock-sidebar">
-
-
-
-                <section class="panel">
-
-
-                    <h3>
-                        行业信息
-                    </h3>
-
-
-                    <p>
-                        白酒行业
-                    </p>
-
-
-                    <p>
-                        行业排名 TOP3
-                    </p>
-
-
-                </section>
-
-
-
-
-
-
-                <section class="panel">
-
-
-                    <h3>
-                        数据来源
-                    </h3>
-
-
-                    <div class="source-tags">
-
-                        <span>
-                            腾讯行情
-                        </span>
-
-
-                        <span>
-                            银河证券
-                        </span>
-
-
-                        <span>
-                            财务数据库
-                        </span>
-
-                    </div>
-
-
-                </section>
-
-
-
-
-
-                <section class="panel">
-
-
-                    <h3>
-                        研究能力
-                    </h3>
-
-
-                    <ul>
-
-                        <li>
-                            ✓ 财务分析
-                        </li>
-
-                        <li>
-                            ✓ 估值模型
-                        </li>
-
-                        <li>
-                            ✓ AI总结
-                        </li>
-
-                        <li>
-                            ✓ 舆情分析
-                        </li>
-
-                    </ul>
-
-
-                </section>
-
-
-
-            </aside>
-
+            <div id="stockSearchResults" class="stock-search-results">
+            </div>
 
 
         </section>
 
 
 
+
+
+        <!-- =====================================================
+         快速入口
+    ====================================================== -->
+
+        <section class="stock-section">
+
+
+            <div class="stock-section-header">
+
+
+                <div>
+
+                    <div class="section-eyebrow">
+                        DISCOVER
+                    </div>
+
+
+                    <h2>
+                        从不同方向发现股票
+                    </h2>
+
+
+                    <p>
+                        不知道研究哪只股票？先从市场、行业和主题开始。
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="discover-grid">
+
+
+                <article class="discover-card discover-card-primary" onclick="scrollToScreening()">
+
+                    <div class="discover-card-top">
+
+                        <span class="discover-number">
+                            01
+                        </span>
+
+                        <span class="discover-status">
+                            AVAILABLE
+                        </span>
+
+                    </div>
+
+
+                    <div class="discover-icon">
+                        ◇
+                    </div>
+
+
+                    <h3>
+                        股票筛选
+                    </h3>
+
+
+                    <p>
+                        根据行业、市值、估值、盈利能力、
+                        成长能力和技术指标筛选股票。
+                    </p>
+
+
+                    <strong>
+                        开始筛选 →
+                    </strong>
+
+                </article>
+
+
+
+                <article class="discover-card" onclick="filterByCategory('technology')">
+
+                    <div class="discover-card-top">
+
+                        <span class="discover-number">
+                            02
+                        </span>
+
+                        <span class="discover-status">
+                            MARKET
+                        </span>
+
+                    </div>
+
+
+                    <div class="discover-icon">
+                        ◎
+                    </div>
+
+
+                    <h3>
+                        行业与主题
+                    </h3>
+
+
+                    <p>
+                        从半导体、人工智能、新能源、
+                        医药、金融等方向寻找股票。
+                    </p>
+
+
+                    <strong>
+                        浏览行业 →
+                    </strong>
+
+                </article>
+
+
+
+                <article class="discover-card" onclick="showStockPool('hot')">
+
+                    <div class="discover-card-top">
+
+                        <span class="discover-number">
+                            03
+                        </span>
+
+                        <span class="discover-status">
+                            LIVE
+                        </span>
+
+                    </div>
+
+
+                    <div class="discover-icon">
+                        ↗
+                    </div>
+
+
+                    <h3>
+                        市场热点
+                    </h3>
+
+
+                    <p>
+                        查看当前市场关注度较高、
+                        活跃度较高的股票和主题方向。
+                    </p>
+
+
+                    <strong>
+                        查看热点 →
+                    </strong>
+
+                </article>
+
+
+
+                <article class="discover-card" onclick="showStockPool('watchlist')">
+
+                    <div class="discover-card-top">
+
+                        <span class="discover-number">
+                            04
+                        </span>
+
+                        <span class="discover-status">
+                            PERSONAL
+                        </span>
+
+                    </div>
+
+
+                    <div class="discover-icon">
+                        ☆
+                    </div>
+
+
+                    <h3>
+                        我的股票池
+                    </h3>
+
+
+                    <p>
+                        保存你关注的股票，
+                        建立自己的长期研究列表。
+                    </p>
+
+
+                    <strong>
+                        查看自选 →
+                    </strong>
+
+                </article>
+
+
+            </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- =====================================================
+         股票筛选
+    ====================================================== -->
+
+        <section id="stockScreening" class="stock-section screening-section">
+
+
+            <div class="stock-section-header">
+
+
+                <div>
+
+                    <div class="section-eyebrow">
+                        STOCK SCREENING
+                    </div>
+
+
+                    <h2>
+                        股票筛选
+                    </h2>
+
+
+                    <p>
+                        从数千只股票中筛选符合你研究条件的股票。
+                    </p>
+
+                </div>
+
+
+                <span class="stock-section-count">
+                    FILTER
+                </span>
+
+
+            </div>
+
+
+
+            <div class="screening-panel">
+
+
+                <!-- 行业 -->
+
+                <div class="screening-item">
+
+                    <label>
+                        行业
+                    </label>
+
+
+                    <select id="filterIndustry">
+
+                        <option value="all">
+                            全部行业
+                        </option>
+
+                        <option value="technology">
+                            科技
+                        </option>
+
+                        <option value="semiconductor">
+                            半导体
+                        </option>
+
+                        <option value="ai">
+                            人工智能
+                        </option>
+
+                        <option value="new-energy">
+                            新能源
+                        </option>
+
+                        <option value="medicine">
+                            医药
+                        </option>
+
+                        <option value="finance">
+                            金融
+                        </option>
+
+                        <option value="consumer">
+                            消费
+                        </option>
+
+                        <option value="manufacturing">
+                            高端制造
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- 市值 -->
+
+                <div class="screening-item">
+
+                    <label>
+                        市值
+                    </label>
+
+
+                    <select id="filterMarketCap">
+
+                        <option value="all">
+                            全部
+                        </option>
+
+                        <option value="large">
+                            大盘股
+                        </option>
+
+                        <option value="medium">
+                            中盘股
+                        </option>
+
+                        <option value="small">
+                            小盘股
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- PE -->
+
+                <div class="screening-item">
+
+                    <label>
+                        PE
+                    </label>
+
+
+                    <select id="filterPE">
+
+                        <option value="all">
+                            全部
+                        </option>
+
+                        <option value="low">
+                            低估值
+                        </option>
+
+                        <option value="medium">
+                            中等
+                        </option>
+
+                        <option value="high">
+                            高估值
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- ROE -->
+
+                <div class="screening-item">
+
+                    <label>
+                        ROE
+                    </label>
+
+
+                    <select id="filterROE">
+
+                        <option value="all">
+                            全部
+                        </option>
+
+                        <option value="high">
+                            ROE > 15%
+                        </option>
+
+                        <option value="medium">
+                            ROE 8% - 15%
+                        </option>
+
+                        <option value="low">
+                            ROE < 8% </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- 增长 -->
+
+                <div class="screening-item">
+
+                    <label>
+                        盈利增长
+                    </label>
+
+
+                    <select id="filterGrowth">
+
+                        <option value="all">
+                            全部
+                        </option>
+
+                        <option value="high">
+                            高增长
+                        </option>
+
+                        <option value="medium">
+                            稳定增长
+                        </option>
+
+                        <option value="low">
+                            低增长
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- 技术 -->
+
+                <div class="screening-item">
+
+                    <label>
+                        技术趋势
+                    </label>
+
+
+                    <select id="filterTechnical">
+
+                        <option value="all">
+                            全部
+                        </option>
+
+                        <option value="strong">
+                            强势
+                        </option>
+
+                        <option value="up">
+                            上升趋势
+                        </option>
+
+                        <option value="neutral">
+                            震荡
+                        </option>
+
+                        <option value="down">
+                            下降趋势
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <div class="screening-actions">
+
+                    <button class="screening-reset" type="button" onclick="resetScreening()">
+                        重置
+                    </button>
+
+
+                    <button class="screening-submit" type="button" onclick="runScreening()">
+                        开始筛选
+                        <span>→</span>
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- 筛选结果 -->
+
+            <div id="screeningResults" class="screening-results">
+
+                <div class="screening-results-header">
+
+                    <div>
+
+                        <span class="section-eyebrow">
+                            SCREENING RESULT
+                        </span>
+
+                        <h3>
+                            推荐股票
+                        </h3>
+
+                    </div>
+
+
+                    <span id="screeningCount">
+                        12 RESULTS
+                    </span>
+
+                </div>
+
+
+                <div id="screeningStockGrid" class="stock-grid">
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- =====================================================
+         热门股票池
+    ====================================================== -->
+
+        <section class="stock-section">
+
+
+            <div class="stock-section-header">
+
+
+                <div>
+
+                    <div class="section-eyebrow">
+                        STOCK POOLS
+                    </div>
+
+
+                    <h2>
+                        市场股票池
+                    </h2>
+
+
+                    <p>
+                        从不同投资方向快速浏览一组具有代表性的股票。
+                    </p>
+
+                </div>
+
+
+                <span class="stock-section-count">
+                    POOLS
+                </span>
+
+
+            </div>
+
+
+
+            <div class="pool-tabs">
+
+
+                <button class="pool-tab active" data-pool="hot" onclick="switchPool('hot')">
+                    市场热点
+                </button>
+
+
+                <button class="pool-tab" data-pool="technology" onclick="switchPool('technology')">
+                    科技成长
+                </button>
+
+
+                <button class="pool-tab" data-pool="value" onclick="switchPool('value')">
+                    价值投资
+                </button>
+
+
+                <button class="pool-tab" data-pool="dividend" onclick="switchPool('dividend')">
+                    高股息
+                </button>
+
+
+                <button class="pool-tab" data-pool="growth" onclick="switchPool('growth')">
+                    高成长
+                </button>
+
+
+            </div>
+
+
+
+            <div id="poolGrid" class="stock-grid">
+            </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- =====================================================
+         行业股票
+    ====================================================== -->
+
+        <section class="stock-section">
+
+
+            <div class="stock-section-header">
+
+
+                <div>
+
+                    <div class="section-eyebrow">
+                        INDUSTRY
+                    </div>
+
+
+                    <h2>
+                        按行业寻找股票
+                    </h2>
+
+
+                    <p>
+                        从行业出发，观察产业链和行业内的代表性公司。
+                    </p>
+
+                </div>
+
+
+                <span class="stock-section-count">
+                    INDUSTRIES
+                </span>
+
+
+            </div>
+
+
+
+            <div class="industry-grid">
+
+
+                <div class="industry-card" onclick="openIndustry('semiconductor')">
+
+                    <div class="industry-icon">
+                        ◈
+                    </div>
+
+                    <div>
+
+                        <span>
+                            SEMICONDUCTOR
+                        </span>
+
+                        <h3>
+                            半导体
+                        </h3>
+
+                        <p>
+                            芯片、设备、材料、封测
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </div>
+
+
+
+                <div class="industry-card" onclick="openIndustry('ai')">
+
+                    <div class="industry-icon">
+                        AI
+                    </div>
+
+                    <div>
+
+                        <span>
+                            ARTIFICIAL INTELLIGENCE
+                        </span>
+
+                        <h3>
+                            人工智能
+                        </h3>
+
+                        <p>
+                            算力、模型、应用、服务器
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </div>
+
+
+
+                <div class="industry-card" onclick="openIndustry('new-energy')">
+
+                    <div class="industry-icon">
+                        ⚡
+                    </div>
+
+                    <div>
+
+                        <span>
+                            NEW ENERGY
+                        </span>
+
+                        <h3>
+                            新能源
+                        </h3>
+
+                        <p>
+                            电池、光伏、储能、新能源车
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </div>
+
+
+
+                <div class="industry-card" onclick="openIndustry('medicine')">
+
+                    <div class="industry-icon">
+                        +
+                    </div>
+
+                    <div>
+
+                        <span>
+                            HEALTHCARE
+                        </span>
+
+                        <h3>
+                            医药
+                        </h3>
+
+                        <p>
+                            创新药、医疗器械、CXO
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </div>
+
+
+
+                <div class="industry-card" onclick="openIndustry('finance')">
+
+                    <div class="industry-icon">
+                        ¥
+                    </div>
+
+                    <div>
+
+                        <span>
+                            FINANCE
+                        </span>
+
+                        <h3>
+                            金融
+                        </h3>
+
+                        <p>
+                            银行、证券、保险
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </div>
+
+
+
+                <div class="industry-card" onclick="openIndustry('manufacturing')">
+
+                    <div class="industry-icon">
+                        ⚙
+                    </div>
+
+                    <div>
+
+                        <span>
+                            MANUFACTURING
+                        </span>
+
+                        <h3>
+                            高端制造
+                        </h3>
+
+                        <p>
+                            机器人、设备、自动化
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </div>
+
+
+
+                <div class="industry-card" onclick="openIndustry('consumer')">
+
+                    <div class="industry-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <span>
+                            CONSUMER
+                        </span>
+
+                        <h3>
+                            消费
+                        </h3>
+
+                        <p>
+                            食品、白酒、家电、零售
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </div>
+
+
+
+                <div class="industry-card" onclick="openIndustry('communication')">
+
+                    <div class="industry-icon">
+                        ≋
+                    </div>
+
+                    <div>
+
+                        <span>
+                            COMMUNICATION
+                        </span>
+
+                        <h3>
+                            通信
+                        </h3>
+
+                        <p>
+                            光通信、通信设备、运营商
+                        </p>
+
+                    </div>
+
+                    <strong>
+                        →
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- =====================================================
+         AI 选股
+    ====================================================== -->
+
+        <section class="stock-section">
+
+
+            <div class="ai-stock-panel">
+
+
+                <div class="ai-stock-main">
+
+
+                    <div class="ai-stock-mark">
+                        ✦
+                    </div>
+
+
+                    <div>
+
+                        <div class="section-eyebrow">
+                            AI STOCK DISCOVERY
+                        </div>
+
+
+                        <h2>
+                            不知道研究哪只股票？
+                        </h2>
+
+
+                        <p>
+                            让 AI 根据市场环境、行业景气度、
+                            财务表现、估值水平和技术状态，
+                            帮助你发现值得进一步研究的股票。
+                        </p>
+
+
+                        <div class="ai-stock-tags">
+
+                            <span>
+                                基本面
+                            </span>
+
+                            <span>
+                                估值
+                            </span>
+
+                            <span>
+                                成长
+                            </span>
+
+                            <span>
+                                行业
+                            </span>
+
+                            <span>
+                                技术
+                            </span>
+
+                            <span>
+                                市场情绪
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="ai-stock-action">
+
+                    <span>
+                        AI RESEARCH
+                    </span>
+
+
+                    <button type="button" onclick="goHome('ai-chat')">
+                        开始研究
+                        →
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- =====================================================
+         我的股票
+    ====================================================== -->
+
+        <section class="stock-section">
+
+
+            <div class="stock-section-header">
+
+
+                <div>
+
+                    <div class="section-eyebrow">
+                        WATCHLIST
+                    </div>
+
+
+                    <h2>
+                        我的股票池
+                    </h2>
+
+
+                    <p>
+                        你关注的股票会集中显示在这里。
+                    </p>
+
+                </div>
+
+
+                <button class="section-link-button" onclick="showStockPool('watchlist')">
+                    查看全部 →
+                </button>
+
+
+            </div>
+
+
+
+            <div id="watchlistGrid" class="watchlist-grid">
+            </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- =====================================================
+         股票研究体系
+    ====================================================== -->
+
+        <section class="stock-section stock-research-system">
+
+
+            <div class="stock-section-header">
+
+
+                <div>
+
+                    <div class="section-eyebrow">
+                        RESEARCH SYSTEM
+                    </div>
+
+
+                    <h2>
+                        从发现股票，到完整研究
+                    </h2>
+
+
+                    <p>
+                        股票中心负责发现和筛选，
+                        个股页面负责建立完整研究体系。
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="research-system-grid">
+
+
+                <div class="research-system-item">
+
+                    <span>
+                        01
+                    </span>
+
+                    <strong>
+                        行情
+                    </strong>
+
+                    <p>
+                        实时价格、涨跌幅、成交量、
+                        成交额与历史 K 线。
+                    </p>
+
+                </div>
+
+
+
+                <div class="research-system-item">
+
+                    <span>
+                        02
+                    </span>
+
+                    <strong>
+                        财务
+                    </strong>
+
+                    <p>
+                        营收、利润、现金流、
+                        资产负债和盈利能力。
+                    </p>
+
+                </div>
+
+
+
+                <div class="research-system-item">
+
+                    <span>
+                        03
+                    </span>
+
+                    <strong>
+                        估值
+                    </strong>
+
+                    <p>
+                        PE、PB、PS、PEG、
+                        股息率和历史估值。
+                    </p>
+
+                </div>
+
+
+
+                <div class="research-system-item">
+
+                    <span>
+                        04
+                    </span>
+
+                    <strong>
+                        行业
+                    </strong>
+
+                    <p>
+                        行业地位、产业链、
+                        竞争格局和景气度。
+                    </p>
+
+                </div>
+
+
+
+                <div class="research-system-item">
+
+                    <span>
+                        05
+                    </span>
+
+                    <strong>
+                        技术指标
+                    </strong>
+
+                    <p>
+                        MA、MACD、RSI、KDJ、
+                        BOLL 和趋势结构。
+                    </p>
+
+                </div>
+
+
+
+                <div class="research-system-item">
+
+                    <span>
+                        06
+                    </span>
+
+                    <strong>
+                        新闻公告
+                    </strong>
+
+                    <p>
+                        公司新闻、公告、
+                        政策与重大事件。
+                    </p>
+
+                </div>
+
+
+
+                <div class="research-system-item">
+
+                    <span>
+                        07
+                    </span>
+
+                    <strong>
+                        股东结构
+                    </strong>
+
+                    <p>
+                        股东、机构持仓、
+                        股本和重要变化。
+                    </p>
+
+                </div>
+
+
+
+                <div class="research-system-item">
+
+                    <span>
+                        08
+                    </span>
+
+                    <strong>
+                        AI 分析
+                    </strong>
+
+                    <p>
+                        综合基本面、估值、
+                        行业、新闻与市场信息。
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- =====================================================
+         底部 CTA
+    ====================================================== -->
+
+        <section class="stock-bottom-cta">
+
+
+            <div>
+
+
+                <div class="section-eyebrow">
+                    STOCK LAB RESEARCH
+                </div>
+
+
+                <h2>
+                    从筛选一只股票开始
+                </h2>
+
+
+                <p>
+                    找到股票只是第一步，
+                    进入个股研究页面，进一步分析行情、财务、
+                    估值、行业、技术指标和 AI 观点。
+                </p>
+
+
+            </div>
+
+
+
+            <div class="stock-bottom-actions">
+
+
+                <button class="stock-primary-button" onclick="scrollToScreening()">
+                    筛选股票 →
+                </button>
+
+
+                <button class="stock-secondary-button" onclick="goHome('ai-chat')">
+                    ✦ AI 投研助手
+                </button>
+
+
+            </div>
+
+
+        </section>
 
 
     </main>
 
 
 
+
+
+    <!-- =========================================================
+     页面 JavaScript
+========================================================= -->
+
     <script>
 
 
-        function goHome(page = 'market') {
+        /* =========================================================
+           模拟股票数据
+        
+           后续接 Python API 时，
+           只需要把这里替换成 API 数据即可。
+        ========================================================= */
+
+
+        const STOCK_DATA = [
+
+            {
+                symbol: "600519",
+                name: "贵州茅台",
+                industry: "consumer",
+                industryName: "消费",
+                tags: ["白酒", "价值"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "high",
+                growth: "medium",
+                technical: "up",
+                pools: ["value", "hot"]
+            },
+
+            {
+                symbol: "601398",
+                name: "工商银行",
+                industry: "finance",
+                industryName: "金融",
+                tags: ["银行", "高股息"],
+                marketCap: "large",
+                pe: "low",
+                roe: "medium",
+                growth: "low",
+                technical: "strong",
+                pools: ["value", "dividend"]
+            },
+
+            {
+                symbol: "600036",
+                name: "招商银行",
+                industry: "finance",
+                industryName: "金融",
+                tags: ["银行", "价值"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "high",
+                growth: "medium",
+                technical: "up",
+                pools: ["value", "hot"]
+            },
+
+            {
+                symbol: "300750",
+                name: "宁德时代",
+                industry: "new-energy",
+                industryName: "新能源",
+                tags: ["电池", "新能源"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "high",
+                growth: "high",
+                technical: "up",
+                pools: ["growth", "hot"]
+            },
+
+            {
+                symbol: "688981",
+                name: "中芯国际",
+                industry: "semiconductor",
+                industryName: "半导体",
+                tags: ["芯片", "国产替代"],
+                marketCap: "large",
+                pe: "high",
+                roe: "low",
+                growth: "high",
+                technical: "strong",
+                pools: ["technology", "growth", "hot"]
+            },
+
+            {
+                symbol: "002371",
+                name: "北方华创",
+                industry: "semiconductor",
+                industryName: "半导体",
+                tags: ["半导体设备", "科技"],
+                marketCap: "large",
+                pe: "high",
+                roe: "high",
+                growth: "high",
+                technical: "strong",
+                pools: ["technology", "growth"]
+            },
+
+            {
+                symbol: "688012",
+                name: "中微公司",
+                industry: "semiconductor",
+                industryName: "半导体",
+                tags: ["半导体设备", "科技"],
+                marketCap: "large",
+                pe: "high",
+                roe: "high",
+                growth: "high",
+                technical: "up",
+                pools: ["technology", "growth"]
+            },
+
+            {
+                symbol: "300308",
+                name: "中际旭创",
+                industry: "communication",
+                industryName: "通信",
+                tags: ["光通信", "AI算力"],
+                marketCap: "large",
+                pe: "high",
+                roe: "high",
+                growth: "high",
+                technical: "strong",
+                pools: ["technology", "growth", "hot"]
+            },
+
+            {
+                symbol: "688008",
+                name: "澜起科技",
+                industry: "semiconductor",
+                industryName: "半导体",
+                tags: ["芯片", "AI"],
+                marketCap: "large",
+                pe: "high",
+                roe: "medium",
+                growth: "high",
+                technical: "up",
+                pools: ["technology", "growth"]
+            },
+
+            {
+                symbol: "688256",
+                name: "寒武纪",
+                industry: "ai",
+                industryName: "人工智能",
+                tags: ["AI", "芯片"],
+                marketCap: "large",
+                pe: "high",
+                roe: "low",
+                growth: "high",
+                technical: "strong",
+                pools: ["technology", "growth", "hot"]
+            },
+
+            {
+                symbol: "600438",
+                name: "通威股份",
+                industry: "new-energy",
+                industryName: "新能源",
+                tags: ["光伏", "新能源"],
+                marketCap: "large",
+                pe: "low",
+                roe: "medium",
+                growth: "low",
+                technical: "neutral",
+                pools: ["value"]
+            },
+
+            {
+                symbol: "601899",
+                name: "紫金矿业",
+                industry: "manufacturing",
+                industryName: "资源",
+                tags: ["有色", "资源"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "high",
+                growth: "high",
+                technical: "strong",
+                pools: ["value", "growth", "hot"]
+            },
+
+            {
+                symbol: "601919",
+                name: "中远海控",
+                industry: "manufacturing",
+                industryName: "交通运输",
+                tags: ["航运", "周期"],
+                marketCap: "large",
+                pe: "low",
+                roe: "high",
+                growth: "medium",
+                technical: "up",
+                pools: ["value", "dividend"]
+            },
+
+            {
+                symbol: "601088",
+                name: "中国神华",
+                industry: "manufacturing",
+                industryName: "能源",
+                tags: ["煤炭", "高股息"],
+                marketCap: "large",
+                pe: "low",
+                roe: "high",
+                growth: "low",
+                technical: "strong",
+                pools: ["value", "dividend"]
+            },
+
+            {
+                symbol: "600900",
+                name: "长江电力",
+                industry: "manufacturing",
+                industryName: "公用事业",
+                tags: ["水电", "高股息"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "high",
+                growth: "medium",
+                technical: "up",
+                pools: ["value", "dividend"]
+            },
+
+            {
+                symbol: "002594",
+                name: "比亚迪",
+                industry: "new-energy",
+                industryName: "新能源",
+                tags: ["新能源车", "电池"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "high",
+                growth: "high",
+                technical: "up",
+                pools: ["growth", "hot"]
+            },
+
+            {
+                symbol: "300059",
+                name: "东方财富",
+                industry: "finance",
+                industryName: "金融",
+                tags: ["券商", "互联网金融"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "medium",
+                growth: "medium",
+                technical: "up",
+                pools: ["hot"]
+            },
+
+            {
+                symbol: "601012",
+                name: "隆基绿能",
+                industry: "new-energy",
+                industryName: "新能源",
+                tags: ["光伏", "新能源"],
+                marketCap: "large",
+                pe: "low",
+                roe: "low",
+                growth: "low",
+                technical: "down",
+                pools: []
+            },
+
+            {
+                symbol: "603501",
+                name: "韦尔股份",
+                industry: "semiconductor",
+                industryName: "半导体",
+                tags: ["芯片", "消费电子"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "high",
+                growth: "high",
+                technical: "up",
+                pools: ["technology", "growth"]
+            },
+
+            {
+                symbol: "000063",
+                name: "中兴通讯",
+                industry: "communication",
+                industryName: "通信",
+                tags: ["通信", "算力"],
+                marketCap: "large",
+                pe: "medium",
+                roe: "high",
+                growth: "high",
+                technical: "strong",
+                pools: ["technology", "growth", "hot"]
+            }
+
+        ];
+
+
+
+
+
+        /* =========================================================
+           我的股票池
+        ========================================================= */
+
+        const WATCHLIST = [
+
+            "600519",
+            "688981",
+            "300750",
+            "300308"
+
+        ];
+
+
+
+
+
+        /* =========================================================
+           页面导航
+        ========================================================= */
+
+
+        function goHome(page = "market") {
 
             window.location.href =
                 `../?page=${page}`;
@@ -592,18 +1954,980 @@
         }
 
 
+        function navigatePage(page) {
 
-        function searchStock() {
+            const routes = {
 
-            console.log(
-                document.getElementById(
-                    'stockInput'
-                ).value
-            );
+                market: "../",
 
+                stock: "../stock/",
+
+                news: "../news/",
+
+                research: "../research/",
+
+                trade: "../trade/",
+
+                tools: "../tools/",
+
+                document: "../document/"
+
+            };
+
+
+            if (page === "ai-chat") {
+
+                window.location.href =
+                    "../?page=ai-chat";
+
+                return;
+
+            }
+
+
+            const url = routes[page];
+
+
+            if (!url) {
+
+                console.error(
+                    "未知页面:",
+                    page
+                );
+
+                return;
+
+            }
+
+
+            window.location.href = url;
 
         }
 
+
+
+
+
+        /* =========================================================
+           搜索框
+        ========================================================= */
+
+
+        function focusStockSearch() {
+
+            const input =
+                document.getElementById(
+                    "stockSearch"
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            input.focus();
+
+
+            input.scrollIntoView({
+
+                behavior: "smooth",
+
+                block: "center"
+
+            });
+
+        }
+
+
+
+
+
+        /* =========================================================
+           股票搜索
+        ========================================================= */
+
+
+        function searchStockPage() {
+
+            const input =
+                document.getElementById(
+                    "stockSearch"
+                );
+
+
+            if (!input) {
+                return;
+            }
+
+
+            const keyword =
+                input.value
+                    .trim()
+                    .toLowerCase();
+
+
+            const resultContainer =
+                document.getElementById(
+                    "stockSearchResults"
+                );
+
+
+            if (!keyword) {
+
+                resultContainer.innerHTML = "";
+
+                return;
+
+            }
+
+
+            const results =
+                STOCK_DATA.filter(stock => {
+
+                    return (
+
+                        stock.symbol
+                            .toLowerCase()
+                            .includes(keyword)
+
+                        ||
+
+                        stock.name
+                            .toLowerCase()
+                            .includes(keyword)
+
+                        ||
+
+                        stock.industryName
+                            .toLowerCase()
+                            .includes(keyword)
+
+                        ||
+
+                        stock.tags
+                            .join(" ")
+                            .toLowerCase()
+                            .includes(keyword)
+
+                    );
+
+                });
+
+
+            if (results.length === 0) {
+
+                resultContainer.innerHTML = `
+
+            <div class="search-empty">
+
+                <strong>
+                    没有找到相关股票
+                </strong>
+
+                <p>
+                    可以尝试输入股票代码、股票名称或行业关键词。
+                </p>
+
+            </div>
+
+        `;
+
+                return;
+
+            }
+
+
+            resultContainer.innerHTML =
+
+                results
+                    .slice(0, 8)
+                    .map(stock => {
+
+                        return createSearchResult(stock);
+
+                    })
+                    .join("");
+
+        }
+
+
+
+
+
+        /* =========================================================
+           搜索结果
+        ========================================================= */
+
+
+        function createSearchResult(stock) {
+
+            return `
+
+        <button
+            class="stock-search-result"
+            type="button"
+            onclick="openStock('${stock.symbol}')"
+        >
+
+            <div>
+
+                <strong>
+                    ${stock.name}
+                </strong>
+
+                <span>
+                    ${stock.symbol}
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <span>
+                    ${stock.industryName}
+                </span>
+
+                <span>
+                    →
+                </span>
+
+            </div>
+
+        </button>
+
+    `;
+
+        }
+
+
+
+
+
+        /* =========================================================
+           打开股票详情
+        ========================================================= */
+
+
+        function openStock(symbol) {
+
+            if (!symbol) {
+                return;
+            }
+
+
+            window.location.href =
+                `./detail.html?symbol=${encodeURIComponent(symbol)}`;
+
+        }
+
+
+
+
+
+        /* =========================================================
+           筛选区域
+        ========================================================= */
+
+
+        function scrollToScreening() {
+
+            const section =
+                document.getElementById(
+                    "stockScreening"
+                );
+
+
+            if (!section) {
+                return;
+            }
+
+
+            section.scrollIntoView({
+
+                behavior: "smooth",
+
+                block: "start"
+
+            });
+
+        }
+
+
+
+
+
+        function resetScreening() {
+
+            document.getElementById(
+                "filterIndustry"
+            ).value = "all";
+
+
+            document.getElementById(
+                "filterMarketCap"
+            ).value = "all";
+
+
+            document.getElementById(
+                "filterPE"
+            ).value = "all";
+
+
+            document.getElementById(
+                "filterROE"
+            ).value = "all";
+
+
+            document.getElementById(
+                "filterGrowth"
+            ).value = "all";
+
+
+            document.getElementById(
+                "filterTechnical"
+            ).value = "all";
+
+
+            renderScreeningResults(
+                STOCK_DATA
+            );
+
+        }
+
+
+
+
+
+        function runScreening() {
+
+            const industry =
+                document.getElementById(
+                    "filterIndustry"
+                ).value;
+
+
+            const marketCap =
+                document.getElementById(
+                    "filterMarketCap"
+                ).value;
+
+
+            const pe =
+                document.getElementById(
+                    "filterPE"
+                ).value;
+
+
+            const roe =
+                document.getElementById(
+                    "filterROE"
+                ).value;
+
+
+            const growth =
+                document.getElementById(
+                    "filterGrowth"
+                ).value;
+
+
+            const technical =
+                document.getElementById(
+                    "filterTechnical"
+                ).value;
+
+
+            const results =
+                STOCK_DATA.filter(stock => {
+
+
+                    if (
+                        industry !== "all" &&
+                        stock.industry !== industry
+                    ) {
+                        return false;
+                    }
+
+
+                    if (
+                        marketCap !== "all" &&
+                        stock.marketCap !== marketCap
+                    ) {
+                        return false;
+                    }
+
+
+                    if (
+                        pe !== "all" &&
+                        stock.pe !== pe
+                    ) {
+                        return false;
+                    }
+
+
+                    if (
+                        roe !== "all" &&
+                        stock.roe !== roe
+                    ) {
+                        return false;
+                    }
+
+
+                    if (
+                        growth !== "all" &&
+                        stock.growth !== growth
+                    ) {
+                        return false;
+                    }
+
+
+                    if (
+                        technical !== "all" &&
+                        stock.technical !== technical
+                    ) {
+                        return false;
+                    }
+
+
+                    return true;
+
+                });
+
+
+            renderScreeningResults(results);
+
+        }
+
+
+
+
+
+        /* =========================================================
+           渲染筛选结果
+        ========================================================= */
+
+
+        function renderScreeningResults(
+            stocks
+        ) {
+
+            const container =
+                document.getElementById(
+                    "screeningStockGrid"
+                );
+
+
+            const count =
+                document.getElementById(
+                    "screeningCount"
+                );
+
+
+            if (!container) {
+                return;
+            }
+
+
+            if (count) {
+
+                count.textContent =
+                    `${stocks.length} RESULTS`;
+
+            }
+
+
+            if (stocks.length === 0) {
+
+                container.innerHTML = `
+
+            <div class="screening-empty">
+
+                <strong>
+                    没有符合条件的股票
+                </strong>
+
+                <p>
+                    可以适当放宽筛选条件。
+                </p>
+
+            </div>
+
+        `;
+
+                return;
+
+            }
+
+
+            container.innerHTML =
+                stocks
+                    .slice(0, 12)
+                    .map(stock => createStockCard(stock))
+                    .join("");
+
+        }
+
+
+
+
+
+        /* =========================================================
+           股票卡片
+        ========================================================= */
+
+
+        function createStockCard(stock) {
+
+            return `
+
+        <article
+            class="stock-card"
+            onclick="openStock('${stock.symbol}')"
+        >
+
+
+            <div class="stock-card-top">
+
+
+                <div>
+
+                    <span class="stock-code">
+                        ${stock.symbol}
+                    </span>
+
+                    <h3>
+                        ${stock.name}
+                    </h3>
+
+                </div>
+
+
+                <span class="stock-arrow">
+                    →
+                </span>
+
+
+            </div>
+
+
+
+            <div class="stock-card-industry">
+
+                ${stock.industryName}
+
+            </div>
+
+
+
+            <div class="stock-tags">
+
+                ${stock.tags
+                    .map(tag =>
+                        `<span>${tag}</span>`
+                    )
+                    .join("")
+                }
+
+            </div>
+
+
+
+            <div class="stock-card-data">
+
+
+                <div>
+
+                    <span>
+                        PE
+                    </span>
+
+                    <strong>
+                        ${getPEText(stock.pe)}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        ROE
+                    </span>
+
+                    <strong>
+                        ${getROEText(stock.roe)}
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        增长
+                    </span>
+
+                    <strong>
+                        ${getGrowthText(stock.growth)}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="stock-card-footer">
+
+                <span>
+                    查看完整研究
+                </span>
+
+                <strong>
+                    →
+                </strong>
+
+            </div>
+
+
+        </article>
+
+    `;
+
+        }
+
+
+
+
+
+        function getPEText(value) {
+
+            const map = {
+
+                low: "低",
+
+                medium: "中",
+
+                high: "高"
+
+            };
+
+
+            return map[value] || "--";
+
+        }
+
+
+
+
+
+        function getROEText(value) {
+
+            const map = {
+
+                low: "< 8%",
+
+                medium: "8-15%",
+
+                high: "> 15%"
+
+            };
+
+
+            return map[value] || "--";
+
+        }
+
+
+
+
+
+        function getGrowthText(value) {
+
+            const map = {
+
+                low: "低",
+
+                medium: "稳定",
+
+                high: "高"
+
+            };
+
+
+            return map[value] || "--";
+
+        }
+
+
+
+
+
+        /* =========================================================
+           股票池
+        ========================================================= */
+
+
+        function switchPool(pool) {
+
+            document
+                .querySelectorAll(".pool-tab")
+                .forEach(button => {
+
+                    button.classList.toggle(
+
+                        "active",
+
+                        button.dataset.pool === pool
+
+                    );
+
+                });
+
+
+            showStockPool(pool);
+
+        }
+
+
+
+
+
+        function showStockPool(pool) {
+
+            const container =
+                document.getElementById(
+                    "poolGrid"
+                );
+
+
+            if (!container) {
+                return;
+            }
+
+
+            let stocks = [];
+
+
+            if (pool === "watchlist") {
+
+                stocks =
+                    STOCK_DATA.filter(stock =>
+                        WATCHLIST.includes(
+                            stock.symbol
+                        )
+                    );
+
+            } else {
+
+                stocks =
+                    STOCK_DATA.filter(stock =>
+                        stock.pools.includes(pool)
+                    );
+
+            }
+
+
+            if (stocks.length === 0) {
+
+                container.innerHTML = `
+
+            <div class="screening-empty">
+
+                <strong>
+                    暂无股票
+                </strong>
+
+            </div>
+
+        `;
+
+                return;
+
+            }
+
+
+            container.innerHTML =
+                stocks
+                    .slice(0, 8)
+                    .map(stock =>
+                        createStockCard(stock)
+                    )
+                    .join("");
+
+        }
+
+
+
+
+
+        /* =========================================================
+           分类快速筛选
+        ========================================================= */
+
+
+        function filterByCategory(
+            category
+        ) {
+
+            const select =
+                document.getElementById(
+                    "filterIndustry"
+                );
+
+
+            if (!select) {
+                return;
+            }
+
+
+            select.value =
+                category;
+
+
+            scrollToScreening();
+
+
+            runScreening();
+
+        }
+
+
+
+
+
+        /* =========================================================
+           行业
+        ========================================================= */
+
+
+        function openIndustry(
+            industry
+        ) {
+
+            if (!industry) {
+
+                window.location.href =
+                    "../tools/industry.html";
+
+                return;
+
+            }
+
+
+            window.location.href =
+                `../tools/industry.html?industry=${encodeURIComponent(industry)}`;
+
+        }
+
+
+
+
+
+        /* =========================================================
+           初始化
+        ========================================================= */
+
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+
+                // 默认显示筛选结果
+
+                renderScreeningResults(
+                    STOCK_DATA
+                );
+
+
+                // 默认显示热门股票
+
+                showStockPool(
+                    "hot"
+                );
+
+
+
+                // 自选股票
+
+                const watchlist =
+                    document.getElementById(
+                        "watchlistGrid"
+                    );
+
+
+                if (watchlist) {
+
+                    const stocks =
+                        STOCK_DATA.filter(stock =>
+                            WATCHLIST.includes(
+                                stock.symbol
+                            )
+                        );
+
+
+                    watchlist.innerHTML =
+                        stocks
+                            .map(stock =>
+                                createStockCard(stock)
+                            )
+                            .join("");
+
+                }
+
+
+
+                // Enter 搜索
+
+                const searchInput =
+                    document.getElementById(
+                        "stockSearch"
+                    );
+
+
+                if (searchInput) {
+
+                    searchInput.addEventListener(
+                        "keydown",
+                        event => {
+
+                            if (
+                                event.key === "Enter"
+                            ) {
+
+                                searchStockPage();
+
+                            }
+
+                        }
+                    );
+
+
+                    searchInput.addEventListener(
+                        "input",
+                        () => {
+
+                            if (
+                                searchInput.value
+                                    .trim() === ""
+                            ) {
+
+                                document.getElementById(
+                                    "stockSearchResults"
+                                ).innerHTML = "";
+
+                            }
+
+                        }
+                    );
+
+                }
+
+
+            }
+        );
 
     </script>
 
