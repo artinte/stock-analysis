@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <html lang="zh-CN">
 
@@ -146,13 +147,9 @@
             ← 股票列表
         </button>
 
-        <span>
-            /
-        </span>
+        <span>/</span>
 
-        <span>
-            股票详情
-        </span>
+        <span>股票详情</span>
 
     </div>
 
@@ -170,34 +167,26 @@
             <div class="stock-name-row">
 
                 <h1 id="stockName">
-                    贵州茅台
+                    —
                 </h1>
 
                 <span id="stockSymbol"
                       class="stock-symbol">
-                    600519.SH
+                    —
                 </span>
 
-                <span class="market-badge">
-                    A股
+                <span class="market-badge"
+                      id="stockMarket">
+                    —
                 </span>
 
             </div>
 
 
-            <div class="stock-industry">
+            <div class="stock-industry"
+                 id="stockIndustry">
 
-                <span>
-                    白酒
-                </span>
-
-                <span>
-                    食品饮料
-                </span>
-
-                <span>
-                    沪市
-                </span>
+                <span>—</span>
 
             </div>
 
@@ -206,12 +195,13 @@
 
                 <span class="status-dot"></span>
 
-                <span>
-                    行情正常
+                <span id="stockStatus">
+                    正在加载
                 </span>
 
-                <span class="data-time">
-                    数据：模拟数据
+                <span class="data-time"
+                      id="dataTime">
+                    —
                 </span>
 
             </div>
@@ -225,18 +215,18 @@
             <div class="current-price"
                  id="currentPrice">
 
-                1,438.00
+                —
 
             </div>
 
 
-            <div class="price-change positive"
+            <div class="price-change"
                  id="priceChange">
 
-                +16.48
+                —
 
-                <span>
-                    +1.16%
+                <span id="priceChangePercent">
+                    —
                 </span>
 
             </div>
@@ -281,104 +271,72 @@
 
         <div class="metric-card">
 
-            <span>
-                今开
-            </span>
+            <span>今开</span>
 
-            <strong>
-                1,425.00
-            </strong>
+            <strong id="quoteOpen">—</strong>
 
         </div>
 
 
         <div class="metric-card">
 
-            <span>
-                最高
-            </span>
+            <span>最高</span>
 
-            <strong>
-                1,446.80
-            </strong>
+            <strong id="quoteHigh">—</strong>
 
         </div>
 
 
         <div class="metric-card">
 
-            <span>
-                最低
-            </span>
+            <span>最低</span>
 
-            <strong>
-                1,417.20
-            </strong>
+            <strong id="quoteLow">—</strong>
 
         </div>
 
 
         <div class="metric-card">
 
-            <span>
-                昨收
-            </span>
+            <span>昨收</span>
 
-            <strong>
-                1,421.52
-            </strong>
+            <strong id="quotePrevClose">—</strong>
 
         </div>
 
 
         <div class="metric-card">
 
-            <span>
-                成交额
-            </span>
+            <span>成交额</span>
 
-            <strong>
-                42.15亿
-            </strong>
+            <strong id="quoteAmount">—</strong>
 
         </div>
 
 
         <div class="metric-card">
 
-            <span>
-                换手率
-            </span>
+            <span>换手率</span>
 
-            <strong>
-                0.42%
-            </strong>
+            <strong id="quoteTurnover">—</strong>
 
         </div>
 
 
         <div class="metric-card">
 
-            <span>
-                总市值
-            </span>
+            <span>总市值</span>
 
-            <strong>
-                1.80万亿
-            </strong>
+            <strong id="quoteMarketCap">—</strong>
 
         </div>
 
 
         <div class="metric-card">
 
-            <span>
-                流通市值
-            </span>
+            <span>流通市值</span>
 
-            <strong>
-                1.80万亿
-            </strong>
+            <strong id="quoteFloatMarketCap">—</strong>
 
         </div>
 
@@ -394,70 +352,42 @@
     <nav class="research-tabs"
          id="researchTabs">
 
-
         <button class="active"
                 data-target="overview">
-
             总览
-
         </button>
-
 
         <button data-target="quote">
-
             行情
-
         </button>
-
 
         <button data-target="financial">
-
             财务
-
         </button>
-
 
         <button data-target="valuation">
-
             估值
-
         </button>
-
 
         <button data-target="industry">
-
             行业
-
         </button>
-
 
         <button data-target="technical">
-
             技术
-
         </button>
-
 
         <button data-target="news">
-
             资讯
-
         </button>
-
 
         <button data-target="announcement">
-
             公告
-
         </button>
-
 
         <button data-target="ai">
-
             ✦ AI研究
-
         </button>
-
 
     </nav>
 
@@ -470,14 +400,11 @@
     <section id="overview"
              class="research-section active">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    OVERVIEW
-                </span>
+                <span>OVERVIEW</span>
 
                 <h2>
                     投资研究总览
@@ -486,7 +413,6 @@
             </div>
 
         </div>
-
 
 
         <div class="overview-grid">
@@ -504,8 +430,8 @@
                             价格走势
                         </h3>
 
-                        <span>
-                            贵州茅台 · 日线
+                        <span id="chartTitle">
+                            —
                         </span>
 
                     </div>
@@ -513,15 +439,16 @@
 
                     <div class="period-buttons">
 
-                        <button class="active">
+                        <button class="active"
+                                data-period="day">
                             日
                         </button>
 
-                        <button>
+                        <button data-period="week">
                             周
                         </button>
 
-                        <button>
+                        <button data-period="month">
                             月
                         </button>
 
@@ -530,155 +457,37 @@
                 </div>
 
 
-                <div class="chart-container">
+                <div class="chart-container"
+                     id="chartContainer">
 
-                    <svg
-                        viewBox="0 0 900 360"
-                        preserveAspectRatio="none"
-                        class="price-chart">
-
-
-                        <defs>
-
-                            <linearGradient
-                                id="chartFill"
-                                x1="0"
-                                y1="0"
-                                x2="0"
-                                y2="1">
-
-                                <stop
-                                    offset="0%"
-                                    stop-opacity=".22"/>
-
-                                <stop
-                                    offset="100%"
-                                    stop-opacity="0"/>
-
-                            </linearGradient>
-
-                        </defs>
-
-
-                        <line
-                            x1="0"
-                            y1="70"
-                            x2="900"
-                            y2="70"
-                            class="grid-line"/>
-
-                        <line
-                            x1="0"
-                            y1="140"
-                            x2="900"
-                            y2="140"
-                            class="grid-line"/>
-
-                        <line
-                            x1="0"
-                            y1="210"
-                            x2="900"
-                            y2="210"
-                            class="grid-line"/>
-
-                        <line
-                            x1="0"
-                            y1="280"
-                            x2="900"
-                            y2="280"
-                            class="grid-line"/>
-
-
-                        <polygon
-                            points="
-                            0,275
-                            55,258
-                            110,270
-                            165,230
-                            220,244
-                            275,205
-                            330,216
-                            385,175
-                            440,188
-                            495,160
-                            550,174
-                            605,135
-                            660,148
-                            715,118
-                            770,132
-                            825,92
-                            900,70
-                            900,360
-                            0,360"
-                            class="chart-area"/>
-
-
-                        <polyline
-                            points="
-                            0,275
-                            55,258
-                            110,270
-                            165,230
-                            220,244
-                            275,205
-                            330,216
-                            385,175
-                            440,188
-                            495,160
-                            550,174
-                            605,135
-                            660,148
-                            715,118
-                            770,132
-                            825,92
-                            900,70"
-                            class="chart-line"/>
-
-
-                        <circle
-                            cx="900"
-                            cy="70"
-                            r="5"
-                            class="chart-point"/>
-
-                    </svg>
-
-
-                    <div class="chart-label chart-label-top">
-                        1,460
-                    </div>
-
-                    <div class="chart-label chart-label-mid">
-                        1,400
-                    </div>
-
-                    <div class="chart-label chart-label-bottom">
-                        1,340
+                    <div class="data-loading">
+                        正在加载行情数据...
                     </div>
 
                 </div>
 
 
-                <div class="chart-footer">
+                <div class="chart-footer"
+                     id="technicalSummary">
 
                     <span>
                         MA5
-                        <strong>1,421.6</strong>
+                        <strong id="ma5">—</strong>
                     </span>
 
                     <span>
                         MA20
-                        <strong>1,398.4</strong>
+                        <strong id="ma20">—</strong>
                     </span>
 
                     <span>
                         MA60
-                        <strong>1,365.2</strong>
+                        <strong id="ma60">—</strong>
                     </span>
 
                     <span>
                         RSI
-                        <strong>61.8</strong>
+                        <strong id="rsi">—</strong>
                     </span>
 
                 </div>
@@ -687,7 +496,7 @@
 
 
 
-            <!-- 核心指标 -->
+            <!-- 综合评分 -->
 
             <div class="panel score-panel">
 
@@ -712,8 +521,8 @@
 
                     <div class="score-circle">
 
-                        <strong>
-                            82
+                        <strong id="overallScore">
+                            —
                         </strong>
 
                         <span>
@@ -725,14 +534,13 @@
 
                     <div>
 
-                        <strong class="score-label">
-                            综合偏强
+                        <strong class="score-label"
+                                id="scoreLabel">
+                            —
                         </strong>
 
-                        <p>
-                            基本面质量较高，
-                            盈利能力稳定，
-                            估值处于中性区间。
+                        <p id="scoreDescription">
+                            暂无研究数据
                         </p>
 
                     </div>
@@ -742,21 +550,16 @@
 
                 <div class="score-list">
 
-
                     <div>
 
-                        <span>
-                            基本面
-                        </span>
+                        <span>基本面</span>
 
                         <div class="score-bar">
-
-                            <i style="width:92%"></i>
-
+                            <i id="fundamentalScoreBar"></i>
                         </div>
 
-                        <strong>
-                            92
+                        <strong id="fundamentalScore">
+                            —
                         </strong>
 
                     </div>
@@ -764,18 +567,14 @@
 
                     <div>
 
-                        <span>
-                            成长性
-                        </span>
+                        <span>成长性</span>
 
                         <div class="score-bar">
-
-                            <i style="width:81%"></i>
-
+                            <i id="growthScoreBar"></i>
                         </div>
 
-                        <strong>
-                            81
+                        <strong id="growthScore">
+                            —
                         </strong>
 
                     </div>
@@ -783,18 +582,14 @@
 
                     <div>
 
-                        <span>
-                            估值
-                        </span>
+                        <span>估值</span>
 
                         <div class="score-bar">
-
-                            <i style="width:68%"></i>
-
+                            <i id="valuationScoreBar"></i>
                         </div>
 
-                        <strong>
-                            68
+                        <strong id="valuationScore">
+                            —
                         </strong>
 
                     </div>
@@ -802,33 +597,29 @@
 
                     <div>
 
-                        <span>
-                            技术面
-                        </span>
+                        <span>技术面</span>
 
                         <div class="score-bar">
-
-                            <i style="width:76%"></i>
-
+                            <i id="technicalScoreBar"></i>
                         </div>
 
-                        <strong>
-                            76
+                        <strong id="technicalScore">
+                            —
                         </strong>
 
                     </div>
-
 
                 </div>
 
             </div>
 
-
         </div>
 
 
 
-        <!-- 核心财务 -->
+        <!-- =================================================
+             核心基本面
+        ================================================== -->
 
         <div class="section-title">
             核心基本面
@@ -837,114 +628,78 @@
 
         <div class="fundamental-grid">
 
-
             <div class="fundamental-card">
 
-                <span>
-                    ROE
-                </span>
+                <span>ROE</span>
 
-                <strong>
-                    34.82%
-                </strong>
+                <strong id="roe">—</strong>
 
-                <small>
-                    盈利能力优秀
-                </small>
+                <small id="roeDesc">—</small>
 
             </div>
 
 
             <div class="fundamental-card">
 
-                <span>
-                    毛利率
-                </span>
+                <span>毛利率</span>
 
-                <strong>
-                    91.72%
-                </strong>
+                <strong id="grossMargin">—</strong>
 
-                <small>
-                    高毛利业务
-                </small>
+                <small id="grossMarginDesc">—</small>
 
             </div>
 
 
             <div class="fundamental-card">
 
-                <span>
-                    净利率
-                </span>
+                <span>净利率</span>
 
-                <strong>
-                    49.58%
-                </strong>
+                <strong id="netMargin">—</strong>
 
-                <small>
-                    盈利质量优秀
-                </small>
+                <small id="netMarginDesc">—</small>
 
             </div>
 
 
             <div class="fundamental-card">
 
-                <span>
-                    营收增长
-                </span>
+                <span>营收增长</span>
 
-                <strong class="positive">
-                    +15.33%
-                </strong>
+                <strong id="revenueGrowth">—</strong>
 
-                <small>
-                    同比
-                </small>
+                <small>同比</small>
 
             </div>
 
 
             <div class="fundamental-card">
 
-                <span>
-                    净利润增长
-                </span>
+                <span>净利润增长</span>
 
-                <strong class="positive">
-                    +18.42%
-                </strong>
+                <strong id="profitGrowth">—</strong>
 
-                <small>
-                    同比
-                </small>
+                <small>同比</small>
 
             </div>
 
 
             <div class="fundamental-card">
 
-                <span>
-                    股息率
-                </span>
+                <span>股息率</span>
 
-                <strong>
-                    2.14%
-                </strong>
+                <strong id="dividendYield">—</strong>
 
-                <small>
-                    现金分红
-                </small>
+                <small>现金分红</small>
 
             </div>
-
 
         </div>
 
 
 
-        <!-- 估值摘要 -->
+        <!-- =================================================
+             估值 + 行业
+        ================================================== -->
 
         <div class="two-column-grid">
 
@@ -957,8 +712,7 @@
                         估值概览
                     </h3>
 
-                    <button
-                        onclick="switchSection('valuation')">
+                    <button onclick="switchSection('valuation')">
                         查看完整估值 →
                     </button>
 
@@ -967,19 +721,16 @@
 
                 <div class="valuation-summary">
 
-
                     <div>
 
-                        <span>
-                            PE-TTM
-                        </span>
+                        <span>PE-TTM</span>
 
-                        <strong>
-                            24.8x
+                        <strong id="summaryPE">
+                            —
                         </strong>
 
-                        <small>
-                            行业中枢 26.4x
+                        <small id="summaryPEDesc">
+                            —
                         </small>
 
                     </div>
@@ -987,16 +738,14 @@
 
                     <div>
 
-                        <span>
-                            PB
-                        </span>
+                        <span>PB</span>
 
-                        <strong>
-                            7.8x
+                        <strong id="summaryPB">
+                            —
                         </strong>
 
-                        <small>
-                            历史中位 9.2x
+                        <small id="summaryPBDesc">
+                            —
                         </small>
 
                     </div>
@@ -1004,28 +753,23 @@
 
                     <div>
 
-                        <span>
-                            PEG
-                        </span>
+                        <span>PEG</span>
 
-                        <strong>
-                            1.35
+                        <strong id="summaryPEG">
+                            —
                         </strong>
 
-                        <small>
-                            中性
+                        <small id="summaryPEGDesc">
+                            —
                         </small>
 
                     </div>
-
 
                 </div>
 
             </div>
 
 
-
-            <!-- 行业 -->
 
             <div class="panel">
 
@@ -1035,8 +779,7 @@
                         行业位置
                     </h3>
 
-                    <button
-                        onclick="switchSection('industry')">
+                    <button onclick="switchSection('industry')">
                         行业分析 →
                     </button>
 
@@ -1047,12 +790,12 @@
 
                     <div class="industry-rank">
 
-                        <strong>
-                            01
+                        <strong id="industryRank">
+                            —
                         </strong>
 
-                        <span>
-                            白酒行业
+                        <span id="industryName">
+                            —
                         </span>
 
                     </div>
@@ -1060,12 +803,10 @@
 
                     <div class="industry-item">
 
-                        <span>
-                            市占/品牌
-                        </span>
+                        <span>市占/品牌</span>
 
-                        <strong>
-                            龙头
+                        <strong id="industryPosition">
+                            —
                         </strong>
 
                     </div>
@@ -1073,12 +814,10 @@
 
                     <div class="industry-item">
 
-                        <span>
-                            盈利能力
-                        </span>
+                        <span>盈利能力</span>
 
-                        <strong>
-                            第一梯队
+                        <strong id="industryProfitability">
+                            —
                         </strong>
 
                     </div>
@@ -1086,12 +825,10 @@
 
                     <div class="industry-item">
 
-                        <span>
-                            竞争壁垒
-                        </span>
+                        <span>竞争壁垒</span>
 
-                        <strong>
-                            极高
+                        <strong id="industryMoat">
+                            —
                         </strong>
 
                     </div>
@@ -1100,10 +837,7 @@
 
             </div>
 
-
         </div>
-
-
 
     </section>
 
@@ -1116,18 +850,13 @@
     <section id="quote"
              class="research-section">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    MARKET
-                </span>
+                <span>MARKET</span>
 
-                <h2>
-                    行情数据
-                </h2>
+                <h2>行情数据</h2>
 
             </div>
 
@@ -1148,32 +877,32 @@
 
                     <div>
                         <span>最新价</span>
-                        <strong>1,438.00</strong>
+                        <strong id="detailPrice">—</strong>
                     </div>
 
                     <div>
                         <span>涨跌额</span>
-                        <strong class="positive">+16.48</strong>
+                        <strong id="detailChange">—</strong>
                     </div>
 
                     <div>
                         <span>涨跌幅</span>
-                        <strong class="positive">+1.16%</strong>
+                        <strong id="detailChangePercent">—</strong>
                     </div>
 
                     <div>
                         <span>成交量</span>
-                        <strong>29.31万手</strong>
+                        <strong id="detailVolume">—</strong>
                     </div>
 
                     <div>
                         <span>成交额</span>
-                        <strong>42.15亿</strong>
+                        <strong id="detailAmount">—</strong>
                     </div>
 
                     <div>
                         <span>换手率</span>
-                        <strong>0.42%</strong>
+                        <strong id="detailTurnover">—</strong>
                     </div>
 
                 </div>
@@ -1192,16 +921,16 @@
 
                     <div class="range-values">
 
-                        <span>
-                            1,210.00
+                        <span id="yearLow">
+                            —
                         </span>
 
-                        <strong>
-                            当前 1,438.00
+                        <strong id="yearCurrent">
+                            当前 —
                         </strong>
 
-                        <span>
-                            1,735.00
+                        <span id="yearHigh">
+                            —
                         </span>
 
                     </div>
@@ -1209,21 +938,20 @@
 
                     <div class="range-track">
 
-                        <i></i>
+                        <i id="yearRangeProgress"></i>
 
                     </div>
 
-                    <small>
-                        当前价格位于52周区间约 44%
+
+                    <small id="yearRangeDescription">
+                        暂无52周数据
                     </small>
 
                 </div>
 
             </div>
 
-
         </div>
-
 
     </section>
 
@@ -1236,18 +964,13 @@
     <section id="financial"
              class="research-section">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    FINANCIALS
-                </span>
+                <span>FINANCIALS</span>
 
-                <h2>
-                    财务分析
-                </h2>
+                <h2>财务分析</h2>
 
             </div>
 
@@ -1256,19 +979,16 @@
 
         <div class="financial-cards">
 
-
             <div class="financial-card">
 
-                <span>
-                    营业收入
-                </span>
+                <span>营业收入</span>
 
-                <strong>
-                    1,720.54亿
+                <strong id="financialRevenue">
+                    —
                 </strong>
 
-                <em class="positive">
-                    +15.33%
+                <em id="financialRevenueGrowth">
+                    —
                 </em>
 
             </div>
@@ -1276,16 +996,14 @@
 
             <div class="financial-card">
 
-                <span>
-                    归母净利润
-                </span>
+                <span>归母净利润</span>
 
-                <strong>
-                    853.10亿
+                <strong id="financialProfit">
+                    —
                 </strong>
 
-                <em class="positive">
-                    +18.42%
+                <em id="financialProfitGrowth">
+                    —
                 </em>
 
             </div>
@@ -1293,16 +1011,14 @@
 
             <div class="financial-card">
 
-                <span>
-                    经营现金流
-                </span>
+                <span>经营现金流</span>
 
-                <strong>
-                    约 890亿
+                <strong id="operatingCashFlow">
+                    —
                 </strong>
 
-                <em>
-                    稳健
+                <em id="cashFlowStatus">
+                    —
                 </em>
 
             </div>
@@ -1310,17 +1026,13 @@
 
             <div class="financial-card">
 
-                <span>
-                    净资产
-                </span>
+                <span>净资产</span>
 
-                <strong>
-                    2,539.59亿
+                <strong id="netAssets">
+                    —
                 </strong>
 
-                <em>
-                    高质量
-                </em>
+                <em>—</em>
 
             </div>
 
@@ -1336,100 +1048,49 @@
                 </h3>
 
                 <span>
-                    单位：亿元
+                    单位：—
                 </span>
 
             </div>
 
 
-            <table>
+            <div class="table-scroll">
 
-                <thead>
+                <table>
 
-                    <tr>
+                    <thead>
 
-                        <th>报告期</th>
-                        <th>营业收入</th>
-                        <th>营收增速</th>
-                        <th>净利润</th>
-                        <th>净利润增速</th>
-                        <th>ROE</th>
+                        <tr>
 
-                    </tr>
+                            <th>报告期</th>
+                            <th>营业收入</th>
+                            <th>营收增速</th>
+                            <th>净利润</th>
+                            <th>净利润增速</th>
+                            <th>ROE</th>
 
-                </thead>
+                        </tr>
 
-
-                <tbody>
-
-                    <tr>
-
-                        <td>2025</td>
-
-                        <td>1720.54</td>
-
-                        <td class="positive">
-                            +15.33%
-                        </td>
-
-                        <td>853.10</td>
-
-                        <td class="positive">
-                            +18.42%
-                        </td>
-
-                        <td>34.82%</td>
-
-                    </tr>
+                    </thead>
 
 
-                    <tr>
+                    <tbody id="financialTableBody">
 
-                        <td>2024</td>
+                        <tr>
 
-                        <td>1493.67</td>
+                            <td colspan="6">
+                                暂无财务数据
+                            </td>
 
-                        <td class="positive">
-                            +15.43%
-                        </td>
+                        </tr>
 
-                        <td>723.78</td>
+                    </tbody>
 
-                        <td class="positive">
-                            +14.16%
-                        </td>
+                </table>
 
-                        <td>34.21%</td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td>2023</td>
-
-                        <td>1476.94</td>
-
-                        <td class="positive">
-                            +20.50%
-                        </td>
-
-                        <td>747.34</td>
-
-                        <td class="positive">
-                            +19.16%
-                        </td>
-
-                        <td>34.88%</td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
+            </div>
 
         </div>
-
 
     </section>
 
@@ -1442,18 +1103,13 @@
     <section id="valuation"
              class="research-section">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    VALUATION
-                </span>
+                <span>VALUATION</span>
 
-                <h2>
-                    估值分析
-                </h2>
+                <h2>估值分析</h2>
 
             </div>
 
@@ -1465,16 +1121,14 @@
 
             <div class="valuation-card">
 
-                <span>
-                    PE-TTM
-                </span>
+                <span>PE-TTM</span>
 
-                <strong>
-                    24.8x
+                <strong id="valuationPE">
+                    —
                 </strong>
 
-                <small>
-                    历史分位 38%
+                <small id="valuationPEDesc">
+                    —
                 </small>
 
             </div>
@@ -1482,16 +1136,14 @@
 
             <div class="valuation-card">
 
-                <span>
-                    PB
-                </span>
+                <span>PB</span>
 
-                <strong>
-                    7.8x
+                <strong id="valuationPB">
+                    —
                 </strong>
 
-                <small>
-                    历史分位 31%
+                <small id="valuationPBDesc">
+                    —
                 </small>
 
             </div>
@@ -1499,16 +1151,14 @@
 
             <div class="valuation-card">
 
-                <span>
-                    PS
-                </span>
+                <span>PS</span>
 
-                <strong>
-                    12.3x
+                <strong id="valuationPS">
+                    —
                 </strong>
 
-                <small>
-                    历史分位 42%
+                <small id="valuationPSDesc">
+                    —
                 </small>
 
             </div>
@@ -1516,16 +1166,14 @@
 
             <div class="valuation-card">
 
-                <span>
-                    股息率
-                </span>
+                <span>股息率</span>
 
-                <strong>
-                    2.14%
+                <strong id="valuationDividend">
+                    —
                 </strong>
 
                 <small>
-                    分红能力优秀
+                    —
                 </small>
 
             </div>
@@ -1543,35 +1191,59 @@
             <div class="valuation-band">
 
                 <div class="valuation-point low">
+
                     <span>低估</span>
-                    <strong>18x</strong>
+
+                    <strong id="valuationLow">
+                        —
+                    </strong>
+
                 </div>
+
 
                 <div class="valuation-point current">
+
                     <span>当前</span>
-                    <strong>24.8x</strong>
+
+                    <strong id="valuationCurrent">
+                        —
+                    </strong>
+
                 </div>
+
 
                 <div class="valuation-point median">
+
                     <span>中位</span>
-                    <strong>28x</strong>
+
+                    <strong id="valuationMedian">
+                        —
+                    </strong>
+
                 </div>
 
+
                 <div class="valuation-point high">
+
                     <span>高估</span>
-                    <strong>40x</strong>
+
+                    <strong id="valuationHigh">
+                        —
+                    </strong>
+
                 </div>
 
             </div>
 
 
-            <p class="valuation-note">
-                当前估值处于历史中低区域，尚未进入明显高估区间。
-                实际系统接入后应根据历史 PE/PB 分位、盈利预测和行业中枢动态计算。
+            <p class="valuation-note"
+               id="valuationNote">
+
+                暂无估值分析数据。
+
             </p>
 
         </div>
-
 
     </section>
 
@@ -1584,18 +1256,13 @@
     <section id="industry"
              class="research-section">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    INDUSTRY
-                </span>
+                <span>INDUSTRY</span>
 
-                <h2>
-                    行业与竞争格局
-                </h2>
+                <h2>行业与竞争格局</h2>
 
             </div>
 
@@ -1614,20 +1281,19 @@
 
                 <div class="industry-main">
 
-                    <strong>
-                        白酒
+                    <strong id="detailIndustry">
+                        —
                     </strong>
 
-                    <span>
-                        食品饮料 · 白酒Ⅱ
+                    <span id="industryPath">
+                        —
                     </span>
 
                 </div>
 
 
-                <p>
-                    贵州茅台属于高端白酒龙头企业，
-                    核心竞争力来自品牌、产品、渠道、产能和长期消费认知。
+                <p id="industryDescription">
+                    暂无行业分析。
                 </p>
 
             </div>
@@ -1644,28 +1310,27 @@
 
                     <div>
                         <span>营业收入</span>
-                        <strong>#1</strong>
+                        <strong id="rankRevenue">—</strong>
                     </div>
 
                     <div>
                         <span>净利润</span>
-                        <strong>#1</strong>
+                        <strong id="rankProfit">—</strong>
                     </div>
 
                     <div>
                         <span>ROE</span>
-                        <strong>#1</strong>
+                        <strong id="rankROE">—</strong>
                     </div>
 
                     <div>
-                        <span>品牌力</span>
-                        <strong>#1</strong>
+                        <span>综合排名</span>
+                        <strong id="rankOverall">—</strong>
                     </div>
 
                 </div>
 
             </div>
-
 
         </div>
 
@@ -1677,32 +1342,17 @@
             </h3>
 
 
-            <div class="competitor-grid">
+            <div class="competitor-grid"
+                 id="competitorGrid">
 
                 <div>
-                    <strong>五粮液</strong>
-                    <span>000858</span>
-                </div>
-
-                <div>
-                    <strong>泸州老窖</strong>
-                    <span>000568</span>
-                </div>
-
-                <div>
-                    <strong>山西汾酒</strong>
-                    <span>600809</span>
-                </div>
-
-                <div>
-                    <strong>洋河股份</strong>
-                    <span>002304</span>
+                    <strong>—</strong>
+                    <span>—</span>
                 </div>
 
             </div>
 
         </div>
-
 
     </section>
 
@@ -1715,18 +1365,13 @@
     <section id="technical"
              class="research-section">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    TECHNICAL
-                </span>
+                <span>TECHNICAL</span>
 
-                <h2>
-                    技术指标
-                </h2>
+                <h2>技术指标</h2>
 
             </div>
 
@@ -1738,16 +1383,14 @@
 
             <div class="technical-card">
 
-                <span>
-                    MA5
-                </span>
+                <span>MA5</span>
 
-                <strong>
-                    1,421.6
+                <strong id="technicalMA5">
+                    —
                 </strong>
 
-                <em class="positive">
-                    多头
+                <em id="technicalMA5Status">
+                    —
                 </em>
 
             </div>
@@ -1755,16 +1398,14 @@
 
             <div class="technical-card">
 
-                <span>
-                    MA20
-                </span>
+                <span>MA20</span>
 
-                <strong>
-                    1,398.4
+                <strong id="technicalMA20">
+                    —
                 </strong>
 
-                <em class="positive">
-                    多头
+                <em id="technicalMA20Status">
+                    —
                 </em>
 
             </div>
@@ -1772,16 +1413,14 @@
 
             <div class="technical-card">
 
-                <span>
-                    RSI
-                </span>
+                <span>RSI</span>
 
-                <strong>
-                    61.8
+                <strong id="technicalRSI">
+                    —
                 </strong>
 
-                <em>
-                    偏强
+                <em id="technicalRSIStatus">
+                    —
                 </em>
 
             </div>
@@ -1789,16 +1428,14 @@
 
             <div class="technical-card">
 
-                <span>
-                    MACD
-                </span>
+                <span>MACD</span>
 
-                <strong>
-                    12.4
+                <strong id="technicalMACD">
+                    —
                 </strong>
 
-                <em class="positive">
-                    金叉
+                <em id="technicalMACDStatus">
+                    —
                 </em>
 
             </div>
@@ -1806,16 +1443,14 @@
 
             <div class="technical-card">
 
-                <span>
-                    KDJ
-                </span>
+                <span>KDJ</span>
 
-                <strong>
-                    72.3
+                <strong id="technicalKDJ">
+                    —
                 </strong>
 
-                <em>
-                    偏强
+                <em id="technicalKDJStatus">
+                    —
                 </em>
 
             </div>
@@ -1823,22 +1458,19 @@
 
             <div class="technical-card">
 
-                <span>
-                    ATR
-                </span>
+                <span>ATR</span>
 
-                <strong>
-                    26.8
+                <strong id="technicalATR">
+                    —
                 </strong>
 
-                <em>
-                    正常
+                <em id="technicalATRStatus">
+                    —
                 </em>
 
             </div>
 
         </div>
-
 
     </section>
 
@@ -1851,104 +1483,29 @@
     <section id="news"
              class="research-section">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    NEWS
-                </span>
+                <span>NEWS</span>
 
-                <h2>
-                    公司与市场资讯
-                </h2>
+                <h2>公司与市场资讯</h2>
 
             </div>
 
         </div>
 
 
-        <div class="panel news-list">
+        <div class="panel news-list"
+             id="newsList">
 
+            <div class="empty-state">
 
-            <article>
+                暂无资讯数据
 
-                <span>
-                    公司
-                </span>
-
-                <div>
-
-                    <h3>
-                        贵州茅台持续推进核心产品与渠道体系优化
-                    </h3>
-
-                    <p>
-                        公司经营、渠道和产品策略持续受到市场关注。
-                    </p>
-
-                </div>
-
-                <time>
-                    09-05
-                </time>
-
-            </article>
-
-
-            <article>
-
-                <span>
-                    行业
-                </span>
-
-                <div>
-
-                    <h3>
-                        高端白酒行业景气度与消费需求受到关注
-                    </h3>
-
-                    <p>
-                        市场重点关注行业库存、终端价格以及消费需求变化。
-                    </p>
-
-                </div>
-
-                <time>
-                    09-04
-                </time>
-
-            </article>
-
-
-            <article>
-
-                <span>
-                    市场
-                </span>
-
-                <div>
-
-                    <h3>
-                        大消费板块估值出现结构性变化
-                    </h3>
-
-                    <p>
-                        资金重新关注具有稳定现金流和较高盈利质量的龙头公司。
-                    </p>
-
-                </div>
-
-                <time>
-                    09-03
-                </time>
-
-            </article>
-
+            </div>
 
         </div>
-
 
     </section>
 
@@ -1961,97 +1518,29 @@
     <section id="announcement"
              class="research-section">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    ANNOUNCEMENT
-                </span>
+                <span>ANNOUNCEMENT</span>
 
-                <h2>
-                    公司公告
-                </h2>
+                <h2>公司公告</h2>
 
             </div>
 
         </div>
 
 
-        <div class="panel announcement-list">
+        <div class="panel announcement-list"
+             id="announcementList">
 
+            <div class="empty-state">
 
-            <div>
-
-                <span>
-                    2026-08-15
-                </span>
-
-                <strong>
-                    贵州茅台2026年半年度报告
-                </strong>
-
-                <button>
-                    查看
-                </button>
+                暂无公告数据
 
             </div>
-
-
-            <div>
-
-                <span>
-                    2026-08-15
-                </span>
-
-                <strong>
-                    贵州茅台2026年半年度报告摘要
-                </strong>
-
-                <button>
-                    查看
-                </button>
-
-            </div>
-
-
-            <div>
-
-                <span>
-                    2026-04-17
-                </span>
-
-                <strong>
-                    贵州茅台2025年年度报告
-                </strong>
-
-                <button>
-                    查看
-                </button>
-
-            </div>
-
-
-            <div>
-
-                <span>
-                    2026-04-17
-                </span>
-
-                <strong>
-                    2025年度利润分配预案
-                </strong>
-
-                <button>
-                    查看
-                </button>
-
-            </div>
-
 
         </div>
-
 
     </section>
 
@@ -2064,21 +1553,15 @@
     <section id="ai"
              class="research-section">
 
-
         <div class="section-heading">
 
             <div>
 
-                <span>
-                    AI RESEARCH
-                </span>
+                <span>AI RESEARCH</span>
 
-                <h2>
-                    AI 综合研究
-                </h2>
+                <h2>AI 综合研究</h2>
 
             </div>
-
 
             <span class="ai-badge">
                 ✦ AI MODEL
@@ -2115,14 +1598,12 @@
 
                 <div class="ai-conclusion-text">
 
-                    <strong>
-                        高质量龙头，估值中性偏合理
+                    <strong id="aiConclusion">
+                        暂无 AI 研究结果
                     </strong>
 
-                    <p>
-                        当前公司基本面仍然保持较强的盈利能力和现金创造能力。
-                        从估值角度看，当前估值相较历史中枢处于中低位置。
-                        技术面短期偏强，但需要关注价格波动以及消费需求变化。
+                    <p id="aiSummary">
+                        暂无 AI 分析数据。
                     </p>
 
                 </div>
@@ -2135,16 +1616,14 @@
 
                 <div>
 
-                    <span>
-                        基本面
-                    </span>
+                    <span>基本面</span>
 
-                    <strong>
-                        强
+                    <strong id="aiFundamental">
+                        —
                     </strong>
 
-                    <small>
-                        盈利质量高
+                    <small id="aiFundamentalDesc">
+                        —
                     </small>
 
                 </div>
@@ -2152,16 +1631,14 @@
 
                 <div>
 
-                    <span>
-                        成长
-                    </span>
+                    <span>成长</span>
 
-                    <strong>
-                        强
+                    <strong id="aiGrowth">
+                        —
                     </strong>
 
-                    <small>
-                        增长稳定
+                    <small id="aiGrowthDesc">
+                        —
                     </small>
 
                 </div>
@@ -2169,16 +1646,14 @@
 
                 <div>
 
-                    <span>
-                        估值
-                    </span>
+                    <span>估值</span>
 
-                    <strong>
-                        中性
+                    <strong id="aiValuation">
+                        —
                     </strong>
 
-                    <small>
-                        历史分位较低
+                    <small id="aiValuationDesc">
+                        —
                     </small>
 
                 </div>
@@ -2186,22 +1661,19 @@
 
                 <div>
 
-                    <span>
-                        技术
-                    </span>
+                    <span>技术</span>
 
-                    <strong>
-                        偏强
+                    <strong id="aiTechnical">
+                        —
                     </strong>
 
-                    <small>
-                        短期多头
+                    <small id="aiTechnicalDesc">
+                        —
                     </small>
 
                 </div>
 
             </div>
-
 
         </div>
 
@@ -2220,10 +1692,8 @@
                     基本面分析
                 </h3>
 
-                <p>
-                    公司具备较高毛利率、净利率和 ROE，
-                    盈利能力在行业中具有明显优势。
-                    高端品牌与渠道体系形成较强竞争壁垒。
+                <p id="aiFundamentalAnalysis">
+                    暂无数据。
                 </p>
 
             </article>
@@ -2239,10 +1709,8 @@
                     估值分析
                 </h3>
 
-                <p>
-                    当前 PE 低于历史中枢，
-                    估值并未处于明显高估区域。
-                    后续需要结合盈利增速判断估值消化速度。
+                <p id="aiValuationAnalysis">
+                    暂无数据。
                 </p>
 
             </article>
@@ -2258,10 +1726,8 @@
                     技术分析
                 </h3>
 
-                <p>
-                    股价位于短中期均线之上，
-                    MA5、MA20呈多头结构，
-                    RSI处于偏强区域。
+                <p id="aiTechnicalAnalysis">
+                    暂无数据。
                 </p>
 
             </article>
@@ -2277,23 +1743,9 @@
                     主要风险
                 </h3>
 
-                <ul>
+                <ul id="aiRiskList">
 
-                    <li>
-                        消费需求变化
-                    </li>
-
-                    <li>
-                        高端白酒价格体系变化
-                    </li>
-
-                    <li>
-                        行业竞争加剧
-                    </li>
-
-                    <li>
-                        市场整体估值波动
-                    </li>
+                    <li>暂无数据</li>
 
                 </ul>
 
@@ -2327,7 +1779,6 @@
 
         </div>
 
-
     </section>
 
 
@@ -2343,3 +1794,4 @@
 </body>
 
 </html>
+```

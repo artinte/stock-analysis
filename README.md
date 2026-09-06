@@ -14,7 +14,7 @@
 
 项目的目标是将股票研究过程中涉及的数据采集、信息分析、交易管理和结果展示统一起来，同时保持各模块之间的独立性，方便后续扩展和维护。
 
-👉 点击 [股票研究中心](https://artinte.github.io/stock-analysis/stock_center/index.html) 进入项目首页，查看功能介绍与项目详情。
+👉 点击 [股票研究中心](https://artinte.github.io/stock-analysis/stock_center/index.html) 进入项目首页，查看功能介绍与项目详情（只能看到静态页面）。
 
 或者进入 `stock-analysis` 目录运行：
 

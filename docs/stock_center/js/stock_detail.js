@@ -1,244 +1,306 @@
 /* =========================================================
+   STOCK LAB
    股票详情页
 ========================================================= */
 
 
-let currentSymbol = "600519";
+let currentSymbol = null;
 
 
 /* =========================================================
-   模拟股票数据
-   后面直接替换成 API
+   页面初始化
 ========================================================= */
 
-const STOCK_DETAIL_DATA = {
+document.addEventListener("DOMContentLoaded", () => {
 
-    "600519": {
+    currentSymbol = getStockSymbol();
 
-        name: "贵州茅台",
+    if (!currentSymbol) {
 
-        symbol: "600519.SH",
+        showPageError("没有指定股票代码");
 
-        price: "1,438.00",
-
-        change: "+16.48",
-
-        changePercent: "+1.16%",
-
-        industry: [
-            "白酒",
-            "食品饮料",
-            "沪市"
-        ]
-
-    },
+        return;
+    }
 
 
-    "300750": {
-
-        name: "宁德时代",
-
-        symbol: "300750.SZ",
-
-        price: "312.50",
-
-        change: "-2.64",
-
-        changePercent: "-0.84%",
-
-        industry: [
-            "新能源",
-            "电池",
-            "创业板"
-        ]
-
-    },
+    // 先显示当前股票代码
+    setText("stockSymbol", currentSymbol);
 
 
-    "601117": {
-
-        name: "中国化学",
-
-        symbol: "601117.SH",
-
-        price: "9.86",
-
-        change: "+0.31",
-
-        changePercent: "+3.25%",
-
-        industry: [
-            "建筑工程",
-            "化工",
-            "沪市"
-        ]
-
-    },
+    // 页面基础功能
+    bindResearchTabs();
+    bindPeriodButtons();
 
 
-    "300308": {
+    // 独立加载
+    loadQuote();
+    loadKline();
+    loadFinancial();
+    loadValuation();
+    loadIndustry();
+    loadTechnical();
+    loadNews();
+    loadAnnouncement();
+    loadAI();
 
-        name: "中际旭创",
+});
 
-        symbol: "300308.SZ",
 
-        price: "198.60",
 
-        change: "+5.32",
+/* =========================================================
+   获取当前股票代码
+========================================================= */
 
-        changePercent: "+2.75%",
+function getStockSymbol() {
 
-        industry: [
-            "通信设备",
-            "光模块",
-            "创业板"
-        ]
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    let symbol = params.get("symbol");
+
+    if (!symbol) {
+        return null;
+    }
+
+    return symbol.trim().toUpperCase();
+
+}
+
+
+
+/* =========================================================
+   API 请求
+========================================================= */
+
+async function requestAPI(path) {
+
+    const response = await fetch(path);
+
+    if (!response.ok) {
+
+        throw new Error(
+            `HTTP ${response.status}`
+        );
 
     }
 
-};
+    const result = await response.json();
+
+    return result;
+
+}
 
 
 
 /* =========================================================
-   初始化
+   行情
 ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+async function loadQuote() {
 
-        const params =
-            new URLSearchParams(
-                window.location.search
+    try {
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/quote`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "行情数据不可用"
             );
-
-        const symbol =
-            params.get("symbol");
-
-
-        if (symbol) {
-
-            currentSymbol =
-                symbol.replace(
-                    /[^0-9]/g,
-                    ""
-                );
 
         }
 
 
-        loadStock(currentSymbol);
-
-        bindResearchTabs();
-
-        updateFavoriteState();
-
-    }
-);
+        const quote = result.data ?? result;
 
 
-
-/* =========================================================
-   加载股票
-========================================================= */
-
-function loadStock(symbol) {
-
-    const stock =
-        STOCK_DETAIL_DATA[symbol]
-        || STOCK_DETAIL_DATA["600519"];
-
-
-    document.title =
-        `${stock.name} ${stock.symbol} - STOCK LAB`;
-
-
-    const name =
-        document.getElementById("stockName");
-
-    const code =
-        document.getElementById("stockSymbol");
-
-    const price =
-        document.getElementById("currentPrice");
-
-    const change =
-        document.getElementById("priceChange");
-
-
-    if (name) {
-
-        name.textContent =
-            stock.name;
-
-    }
-
-
-    if (code) {
-
-        code.textContent =
-            stock.symbol;
-
-    }
-
-
-    if (price) {
-
-        price.textContent =
-            stock.price;
-
-    }
-
-
-    if (change) {
-
-        change.innerHTML =
-            `${stock.change}
-             <span>
-                ${stock.changePercent}
-             </span>`;
-
-        change.classList.remove(
-            "positive",
-            "negative"
+        setText(
+            "stockName",
+            quote.name
         );
 
 
-        if (
-            stock.change.startsWith("-")
-        ) {
+        setText(
+            "stockSymbol",
+            quote.symbol || currentSymbol
+        );
 
-            change.classList.add(
-                "negative"
+
+        setText(
+            "stockMarket",
+            quote.market || "A股"
+        );
+
+
+        setText(
+            "currentPrice",
+            formatNumber(quote.last_price)
+        );
+
+
+        setText(
+            "priceChange",
+            formatSignedNumber(quote.change)
+        );
+
+
+        setText(
+            "priceChangePercent",
+            formatPercent(quote.change_percent)
+        );
+
+
+        setText(
+            "quoteOpen",
+            formatNumber(quote.open)
+        );
+
+
+        setText(
+            "quoteHigh",
+            formatNumber(quote.high)
+        );
+
+
+        setText(
+            "quoteLow",
+            formatNumber(quote.low)
+        );
+
+
+        setText(
+            "quotePrevClose",
+            formatNumber(quote.previous_close)
+        );
+
+
+        setText(
+            "quoteAmount",
+            formatAmount(quote.amount)
+        );
+
+
+        setText(
+            "quoteTurnover",
+            formatPercent(quote.turnover_rate)
+        );
+
+
+        setText(
+            "quoteMarketCap",
+            formatAmount(quote.market_cap)
+        );
+
+
+        setText(
+            "quoteFloatMarketCap",
+            formatAmount(quote.float_market_cap)
+        );
+
+
+        // 详情页行情
+        setText(
+            "detailPrice",
+            formatNumber(quote.last_price)
+        );
+
+        setText(
+            "detailChange",
+            formatSignedNumber(quote.change)
+        );
+
+        setText(
+            "detailChangePercent",
+            formatPercent(quote.change_percent)
+        );
+
+        setText(
+            "detailVolume",
+            formatVolume(quote.volume)
+        );
+
+        setText(
+            "detailAmount",
+            formatAmount(quote.amount)
+        );
+
+        setText(
+            "detailTurnover",
+            formatPercent(quote.turnover_rate)
+        );
+
+
+        // 行业
+        if (quote.industry) {
+
+            setText(
+                "stockIndustry",
+                quote.industry
+            );
+
+        }
+
+
+        // 数据时间
+        if (quote.timestamp) {
+
+            setText(
+                "dataTime",
+                `数据：${quote.timestamp}`
             );
 
         } else {
 
-            change.classList.add(
-                "positive"
+            setText(
+                "dataTime",
+                "数据：实时"
             );
 
         }
 
-    }
 
-
-    const industry =
-        document.querySelector(
-            ".stock-industry"
+        setText(
+            "stockStatus",
+            "行情正常"
         );
 
 
-    if (industry) {
+        // 涨跌颜色
+        applyChangeClass(
+            "priceChange",
+            quote.change
+        );
 
-        industry.innerHTML =
-            stock.industry
-                .map(
-                    item =>
-                        `<span>${item}</span>`
-                )
-                .join("");
+
+        // 52周
+        if (
+            quote.year_low !== undefined ||
+            quote.year_high !== undefined
+        ) {
+
+            updateYearRange(
+                quote.year_low,
+                quote.year_high,
+                quote.last_price
+            );
+
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "行情加载失败:",
+            error
+        );
+
+        setText(
+            "stockStatus",
+            "行情暂不可用"
+        );
 
     }
 
@@ -247,7 +309,1290 @@ function loadStock(symbol) {
 
 
 /* =========================================================
-   Tab
+   K线
+========================================================= */
+
+async function loadKline(
+    period = "day"
+) {
+
+    const chart = document.getElementById(
+        "chartContainer"
+    );
+
+
+    try {
+
+        chart.innerHTML =
+            `<div class="data-loading">
+                正在加载K线数据...
+             </div>`;
+
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/kline?period=${period}`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "K线数据不可用"
+            );
+
+        }
+
+
+        const data =
+            result.data ??
+            result;
+
+
+        renderKline(data);
+
+    }
+    catch (error) {
+
+        console.warn(
+            "K线加载失败:",
+            error
+        );
+
+
+        chart.innerHTML =
+            `<div class="empty-state">
+                暂无K线数据
+             </div>`;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   K线显示
+========================================================= */
+
+function renderKline(data) {
+
+    const chart =
+        document.getElementById(
+            "chartContainer"
+        );
+
+
+    if (!Array.isArray(data) || data.length === 0) {
+
+        chart.innerHTML =
+            `<div class="empty-state">
+                暂无K线数据
+             </div>`;
+
+        return;
+    }
+
+
+    /*
+       这里暂时不接具体图表库。
+
+       后面可以接：
+       ECharts
+       Lightweight Charts
+       TradingView Lightweight Charts
+
+       现在先把接口数据准备好。
+    */
+
+
+    chart.innerHTML =
+        `<div class="chart-placeholder">
+            <div>
+                <strong>
+                    K线数据已加载
+                </strong>
+
+                <span>
+                    ${data.length} 条数据
+                </span>
+            </div>
+        </div>`;
+
+
+    const latest =
+        data[data.length - 1];
+
+
+    if (latest) {
+
+        setText(
+            "ma5",
+            formatNumber(latest.ma5)
+        );
+
+        setText(
+            "ma20",
+            formatNumber(latest.ma20)
+        );
+
+        setText(
+            "ma60",
+            formatNumber(latest.ma60)
+        );
+
+        setText(
+            "rsi",
+            formatNumber(latest.rsi)
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   财务
+========================================================= */
+
+async function loadFinancial() {
+
+    try {
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/financial`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "财务数据不可用"
+            );
+
+        }
+
+
+        const data =
+            result.data ??
+            result;
+
+
+        renderFinancial(data);
+
+    }
+    catch (error) {
+
+        console.warn(
+            "财务加载失败:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   财务显示
+========================================================= */
+
+function renderFinancial(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    setText(
+        "financialRevenue",
+        formatAmount(data.revenue)
+    );
+
+
+    setText(
+        "financialRevenueGrowth",
+        formatPercent(data.revenue_growth)
+    );
+
+
+    setText(
+        "financialProfit",
+        formatAmount(data.net_profit)
+    );
+
+
+    setText(
+        "financialProfitGrowth",
+        formatPercent(data.net_profit_growth)
+    );
+
+
+    setText(
+        "operatingCashFlow",
+        formatAmount(data.operating_cash_flow)
+    );
+
+
+    setText(
+        "netAssets",
+        formatAmount(data.net_assets)
+    );
+
+
+    setText(
+        "roe",
+        formatPercent(data.roe)
+    );
+
+
+    setText(
+        "grossMargin",
+        formatPercent(data.gross_margin)
+    );
+
+
+    setText(
+        "netMargin",
+        formatPercent(data.net_margin)
+    );
+
+
+    setText(
+        "revenueGrowth",
+        formatPercent(data.revenue_growth)
+    );
+
+
+    setText(
+        "profitGrowth",
+        formatPercent(data.net_profit_growth)
+    );
+
+
+    setText(
+        "dividendYield",
+        formatPercent(data.dividend_yield)
+    );
+
+
+    const rows =
+        data.history ||
+        data.records ||
+        [];
+
+
+    const tbody =
+        document.getElementById(
+            "financialTableBody"
+        );
+
+
+    if (!rows.length) {
+        return;
+    }
+
+
+    tbody.innerHTML = rows.map(
+        row => `
+
+            <tr>
+
+                <td>
+                    ${escapeHTML(
+                        row.period ?? "—"
+                    )}
+                </td>
+
+                <td>
+                    ${formatAmount(row.revenue)}
+                </td>
+
+                <td>
+                    ${formatPercent(
+                        row.revenue_growth
+                    )}
+                </td>
+
+                <td>
+                    ${formatAmount(
+                        row.net_profit
+                    )}
+                </td>
+
+                <td>
+                    ${formatPercent(
+                        row.net_profit_growth
+                    )}
+                </td>
+
+                <td>
+                    ${formatPercent(
+                        row.roe
+                    )}
+                </td>
+
+            </tr>
+
+        `
+    ).join("");
+
+}
+
+
+
+/* =========================================================
+   估值
+========================================================= */
+
+async function loadValuation() {
+
+    try {
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/valuation`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "估值数据不可用"
+            );
+
+        }
+
+
+        const data =
+            result.data ??
+            result;
+
+
+        renderValuation(data);
+
+    }
+    catch (error) {
+
+        console.warn(
+            "估值加载失败:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   估值显示
+========================================================= */
+
+function renderValuation(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    setText(
+        "summaryPE",
+        formatMultiple(data.pe_ttm)
+    );
+
+    setText(
+        "summaryPB",
+        formatMultiple(data.pb)
+    );
+
+    setText(
+        "summaryPEG",
+        formatNumber(data.peg)
+    );
+
+
+    setText(
+        "valuationPE",
+        formatMultiple(data.pe_ttm)
+    );
+
+    setText(
+        "valuationPB",
+        formatMultiple(data.pb)
+    );
+
+    setText(
+        "valuationPS",
+        formatMultiple(data.ps)
+    );
+
+    setText(
+        "valuationDividend",
+        formatPercent(data.dividend_yield)
+    );
+
+
+    setText(
+        "valuationPEDesc",
+        data.pe_description || "—"
+    );
+
+    setText(
+        "valuationPBDesc",
+        data.pb_description || "—"
+    );
+
+    setText(
+        "valuationPSDesc",
+        data.ps_description || "—"
+    );
+
+
+    setText(
+        "summaryPEDesc",
+        data.pe_description || "—"
+    );
+
+    setText(
+        "summaryPBDesc",
+        data.pb_description || "—"
+    );
+
+    setText(
+        "summaryPEGDesc",
+        data.peg_description || "—"
+    );
+
+
+    setText(
+        "valuationLow",
+        formatMultiple(data.historical_low)
+    );
+
+    setText(
+        "valuationCurrent",
+        formatMultiple(data.pe_ttm)
+    );
+
+    setText(
+        "valuationMedian",
+        formatMultiple(data.historical_median)
+    );
+
+    setText(
+        "valuationHigh",
+        formatMultiple(data.historical_high)
+    );
+
+
+    setText(
+        "valuationNote",
+        data.description ||
+        "暂无估值分析。"
+    );
+
+}
+
+
+
+/* =========================================================
+   行业
+========================================================= */
+
+async function loadIndustry() {
+
+    try {
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/industry`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "行业数据不可用"
+            );
+
+        }
+
+
+        const data =
+            result.data ??
+            result;
+
+
+        renderIndustry(data);
+
+    }
+    catch (error) {
+
+        console.warn(
+            "行业加载失败:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   行业显示
+========================================================= */
+
+function renderIndustry(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    setText(
+        "industryName",
+        data.name
+    );
+
+
+    setText(
+        "detailIndustry",
+        data.name
+    );
+
+
+    setText(
+        "industryPath",
+        data.path
+    );
+
+
+    setText(
+        "industryRank",
+        data.rank
+    );
+
+
+    setText(
+        "industryPosition",
+        data.position
+    );
+
+
+    setText(
+        "industryProfitability",
+        data.profitability
+    );
+
+
+    setText(
+        "industryMoat",
+        data.moat
+    );
+
+
+    setText(
+        "industryDescription",
+        data.description
+    );
+
+
+    setText(
+        "rankRevenue",
+        formatRank(data.rank_revenue)
+    );
+
+    setText(
+        "rankProfit",
+        formatRank(data.rank_profit)
+    );
+
+    setText(
+        "rankROE",
+        formatRank(data.rank_roe)
+    );
+
+    setText(
+        "rankOverall",
+        formatRank(data.rank_overall)
+    );
+
+
+    const competitors =
+        data.competitors || [];
+
+
+    const container =
+        document.getElementById(
+            "competitorGrid"
+        );
+
+
+    if (!competitors.length) {
+
+        container.innerHTML =
+            `<div>
+                <strong>—</strong>
+                <span>暂无竞争对手数据</span>
+             </div>`;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        competitors.map(
+            item => `
+
+                <div>
+
+                    <strong>
+                        ${escapeHTML(
+                            item.name ?? "—"
+                        )}
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(
+                            item.symbol ?? "—"
+                        )}
+                    </span>
+
+                </div>
+
+            `
+        ).join("");
+
+}
+
+
+
+/* =========================================================
+   技术指标
+========================================================= */
+
+async function loadTechnical() {
+
+    try {
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/technical`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "技术指标不可用"
+            );
+
+        }
+
+
+        const data =
+            result.data ??
+            result;
+
+
+        renderTechnical(data);
+
+    }
+    catch (error) {
+
+        console.warn(
+            "技术指标加载失败:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   技术指标显示
+========================================================= */
+
+function renderTechnical(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    setText(
+        "technicalMA5",
+        formatNumber(data.ma5)
+    );
+
+    setText(
+        "technicalMA5Status",
+        data.ma5_status || "—"
+    );
+
+
+    setText(
+        "technicalMA20",
+        formatNumber(data.ma20)
+    );
+
+    setText(
+        "technicalMA20Status",
+        data.ma20_status || "—"
+    );
+
+
+    setText(
+        "technicalRSI",
+        formatNumber(data.rsi)
+    );
+
+    setText(
+        "technicalRSIStatus",
+        data.rsi_status || "—"
+    );
+
+
+    setText(
+        "technicalMACD",
+        formatNumber(data.macd)
+    );
+
+    setText(
+        "technicalMACDStatus",
+        data.macd_status || "—"
+    );
+
+
+    setText(
+        "technicalKDJ",
+        formatNumber(data.kdj)
+    );
+
+    setText(
+        "technicalKDJStatus",
+        data.kdj_status || "—"
+    );
+
+
+    setText(
+        "technicalATR",
+        formatNumber(data.atr)
+    );
+
+    setText(
+        "technicalATRStatus",
+        data.atr_status || "—"
+    );
+
+
+    // 总览技术指标
+    setText(
+        "ma5",
+        formatNumber(data.ma5)
+    );
+
+    setText(
+        "ma20",
+        formatNumber(data.ma20)
+    );
+
+    setText(
+        "ma60",
+        formatNumber(data.ma60)
+    );
+
+    setText(
+        "rsi",
+        formatNumber(data.rsi)
+    );
+
+}
+
+
+
+/* =========================================================
+   资讯
+========================================================= */
+
+async function loadNews() {
+
+    try {
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/news`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "资讯不可用"
+            );
+
+        }
+
+
+        const data =
+            result.data ??
+            result;
+
+
+        renderNews(data);
+
+    }
+    catch (error) {
+
+        console.warn(
+            "资讯加载失败:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   资讯显示
+========================================================= */
+
+function renderNews(data) {
+
+    const container =
+        document.getElementById(
+            "newsList"
+        );
+
+
+    if (!Array.isArray(data) || !data.length) {
+
+        container.innerHTML =
+            `<div class="empty-state">
+                暂无资讯数据
+             </div>`;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        data.map(
+            item => `
+
+                <article>
+
+                    <span>
+                        ${escapeHTML(
+                            item.category ?? "资讯"
+                        )}
+                    </span>
+
+                    <div>
+
+                        <h3>
+                            ${escapeHTML(
+                                item.title ?? "—"
+                            )}
+                        </h3>
+
+                        <p>
+                            ${escapeHTML(
+                                item.summary ?? ""
+                            )}
+                        </p>
+
+                    </div>
+
+                    <time>
+                        ${escapeHTML(
+                            item.date ?? "—"
+                        )}
+                    </time>
+
+                </article>
+
+            `
+        ).join("");
+
+}
+
+
+
+/* =========================================================
+   公告
+========================================================= */
+
+async function loadAnnouncement() {
+
+    try {
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/announcement`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "公告不可用"
+            );
+
+        }
+
+
+        const data =
+            result.data ??
+            result;
+
+
+        renderAnnouncement(data);
+
+    }
+    catch (error) {
+
+        console.warn(
+            "公告加载失败:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   公告显示
+========================================================= */
+
+function renderAnnouncement(data) {
+
+    const container =
+        document.getElementById(
+            "announcementList"
+        );
+
+
+    if (!Array.isArray(data) || !data.length) {
+
+        container.innerHTML =
+            `<div class="empty-state">
+                暂无公告数据
+             </div>`;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        data.map(
+            item => `
+
+                <div>
+
+                    <span>
+                        ${escapeHTML(
+                            item.date ?? "—"
+                        )}
+                    </span>
+
+                    <strong>
+                        ${escapeHTML(
+                            item.title ?? "—"
+                        )}
+                    </strong>
+
+                    ${
+                        item.url
+                        ?
+                        `<button
+                            onclick="window.open('${escapeAttribute(item.url)}', '_blank')">
+                            查看
+                         </button>`
+                        :
+                        `<button disabled>
+                            暂无
+                         </button>`
+                    }
+
+                </div>
+
+            `
+        ).join("");
+
+}
+
+
+
+/* =========================================================
+   AI研究
+========================================================= */
+
+async function loadAI() {
+
+    try {
+
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}/ai`
+        );
+
+
+        if (!result || result.success === false) {
+
+            throw new Error(
+                result?.message || "AI研究不可用"
+            );
+
+        }
+
+
+        const data =
+            result.data ??
+            result;
+
+
+        renderAI(data);
+
+    }
+    catch (error) {
+
+        console.warn(
+            "AI研究加载失败:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   AI显示
+========================================================= */
+
+function renderAI(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    setText(
+        "aiConclusion",
+        data.conclusion
+    );
+
+
+    setText(
+        "aiSummary",
+        data.summary
+    );
+
+
+    setText(
+        "aiFundamental",
+        data.fundamental
+    );
+
+    setText(
+        "aiFundamentalDesc",
+        data.fundamental_description
+    );
+
+
+    setText(
+        "aiGrowth",
+        data.growth
+    );
+
+    setText(
+        "aiGrowthDesc",
+        data.growth_description
+    );
+
+
+    setText(
+        "aiValuation",
+        data.valuation
+    );
+
+    setText(
+        "aiValuationDesc",
+        data.valuation_description
+    );
+
+
+    setText(
+        "aiTechnical",
+        data.technical
+    );
+
+    setText(
+        "aiTechnicalDesc",
+        data.technical_description
+    );
+
+
+    setText(
+        "aiFundamentalAnalysis",
+        data.fundamental_analysis
+    );
+
+
+    setText(
+        "aiValuationAnalysis",
+        data.valuation_analysis
+    );
+
+
+    setText(
+        "aiTechnicalAnalysis",
+        data.technical_analysis
+    );
+
+
+    const riskList =
+        document.getElementById(
+            "aiRiskList"
+        );
+
+
+    const risks =
+        data.risks || [];
+
+
+    if (!risks.length) {
+
+        riskList.innerHTML =
+            "<li>暂无风险数据</li>";
+
+        return;
+    }
+
+
+    riskList.innerHTML =
+        risks.map(
+            risk =>
+                `<li>
+                    ${escapeHTML(risk)}
+                 </li>`
+        ).join("");
+
+}
+
+
+
+/* =========================================================
+   研究评分
+========================================================= */
+
+function updateScore(data) {
+
+    if (!data) {
+        return;
+    }
+
+
+    setText(
+        "overallScore",
+        data.overall
+    );
+
+
+    setText(
+        "scoreLabel",
+        data.label
+    );
+
+
+    setText(
+        "scoreDescription",
+        data.description
+    );
+
+
+    updateScoreBar(
+        "fundamentalScore",
+        "fundamentalScoreBar",
+        data.fundamental
+    );
+
+
+    updateScoreBar(
+        "growthScore",
+        "growthScoreBar",
+        data.growth
+    );
+
+
+    updateScoreBar(
+        "valuationScore",
+        "valuationScoreBar",
+        data.valuation
+    );
+
+
+    updateScoreBar(
+        "technicalScore",
+        "technicalScoreBar",
+        data.technical
+    );
+
+}
+
+
+
+function updateScoreBar(
+    textId,
+    barId,
+    value
+) {
+
+    if (
+        value === undefined ||
+        value === null
+    ) {
+
+        setText(
+            textId,
+            "—"
+        );
+
+        return;
+    }
+
+
+    setText(
+        textId,
+        value
+    );
+
+
+    const bar =
+        document.getElementById(barId);
+
+
+    if (bar) {
+
+        bar.style.width =
+            `${Math.max(
+                0,
+                Math.min(100, Number(value))
+            )}%`;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   研究 Tab
 ========================================================= */
 
 function bindResearchTabs() {
@@ -258,19 +1603,16 @@ function bindResearchTabs() {
         );
 
 
-    tabs.forEach(tab => {
+    tabs.forEach(button => {
 
-        tab.addEventListener(
+        button.addEventListener(
             "click",
             () => {
 
                 const target =
-                    tab.dataset.target;
+                    button.dataset.target;
 
-
-                switchSection(
-                    target
-                );
+                switchSection(target);
 
             }
         );
@@ -281,68 +1623,622 @@ function bindResearchTabs() {
 
 
 
+function switchSection(target) {
+
+    document
+        .querySelectorAll(
+            ".research-tabs button"
+        )
+        .forEach(button => {
+
+            button.classList.toggle(
+                "active",
+                button.dataset.target === target
+            );
+
+        });
+
+
+    document
+        .querySelectorAll(
+            ".research-section"
+        )
+        .forEach(section => {
+
+            section.classList.toggle(
+                "active",
+                section.id === target
+            );
+
+        });
+
+}
+
+
+
 /* =========================================================
-   切换模块
+   K线周期
 ========================================================= */
 
-function switchSection(sectionId) {
+function bindPeriodButtons() {
 
-    const sections =
-        document.querySelectorAll(
-            ".research-section"
-        );
+    document
+        .querySelectorAll(
+            ".period-buttons button"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".period-buttons button"
+                        )
+                        .forEach(item => {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        });
 
 
-    sections.forEach(section => {
-
-        section.classList.remove(
-            "active"
-        );
-
-    });
+                    button.classList.add(
+                        "active"
+                    );
 
 
-    const target =
+                    const period =
+                        button.dataset.period;
+
+
+                    loadKline(period);
+
+                }
+            );
+
+        });
+
+}
+
+
+
+/* =========================================================
+   52周区间
+========================================================= */
+
+function updateYearRange(
+    low,
+    high,
+    current
+) {
+
+    if (
+        low === undefined ||
+        high === undefined ||
+        current === undefined
+    ) {
+        return;
+    }
+
+
+    setText(
+        "yearLow",
+        formatNumber(low)
+    );
+
+
+    setText(
+        "yearHigh",
+        formatNumber(high)
+    );
+
+
+    setText(
+        "yearCurrent",
+        `当前 ${formatNumber(current)}`
+    );
+
+
+    const range =
+        Number(high) - Number(low);
+
+
+    if (range <= 0) {
+        return;
+    }
+
+
+    const percentage =
+        (
+            (Number(current) - Number(low))
+            / range
+        ) * 100;
+
+
+    const progress =
         document.getElementById(
-            sectionId
+            "yearRangeProgress"
         );
 
 
-    if (target) {
+    if (progress) {
 
-        target.classList.add(
-            "active"
-        );
+        progress.style.width =
+            `${Math.max(
+                0,
+                Math.min(100, percentage)
+            )}%`;
 
     }
 
 
-    const tabs =
-        document.querySelectorAll(
-            "#researchTabs button"
+    setText(
+        "yearRangeDescription",
+        `当前价格位于52周区间约 ${percentage.toFixed(1)}%`
+    );
+
+}
+
+
+
+/* =========================================================
+   工具函数
+========================================================= */
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(id);
+
+
+    if (!element) {
+        return;
+    }
+
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+
+        element.textContent = "—";
+
+        return;
+    }
+
+
+    element.textContent =
+        String(value);
+
+}
+
+
+
+function formatNumber(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (Number.isNaN(number)) {
+        return "—";
+    }
+
+
+    return number.toLocaleString(
+        "zh-CN",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+
+function formatSignedNumber(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (Number.isNaN(number)) {
+        return "—";
+    }
+
+
+    const prefix =
+        number > 0
+            ? "+"
+            : "";
+
+
+    return prefix +
+        number.toLocaleString(
+            "zh-CN",
+            {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }
+        );
+
+}
+
+
+
+function formatPercent(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (Number.isNaN(number)) {
+        return "—";
+    }
+
+
+    const prefix =
+        number > 0
+            ? "+"
+            : "";
+
+
+    return prefix +
+        number.toFixed(2) +
+        "%";
+
+}
+
+
+
+function formatMultiple(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (Number.isNaN(number)) {
+        return "—";
+    }
+
+
+    return number.toFixed(2) + "x";
+
+}
+
+
+
+function formatAmount(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (Number.isNaN(number)) {
+        return "—";
+    }
+
+
+    const abs =
+        Math.abs(number);
+
+
+    if (abs >= 100000000000) {
+
+        return (
+            number / 100000000000
+        ).toFixed(2) + "千亿";
+
+    }
+
+
+    if (abs >= 100000000) {
+
+        return (
+            number / 100000000
+        ).toFixed(2) + "亿";
+
+    }
+
+
+    if (abs >= 10000) {
+
+        return (
+            number / 10000
+        ).toFixed(2) + "万";
+
+    }
+
+
+    return number.toLocaleString(
+        "zh-CN",
+        {
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+
+function formatVolume(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+
+    const number =
+        Number(value);
+
+
+    if (Number.isNaN(number)) {
+        return "—";
+    }
+
+
+    if (number >= 10000) {
+
+        return (
+            number / 10000
+        ).toFixed(2) + "万";
+
+    }
+
+
+    return number.toLocaleString(
+        "zh-CN"
+    );
+
+}
+
+
+
+function formatRank(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return "—";
+    }
+
+
+    return "#" + value;
+
+}
+
+
+
+function applyChangeClass(
+    elementId,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            elementId
         );
 
 
-    tabs.forEach(tab => {
+    if (!element) {
+        return;
+    }
 
-        tab.classList.toggle(
-            "active",
-            tab.dataset.target === sectionId
+
+    element.classList.remove(
+        "positive",
+        "negative"
+    );
+
+
+    const number =
+        Number(value);
+
+
+    if (number > 0) {
+
+        element.classList.add(
+            "positive"
         );
 
-    });
+    }
+    else if (number < 0) {
+
+        element.classList.add(
+            "negative"
+        );
+
+    }
+
+}
 
 
-    window.scrollTo({
 
-        top:
-            document.querySelector(
-                "#researchTabs"
-            ).offsetTop - 20,
+function escapeHTML(value) {
 
-        behavior: "smooth"
+    if (
+        value === undefined ||
+        value === null
+    ) {
+        return "";
+    }
 
-    });
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+
+function escapeAttribute(value) {
+
+    return escapeHTML(value);
+
+}
+
+
+
+/* =========================================================
+   页面错误
+========================================================= */
+
+function showPageError(message) {
+
+    const page =
+        document.querySelector(
+            ".stock-detail-page"
+        );
+
+
+    if (!page) {
+        return;
+    }
+
+
+    page.innerHTML =
+        `
+        <div class="panel"
+             style="
+                margin-top:40px;
+                padding:60px;
+                text-align:center;
+             ">
+
+            <h2>
+                股票详情无法加载
+            </h2>
+
+            <p>
+                ${escapeHTML(message)}
+            </p>
+
+            <button
+                class="primary-button"
+                onclick="goBackStock()">
+
+                返回股票列表
+
+            </button>
+
+        </div>
+        `;
+
+}
+
+
+
+/* =========================================================
+   页面导航
+========================================================= */
+
+function goBackStock() {
+
+    window.history.back();
+
+}
+
+
+
+function goHome() {
+
+    window.location.href =
+        "../";
+
+}
+
+
+
+/* =========================================================
+   自选
+========================================================= */
+
+function toggleFavorite() {
+
+    const button =
+        document.getElementById(
+            "favoriteButton"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    const active =
+        button.classList.toggle(
+            "active"
+        );
+
+
+    button.textContent =
+        active
+            ? "★ 已自选"
+            : "☆ 自选";
 
 }
 
@@ -356,125 +2252,16 @@ function scrollToAI() {
 
     switchSection("ai");
 
-}
+
+    const element =
+        document.getElementById("ai");
 
 
+    if (element) {
 
-/* =========================================================
-   自选股
-========================================================= */
-
-function toggleFavorite() {
-
-    const key =
-        `stock_favorite_${currentSymbol}`;
-
-
-    const current =
-        localStorage.getItem(key)
-        === "true";
-
-
-    localStorage.setItem(
-        key,
-        String(!current)
-    );
-
-
-    updateFavoriteState();
-
-}
-
-
-
-function updateFavoriteState() {
-
-    const button =
-        document.getElementById(
-            "favoriteButton"
-        );
-
-
-    if (!button) {
-
-        return;
-
-    }
-
-
-    const key =
-        `stock_favorite_${currentSymbol}`;
-
-
-    const favorite =
-        localStorage.getItem(key)
-        === "true";
-
-
-    button.textContent =
-        favorite
-            ? "★ 已自选"
-            : "☆ 自选";
-
-}
-
-
-
-/* =========================================================
-   返回股票中心
-========================================================= */
-
-function goBackStock() {
-
-    window.location.href =
-        "./";
-
-}
-
-
-
-/* =========================================================
-   首页
-========================================================= */
-
-function goHome() {
-
-    window.location.href =
-        "../";
-
-}
-
-
-
-/* =========================================================
-   页面导航
-========================================================= */
-
-function navigatePage(page) {
-
-    const routes = {
-
-        market: "../",
-
-        stock: "./",
-
-        news: "../news/",
-
-        research: "../research/",
-
-        trade: "../trade/",
-
-        tools: "../tools/",
-
-        document: "../document/"
-
-    };
-
-
-    if (routes[page]) {
-
-        window.location.href =
-            routes[page];
+        element.scrollIntoView({
+            behavior: "smooth"
+        });
 
     }
 

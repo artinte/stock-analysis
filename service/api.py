@@ -1,31 +1,14 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from gateways.data_manager import DataManager
-
-# ============================================================
-# FastAPI
-# ============================================================
-
-app = FastAPI(
-    title="A股股票研究中心 API",
-    description="股票行情与研究数据 API",
-    version="1.0.0",
-)
-
-
-# ============================================================
-# 路径配置
-# ============================================================
-
-# 项目根目录下的前端目录
-FRONTEND_DIR = Path("docs/stock_center")
-
 
 # ============================================================
 # 全局数据管理器
@@ -35,13 +18,15 @@ data: DataManager | None = None
 
 
 # ============================================================
-# 服务启动
+# 服务生命周期
 # ============================================================
 
 
-@app.on_event("startup")
-def startup() -> None:
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     global data
+
+    # ==================== 启动 ====================
 
     print()
     print("=" * 60)
@@ -62,15 +47,11 @@ def startup() -> None:
 
         raise
 
+    # ==================== 运行 ====================
 
-# ============================================================
-# 服务关闭
-# ============================================================
+    yield
 
-
-@app.on_event("shutdown")
-def shutdown() -> None:
-    global data
+    # ==================== 关闭 ====================
 
     print()
     print("=" * 60)
@@ -87,6 +68,40 @@ def shutdown() -> None:
 
         finally:
             data = None
+
+
+def require_data() -> DataManager:
+    """
+    获取 DataManager。
+
+    如果数据源没有启动，直接抛出异常。
+    """
+
+    if data is None:
+
+        raise RuntimeError("数据源尚未启动")
+
+    return data
+
+
+# ============================================================
+# FastAPI
+# ============================================================
+
+app = FastAPI(
+    title="A股股票研究中心 API",
+    description="股票行情与研究数据 API",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+
+# ============================================================
+# 路径配置
+# ============================================================
+
+# 项目根目录下的前端目录
+FRONTEND_DIR = Path("docs/stock_center")
 
 
 # ============================================================
@@ -106,67 +121,6 @@ def health_check():
         "data_source": "yinhe",
         "data_manager": data is not None,
     }
-
-
-# ============================================================
-# API：获取股票行情
-# ============================================================
-
-
-@app.get("/api/quote/{symbol}")
-def get_quote(symbol: str):
-    """
-    获取指定股票的实时行情。
-
-    示例：
-
-        /api/quote/600519.SH
-        /api/quote/600519
-    """
-
-    if data is None:
-        return {
-            "success": False,
-            "message": "数据源尚未启动",
-            "symbol": symbol,
-        }
-
-    try:
-        print(f"📈 获取股票行情：{symbol}")
-
-        quote = data.get_quote(symbol)
-
-        if quote is None:
-            return {
-                "success": False,
-                "message": "未获取到行情数据",
-                "symbol": symbol,
-            }
-
-        # 使用现有模型自己的 display 方法
-        quote.display()
-
-        return {
-            "success": True,
-            "symbol": quote.symbol,
-            "price": quote.last_price,
-        }
-
-    except NotImplementedError:
-        return {
-            "success": False,
-            "message": "当前数据源暂未实现行情数据接口",
-            "symbol": symbol,
-        }
-
-    except Exception as exc:
-        print(f"❌ 获取股票行情失败：{symbol} -> {exc}")
-
-        return {
-            "success": False,
-            "message": f"获取行情失败：{exc}",
-            "symbol": symbol,
-        }
 
 
 # ============================================================
@@ -221,6 +175,714 @@ def get_indices(indices: str = Query(...)):
         "success": True,
         "data": result,
     }
+
+
+# =========================================================
+# 1. 股票行情
+# =========================================================
+
+
+def success(
+    symbol: str,
+    data_value: Any = None,
+) -> dict:
+
+    return {
+        "success": True,
+        "symbol": symbol,
+        "data": data_value,
+    }
+
+
+def failure(
+    symbol: str,
+    message: str = "暂无数据",
+) -> dict:
+
+    return {
+        "success": False,
+        "symbol": symbol,
+        "message": message,
+        "data": None,
+    }
+
+
+@app.get("/api/quote/{symbol}")
+def get_quote(symbol: str):
+
+    symbol = symbol.strip().upper()
+
+    print(f"📈 获取行情：{symbol}")
+
+    try:
+
+        manager = require_data()
+
+        quote = manager.get_quote(symbol)
+
+        if quote is None:
+
+            return failure(
+                symbol,
+                "未获取到行情数据",
+            )
+
+        return success(
+            symbol,
+            {
+                "symbol": quote.symbol,
+                "name": getattr(quote, "name", None),
+                "price": getattr(
+                    quote,
+                    "last_price",
+                    None,
+                ),
+                "change": getattr(
+                    quote,
+                    "change",
+                    None,
+                ),
+                "changePercent": getattr(
+                    quote,
+                    "change_percent",
+                    None,
+                ),
+                "open": getattr(
+                    quote,
+                    "open",
+                    None,
+                ),
+                "high": getattr(
+                    quote,
+                    "high",
+                    None,
+                ),
+                "low": getattr(
+                    quote,
+                    "low",
+                    None,
+                ),
+                "prevClose": getattr(
+                    quote,
+                    "prev_close",
+                    None,
+                ),
+                "volume": getattr(
+                    quote,
+                    "volume",
+                    None,
+                ),
+                "amount": getattr(
+                    quote,
+                    "amount",
+                    None,
+                ),
+                "turnoverRate": getattr(
+                    quote,
+                    "turnover_rate",
+                    None,
+                ),
+                "marketCap": getattr(
+                    quote,
+                    "market_cap",
+                    None,
+                ),
+                "floatMarketCap": getattr(
+                    quote,
+                    "float_market_cap",
+                    None,
+                ),
+            },
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "当前数据源暂未实现行情接口",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 行情获取失败：{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "行情数据暂不可用",
+        )
+
+
+# =========================================================
+# 2. K线
+# =========================================================
+
+
+@app.get("/api/kline/{symbol}")
+def get_kline(
+    symbol: str,
+    interval: str = Query(
+        "1d",
+        description="K线周期",
+    ),
+    limit: int = Query(
+        120,
+        ge=1,
+        le=1000,
+    ),
+):
+
+    symbol = symbol.strip().upper()
+
+    print(f"📊 获取K线：" f"{symbol} " f"interval={interval} " f"limit={limit}")
+
+    try:
+
+        manager = require_data()
+
+        # -------------------------------------------------
+        # 这里暂时调用你的 DataManager
+        #
+        # 如果你现在还没有这个方法，
+        # 先返回暂无数据即可。
+        # -------------------------------------------------
+
+        if not hasattr(manager, "get_klines"):
+
+            return failure(
+                symbol,
+                "K线接口暂未实现",
+            )
+
+        klines = manager.get_klines(
+            symbol,
+            interval=interval,
+            limit=limit,
+        )
+
+        if not klines:
+
+            return failure(
+                symbol,
+                "暂无K线数据",
+            )
+
+        result = []
+
+        for item in klines:
+
+            result.append(
+                {
+                    "timestamp": getattr(
+                        item,
+                        "timestamp",
+                        None,
+                    ),
+                    "open": getattr(
+                        item,
+                        "open",
+                        None,
+                    ),
+                    "high": getattr(
+                        item,
+                        "high",
+                        None,
+                    ),
+                    "low": getattr(
+                        item,
+                        "low",
+                        None,
+                    ),
+                    "close": getattr(
+                        item,
+                        "close",
+                        None,
+                    ),
+                    "volume": getattr(
+                        item,
+                        "volume",
+                        None,
+                    ),
+                    "amount": getattr(
+                        item,
+                        "amount",
+                        None,
+                    ),
+                }
+            )
+
+        return success(
+            symbol,
+            {
+                "interval": interval,
+                "data": result,
+            },
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "K线接口暂未实现",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ K线获取失败：{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "K线数据暂不可用",
+        )
+
+
+# =========================================================
+# 3. 财务数据
+# =========================================================
+
+
+@app.get("/api/financial/{symbol}")
+def get_financial(symbol: str):
+
+    symbol = symbol.strip().upper()
+
+    print(f"💰 获取财务数据：{symbol}")
+
+    try:
+
+        manager = require_data()
+
+        if not hasattr(
+            manager,
+            "get_financial",
+        ):
+
+            return failure(
+                symbol,
+                "财务接口暂未实现",
+            )
+
+        result = manager.get_financial(symbol)
+
+        if result is None:
+
+            return failure(
+                symbol,
+                "暂无财务数据",
+            )
+
+        return success(
+            symbol,
+            result,
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "财务接口暂未实现",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 财务数据获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "财务数据暂不可用",
+        )
+
+
+# =========================================================
+# 4. 估值数据
+# =========================================================
+
+
+@app.get("/api/valuation/{symbol}")
+def get_valuation(symbol: str):
+
+    symbol = symbol.strip().upper()
+
+    print(f"💎 获取估值数据：{symbol}")
+
+    try:
+
+        manager = require_data()
+
+        if not hasattr(
+            manager,
+            "get_valuation",
+        ):
+
+            return failure(
+                symbol,
+                "估值接口暂未实现",
+            )
+
+        valuation = manager.get_valuation(symbol)
+
+        if valuation is None:
+
+            return failure(
+                symbol,
+                "暂无估值数据",
+            )
+
+        return success(
+            symbol,
+            {
+                "pe": getattr(
+                    valuation,
+                    "pe",
+                    None,
+                ),
+                "peTtm": getattr(
+                    valuation,
+                    "pe_ttm",
+                    None,
+                ),
+                "pb": getattr(
+                    valuation,
+                    "pb",
+                    None,
+                ),
+                "ps": getattr(
+                    valuation,
+                    "ps",
+                    None,
+                ),
+                "marketCap": getattr(
+                    valuation,
+                    "market_cap",
+                    None,
+                ),
+                "roe": getattr(
+                    valuation,
+                    "roe",
+                    None,
+                ),
+            },
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "估值接口暂未实现",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 估值获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "估值数据暂不可用",
+        )
+
+
+# =========================================================
+# 5. 行业数据
+# =========================================================
+
+
+@app.get("/api/industry/{symbol}")
+def get_industry(symbol: str):
+
+    symbol = symbol.strip().upper()
+
+    print(f"🏭 获取行业数据：{symbol}")
+
+    try:
+
+        manager = require_data()
+
+        if not hasattr(
+            manager,
+            "get_industry",
+        ):
+
+            return failure(
+                symbol,
+                "行业接口暂未实现",
+            )
+
+        industry = manager.get_industry(symbol)
+
+        if industry is None:
+
+            return failure(
+                symbol,
+                "暂无行业数据",
+            )
+
+        return success(
+            symbol,
+            industry,
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "行业接口暂未实现",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 行业数据获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "行业数据暂不可用",
+        )
+
+
+# =========================================================
+# 6. 技术指标
+# =========================================================
+
+
+@app.get("/api/technical/{symbol}")
+def get_technical(symbol: str):
+
+    symbol = symbol.strip().upper()
+
+    print(f"📐 获取技术指标：{symbol}")
+
+    try:
+
+        manager = require_data()
+
+        if not hasattr(
+            manager,
+            "get_technical",
+        ):
+
+            return failure(
+                symbol,
+                "技术指标接口暂未实现",
+            )
+
+        technical = manager.get_technical(symbol)
+
+        if technical is None:
+
+            return failure(
+                symbol,
+                "暂无技术指标数据",
+            )
+
+        return success(
+            symbol,
+            technical,
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "技术指标接口暂未实现",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 技术指标获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "技术指标暂不可用",
+        )
+
+
+# =========================================================
+# 7. 新闻
+# =========================================================
+
+
+@app.get("/api/news/{symbol}")
+def get_news(
+    symbol: str,
+    limit: int = Query(
+        10,
+        ge=1,
+        le=100,
+    ),
+):
+
+    symbol = symbol.strip().upper()
+
+    print(f"📰 获取新闻：" f"{symbol} limit={limit}")
+
+    try:
+
+        manager = require_data()
+
+        if not hasattr(
+            manager,
+            "get_news",
+        ):
+
+            return failure(
+                symbol,
+                "新闻接口暂未实现",
+            )
+
+        news = manager.get_news(
+            symbol,
+            limit=limit,
+        )
+
+        if not news:
+
+            return failure(
+                symbol,
+                "暂无新闻",
+            )
+
+        return success(
+            symbol,
+            news,
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "新闻接口暂未实现",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 新闻获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "新闻数据暂不可用",
+        )
+
+
+# =========================================================
+# 8. 公告
+# =========================================================
+
+
+@app.get("/api/announcement/{symbol}")
+def get_announcements(
+    symbol: str,
+    limit: int = Query(
+        10,
+        ge=1,
+        le=100,
+    ),
+):
+
+    symbol = symbol.strip().upper()
+
+    print(f"📢 获取公告：" f"{symbol} limit={limit}")
+
+    try:
+
+        manager = require_data()
+
+        if not hasattr(
+            manager,
+            "get_announcements",
+        ):
+
+            return failure(
+                symbol,
+                "公告接口暂未实现",
+            )
+
+        announcements = manager.get_announcements(
+            symbol,
+            limit=limit,
+        )
+
+        if not announcements:
+
+            return failure(
+                symbol,
+                "暂无公告",
+            )
+
+        return success(
+            symbol,
+            announcements,
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "公告接口暂未实现",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 公告获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "公告数据暂不可用",
+        )
+
+
+# =========================================================
+# 9. AI研究
+# =========================================================
+
+
+@app.get("/api/ai/{symbol}")
+def get_ai_research(symbol: str):
+
+    symbol = symbol.strip().upper()
+
+    print(f"🤖 获取AI研究：{symbol}")
+
+    try:
+
+        manager = require_data()
+
+        if not hasattr(
+            manager,
+            "get_ai_research",
+        ):
+
+            return failure(
+                symbol,
+                "AI研究接口暂未实现",
+            )
+
+        result = manager.get_ai_research(symbol)
+
+        if result is None:
+
+            return failure(
+                symbol,
+                "暂无AI研究数据",
+            )
+
+        return success(
+            symbol,
+            result,
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "AI研究接口暂未实现",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ AI研究获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "AI研究数据暂不可用",
+        )
 
 
 # ============================================================
