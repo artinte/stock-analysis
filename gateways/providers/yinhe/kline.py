@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import datetime
 
-from typing import Optional
+from typing import Optional, Union
 
 import AmazingData
 
@@ -12,54 +14,120 @@ from utils.stock_mapping import normalize_symbol
 
 class YinheKline:
     """
-    银河证券K线模块。
+    银河证券 K 线模块。
 
+    支持：
 
-    负责：
+        - 单股票 K 线
+        - 多股票批量 K 线
+        - 日 K
+        - 周 K
+        - 分钟 K
 
-        - 日K
-        - 周K
-        - 分钟K
+    调用：
 
-    转换：
+        fetch_kline(
+            symbol="600519"
+        )
+
+        fetch_kline(
+            symbol=[
+                "600519",
+                "000001",
+                "300750",
+            ]
+        )
+
+    返回：
+
+        单股票：
+            list[Kline]
+
+        多股票：
+            dict[str, list[Kline]]
+
+    数据流程：
 
         AmazingData DataFrame
-
                 ↓
-
-        list[Kline]
+        Provider 原始数据
+                ↓
+        统一 Kline
     """
 
     def __init__(
         self,
         gateway,
     ):
-
         self.gateway = gateway
+
+    # ==========================================================
+    # 主入口
+    # ==========================================================
 
     def fetch_kline(
         self,
-        symbol: str,
+        symbol: Union[str, list[str]],
         interval: Interval = Interval.DAY_1,
         start_time: Optional[datetime.datetime] = None,
         end_time: Optional[datetime.datetime] = None,
         limit: int = 1000,
-    ) -> list[Kline]:
+    ) -> Union[list[Kline], dict[str, list[Kline]]]:
 
         self.gateway._ensure_started()
 
         # ------------------------------------------------------
-        # 1. 周期映射
+        # 1. 判断单个 / 批量
+        # ------------------------------------------------------
+
+        is_batch = isinstance(symbol, (list, tuple, set))
+
+        if is_batch:
+
+            symbols = [
+                normalize_symbol(item)
+                for item in symbol
+                if item is not None
+            ]
+
+        else:
+
+            symbols = [
+                normalize_symbol(symbol)
+            ]
+
+        # 去重，同时保持原顺序
+        symbols = list(dict.fromkeys(symbols))
+
+        if not symbols:
+            return {} if is_batch else []
+
+        # ------------------------------------------------------
+        # 2. 周期映射
         # ------------------------------------------------------
 
         period_map = {
-            Interval.MINUTE_1: AmazingData.constant.Period.min1.value,
-            Interval.MINUTE_5: AmazingData.constant.Period.min5.value,
-            Interval.MINUTE_15: AmazingData.constant.Period.min15.value,
-            Interval.MINUTE_30: AmazingData.constant.Period.min30.value,
-            Interval.MINUTE_60: AmazingData.constant.Period.min60.value,
-            Interval.DAY_1: AmazingData.constant.Period.day.value,
-            Interval.WEEK_1: AmazingData.constant.Period.week.value,
+
+            Interval.MINUTE_1:
+                AmazingData.constant.Period.min1.value,
+
+            Interval.MINUTE_5:
+                AmazingData.constant.Period.min5.value,
+
+            Interval.MINUTE_15:
+                AmazingData.constant.Period.min15.value,
+
+            Interval.MINUTE_30:
+                AmazingData.constant.Period.min30.value,
+
+            Interval.MINUTE_60:
+                AmazingData.constant.Period.min60.value,
+
+            Interval.DAY_1:
+                AmazingData.constant.Period.day.value,
+
+            Interval.WEEK_1:
+                AmazingData.constant.Period.week.value,
         }
 
         period = period_map.get(
@@ -68,53 +136,103 @@ class YinheKline:
         )
 
         # ------------------------------------------------------
-        # 2. 股票代码标准化
-        # ------------------------------------------------------
-
-        symbol = normalize_symbol(symbol)
-
-        # ------------------------------------------------------
         # 3. 日期处理
         # ------------------------------------------------------
 
-        today_str = datetime.datetime.now().strftime("%Y%m%d")
+        now = datetime.datetime.now()
 
-        begin_str = start_time.strftime("%Y%m%d") if start_time else today_str
+        today_str = now.strftime("%Y%m%d")
 
-        end_str = end_time.strftime("%Y%m%d") if end_time else today_str
+        begin_str = (
+            start_time.strftime("%Y%m%d")
+            if start_time
+            else today_str
+        )
+
+        end_str = (
+            end_time.strftime("%Y%m%d")
+            if end_time
+            else today_str
+        )
 
         # ------------------------------------------------------
-        # 4. 查询数据
+        # 4. 一次批量查询
+        #
+        # 注意：
+        #
+        # 这里绝对不要：
+        #
+        # for symbol in symbols:
+        #     query_kline(...)
+        #
+        # 而是一次把 symbols 传进去。
         # ------------------------------------------------------
 
         try:
 
             kline_dict = self.gateway.market_data.query_kline(
-                [symbol],
+                symbols,
                 period=period,
                 begin_date=int(begin_str),
                 end_date=int(end_str),
             )
 
-            if kline_dict is None:
-                return []
+        except Exception as e:
 
-            df = kline_dict.get(symbol)
+            print(
+                f"[银河网关] 批量 query_kline 查询失败: {e}"
+            )
+
+            return {} if is_batch else []
+
+        # ------------------------------------------------------
+        # 5. 没有返回
+        # ------------------------------------------------------
+
+        if kline_dict is None:
+
+            return {} if is_batch else []
+
+        # ------------------------------------------------------
+        # 6. 统一处理返回结果
+        # ------------------------------------------------------
+
+        result: dict[str, list[Kline]] = {}
+
+        for current_symbol in symbols:
+
+            df = kline_dict.get(current_symbol)
+
+            # --------------------------------------------------
+            # 某个股票没有数据
+            # --------------------------------------------------
 
             if df is None:
 
-                print(f"[银河网关] {symbol} 无返回数据")
+                print(
+                    f"[银河网关] {current_symbol} 无返回数据"
+                )
 
-                return []
+                result[current_symbol] = []
+
+                continue
+
+            # --------------------------------------------------
+            # DataFrame 为空
+            # --------------------------------------------------
 
             if hasattr(df, "empty") and df.empty:
 
-                print(f"[银河网关] {symbol} 返回数据为空")
+                print(
+                    f"[银河网关] {current_symbol} 返回数据为空"
+                )
 
-                return []
+                result[current_symbol] = []
+
+                continue
 
             # --------------------------------------------------
-            # DataFrame → List[Dict]
+            # DataFrame → list[dict]
             # --------------------------------------------------
 
             if hasattr(df, "to_dict"):
@@ -133,15 +251,49 @@ class YinheKline:
 
                 raw_bars = raw_bars[-limit:]
 
-        except Exception as e:
+            # --------------------------------------------------
+            # 转换成统一 Kline
+            # --------------------------------------------------
 
-            print(f"[银河网关] query_kline 查询失败: {e}")
+            klines = self._convert_klines(
+                symbol=current_symbol,
+                interval=interval,
+                raw_bars=raw_bars,
+            )
 
-            return []
+            result[current_symbol] = klines
 
         # ------------------------------------------------------
-        # 5. 转换成统一 Kline
+        # 7. 单股票保持原来的 API
+        #
+        # fetch_kline("600519")
+        #
+        # 仍然直接返回 list[Kline]
         # ------------------------------------------------------
+
+        if not is_batch:
+
+            return result.get(
+                symbols[0],
+                [],
+            )
+
+        # ------------------------------------------------------
+        # 8. 批量返回
+        # ------------------------------------------------------
+
+        return result
+
+    # ==========================================================
+    # DataFrame / 原始数据 → Kline
+    # ==========================================================
+
+    @staticmethod
+    def _convert_klines(
+        symbol: str,
+        interval: Interval,
+        raw_bars,
+    ) -> list[Kline]:
 
         klines: list[Kline] = []
 
@@ -149,36 +301,82 @@ class YinheKline:
 
             try:
 
+                # --------------------------------------------------
+                # 时间
+                # --------------------------------------------------
+
                 kline_time = item.get("kline_time")
-                
+
                 if kline_time is None:
-                    print("❌ 缺少 kline_time")
-                    print(item)
+
+                    print(
+                        f"[银河网关] {symbol} 缺少 kline_time"
+                    )
+
+                    print(
+                        f"    原始数据: {item}"
+                    )
+
                     continue
 
-                if hasattr(kline_time, "to_pydatetime"):
-                    kline_time = kline_time.to_pydatetime()
+                # pandas.Timestamp
+                if hasattr(
+                    kline_time,
+                    "to_pydatetime",
+                ):
+
+                    kline_time = (
+                        kline_time.to_pydatetime()
+                    )
+
+                # --------------------------------------------------
+                # Kline
+                # --------------------------------------------------
 
                 klines.append(
                     Kline(
                         symbol=symbol,
                         timestamp=kline_time,
                         interval=interval,
-                        open=float(item["open"]),
-                        high=float(item["high"]),
-                        low=float(item["low"]),
-                        close=float(item["close"]),
-                        volume=int(item["volume"]),
-                        amount=float(item["amount"]),
+
+                        open=float(
+                            item["open"]
+                        ),
+
+                        high=float(
+                            item["high"]
+                        ),
+
+                        low=float(
+                            item["low"]
+                        ),
+
+                        close=float(
+                            item["close"]
+                        ),
+
+                        volume=int(
+                            item["volume"]
+                        ),
+
+                        amount=float(
+                            item["amount"]
+                        ),
                     )
                 )
 
             except Exception as e:
 
-                print(f"[银河网关] 转换 Kline 失败: {e}")
+                print(
+                    f"[银河网关] 转换 Kline 失败: "
+                    f"{symbol}: {e}"
+                )
 
-                print(f"    原始数据: {item}")
+                print(
+                    f"    原始数据: {item}"
+                )
 
                 continue
 
         return klines
+
