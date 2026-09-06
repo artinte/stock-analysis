@@ -102,7 +102,7 @@ async function loadQuote() {
     try {
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/quote`
+            `/api/quote/${encodeURIComponent(currentSymbol)}`
         );
 
 
@@ -330,7 +330,7 @@ async function loadKline(
 
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/kline?period=${period}`
+            `/api/kline/${encodeURIComponent(currentSymbol)}?period=${period}`
         );
 
 
@@ -460,7 +460,7 @@ async function loadFinancial() {
     try {
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/financial`
+            `/api/financial/${encodeURIComponent(currentSymbol)}`
         );
 
 
@@ -601,8 +601,8 @@ function renderFinancial(data) {
 
                 <td>
                     ${escapeHTML(
-                        row.period ?? "—"
-                    )}
+            row.period ?? "—"
+        )}
                 </td>
 
                 <td>
@@ -611,26 +611,26 @@ function renderFinancial(data) {
 
                 <td>
                     ${formatPercent(
-                        row.revenue_growth
-                    )}
+            row.revenue_growth
+        )}
                 </td>
 
                 <td>
                     ${formatAmount(
-                        row.net_profit
-                    )}
+            row.net_profit
+        )}
                 </td>
 
                 <td>
                     ${formatPercent(
-                        row.net_profit_growth
-                    )}
+            row.net_profit_growth
+        )}
                 </td>
 
                 <td>
                     ${formatPercent(
-                        row.roe
-                    )}
+            row.roe
+        )}
                 </td>
 
             </tr>
@@ -651,7 +651,7 @@ async function loadValuation() {
     try {
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/valuation`
+            `/api/valuation/${encodeURIComponent(currentSymbol)}`
         );
 
 
@@ -805,7 +805,7 @@ async function loadIndustry() {
     try {
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/industry`
+            `/api/industry/${encodeURIComponent(currentSymbol)}`
         );
 
 
@@ -949,14 +949,14 @@ function renderIndustry(data) {
 
                     <strong>
                         ${escapeHTML(
-                            item.name ?? "—"
-                        )}
+                item.name ?? "—"
+            )}
                     </strong>
 
                     <span>
                         ${escapeHTML(
-                            item.symbol ?? "—"
-                        )}
+                item.symbol ?? "—"
+            )}
                     </span>
 
                 </div>
@@ -977,7 +977,7 @@ async function loadTechnical() {
     try {
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/technical`
+            `/api/technical/${encodeURIComponent(currentSymbol)}`
         );
 
 
@@ -1122,7 +1122,7 @@ async function loadNews() {
     try {
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/news`
+            `/api/news/${encodeURIComponent(currentSymbol)}`
         );
 
 
@@ -1187,30 +1187,30 @@ function renderNews(data) {
 
                     <span>
                         ${escapeHTML(
-                            item.category ?? "资讯"
-                        )}
+                item.category ?? "资讯"
+            )}
                     </span>
 
                     <div>
 
                         <h3>
                             ${escapeHTML(
-                                item.title ?? "—"
-                            )}
+                item.title ?? "—"
+            )}
                         </h3>
 
                         <p>
                             ${escapeHTML(
-                                item.summary ?? ""
-                            )}
+                item.summary ?? ""
+            )}
                         </p>
 
                     </div>
 
                     <time>
                         ${escapeHTML(
-                            item.date ?? "—"
-                        )}
+                item.date ?? "—"
+            )}
                     </time>
 
                 </article>
@@ -1231,7 +1231,7 @@ async function loadAnnouncement() {
     try {
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/announcement`
+            `/api/announcement/${encodeURIComponent(currentSymbol)}`
         );
 
 
@@ -1296,28 +1296,27 @@ function renderAnnouncement(data) {
 
                     <span>
                         ${escapeHTML(
-                            item.date ?? "—"
-                        )}
+                item.date ?? "—"
+            )}
                     </span>
 
                     <strong>
                         ${escapeHTML(
-                            item.title ?? "—"
-                        )}
+                item.title ?? "—"
+            )}
                     </strong>
 
-                    ${
-                        item.url
-                        ?
-                        `<button
+                    ${item.url
+                    ?
+                    `<button
                             onclick="window.open('${escapeAttribute(item.url)}', '_blank')">
                             查看
                          </button>`
-                        :
-                        `<button disabled>
+                    :
+                    `<button disabled>
                             暂无
                          </button>`
-                    }
+                }
 
                 </div>
 
@@ -1337,7 +1336,7 @@ async function loadAI() {
     try {
 
         const result = await requestAPI(
-            `/api/stock/${encodeURIComponent(currentSymbol)}/ai`
+            `/api/ai/${encodeURIComponent(currentSymbol)}`
         );
 
 
