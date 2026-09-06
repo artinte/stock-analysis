@@ -1173,17 +1173,45 @@ function renderIndex(index) {
 // ============================================================
 // 获取市场指数
 // ============================================================
-
 async function loadIndices() {
 
     try {
 
+        console.log('📡 正在获取市场指数...');
+
+        // ========================================================
+        // 从网页提取指数代码
+        // ========================================================
+
+        const indexElements =
+            document.querySelectorAll(
+                '.market-index[data-index]'
+            );
+
+        const symbols = Array.from(indexElements)
+            .map(element => element.dataset.index)
+            .filter(Boolean);
+
         console.log(
-            '📡 正在获取市场指数...'
+            '📋 页面指数代码：',
+            symbols
         );
 
+        if (symbols.length === 0) {
+
+            console.warn(
+                '⚠️ 页面没有找到指数代码'
+            );
+
+            return;
+        }
+
+        // ========================================================
+        // 一次性请求全部指数
+        // ========================================================
+
         const response = await fetch(
-            '/api/indices'
+            `/api/indices?indices=${symbols.join(',')}`
         );
 
         if (!response.ok) {
@@ -1200,15 +1228,6 @@ async function loadIndices() {
             '📊 后端返回指数数据：',
             result
         );
-
-        // ========================================================
-        // 后端返回：
-        //
-        // {
-        //     success: true,
-        //     data: [...]
-        // }
-        // ========================================================
 
         if (!result.success) {
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -175,7 +175,13 @@ def get_quote(symbol: str):
 
 
 @app.get("/api/indices")
-def get_indices():
+def get_indices(indices: str = Query(...)):
+    """
+    获取指定指数行情。
+
+    示例：
+        /api/indices?indices=000001,399001,399006,000688
+    """
 
     if data is None:
         return {
@@ -184,39 +190,36 @@ def get_indices():
         }
 
     symbols = [
-        "000001.SH",
-        "399001.SZ",
-        "399006.SZ",
-        "000688.SH",
+        symbol.strip().upper() for symbol in indices.split(",") if symbol.strip()
     ]
 
-    indices = []
+    try:
+        quotes = data.get_quotes(symbols)
 
-    for symbol in symbols:
+    except Exception as exc:
+        print(f"❌ 批量获取指数行情失败：{exc}")
 
-        try:
-            quote = data.get_quote(symbol)
+        return {
+            "success": False,
+            "message": "获取指数行情失败",
+        }
 
-            if quote is None:
-                continue
+    result = []
 
-            indices.append({
+    for quote in quotes:
+        result.append(
+            {
                 "code": quote.symbol,
                 "name": quote.name,
                 "price": quote.last_price,
                 "change": quote.change,
                 "changePercent": quote.change_percent,
-            })
-
-        except Exception as exc:
-            print(
-                f"❌ 获取指数行情失败："
-                f"{symbol} -> {exc}"
-            )
+            }
+        )
 
     return {
         "success": True,
-        "data": indices,
+        "data": result,
     }
 
 

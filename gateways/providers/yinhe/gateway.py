@@ -384,15 +384,7 @@ class YinheGateway(StockDataGateway):
         """
         批量获取股票最新行情。
         """
-
-        self._ensure_started()
-
-        if not symbols:
-            return []
-
-        raise NotImplementedError(
-            "YinheGateway.fetch_quotes() " "尚未接入银河证券批量行情接口"
-        )
+        return self.quote.fetch_quotes(symbols=symbols)
 
     def fetch_valuation(
         self,
