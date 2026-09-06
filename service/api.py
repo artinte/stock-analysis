@@ -266,6 +266,15 @@ app.mount(
     name="tools",
 )
 
+app.mount(
+    "/news",
+    StaticFiles(
+        directory=FRONTEND_DIR / "news",
+        html=True,
+    ),
+    name="news",
+)
+
 
 # ============================================================
 # 首页

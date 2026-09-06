@@ -208,7 +208,6 @@ uvicorn service.api:app --reload
 
 > **时事热点 + 财经信息 + 行情数据 + 财务数据 + 技术指标 + AI分析 + 量化策略**
 
-整合到一个统一的分析框架中。详细介绍参考 [Stock Analysis 指导手册](https://artinte.github.io/stock-analysis/manual.html)！
 
 ---
 

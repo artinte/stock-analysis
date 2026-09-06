@@ -10,7 +10,7 @@ function navigatePage(page) {
         home: "../",
         market: "../?page=market",
         stock: "../?page=stock",
-        news: "../?page=news",
+        news: "../news/",
         research: "../?page=research",
         trade: "../trade/",
         tools: "../tools/",

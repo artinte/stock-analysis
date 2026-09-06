@@ -1299,4 +1299,9 @@ function navigateMainPage(page) {
         window.location.href = './trade/';
         return;
     }
+
+    if (page === 'news') {
+        window.location.href = './news/';
+        return;
+    }
 }
