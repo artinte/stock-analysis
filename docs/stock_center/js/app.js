@@ -1284,7 +1284,6 @@ document.addEventListener(
 
 
 function navigateMainPage(page) {
-
     if (page === 'document') {
         window.location.href = './document/';
         return;
@@ -1302,6 +1301,11 @@ function navigateMainPage(page) {
 
     if (page === 'news') {
         window.location.href = './news/';
+        return;
+    }
+
+    if (page === 'research') {
+        window.location.href = './research/';
         return;
     }
 }

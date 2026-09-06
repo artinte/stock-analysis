@@ -1,0 +1,1476 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>研究中心 - STOCK LAB</title>
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/research.css">
+
+    <script src="../js/navigation.js"></script>
+
+</head>
+
+
+<body>
+
+    <!-- =========================================================
+     顶部导航
+========================================================= -->
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+
+            <!-- 品牌 -->
+
+            <div class="brand" onclick="goHome('market')">
+
+                <div class="brand-mark">
+                    S
+                </div>
+
+
+                <div class="brand-text">
+
+                    <div class="brand-name">
+                        STOCK LAB
+                    </div>
+
+
+                    <div class="brand-subtitle">
+                        股票研究中心
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 主导航 -->
+
+            <nav class="main-nav">
+
+                <button class="nav-item" onclick="goHome('market')">
+                    市场
+                </button>
+
+
+                <button class="nav-item" onclick="goHome('stock')">
+                    股票
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('news')">
+                    资讯
+                </button>
+
+
+                <button class="nav-item active" data-page="research">
+                    AI研究
+                </button>
+
+
+                <button class="nav-item" data-page="trade" onclick="navigatePage('trade')">
+                    交易
+                </button>
+
+
+                <button class="nav-item" data-page="tools" onclick="navigatePage('tools')">
+                    工具
+                </button>
+
+
+                <button class="nav-item" data-page="document" onclick="navigatePage('document')">
+                    学习文档
+                </button>
+
+            </nav>
+
+
+            <!-- 右侧 -->
+
+            <div class="header-right">
+
+
+                <button class="ai-top-button" onclick="goHome('ai-chat')">
+
+                    <span>
+                        ✦
+                    </span>
+
+                    AI 投研助手
+
+                </button>
+
+
+                <div class="global-search">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+
+                    <input id="searchInput" autocomplete="off" placeholder="搜索股票 / 代码">
+
+
+                    <button id="searchBtn">
+                        查询
+                    </button>
+
+
+                    <div id="searchDropdown" class="search-dropdown">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+     页面主体
+========================================================= -->
+
+    <main class="research-page">
+
+
+        <!-- =====================================================
+         页面标题
+    ====================================================== -->
+
+        <section class="research-header">
+
+            <div>
+
+                <div class="research-eyebrow">
+                    RESEARCH CENTER
+                </div>
+
+                <h1>
+                    研究中心
+                </h1>
+
+                <p>
+                    市场 · 行业 · 主题 · 个股 · 事件
+                </p>
+
+            </div>
+
+
+            <div class="research-header-meta">
+
+                <div class="research-date">
+                    2026-09-06
+                </div>
+
+                <div class="research-update">
+                    数据更新于 15:32
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+         今日研究结论
+    ====================================================== -->
+
+        <section class="research-section conclusion-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="section-kicker">
+                        DAILY INSIGHT
+                    </div>
+
+                    <h2>
+                        今日研究结论
+                    </h2>
+
+                </div>
+
+                <span class="section-note">
+                    基于市场、资金、行业与事件综合分析
+                </span>
+
+            </div>
+
+
+            <div class="conclusion-card">
+
+                <div class="conclusion-main">
+
+                    <div class="conclusion-tag">
+                        市场判断
+                    </div>
+
+                    <h3>
+                        风险偏好正在回升，科技成长重新成为市场核心方向
+                    </h3>
+
+                    <p>
+                        今日市场风险偏好有所改善，资金重新向科技成长方向集中。
+                        半导体、AI 算力、机器人等板块表现相对强势。
+                        当前市场更关注产业趋势与政策预期，高景气成长方向仍然是主要交易线索。
+                    </p>
+
+                </div>
+
+
+                <div class="conclusion-side">
+
+                    <div class="conclusion-item">
+
+                        <span>
+                            市场状态
+                        </span>
+
+                        <strong class="positive">
+                            偏积极
+                        </strong>
+
+                    </div>
+
+                    <div class="conclusion-item">
+
+                        <span>
+                            风险水平
+                        </span>
+
+                        <strong>
+                            中等
+                        </strong>
+
+                    </div>
+
+                    <div class="conclusion-item">
+
+                        <span>
+                            核心风格
+                        </span>
+
+                        <strong>
+                            成长
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="research-signals">
+
+                <div class="signal-card">
+
+                    <span class="signal-label">
+                        核心驱动
+                    </span>
+
+                    <ul>
+
+                        <li>
+                            海外科技资产表现改善
+                        </li>
+
+                        <li>
+                            国内产业政策预期增强
+                        </li>
+
+                        <li>
+                            科技板块资金重新活跃
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
+                <div class="signal-card">
+
+                    <span class="signal-label">
+                        需要关注
+                    </span>
+
+                    <ul>
+
+                        <li>
+                            高估值成长板块交易拥挤
+                        </li>
+
+                        <li>
+                            科技行情持续性
+                        </li>
+
+                        <li>
+                            增量资金能否继续进入
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+         市场研究
+    ====================================================== -->
+
+        <section class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="section-kicker">
+                        MARKET RESEARCH
+                    </div>
+
+                    <h2>
+                        市场研究
+                    </h2>
+
+                </div>
+
+                <span class="section-note">
+                    当前市场状态
+                </span>
+
+            </div>
+
+
+            <div class="market-grid">
+
+
+                <div class="metric-card">
+
+                    <div class="metric-top">
+
+                        <span>
+                            市场情绪
+                        </span>
+
+                        <span class="metric-trend positive">
+                            ↑
+                        </span>
+
+                    </div>
+
+                    <div class="metric-value">
+                        68
+                        <small>/ 100</small>
+                    </div>
+
+                    <div class="metric-label">
+                        偏积极
+                    </div>
+
+                    <div class="metric-bar">
+                        <span style="width: 68%;"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <div class="metric-top">
+
+                        <span>
+                            资金趋势
+                        </span>
+
+                        <span class="metric-trend positive">
+                            ↑
+                        </span>
+
+                    </div>
+
+                    <div class="metric-value">
+                        流入
+                    </div>
+
+                    <div class="metric-label">
+                        科技成长方向
+                    </div>
+
+                    <div class="metric-mini-chart">
+
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <div class="metric-top">
+
+                        <span>
+                            市场风格
+                        </span>
+
+                        <span class="metric-trend positive">
+                            →
+                        </span>
+
+                    </div>
+
+                    <div class="metric-value">
+                        成长
+                    </div>
+
+                    <div class="metric-label">
+                        成长 > 价值
+                    </div>
+
+                    <div class="style-bars">
+
+                        <div>
+                            <span>成长</span>
+                            <i style="width: 82%;"></i>
+                        </div>
+
+                        <div>
+                            <span>价值</span>
+                            <i style="width: 54%;"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <div class="metric-top">
+
+                        <span>
+                            风险水平
+                        </span>
+
+                        <span class="metric-trend neutral">
+                            →
+                        </span>
+
+                    </div>
+
+                    <div class="metric-value">
+                        中等
+                    </div>
+
+                    <div class="metric-label">
+                        暂未出现明显系统性风险
+                    </div>
+
+                    <div class="risk-scale">
+
+                        <span></span>
+                        <span class="active"></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+         重点事件研究
+    ====================================================== -->
+
+        <section class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="section-kicker">
+                        EVENT RESEARCH
+                    </div>
+
+                    <h2>
+                        重点事件研究
+                    </h2>
+
+                </div>
+
+                <span class="section-note">
+                    从事件到市场影响
+                </span>
+
+            </div>
+
+
+            <div class="event-grid">
+
+
+                <article class="event-card">
+
+                    <div class="event-header">
+
+                        <span class="event-type">
+                            产业
+                        </span>
+
+                        <span class="event-time">
+                            今日
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        半导体产业链资本开支预期改善
+                    </h3>
+
+                    <p>
+                        多项产业链信息显示，部分核心环节的需求预期正在改善，
+                        市场开始重新交易新一轮资本开支周期。
+                    </p>
+
+                    <div class="event-impact">
+
+                        <span>
+                            影响方向
+                        </span>
+
+                        <strong class="positive">
+                            ↑ 偏利好
+                        </strong>
+
+                    </div>
+
+                    <div class="event-related">
+
+                        <span>
+                            关联方向
+                        </span>
+
+                        <div>
+
+                            <b>半导体设备</b>
+                            <b>先进封装</b>
+                            <b>芯片设计</b>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="event-card">
+
+                    <div class="event-header">
+
+                        <span class="event-type">
+                            市场
+                        </span>
+
+                        <span class="event-time">
+                            今日
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        市场风险偏好出现边际改善
+                    </h3>
+
+                    <p>
+                        权益资产风险偏好较前期有所恢复，成长风格重新获得资金关注。
+                        后续重点观察成交量与增量资金能否持续。
+                    </p>
+
+                    <div class="event-impact">
+
+                        <span>
+                            影响方向
+                        </span>
+
+                        <strong class="positive">
+                            ↑ 偏利好
+                        </strong>
+
+                    </div>
+
+                    <div class="event-related">
+
+                        <span>
+                            关注方向
+                        </span>
+
+                        <div>
+
+                            <b>科技成长</b>
+                            <b>小盘成长</b>
+                            <b>高景气行业</b>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+
+                <article class="event-card">
+
+                    <div class="event-header">
+
+                        <span class="event-type">
+                            政策
+                        </span>
+
+                        <span class="event-time">
+                            今日
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        商业航天产业政策预期升温
+                    </h3>
+
+                    <p>
+                        产业政策与商业化进展持续成为市场关注重点，
+                        相关产业链估值与订单预期出现重新定价。
+                    </p>
+
+                    <div class="event-impact">
+
+                        <span>
+                            影响方向
+                        </span>
+
+                        <strong class="positive">
+                            ↑ 关注
+                        </strong>
+
+                    </div>
+
+                    <div class="event-related">
+
+                        <span>
+                            关联方向
+                        </span>
+
+                        <div>
+
+                            <b>卫星制造</b>
+                            <b>通信</b>
+                            <b>发射服务</b>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+         行业研究
+    ====================================================== -->
+
+        <section class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="section-kicker">
+                        INDUSTRY RESEARCH
+                    </div>
+
+                    <h2>
+                        行业研究
+                    </h2>
+
+                </div>
+
+                <span class="section-note">
+                    景气度 · 资金 · 预期
+                </span>
+
+            </div>
+
+
+            <div class="industry-grid">
+
+
+                <article class="industry-card hot">
+
+                    <div class="industry-rank">
+                        01
+                    </div>
+
+                    <div class="industry-info">
+
+                        <h3>
+                            半导体
+                        </h3>
+
+                        <p>
+                            景气度改善 · 产业趋势向上
+                        </p>
+
+                    </div>
+
+                    <div class="industry-score">
+                        <strong>96</strong>
+                        <span>强势</span>
+                    </div>
+
+                    <div class="industry-progress">
+                        <span style="width: 96%;"></span>
+                    </div>
+
+                </article>
+
+
+                <article class="industry-card">
+
+                    <div class="industry-rank">
+                        02
+                    </div>
+
+                    <div class="industry-info">
+
+                        <h3>
+                            机器人
+                        </h3>
+
+                        <p>
+                            产业趋势明确 · 资金活跃
+                        </p>
+
+                    </div>
+
+                    <div class="industry-score">
+                        <strong>91</strong>
+                        <span>强势</span>
+                    </div>
+
+                    <div class="industry-progress">
+                        <span style="width: 91%;"></span>
+                    </div>
+
+                </article>
+
+
+                <article class="industry-card">
+
+                    <div class="industry-rank">
+                        03
+                    </div>
+
+                    <div class="industry-info">
+
+                        <h3>
+                            商业航天
+                        </h3>
+
+                        <p>
+                            政策预期 · 主题活跃
+                        </p>
+
+                    </div>
+
+                    <div class="industry-score">
+                        <strong>87</strong>
+                        <span>关注</span>
+                    </div>
+
+                    <div class="industry-progress">
+                        <span style="width: 87%;"></span>
+                    </div>
+
+                </article>
+
+
+                <article class="industry-card">
+
+                    <div class="industry-rank">
+                        04
+                    </div>
+
+                    <div class="industry-info">
+
+                        <h3>
+                            AI 算力
+                        </h3>
+
+                        <p>
+                            海外映射 · 国内需求改善
+                        </p>
+
+                    </div>
+
+                    <div class="industry-score">
+                        <strong>82</strong>
+                        <span>关注</span>
+                    </div>
+
+                    <div class="industry-progress">
+                        <span style="width: 82%;"></span>
+                    </div>
+
+                </article>
+
+
+                <article class="industry-card">
+
+                    <div class="industry-rank">
+                        05
+                    </div>
+
+                    <div class="industry-info">
+
+                        <h3>
+                            医药
+                        </h3>
+
+                        <p>
+                            估值较低 · 等待基本面改善
+                        </p>
+
+                    </div>
+
+                    <div class="industry-score">
+                        <strong>67</strong>
+                        <span>中性</span>
+                    </div>
+
+                    <div class="industry-progress">
+                        <span style="width: 67%;"></span>
+                    </div>
+
+                </article>
+
+
+                <article class="industry-card">
+
+                    <div class="industry-rank">
+                        06
+                    </div>
+
+                    <div class="industry-info">
+
+                        <h3>
+                            新能源
+                        </h3>
+
+                        <p>
+                            供需压力仍在 · 行业分化
+                        </p>
+
+                    </div>
+
+                    <div class="industry-score">
+                        <strong>51</strong>
+                        <span>中性</span>
+                    </div>
+
+                    <div class="industry-progress">
+                        <span style="width: 51%;"></span>
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+         主题研究
+    ====================================================== -->
+
+        <section class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="section-kicker">
+                        THEME RESEARCH
+                    </div>
+
+                    <h2>
+                        主题研究
+                    </h2>
+
+                </div>
+
+                <span class="section-note">
+                    跨行业产业链机会
+                </span>
+
+            </div>
+
+
+            <div class="theme-grid">
+
+
+                <article class="theme-card">
+
+                    <div class="theme-icon">
+                        AI
+                    </div>
+
+                    <div class="theme-content">
+
+                        <h3>
+                            AI 算力
+                        </h3>
+
+                        <p>
+                            从芯片、服务器到数据中心的完整产业链研究。
+                        </p>
+
+                        <div class="theme-tags">
+
+                            <span>芯片</span>
+                            <span>光模块</span>
+                            <span>服务器</span>
+                            <span>数据中心</span>
+
+                        </div>
+
+                    </div>
+
+                    <span class="theme-arrow">
+                        →
+                    </span>
+
+                </article>
+
+
+                <article class="theme-card">
+
+                    <div class="theme-icon">
+                        RO
+                    </div>
+
+                    <div class="theme-content">
+
+                        <h3>
+                            机器人
+                        </h3>
+
+                        <p>
+                            人形机器人产业链、核心零部件与商业化进程。
+                        </p>
+
+                        <div class="theme-tags">
+
+                            <span>减速器</span>
+                            <span>电机</span>
+                            <span>丝杠</span>
+                            <span>传感器</span>
+
+                        </div>
+
+                    </div>
+
+                    <span class="theme-arrow">
+                        →
+                    </span>
+
+                </article>
+
+
+                <article class="theme-card">
+
+                    <div class="theme-icon">
+                        SA
+                    </div>
+
+                    <div class="theme-content">
+
+                        <h3>
+                            商业航天
+                        </h3>
+
+                        <p>
+                            卫星制造、发射、通信与商业化应用产业链。
+                        </p>
+
+                        <div class="theme-tags">
+
+                            <span>卫星</span>
+                            <span>通信</span>
+                            <span>火箭</span>
+                            <span>应用</span>
+
+                        </div>
+
+                    </div>
+
+                    <span class="theme-arrow">
+                        →
+                    </span>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+         个股研究
+    ====================================================== -->
+
+        <section class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="section-kicker">
+                        STOCK RESEARCH
+                    </div>
+
+                    <h2>
+                        个股研究
+                    </h2>
+
+                </div>
+
+                <span class="section-note">
+                    基本面 · 景气度 · 资金 · 风险
+                </span>
+
+            </div>
+
+
+            <div class="stock-research-table">
+
+                <div class="stock-table-header">
+
+                    <span>股票</span>
+                    <span>研究判断</span>
+                    <span>景气度</span>
+                    <span>资金</span>
+                    <span>风险</span>
+                    <span>综合评分</span>
+
+                </div>
+
+
+                <div class="stock-table-row">
+
+                    <div class="stock-name">
+
+                        <strong>
+                            中际旭创
+                        </strong>
+
+                        <small>
+                            300308
+                        </small>
+
+                    </div>
+
+                    <span class="stock-view positive">
+                        偏积极
+                    </span>
+
+                    <span class="stock-status positive">
+                        ↑ 高
+                    </span>
+
+                    <span class="stock-status positive">
+                        ↑ 流入
+                    </span>
+
+                    <span class="stock-status neutral">
+                        中等
+                    </span>
+
+                    <strong class="stock-score">
+                        92
+                    </strong>
+
+                </div>
+
+
+                <div class="stock-table-row">
+
+                    <div class="stock-name">
+
+                        <strong>
+                            瑞芯微
+                        </strong>
+
+                        <small>
+                            603893
+                        </small>
+
+                    </div>
+
+                    <span class="stock-view positive">
+                        偏积极
+                    </span>
+
+                    <span class="stock-status positive">
+                        ↑ 高
+                    </span>
+
+                    <span class="stock-status positive">
+                        ↑ 活跃
+                    </span>
+
+                    <span class="stock-status neutral">
+                        中等
+                    </span>
+
+                    <strong class="stock-score">
+                        88
+                    </strong>
+
+                </div>
+
+
+                <div class="stock-table-row">
+
+                    <div class="stock-name">
+
+                        <strong>
+                            亨通光电
+                        </strong>
+
+                        <small>
+                            600487
+                        </small>
+
+                    </div>
+
+                    <span class="stock-view">
+                        中性偏多
+                    </span>
+
+                    <span class="stock-status positive">
+                        ↑ 改善
+                    </span>
+
+                    <span class="stock-status neutral">
+                        平稳
+                    </span>
+
+                    <span class="stock-status neutral">
+                        中等
+                    </span>
+
+                    <strong class="stock-score">
+                        76
+                    </strong>
+
+                </div>
+
+
+                <div class="stock-table-row">
+
+                    <div class="stock-name">
+
+                        <strong>
+                            士兰微
+                        </strong>
+
+                        <small>
+                            600460
+                        </small>
+
+                    </div>
+
+                    <span class="stock-view">
+                        中性偏多
+                    </span>
+
+                    <span class="stock-status neutral">
+                        改善
+                    </span>
+
+                    <span class="stock-status neutral">
+                        平稳
+                    </span>
+
+                    <span class="stock-status neutral">
+                        中等
+                    </span>
+
+                    <strong class="stock-score">
+                        71
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+         研究报告
+    ====================================================== -->
+
+        <section class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="section-kicker">
+                        RESEARCH REPORTS
+                    </div>
+
+                    <h2>
+                        研究报告
+                    </h2>
+
+                </div>
+
+                <span class="section-note">
+                    系统化研究结论
+                </span>
+
+            </div>
+
+
+            <div class="report-grid">
+
+
+                <article class="report-card">
+
+                    <div class="report-type">
+                        行业研究
+                    </div>
+
+                    <h3>
+                        半导体产业链景气度研究
+                    </h3>
+
+                    <p>
+                        从资本开支、库存、需求与产业政策分析半导体产业链当前景气度。
+                    </p>
+
+                    <div class="report-footer">
+
+                        <span>
+                            研究中心
+                        </span>
+
+                        <span>
+                            12 min
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <article class="report-card">
+
+                    <div class="report-type">
+                        市场研究
+                    </div>
+
+                    <h3>
+                        A 股市场风格与资金研究
+                    </h3>
+
+                    <p>
+                        分析市场风险偏好、资金流向与成长价值风格变化。
+                    </p>
+
+                    <div class="report-footer">
+
+                        <span>
+                            研究中心
+                        </span>
+
+                        <span>
+                            9 min
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <article class="report-card">
+
+                    <div class="report-type">
+                        主题研究
+                    </div>
+
+                    <h3>
+                        商业航天产业链研究
+                    </h3>
+
+                    <p>
+                        梳理商业航天产业链结构、核心环节与潜在受益方向。
+                    </p>
+
+                    <div class="report-footer">
+
+                        <span>
+                            研究中心
+                        </span>
+
+                        <span>
+                            15 min
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <article class="report-card">
+
+                    <div class="report-type">
+                        个股研究
+                    </div>
+
+                    <h3>
+                        科技成长核心标的观察
+                    </h3>
+
+                    <p>
+                        从景气度、基本面、估值与资金维度筛选重点科技成长公司。
+                    </p>
+
+                    <div class="report-footer">
+
+                        <span>
+                            研究中心
+                        </span>
+
+                        <span>
+                            11 min
+                        </span>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+         AI 深度研究入口
+    ====================================================== -->
+
+        <section class="deep-research-entry">
+
+            <div class="deep-research-content">
+
+                <div class="deep-research-kicker">
+                    AI DEEP RESEARCH
+                </div>
+
+                <h2>
+                    不知道研究什么？
+                </h2>
+
+                <p>
+                    直接告诉 AI 你想了解的问题。
+                </p>
+
+            </div>
+
+
+            <button class="deep-research-button" onclick="goAIResearch()">
+
+                开始 AI 深度研究
+
+                <span>
+                    →
+                </span>
+
+            </button>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =========================================================
+     页面脚本
+========================================================= -->
+
+    <script>
+
+        function goAIResearch() {
+
+            /*
+             * AI Chat 是独立功能。
+             * Research 页面只负责提供入口。
+             *
+             * 如果你的主页通过 ?page=ai-chat
+             * 打开 AI Chat，这里直接使用该方式。
+             */
+
+            window.location.href = "../?page=ai-chat";
+
+        }
+
+    </script>
+
+    <script>
+
+
+        /* =========================================================
+           返回主站
+        ========================================================= */
+
+        function goHome(page = 'market') {
+
+            window.location.href = `../../?page=${page}`;
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

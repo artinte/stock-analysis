@@ -1,0 +1,1565 @@
+/* =========================================================
+   Research Center
+   STOCK LAB
+========================================================= */
+
+
+/* =========================================================
+   页面
+========================================================= */
+
+.research-page {
+
+    max-width: 1440px;
+
+    margin: 0 auto;
+
+    padding: 36px 42px 80px;
+
+}
+
+
+/* =========================================================
+   页面头部
+========================================================= */
+
+.research-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    margin-bottom: 42px;
+
+    padding-bottom: 28px;
+
+    border-bottom: 1px solid var(--border-color);
+
+}
+
+
+.research-eyebrow {
+
+    margin-bottom: 10px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+
+    color: var(--text-muted);
+
+}
+
+
+.research-header h1 {
+
+    margin: 0;
+
+    font-size: 34px;
+
+    line-height: 1.2;
+
+    font-weight: 700;
+
+    letter-spacing: -1px;
+
+}
+
+
+.research-header p {
+
+    margin: 10px 0 0;
+
+    font-size: 14px;
+
+    color: var(--text-muted);
+
+}
+
+
+.research-header-meta {
+
+    text-align: right;
+
+}
+
+
+.research-date {
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+.research-update {
+
+    margin-top: 7px;
+
+    font-size: 12px;
+
+    color: var(--text-muted);
+
+}
+
+
+/* =========================================================
+   Section
+========================================================= */
+
+.research-section {
+
+    margin-bottom: 48px;
+
+}
+
+
+.section-heading {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+
+}
+
+
+.section-kicker {
+
+    margin-bottom: 6px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.6px;
+
+    color: var(--text-muted);
+
+}
+
+
+.section-heading h2 {
+
+    margin: 0;
+
+    font-size: 21px;
+
+    font-weight: 650;
+
+}
+
+
+.section-note {
+
+    font-size: 12px;
+
+    color: var(--text-muted);
+
+}
+
+
+/* =========================================================
+   今日研究结论
+========================================================= */
+
+.conclusion-card {
+
+    display: grid;
+
+    grid-template-columns: 1fr 270px;
+
+    min-height: 230px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+}
+
+
+.conclusion-main {
+
+    padding: 32px;
+
+}
+
+
+.conclusion-tag {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    height: 24px;
+
+    padding: 0 10px;
+
+    border: 1px solid var(--border-color);
+
+    font-size: 11px;
+
+    color: var(--text-muted);
+
+}
+
+
+.conclusion-main h3 {
+
+    max-width: 800px;
+
+    margin: 18px 0 12px;
+
+    font-size: 25px;
+
+    line-height: 1.45;
+
+    font-weight: 650;
+
+}
+
+
+.conclusion-main p {
+
+    max-width: 850px;
+
+    margin: 0;
+
+    font-size: 14px;
+
+    line-height: 1.9;
+
+    color: var(--text-secondary);
+
+}
+
+
+.conclusion-side {
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    border-left: 1px solid var(--border-color);
+
+}
+
+
+.conclusion-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 19px 26px;
+
+    border-bottom: 1px solid var(--border-color);
+
+}
+
+
+.conclusion-item:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.conclusion-item span {
+
+    font-size: 13px;
+
+    color: var(--text-muted);
+
+}
+
+
+.conclusion-item strong {
+
+    font-size: 15px;
+
+}
+
+
+.positive {
+
+    color: var(--positive-color, #16a34a);
+
+}
+
+
+.neutral {
+
+    color: var(--text-secondary);
+
+}
+
+
+/* =========================================================
+   Research Signals
+========================================================= */
+
+.research-signals {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 16px;
+
+    margin-top: 16px;
+
+}
+
+
+.signal-card {
+
+    padding: 20px 24px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+}
+
+
+.signal-label {
+
+    display: block;
+
+    margin-bottom: 12px;
+
+    font-size: 12px;
+
+    font-weight: 650;
+
+}
+
+
+.signal-card ul {
+
+    margin: 0;
+
+    padding-left: 18px;
+
+}
+
+
+.signal-card li {
+
+    margin: 7px 0;
+
+    font-size: 13px;
+
+    line-height: 1.6;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* =========================================================
+   市场研究
+========================================================= */
+
+.market-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+}
+
+
+.metric-card {
+
+    min-height: 175px;
+
+    padding: 22px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+}
+
+
+.metric-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    font-size: 12px;
+
+    color: var(--text-muted);
+
+}
+
+
+.metric-trend {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+}
+
+
+.metric-value {
+
+    margin-top: 22px;
+
+    font-size: 29px;
+
+    line-height: 1;
+
+    font-weight: 700;
+
+}
+
+
+.metric-value small {
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    color: var(--text-muted);
+
+}
+
+
+.metric-label {
+
+    margin-top: 10px;
+
+    font-size: 12px;
+
+    color: var(--text-muted);
+
+}
+
+
+.metric-bar {
+
+    height: 4px;
+
+    margin-top: 22px;
+
+    overflow: hidden;
+
+    background: var(--border-color);
+
+}
+
+
+.metric-bar span {
+
+    display: block;
+
+    height: 100%;
+
+    background: currentColor;
+
+    color: var(--positive-color, #16a34a);
+
+}
+
+
+.metric-mini-chart {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 4px;
+
+    height: 36px;
+
+    margin-top: 16px;
+
+}
+
+
+.metric-mini-chart span {
+
+    flex: 1;
+
+    background: currentColor;
+
+    color: var(--positive-color, #16a34a);
+
+}
+
+
+.metric-mini-chart span:nth-child(1) {
+    height: 35%;
+}
+
+.metric-mini-chart span:nth-child(2) {
+    height: 45%;
+}
+
+.metric-mini-chart span:nth-child(3) {
+    height: 40%;
+}
+
+.metric-mini-chart span:nth-child(4) {
+    height: 62%;
+}
+
+.metric-mini-chart span:nth-child(5) {
+    height: 57%;
+}
+
+.metric-mini-chart span:nth-child(6) {
+    height: 75%;
+}
+
+.metric-mini-chart span:nth-child(7) {
+    height: 92%;
+}
+
+
+/* =========================================================
+   风格
+========================================================= */
+
+.style-bars {
+
+    margin-top: 18px;
+
+}
+
+
+.style-bars > div {
+
+    display: grid;
+
+    grid-template-columns: 38px 1fr;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.style-bars span {
+
+    font-size: 10px;
+
+    color: var(--text-muted);
+
+}
+
+
+.style-bars i {
+
+    display: block;
+
+    height: 4px;
+
+    background: currentColor;
+
+    color: var(--positive-color, #16a34a);
+
+}
+
+
+/* =========================================================
+   Risk
+========================================================= */
+
+.risk-scale {
+
+    display: flex;
+
+    gap: 5px;
+
+    margin-top: 20px;
+
+}
+
+
+.risk-scale span {
+
+    flex: 1;
+
+    height: 5px;
+
+    background: var(--border-color);
+
+}
+
+
+.risk-scale .active {
+
+    background: currentColor;
+
+    color: var(--text-secondary);
+
+}
+
+
+/* =========================================================
+   事件研究
+========================================================= */
+
+.event-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+
+}
+
+
+.event-card {
+
+    min-height: 330px;
+
+    padding: 24px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.event-card:hover {
+
+    transform: translateY(-2px);
+
+    border-color: var(--text-muted);
+
+}
+
+
+.event-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+.event-type {
+
+    padding: 4px 8px;
+
+    border: 1px solid var(--border-color);
+
+    font-size: 10px;
+
+    color: var(--text-muted);
+
+}
+
+
+.event-time {
+
+    font-size: 11px;
+
+    color: var(--text-muted);
+
+}
+
+
+.event-card h3 {
+
+    margin: 20px 0 12px;
+
+    font-size: 17px;
+
+    line-height: 1.5;
+
+}
+
+
+.event-card p {
+
+    min-height: 72px;
+
+    margin: 0;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+    color: var(--text-secondary);
+
+}
+
+
+.event-impact {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-top: 22px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid var(--border-color);
+
+}
+
+
+.event-impact span,
+.event-related > span {
+
+    font-size: 11px;
+
+    color: var(--text-muted);
+
+}
+
+
+.event-impact strong {
+
+    font-size: 13px;
+
+}
+
+
+.event-related {
+
+    margin-top: 16px;
+
+}
+
+
+.event-related > div {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 9px;
+
+}
+
+
+.event-related b {
+
+    padding: 4px 7px;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    border: 1px solid var(--border-color);
+
+}
+
+
+/* =========================================================
+   行业研究
+========================================================= */
+
+.industry-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+
+}
+
+
+.industry-card {
+
+    display: grid;
+
+    grid-template-columns: 44px 1fr 70px;
+
+    grid-template-rows: auto 5px;
+
+    column-gap: 15px;
+
+    align-items: center;
+
+    padding: 18px 20px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+}
+
+
+.industry-rank {
+
+    grid-row: 1 / 3;
+
+    font-size: 11px;
+
+    color: var(--text-muted);
+
+}
+
+
+.industry-info h3 {
+
+    margin: 0;
+
+    font-size: 15px;
+
+}
+
+
+.industry-info p {
+
+    margin: 5px 0 0;
+
+    font-size: 11px;
+
+    color: var(--text-muted);
+
+}
+
+
+.industry-score {
+
+    text-align: right;
+
+}
+
+
+.industry-score strong {
+
+    display: block;
+
+    font-size: 20px;
+
+}
+
+
+.industry-score span {
+
+    font-size: 10px;
+
+    color: var(--text-muted);
+
+}
+
+
+.industry-progress {
+
+    grid-column: 2 / 4;
+
+    height: 4px;
+
+    overflow: hidden;
+
+    margin-top: 12px;
+
+    background: var(--border-color);
+
+}
+
+
+.industry-progress span {
+
+    display: block;
+
+    height: 100%;
+
+    background: currentColor;
+
+    color: var(--positive-color, #16a34a);
+
+}
+
+
+/* =========================================================
+   主题研究
+========================================================= */
+
+.theme-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+
+}
+
+
+.theme-card {
+
+    position: relative;
+
+    display: flex;
+
+    gap: 16px;
+
+    min-height: 170px;
+
+    padding: 22px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.theme-card:hover {
+
+    transform: translateY(-2px);
+
+    border-color: var(--text-muted);
+
+}
+
+
+.theme-icon {
+
+    flex: 0 0 42px;
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 1px solid var(--border-color);
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.theme-content {
+
+    padding-right: 22px;
+
+}
+
+
+.theme-content h3 {
+
+    margin: 2px 0 8px;
+
+    font-size: 16px;
+
+}
+
+
+.theme-content p {
+
+    margin: 0;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+
+    color: var(--text-secondary);
+
+}
+
+
+.theme-tags {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+    margin-top: 14px;
+
+}
+
+
+.theme-tags span {
+
+    padding: 4px 7px;
+
+    border: 1px solid var(--border-color);
+
+    font-size: 9px;
+
+    color: var(--text-muted);
+
+}
+
+
+.theme-arrow {
+
+    position: absolute;
+
+    right: 18px;
+
+    top: 20px;
+
+    font-size: 16px;
+
+    color: var(--text-muted);
+
+}
+
+
+/* =========================================================
+   个股研究
+========================================================= */
+
+.stock-research-table {
+
+    overflow: hidden;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+}
+
+
+.stock-table-header,
+.stock-table-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        .8fr
+        .8fr
+        .8fr
+        .8fr;
+
+    align-items: center;
+
+}
+
+
+.stock-table-header {
+
+    min-height: 44px;
+
+    padding: 0 20px;
+
+    background: var(--panel-bg);
+
+    border-bottom: 1px solid var(--border-color);
+
+    font-size: 11px;
+
+    color: var(--text-muted);
+
+}
+
+
+.stock-table-row {
+
+    min-height: 72px;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid var(--border-color);
+
+}
+
+
+.stock-table-row:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.stock-name strong {
+
+    display: block;
+
+    font-size: 14px;
+
+}
+
+
+.stock-name small {
+
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 10px;
+
+    color: var(--text-muted);
+
+}
+
+
+.stock-view,
+.stock-status {
+
+    font-size: 12px;
+
+}
+
+
+.stock-score {
+
+    font-size: 20px;
+
+}
+
+
+/* =========================================================
+   研究报告
+========================================================= */
+
+.report-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+
+}
+
+
+.report-card {
+
+    min-height: 190px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 22px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.report-card:hover {
+
+    transform: translateY(-2px);
+
+    border-color: var(--text-muted);
+
+}
+
+
+.report-type {
+
+    font-size: 10px;
+
+    color: var(--text-muted);
+
+}
+
+
+.report-card h3 {
+
+    margin: 17px 0 10px;
+
+    font-size: 16px;
+
+    line-height: 1.5;
+
+}
+
+
+.report-card p {
+
+    margin: 0;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+
+    color: var(--text-secondary);
+
+}
+
+
+.report-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: auto;
+
+    padding-top: 20px;
+
+    font-size: 10px;
+
+    color: var(--text-muted);
+
+}
+
+
+/* =========================================================
+   AI Deep Research
+========================================================= */
+
+.deep-research-entry {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 30px;
+
+    margin-top: 62px;
+
+    padding: 32px 36px;
+
+    border: 1px solid var(--border-color);
+
+    background: var(--panel-bg);
+
+}
+
+
+.deep-research-kicker {
+
+    margin-bottom: 8px;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.6px;
+
+    color: var(--text-muted);
+
+}
+
+
+.deep-research-content h2 {
+
+    margin: 0;
+
+    font-size: 21px;
+
+}
+
+
+.deep-research-content p {
+
+    margin: 8px 0 0;
+
+    font-size: 13px;
+
+    color: var(--text-muted);
+
+}
+
+
+.deep-research-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    height: 42px;
+
+    padding: 0 18px;
+
+    border: 1px solid var(--border-color);
+
+    background: transparent;
+
+    color: inherit;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease;
+
+}
+
+
+.deep-research-button:hover {
+
+    background: var(--panel-bg);
+
+    border-color: var(--text-muted);
+
+}
+
+
+.deep-research-button span {
+
+    font-size: 16px;
+
+}
+
+
+/* =========================================================
+   Responsive
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .market-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+
+    .report-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+
+    .theme-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .research-page {
+
+        padding: 28px 22px 60px;
+
+    }
+
+
+    .research-header {
+
+        align-items: flex-start;
+
+        gap: 20px;
+
+    }
+
+
+    .conclusion-card {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .conclusion-side {
+
+        border-top: 1px solid var(--border-color);
+
+        border-left: none;
+
+    }
+
+
+    .event-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .industry-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .stock-table-header,
+    .stock-table-row {
+
+        grid-template-columns:
+            1.5fr
+            1fr
+            .8fr
+            .8fr
+            .8fr
+            .7fr;
+
+        min-width: 760px;
+
+    }
+
+
+    .stock-research-table {
+
+        overflow-x: auto;
+
+    }
+
+
+    .deep-research-entry {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .research-page {
+
+        padding: 24px 16px 50px;
+
+    }
+
+
+    .research-header {
+
+        flex-direction: column;
+
+    }
+
+
+    .research-header-meta {
+
+        text-align: left;
+
+    }
+
+
+    .research-header h1 {
+
+        font-size: 28px;
+
+    }
+
+
+    .section-heading {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 7px;
+
+    }
+
+
+    .conclusion-main {
+
+        padding: 24px;
+
+    }
+
+
+    .conclusion-main h3 {
+
+        font-size: 20px;
+
+    }
+
+
+    .research-signals {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .market-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .theme-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .report-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .deep-research-entry {
+
+        padding: 26px 22px;
+
+    }
+
+}
+

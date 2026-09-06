@@ -11,7 +11,7 @@ function navigatePage(page) {
         market: "../?page=market",
         stock: "../?page=stock",
         news: "../news/",
-        research: "../?page=research",
+        research: "../research/",
         trade: "../trade/",
         tools: "../tools/",
         document: "../document/"
