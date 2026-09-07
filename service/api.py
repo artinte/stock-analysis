@@ -205,7 +205,7 @@ def failure(
         "message": message,
         "data": None,
     }
-    
+
 
 @app.get("/api/stock/{symbol}")
 def get_stock(symbol: str):
@@ -254,6 +254,57 @@ def get_stock(symbol: str):
         return failure(
             symbol,
             "股票信息暂不可用",
+        )
+
+
+@app.get("/api/industry_category/{symbol}")
+def get_industry_category(symbol: str):
+
+    symbol = symbol.strip().upper()
+
+    print(f"📊 获取行业分类信息：{symbol}")
+
+    try:
+
+        manager = require_data()
+
+        industry = manager.get_industry(symbol)
+
+        if industry is None:
+
+            return failure(
+                symbol,
+                "未获取到行业信息",
+            )
+        else:
+            print(industry)
+
+        return success(
+            symbol,
+            {
+                "symbol": industry.symbol,
+                "name": industry.name,
+                "l1": getattr(industry, "level_1", None),
+                "l2": getattr(industry, "level_2", None),
+                "l3": getattr(industry, "level_3", None),
+                "l4": getattr(industry, "level_4", None),
+            },
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "当前数据源暂未实现行业信息接口",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 行业信息获取失败：{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "行业信息暂不可用",
         )
 
 

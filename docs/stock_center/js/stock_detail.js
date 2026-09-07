@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 独立加载
     loadStock();
+    loadIndustryCategory();
     loadQuote();
     loadKline();
     loadFinancial();
@@ -135,6 +136,40 @@ async function loadStock() {
     }
 }
 
+async function loadIndustryCategory() {
+    try {
+        const result = await requestAPI(
+            `/api/industry_category/${encodeURIComponent(currentSymbol)}`
+        );
+        if (!result || result.success === false) {
+            throw new Error(
+                result?.message || "行业数据不可用"
+            );
+        }
+        console.log("行业数据:", result);
+        const industry = result.data ?? result;
+
+        setText(
+            "stockIndustry",
+            [
+                industry.l1,
+                industry.l2,
+                industry.l3,
+                industry.l4
+            ]
+                .filter(Boolean)
+                .join(" - ") || "未知行业"
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "行业加载失败:",
+            error
+        );
+
+    }
+}
 
 async function loadQuote() {
     try {
@@ -249,14 +284,14 @@ async function loadQuote() {
 
 
         // 行业
-        if (quote.industry) {
+        // if (quote.industry) {
 
-            setText(
-                "stockIndustry",
-                quote.industry
-            );
+        //     setText(
+        //         "stockIndustry",
+        //         quote.industry
+        //     );
 
-        }
+        // }
 
 
         // 数据时间
