@@ -75,6 +75,17 @@ def test_health(client):
 # 5. 股票行情
 # ============================================================
 
+
+def test_stock(client):
+    response = client.get(
+        "/api/stock/600519"
+    )
+
+    print("\n📈 /api/stock/600519")
+    print(response.json())
+
+    assert response.status_code == 200
+
 def test_quote(client):
 
     response = client.get(

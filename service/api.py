@@ -205,6 +205,56 @@ def failure(
         "message": message,
         "data": None,
     }
+    
+
+@app.get("/api/stock/{symbol}")
+def get_stock(symbol: str):
+
+    symbol = symbol.strip().upper()
+
+    print(f"📊 获取股票信息：{symbol}")
+
+    try:
+
+        manager = require_data()
+
+        stock = manager.get_stock(symbol)
+
+        if stock is None:
+
+            return failure(
+                symbol,
+                "未获取到股票信息",
+            )
+        else:
+            print(stock)
+
+        return success(
+            symbol,
+            {
+                "symbol": stock.symbol,
+                "name": stock.name,
+                "market": getattr(stock, "market", None),
+                "area": getattr(stock, "area", None),
+                "listDate": getattr(stock, "list_date", None),
+            },
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "当前数据源暂未实现股票信息接口",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 股票信息获取失败：{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "股票信息暂不可用",
+        )
 
 
 @app.get("/api/quote/{symbol}")

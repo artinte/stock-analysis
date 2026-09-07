@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // 独立加载
+    loadStock();
     loadQuote();
     loadKline();
     loadFinancial();
@@ -95,6 +96,46 @@ async function requestAPI(path) {
    行情
 ========================================================= */
 
+async function loadStock() {
+    try {
+        const result = await requestAPI(
+            `/api/stock/${encodeURIComponent(currentSymbol)}`
+        );
+
+        if (!result || result.success === false) {
+            throw new Error(
+                result?.message || "股票数据不可用"
+            );
+        }
+        console.log("股票数据:", result);
+        const stock = result.data ?? result;
+
+        setText(
+            "stockName",
+            stock.name
+        );
+
+        setText(
+            "stockSymbol",
+            stock.symbol || currentSymbol
+        );
+
+        setText(
+            "stockMarket",
+            stock.market || "A股"
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "股票加载失败:",
+            error
+        );
+
+    }
+}
+
+
 async function loadQuote() {
     try {
         const result = await requestAPI(
@@ -110,22 +151,22 @@ async function loadQuote() {
         const quote = result.data ?? result;
 
 
-        setText(
-            "stockName",
-            quote.name
-        );
+        // setText(
+        //     "stockName",
+        //     quote.name
+        // );
 
 
-        setText(
-            "stockSymbol",
-            quote.symbol || currentSymbol
-        );
+        // setText(
+        //     "stockSymbol",
+        //     quote.symbol || currentSymbol
+        // );
 
 
-        setText(
-            "stockMarket",
-            quote.market || "A股"
-        );
+        // setText(
+        //     "stockMarket",
+        //     quote.market || "A股"
+        // );
 
 
         setText(

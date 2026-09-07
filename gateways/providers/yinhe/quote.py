@@ -493,12 +493,18 @@ class YinheQuote:
         # 股票名称
         # =====================================================
 
-        stock_name = (
-            self.gateway.fetch_stock_name(
-                symbol
-            )
-        )
         stock_name = ""
+        # stock_name = (
+        #     self.gateway.fetch_stock_name(
+        #         symbol
+        #     )
+        # )
+        # stock_name = ""
+        
+        # if len(stock_name) == 0:
+        #     stock = self.gateway.fetch_stock(symbol)
+        #     if stock is not None:
+        #         stock_name = stock.name
 
         # =====================================================
         # 股本
