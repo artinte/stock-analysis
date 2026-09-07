@@ -150,25 +150,6 @@ async function loadQuote() {
         console.log("行情数据:", result);
         const quote = result.data ?? result;
 
-
-        // setText(
-        //     "stockName",
-        //     quote.name
-        // );
-
-
-        // setText(
-        //     "stockSymbol",
-        //     quote.symbol || currentSymbol
-        // );
-
-
-        // setText(
-        //     "stockMarket",
-        //     quote.market || "A股"
-        // );
-
-
         setText(
             "currentPrice",
             formatNumber(quote.last_price)

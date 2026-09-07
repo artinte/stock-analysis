@@ -29,9 +29,19 @@ class IndustryService:
         self,
         symbol: str,
     ) -> Industry:
-        stock_query_result: StockQueryResult = get_stock_industry_category(symbol)
-        industry = IndustryAdapter.from_stock_query(stock_query_result)
+        industry = get_stock_industry_category(symbol)
         return industry
+    
+    def get_industries(
+        self,
+        symbols: list[str],
+    ) -> list[Industry]:
+        industries: list[Industry] = []
+        for symbol in symbols:
+            industry = self.get_industry(symbol)
+            if industry is not None:
+                industries.append(industry)
+        return industries
 
     def get_industry_profile(
         self,

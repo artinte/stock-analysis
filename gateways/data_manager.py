@@ -622,6 +622,12 @@ class DataManager:
         symbol: str,
     ) -> Industry:
         return self.industry.get_industry(symbol)
+    
+    def get_industries(
+        self,
+        symbols: list[str],
+    ) -> list[Industry]:
+        return self.industry.get_industries(symbols)
 
     def get_industry_profile(
         self,
