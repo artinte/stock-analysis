@@ -298,6 +298,22 @@ class DataManager:
             limit=limit,
         )
 
+    def get_klines(
+        self,
+        symbols: list[str],
+        interval,
+        start_time=None,
+        end_time=None,
+        limit: int = 1000,
+    ):
+        return self.gateway.fetch_klines(
+            symbols=symbols,
+            interval=interval,
+            start_time=start_time,
+            end_time=end_time,
+            limit=limit,
+        )
+
     def get_valuation(
         self,
         symbol: str,
