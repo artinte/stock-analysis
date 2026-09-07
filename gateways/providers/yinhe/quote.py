@@ -493,11 +493,11 @@ class YinheQuote:
         # 股票名称
         # =====================================================
 
-        # stock_name = (
-        #     self.gateway.fetch_stock_name(
-        #         symbol
-        #     )
-        # )
+        stock_name = (
+            self.gateway.fetch_stock_name(
+                symbol
+            )
+        )
         stock_name = ""
 
         # =====================================================

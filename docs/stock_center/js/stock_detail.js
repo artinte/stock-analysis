@@ -6,13 +6,11 @@
 
 let currentSymbol = null;
 
-
 /* =========================================================
    页面初始化
 ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-
     currentSymbol = getStockSymbol();
 
     if (!currentSymbol) {
@@ -98,23 +96,17 @@ async function requestAPI(path) {
 ========================================================= */
 
 async function loadQuote() {
-
     try {
-
         const result = await requestAPI(
             `/api/quote/${encodeURIComponent(currentSymbol)}`
         );
 
-
         if (!result || result.success === false) {
-
             throw new Error(
                 result?.message || "行情数据不可用"
             );
-
         }
-
-
+        console.log("行情数据:", result);
         const quote = result.data ?? result;
 
 

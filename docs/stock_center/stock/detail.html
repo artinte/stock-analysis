@@ -5,8 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>股票详情 - STOCK LAB</title>
 
@@ -19,496 +18,445 @@
 <body>
 
 
-<!-- =========================================================
+    <!-- =========================================================
      顶部导航
 ========================================================= -->
 
-<header class="topbar">
+    <header class="topbar">
 
-    <div class="topbar-inner">
+        <div class="topbar-inner">
 
-        <div class="brand"
-             onclick="goHome()">
+            <div class="brand" onclick="goHome()">
 
-            <div class="brand-mark">
-                S
-            </div>
-
-            <div class="brand-text">
-
-                <div class="brand-name">
-                    STOCK LAB
+                <div class="brand-mark">
+                    S
                 </div>
 
-                <div class="brand-subtitle">
-                    股票研究中心
+                <div class="brand-text">
+
+                    <div class="brand-name">
+                        STOCK LAB
+                    </div>
+
+                    <div class="brand-subtitle">
+                        股票研究中心
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <nav class="main-nav">
+
+                <button class="nav-item" onclick="goHome()">
+                    市场
+                </button>
+
+                <button class="nav-item active">
+                    股票
+                </button>
+
+                <button class="nav-item" onclick="navigatePage('news')">
+                    资讯
+                </button>
+
+                <button class="nav-item" onclick="navigatePage('research')">
+                    AI研究
+                </button>
+
+                <button class="nav-item" onclick="navigatePage('trade')">
+                    交易
+                </button>
+
+                <button class="nav-item" onclick="navigatePage('tools')">
+                    工具
+                </button>
+
+                <button class="nav-item" onclick="navigatePage('document')">
+                    学习文档
+                </button>
+
+            </nav>
+
+
+            <div class="header-right">
+
+                <button class="ai-top-button" onclick="navigatePage('research')">
+
+                    <span>✦</span>
+
+                    AI 投研助手
+
+                </button>
+
+
+                <div class="global-search">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+                    <input id="searchInput" autocomplete="off" placeholder="搜索股票 / 代码">
+
+                    <button id="searchBtn">
+                        查询
+                    </button>
+
+                    <div id="searchDropdown" class="search-dropdown">
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
 
+    </header>
 
-        <nav class="main-nav">
 
-            <button class="nav-item"
-                    onclick="goHome()">
-                市场
+
+    <!-- =========================================================
+     主体
+========================================================= -->
+
+    <main class="stock-detail-page">
+
+
+        <!-- =====================================================
+         返回
+    ====================================================== -->
+
+        <div class="detail-back">
+
+            <button onclick="goBackStock()">
+                ← 股票列表
             </button>
 
-            <button class="nav-item active">
-                股票
+            <span>/</span>
+
+            <span>股票详情</span>
+
+        </div>
+
+
+
+        <!-- =====================================================
+         股票头部
+    ====================================================== -->
+
+        <section class="stock-header panel">
+
+
+            <div class="stock-header-left">
+
+                <div class="stock-name-row">
+
+                    <h1 id="stockName">
+                        —
+                    </h1>
+
+                    <span id="stockSymbol" class="stock-symbol">
+                        —
+                    </span>
+
+                    <span class="market-badge" id="stockMarket">
+                        —
+                    </span>
+
+                </div>
+
+
+                <div class="stock-industry" id="stockIndustry">
+
+                    <span>—</span>
+
+                </div>
+
+
+                <div class="stock-status">
+
+                    <span class="status-dot"></span>
+
+                    <span id="stockStatus">
+                        正在加载
+                    </span>
+
+                    <span class="data-time" id="dataTime">
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stock-price-block">
+
+                <div class="current-price" id="currentPrice">
+
+                    —
+
+                </div>
+
+
+                <div class="price-change" id="priceChange">
+
+                    —
+
+                    <span id="priceChangePercent">
+                        —
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stock-actions">
+
+                <button class="outline-button" id="favoriteButton" onclick="toggleFavorite()">
+
+                    ☆ 自选
+
+                </button>
+
+
+                <button class="primary-button" onclick="scrollToAI()">
+
+                    ✦ AI分析
+
+                </button>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+         核心行情指标
+    ====================================================== -->
+
+        <section class="quote-grid">
+
+
+            <div class="metric-card">
+
+                <span>今开</span>
+
+                <strong id="quoteOpen">—</strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span>最高</span>
+
+                <strong id="quoteHigh">—</strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span>最低</span>
+
+                <strong id="quoteLow">—</strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span>昨收</span>
+
+                <strong id="quotePrevClose">—</strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span>成交额</span>
+
+                <strong id="quoteAmount">—</strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span>换手率</span>
+
+                <strong id="quoteTurnover">—</strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span>总市值</span>
+
+                <strong id="quoteMarketCap">—</strong>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <span>流通市值</span>
+
+                <strong id="quoteFloatMarketCap">—</strong>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+         研究导航
+    ====================================================== -->
+
+        <nav class="research-tabs" id="researchTabs">
+
+            <button class="active" data-target="overview">
+                总览
             </button>
 
-            <button class="nav-item"
-                    onclick="navigatePage('news')">
+            <button data-target="quote">
+                行情
+            </button>
+
+            <button data-target="financial">
+                财务
+            </button>
+
+            <button data-target="valuation">
+                估值
+            </button>
+
+            <button data-target="industry">
+                行业
+            </button>
+
+            <button data-target="technical">
+                技术
+            </button>
+
+            <button data-target="news">
                 资讯
             </button>
 
-            <button class="nav-item"
-                    onclick="navigatePage('research')">
-                AI研究
+            <button data-target="announcement">
+                公告
             </button>
 
-            <button class="nav-item"
-                    onclick="navigatePage('trade')">
-                交易
-            </button>
-
-            <button class="nav-item"
-                    onclick="navigatePage('tools')">
-                工具
-            </button>
-
-            <button class="nav-item"
-                    onclick="navigatePage('document')">
-                学习文档
+            <button data-target="ai">
+                ✦ AI研究
             </button>
 
         </nav>
 
 
-        <div class="header-right">
 
-            <button class="ai-top-button"
-                    onclick="navigatePage('research')">
-
-                <span>✦</span>
-
-                AI 投研助手
-
-            </button>
-
-
-            <div class="global-search">
-
-                <span class="search-icon">
-                    ⌕
-                </span>
-
-                <input
-                    id="searchInput"
-                    autocomplete="off"
-                    placeholder="搜索股票 / 代码">
-
-                <button id="searchBtn">
-                    查询
-                </button>
-
-                <div id="searchDropdown"
-                     class="search-dropdown">
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</header>
-
-
-
-<!-- =========================================================
-     主体
-========================================================= -->
-
-<main class="stock-detail-page">
-
-
-    <!-- =====================================================
-         返回
-    ====================================================== -->
-
-    <div class="detail-back">
-
-        <button onclick="goBackStock()">
-            ← 股票列表
-        </button>
-
-        <span>/</span>
-
-        <span>股票详情</span>
-
-    </div>
-
-
-
-    <!-- =====================================================
-         股票头部
-    ====================================================== -->
-
-    <section class="stock-header panel">
-
-
-        <div class="stock-header-left">
-
-            <div class="stock-name-row">
-
-                <h1 id="stockName">
-                    —
-                </h1>
-
-                <span id="stockSymbol"
-                      class="stock-symbol">
-                    —
-                </span>
-
-                <span class="market-badge"
-                      id="stockMarket">
-                    —
-                </span>
-
-            </div>
-
-
-            <div class="stock-industry"
-                 id="stockIndustry">
-
-                <span>—</span>
-
-            </div>
-
-
-            <div class="stock-status">
-
-                <span class="status-dot"></span>
-
-                <span id="stockStatus">
-                    正在加载
-                </span>
-
-                <span class="data-time"
-                      id="dataTime">
-                    —
-                </span>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="stock-price-block">
-
-            <div class="current-price"
-                 id="currentPrice">
-
-                —
-
-            </div>
-
-
-            <div class="price-change"
-                 id="priceChange">
-
-                —
-
-                <span id="priceChangePercent">
-                    —
-                </span>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="stock-actions">
-
-            <button
-                class="outline-button"
-                id="favoriteButton"
-                onclick="toggleFavorite()">
-
-                ☆ 自选
-
-            </button>
-
-
-            <button
-                class="primary-button"
-                onclick="scrollToAI()">
-
-                ✦ AI分析
-
-            </button>
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =====================================================
-         核心行情指标
-    ====================================================== -->
-
-    <section class="quote-grid">
-
-
-        <div class="metric-card">
-
-            <span>今开</span>
-
-            <strong id="quoteOpen">—</strong>
-
-        </div>
-
-
-        <div class="metric-card">
-
-            <span>最高</span>
-
-            <strong id="quoteHigh">—</strong>
-
-        </div>
-
-
-        <div class="metric-card">
-
-            <span>最低</span>
-
-            <strong id="quoteLow">—</strong>
-
-        </div>
-
-
-        <div class="metric-card">
-
-            <span>昨收</span>
-
-            <strong id="quotePrevClose">—</strong>
-
-        </div>
-
-
-        <div class="metric-card">
-
-            <span>成交额</span>
-
-            <strong id="quoteAmount">—</strong>
-
-        </div>
-
-
-        <div class="metric-card">
-
-            <span>换手率</span>
-
-            <strong id="quoteTurnover">—</strong>
-
-        </div>
-
-
-        <div class="metric-card">
-
-            <span>总市值</span>
-
-            <strong id="quoteMarketCap">—</strong>
-
-        </div>
-
-
-        <div class="metric-card">
-
-            <span>流通市值</span>
-
-            <strong id="quoteFloatMarketCap">—</strong>
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =====================================================
-         研究导航
-    ====================================================== -->
-
-    <nav class="research-tabs"
-         id="researchTabs">
-
-        <button class="active"
-                data-target="overview">
-            总览
-        </button>
-
-        <button data-target="quote">
-            行情
-        </button>
-
-        <button data-target="financial">
-            财务
-        </button>
-
-        <button data-target="valuation">
-            估值
-        </button>
-
-        <button data-target="industry">
-            行业
-        </button>
-
-        <button data-target="technical">
-            技术
-        </button>
-
-        <button data-target="news">
-            资讯
-        </button>
-
-        <button data-target="announcement">
-            公告
-        </button>
-
-        <button data-target="ai">
-            ✦ AI研究
-        </button>
-
-    </nav>
-
-
-
-    <!-- =====================================================
+        <!-- =====================================================
          总览
     ====================================================== -->
 
-    <section id="overview"
-             class="research-section active">
+        <section id="overview" class="research-section active">
 
-        <div class="section-heading">
+            <div class="section-heading">
 
-            <div>
+                <div>
 
-                <span>OVERVIEW</span>
+                    <span>OVERVIEW</span>
 
-                <h2>
-                    投资研究总览
-                </h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="overview-grid">
-
-
-            <!-- K线 -->
-
-            <div class="panel chart-panel">
-
-                <div class="panel-title-row">
-
-                    <div>
-
-                        <h3>
-                            价格走势
-                        </h3>
-
-                        <span id="chartTitle">
-                            —
-                        </span>
-
-                    </div>
-
-
-                    <div class="period-buttons">
-
-                        <button class="active"
-                                data-period="day">
-                            日
-                        </button>
-
-                        <button data-period="week">
-                            周
-                        </button>
-
-                        <button data-period="month">
-                            月
-                        </button>
-
-                    </div>
-
-                </div>
-
-
-                <div class="chart-container"
-                     id="chartContainer">
-
-                    <div class="data-loading">
-                        正在加载行情数据...
-                    </div>
-
-                </div>
-
-
-                <div class="chart-footer"
-                     id="technicalSummary">
-
-                    <span>
-                        MA5
-                        <strong id="ma5">—</strong>
-                    </span>
-
-                    <span>
-                        MA20
-                        <strong id="ma20">—</strong>
-                    </span>
-
-                    <span>
-                        MA60
-                        <strong id="ma60">—</strong>
-                    </span>
-
-                    <span>
-                        RSI
-                        <strong id="rsi">—</strong>
-                    </span>
+                    <h2>
+                        投资研究总览
+                    </h2>
 
                 </div>
 
             </div>
 
 
+            <div class="overview-grid">
 
-            <!-- 综合评分 -->
 
-            <div class="panel score-panel">
+                <!-- K线 -->
 
-                <div class="panel-title-row">
+                <div class="panel chart-panel">
 
-                    <div>
+                    <div class="panel-title-row">
 
-                        <h3>
-                            综合研究评分
-                        </h3>
+                        <div>
+
+                            <h3>
+                                价格走势
+                            </h3>
+
+                            <span id="chartTitle">
+                                —
+                            </span>
+
+                        </div>
+
+
+                        <div class="period-buttons">
+
+                            <button class="active" data-period="day">
+                                日
+                            </button>
+
+                            <button data-period="week">
+                                周
+                            </button>
+
+                            <button data-period="month">
+                                月
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-container" id="chartContainer">
+
+                        <div class="data-loading">
+                            正在加载行情数据...
+                        </div>
+
+                    </div>
+
+
+                    <div class="chart-footer" id="technicalSummary">
 
                         <span>
-                            STOCK LAB MODEL
+                            MA5
+                            <strong id="ma5">—</strong>
+                        </span>
+
+                        <span>
+                            MA20
+                            <strong id="ma20">—</strong>
+                        </span>
+
+                        <span>
+                            MA60
+                            <strong id="ma60">—</strong>
+                        </span>
+
+                        <span>
+                            RSI
+                            <strong id="rsi">—</strong>
                         </span>
 
                     </div>
@@ -516,30 +464,1102 @@
                 </div>
 
 
-                <div class="score-main">
 
-                    <div class="score-circle">
+                <!-- 综合评分 -->
 
-                        <strong id="overallScore">
+                <div class="panel score-panel">
+
+                    <div class="panel-title-row">
+
+                        <div>
+
+                            <h3>
+                                综合研究评分
+                            </h3>
+
+                            <span>
+                                STOCK LAB MODEL
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="score-main">
+
+                        <div class="score-circle">
+
+                            <strong id="overallScore">
+                                —
+                            </strong>
+
+                            <span>
+                                /100
+                            </span>
+
+                        </div>
+
+
+                        <div>
+
+                            <strong class="score-label" id="scoreLabel">
+                                —
+                            </strong>
+
+                            <p id="scoreDescription">
+                                暂无研究数据
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="score-list">
+
+                        <div>
+
+                            <span>基本面</span>
+
+                            <div class="score-bar">
+                                <i id="fundamentalScoreBar"></i>
+                            </div>
+
+                            <strong id="fundamentalScore">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>成长性</span>
+
+                            <div class="score-bar">
+                                <i id="growthScoreBar"></i>
+                            </div>
+
+                            <strong id="growthScore">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>估值</span>
+
+                            <div class="score-bar">
+                                <i id="valuationScoreBar"></i>
+                            </div>
+
+                            <strong id="valuationScore">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>技术面</span>
+
+                            <div class="score-bar">
+                                <i id="technicalScoreBar"></i>
+                            </div>
+
+                            <strong id="technicalScore">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+             核心基本面
+        ================================================== -->
+
+            <div class="section-title">
+                核心基本面
+            </div>
+
+
+            <div class="fundamental-grid">
+
+                <div class="fundamental-card">
+
+                    <span>ROE</span>
+
+                    <strong id="roe">—</strong>
+
+                    <small id="roeDesc">—</small>
+
+                </div>
+
+
+                <div class="fundamental-card">
+
+                    <span>毛利率</span>
+
+                    <strong id="grossMargin">—</strong>
+
+                    <small id="grossMarginDesc">—</small>
+
+                </div>
+
+
+                <div class="fundamental-card">
+
+                    <span>净利率</span>
+
+                    <strong id="netMargin">—</strong>
+
+                    <small id="netMarginDesc">—</small>
+
+                </div>
+
+
+                <div class="fundamental-card">
+
+                    <span>营收增长</span>
+
+                    <strong id="revenueGrowth">—</strong>
+
+                    <small>同比</small>
+
+                </div>
+
+
+                <div class="fundamental-card">
+
+                    <span>净利润增长</span>
+
+                    <strong id="profitGrowth">—</strong>
+
+                    <small>同比</small>
+
+                </div>
+
+
+                <div class="fundamental-card">
+
+                    <span>股息率</span>
+
+                    <strong id="dividendYield">—</strong>
+
+                    <small>现金分红</small>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+             估值 + 行业
+        ================================================== -->
+
+            <div class="two-column-grid">
+
+
+                <div class="panel">
+
+                    <div class="panel-title-row">
+
+                        <h3>
+                            估值概览
+                        </h3>
+
+                        <button onclick="switchSection('valuation')">
+                            查看完整估值 →
+                        </button>
+
+                    </div>
+
+
+                    <div class="valuation-summary">
+
+                        <div>
+
+                            <span>PE-TTM</span>
+
+                            <strong id="summaryPE">
+                                —
+                            </strong>
+
+                            <small id="summaryPEDesc">
+                                —
+                            </small>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>PB</span>
+
+                            <strong id="summaryPB">
+                                —
+                            </strong>
+
+                            <small id="summaryPBDesc">
+                                —
+                            </small>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>PEG</span>
+
+                            <strong id="summaryPEG">
+                                —
+                            </strong>
+
+                            <small id="summaryPEGDesc">
+                                —
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="panel">
+
+                    <div class="panel-title-row">
+
+                        <h3>
+                            行业位置
+                        </h3>
+
+                        <button onclick="switchSection('industry')">
+                            行业分析 →
+                        </button>
+
+                    </div>
+
+
+                    <div class="industry-summary">
+
+                        <div class="industry-rank">
+
+                            <strong id="industryRank">
+                                —
+                            </strong>
+
+                            <span id="industryName">
+                                —
+                            </span>
+
+                        </div>
+
+
+                        <div class="industry-item">
+
+                            <span>市占/品牌</span>
+
+                            <strong id="industryPosition">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="industry-item">
+
+                            <span>盈利能力</span>
+
+                            <strong id="industryProfitability">
+                                —
+                            </strong>
+
+                        </div>
+
+
+                        <div class="industry-item">
+
+                            <span>竞争壁垒</span>
+
+                            <strong id="industryMoat">
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         行情
+    ====================================================== -->
+
+        <section id="quote" class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>MARKET</span>
+
+                    <h2>行情数据</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="quote-detail-grid">
+
+
+                <div class="panel">
+
+                    <h3>
+                        实时行情
+                    </h3>
+
+
+                    <div class="data-list">
+
+                        <div>
+                            <span>最新价</span>
+                            <strong id="detailPrice">—</strong>
+                        </div>
+
+                        <div>
+                            <span>涨跌额</span>
+                            <strong id="detailChange">—</strong>
+                        </div>
+
+                        <div>
+                            <span>涨跌幅</span>
+                            <strong id="detailChangePercent">—</strong>
+                        </div>
+
+                        <div>
+                            <span>成交量</span>
+                            <strong id="detailVolume">—</strong>
+                        </div>
+
+                        <div>
+                            <span>成交额</span>
+                            <strong id="detailAmount">—</strong>
+                        </div>
+
+                        <div>
+                            <span>换手率</span>
+                            <strong id="detailTurnover">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="panel">
+
+                    <h3>
+                        52周区间
+                    </h3>
+
+
+                    <div class="range-box">
+
+                        <div class="range-values">
+
+                            <span id="yearLow">
+                                —
+                            </span>
+
+                            <strong id="yearCurrent">
+                                当前 —
+                            </strong>
+
+                            <span id="yearHigh">
+                                —
+                            </span>
+
+                        </div>
+
+
+                        <div class="range-track">
+
+                            <i id="yearRangeProgress"></i>
+
+                        </div>
+
+
+                        <small id="yearRangeDescription">
+                            暂无52周数据
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         财务
+    ====================================================== -->
+
+        <section id="financial" class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>FINANCIALS</span>
+
+                    <h2>财务分析</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="financial-cards">
+
+                <div class="financial-card">
+
+                    <span>营业收入</span>
+
+                    <strong id="financialRevenue">
+                        —
+                    </strong>
+
+                    <em id="financialRevenueGrowth">
+                        —
+                    </em>
+
+                </div>
+
+
+                <div class="financial-card">
+
+                    <span>归母净利润</span>
+
+                    <strong id="financialProfit">
+                        —
+                    </strong>
+
+                    <em id="financialProfitGrowth">
+                        —
+                    </em>
+
+                </div>
+
+
+                <div class="financial-card">
+
+                    <span>经营现金流</span>
+
+                    <strong id="operatingCashFlow">
+                        —
+                    </strong>
+
+                    <em id="cashFlowStatus">
+                        —
+                    </em>
+
+                </div>
+
+
+                <div class="financial-card">
+
+                    <span>净资产</span>
+
+                    <strong id="netAssets">
+                        —
+                    </strong>
+
+                    <em>—</em>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel table-panel">
+
+                <div class="panel-title-row">
+
+                    <h3>
+                        财务趋势
+                    </h3>
+
+                    <span>
+                        单位：—
+                    </span>
+
+                </div>
+
+
+                <div class="table-scroll">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>报告期</th>
+                                <th>营业收入</th>
+                                <th>营收增速</th>
+                                <th>净利润</th>
+                                <th>净利润增速</th>
+                                <th>ROE</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="financialTableBody">
+
+                            <tr>
+
+                                <td colspan="6">
+                                    暂无财务数据
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         估值
+    ====================================================== -->
+
+        <section id="valuation" class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>VALUATION</span>
+
+                    <h2>估值分析</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="valuation-grid">
+
+
+                <div class="valuation-card">
+
+                    <span>PE-TTM</span>
+
+                    <strong id="valuationPE">
+                        —
+                    </strong>
+
+                    <small id="valuationPEDesc">
+                        —
+                    </small>
+
+                </div>
+
+
+                <div class="valuation-card">
+
+                    <span>PB</span>
+
+                    <strong id="valuationPB">
+                        —
+                    </strong>
+
+                    <small id="valuationPBDesc">
+                        —
+                    </small>
+
+                </div>
+
+
+                <div class="valuation-card">
+
+                    <span>PS</span>
+
+                    <strong id="valuationPS">
+                        —
+                    </strong>
+
+                    <small id="valuationPSDesc">
+                        —
+                    </small>
+
+                </div>
+
+
+                <div class="valuation-card">
+
+                    <span>股息率</span>
+
+                    <strong id="valuationDividend">
+                        —
+                    </strong>
+
+                    <small>
+                        —
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel valuation-history">
+
+                <h3>
+                    历史估值区间
+                </h3>
+
+
+                <div class="valuation-band">
+
+                    <div class="valuation-point low">
+
+                        <span>低估</span>
+
+                        <strong id="valuationLow">
                             —
                         </strong>
 
-                        <span>
-                            /100
+                    </div>
+
+
+                    <div class="valuation-point current">
+
+                        <span>当前</span>
+
+                        <strong id="valuationCurrent">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="valuation-point median">
+
+                        <span>中位</span>
+
+                        <strong id="valuationMedian">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div class="valuation-point high">
+
+                        <span>高估</span>
+
+                        <strong id="valuationHigh">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <p class="valuation-note" id="valuationNote">
+
+                    暂无估值分析数据。
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         行业
+    ====================================================== -->
+
+        <section id="industry" class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>INDUSTRY</span>
+
+                    <h2>行业与竞争格局</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="industry-layout">
+
+
+                <div class="panel">
+
+                    <h3>
+                        所属行业
+                    </h3>
+
+
+                    <div class="industry-main">
+
+                        <strong id="detailIndustry">
+                            —
+                        </strong>
+
+                        <span id="industryPath">
+                            —
                         </span>
 
                     </div>
 
 
-                    <div>
+                    <p id="industryDescription">
+                        暂无行业分析。
+                    </p>
 
-                        <strong class="score-label"
-                                id="scoreLabel">
-                            —
+                </div>
+
+
+                <div class="panel">
+
+                    <h3>
+                        行业排名
+                    </h3>
+
+
+                    <div class="rank-list">
+
+                        <div>
+                            <span>营业收入</span>
+                            <strong id="rankRevenue">—</strong>
+                        </div>
+
+                        <div>
+                            <span>净利润</span>
+                            <strong id="rankProfit">—</strong>
+                        </div>
+
+                        <div>
+                            <span>ROE</span>
+                            <strong id="rankROE">—</strong>
+                        </div>
+
+                        <div>
+                            <span>综合排名</span>
+                            <strong id="rankOverall">—</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h3>
+                    竞争对手
+                </h3>
+
+
+                <div class="competitor-grid" id="competitorGrid">
+
+                    <div>
+                        <strong>—</strong>
+                        <span>—</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         技术
+    ====================================================== -->
+
+        <section id="technical" class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>TECHNICAL</span>
+
+                    <h2>技术指标</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="technical-grid">
+
+
+                <div class="technical-card">
+
+                    <span>MA5</span>
+
+                    <strong id="technicalMA5">
+                        —
+                    </strong>
+
+                    <em id="technicalMA5Status">
+                        —
+                    </em>
+
+                </div>
+
+
+                <div class="technical-card">
+
+                    <span>MA20</span>
+
+                    <strong id="technicalMA20">
+                        —
+                    </strong>
+
+                    <em id="technicalMA20Status">
+                        —
+                    </em>
+
+                </div>
+
+
+                <div class="technical-card">
+
+                    <span>RSI</span>
+
+                    <strong id="technicalRSI">
+                        —
+                    </strong>
+
+                    <em id="technicalRSIStatus">
+                        —
+                    </em>
+
+                </div>
+
+
+                <div class="technical-card">
+
+                    <span>MACD</span>
+
+                    <strong id="technicalMACD">
+                        —
+                    </strong>
+
+                    <em id="technicalMACDStatus">
+                        —
+                    </em>
+
+                </div>
+
+
+                <div class="technical-card">
+
+                    <span>KDJ</span>
+
+                    <strong id="technicalKDJ">
+                        —
+                    </strong>
+
+                    <em id="technicalKDJStatus">
+                        —
+                    </em>
+
+                </div>
+
+
+                <div class="technical-card">
+
+                    <span>ATR</span>
+
+                    <strong id="technicalATR">
+                        —
+                    </strong>
+
+                    <em id="technicalATRStatus">
+                        —
+                    </em>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         资讯
+    ====================================================== -->
+
+        <section id="news" class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>NEWS</span>
+
+                    <h2>公司与市场资讯</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel news-list" id="newsList">
+
+                <div class="empty-state">
+
+                    暂无资讯数据
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         公告
+    ====================================================== -->
+
+        <section id="announcement" class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>ANNOUNCEMENT</span>
+
+                    <h2>公司公告</h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel announcement-list" id="announcementList">
+
+                <div class="empty-state">
+
+                    暂无公告数据
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+         AI研究
+    ====================================================== -->
+
+        <section id="ai" class="research-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <span>AI RESEARCH</span>
+
+                    <h2>AI 综合研究</h2>
+
+                </div>
+
+                <span class="ai-badge">
+                    ✦ AI MODEL
+                </span>
+
+            </div>
+
+
+            <div class="ai-overview">
+
+
+                <div class="ai-conclusion panel">
+
+                    <div class="ai-title">
+
+                        <div class="ai-icon">
+                            ✦
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                综合判断
+                            </strong>
+
+                            <span>
+                                基于行情、财务、估值、行业与技术指标
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="ai-conclusion-text">
+
+                        <strong id="aiConclusion">
+                            暂无 AI 研究结果
                         </strong>
 
-                        <p id="scoreDescription">
-                            暂无研究数据
+                        <p id="aiSummary">
+                            暂无 AI 分析数据。
                         </p>
 
                     </div>
@@ -547,34 +1567,35 @@
                 </div>
 
 
-                <div class="score-list">
+                <div class="ai-factor-grid">
+
 
                     <div>
 
                         <span>基本面</span>
 
-                        <div class="score-bar">
-                            <i id="fundamentalScoreBar"></i>
-                        </div>
-
-                        <strong id="fundamentalScore">
+                        <strong id="aiFundamental">
                             —
                         </strong>
+
+                        <small id="aiFundamentalDesc">
+                            —
+                        </small>
 
                     </div>
 
 
                     <div>
 
-                        <span>成长性</span>
+                        <span>成长</span>
 
-                        <div class="score-bar">
-                            <i id="growthScoreBar"></i>
-                        </div>
-
-                        <strong id="growthScore">
+                        <strong id="aiGrowth">
                             —
                         </strong>
+
+                        <small id="aiGrowthDesc">
+                            —
+                        </small>
 
                     </div>
 
@@ -583,28 +1604,28 @@
 
                         <span>估值</span>
 
-                        <div class="score-bar">
-                            <i id="valuationScoreBar"></i>
-                        </div>
-
-                        <strong id="valuationScore">
+                        <strong id="aiValuation">
                             —
                         </strong>
+
+                        <small id="aiValuationDesc">
+                            —
+                        </small>
 
                     </div>
 
 
                     <div>
 
-                        <span>技术面</span>
+                        <span>技术</span>
 
-                        <div class="score-bar">
-                            <i id="technicalScoreBar"></i>
-                        </div>
-
-                        <strong id="technicalScore">
+                        <strong id="aiTechnical">
                             —
                         </strong>
+
+                        <small id="aiTechnicalDesc">
+                            —
+                        </small>
 
                     </div>
 
@@ -612,1182 +1633,118 @@
 
             </div>
 
-        </div>
 
 
-
-        <!-- =================================================
-             核心基本面
-        ================================================== -->
-
-        <div class="section-title">
-            核心基本面
-        </div>
+            <div class="ai-analysis-grid">
 
 
-        <div class="fundamental-grid">
+                <article class="panel">
 
-            <div class="fundamental-card">
-
-                <span>ROE</span>
-
-                <strong id="roe">—</strong>
-
-                <small id="roeDesc">—</small>
-
-            </div>
-
-
-            <div class="fundamental-card">
-
-                <span>毛利率</span>
-
-                <strong id="grossMargin">—</strong>
-
-                <small id="grossMarginDesc">—</small>
-
-            </div>
-
-
-            <div class="fundamental-card">
-
-                <span>净利率</span>
-
-                <strong id="netMargin">—</strong>
-
-                <small id="netMarginDesc">—</small>
-
-            </div>
-
-
-            <div class="fundamental-card">
-
-                <span>营收增长</span>
-
-                <strong id="revenueGrowth">—</strong>
-
-                <small>同比</small>
-
-            </div>
-
-
-            <div class="fundamental-card">
-
-                <span>净利润增长</span>
-
-                <strong id="profitGrowth">—</strong>
-
-                <small>同比</small>
-
-            </div>
-
-
-            <div class="fundamental-card">
-
-                <span>股息率</span>
-
-                <strong id="dividendYield">—</strong>
-
-                <small>现金分红</small>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- =================================================
-             估值 + 行业
-        ================================================== -->
-
-        <div class="two-column-grid">
-
-
-            <div class="panel">
-
-                <div class="panel-title-row">
+                    <span class="ai-section-label">
+                        FUNDAMENTAL
+                    </span>
 
                     <h3>
-                        估值概览
+                        基本面分析
                     </h3>
 
-                    <button onclick="switchSection('valuation')">
-                        查看完整估值 →
-                    </button>
+                    <p id="aiFundamentalAnalysis">
+                        暂无数据。
+                    </p>
 
-                </div>
-
-
-                <div class="valuation-summary">
-
-                    <div>
-
-                        <span>PE-TTM</span>
-
-                        <strong id="summaryPE">
-                            —
-                        </strong>
-
-                        <small id="summaryPEDesc">
-                            —
-                        </small>
-
-                    </div>
+                </article>
 
 
-                    <div>
+                <article class="panel">
 
-                        <span>PB</span>
-
-                        <strong id="summaryPB">
-                            —
-                        </strong>
-
-                        <small id="summaryPBDesc">
-                            —
-                        </small>
-
-                    </div>
-
-
-                    <div>
-
-                        <span>PEG</span>
-
-                        <strong id="summaryPEG">
-                            —
-                        </strong>
-
-                        <small id="summaryPEGDesc">
-                            —
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-
-            <div class="panel">
-
-                <div class="panel-title-row">
+                    <span class="ai-section-label">
+                        VALUATION
+                    </span>
 
                     <h3>
-                        行业位置
+                        估值分析
                     </h3>
 
-                    <button onclick="switchSection('industry')">
-                        行业分析 →
-                    </button>
+                    <p id="aiValuationAnalysis">
+                        暂无数据。
+                    </p>
 
-                </div>
-
-
-                <div class="industry-summary">
-
-                    <div class="industry-rank">
-
-                        <strong id="industryRank">
-                            —
-                        </strong>
-
-                        <span id="industryName">
-                            —
-                        </span>
-
-                    </div>
+                </article>
 
 
-                    <div class="industry-item">
+                <article class="panel">
 
-                        <span>市占/品牌</span>
+                    <span class="ai-section-label">
+                        TECHNICAL
+                    </span>
 
-                        <strong id="industryPosition">
-                            —
-                        </strong>
+                    <h3>
+                        技术分析
+                    </h3>
 
-                    </div>
+                    <p id="aiTechnicalAnalysis">
+                        暂无数据。
+                    </p>
 
-
-                    <div class="industry-item">
-
-                        <span>盈利能力</span>
-
-                        <strong id="industryProfitability">
-                            —
-                        </strong>
-
-                    </div>
+                </article>
 
 
-                    <div class="industry-item">
+                <article class="panel risk-panel">
 
-                        <span>竞争壁垒</span>
+                    <span class="ai-section-label">
+                        RISK
+                    </span>
 
-                        <strong id="industryMoat">
-                            —
-                        </strong>
+                    <h3>
+                        主要风险
+                    </h3>
 
-                    </div>
+                    <ul id="aiRiskList">
 
-                </div>
+                        <li>暂无数据</li>
 
-            </div>
+                    </ul>
 
-        </div>
+                </article>
 
-    </section>
-
-
-
-    <!-- =====================================================
-         行情
-    ====================================================== -->
-
-    <section id="quote"
-             class="research-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span>MARKET</span>
-
-                <h2>行情数据</h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="quote-detail-grid">
-
-
-            <div class="panel">
-
-                <h3>
-                    实时行情
-                </h3>
-
-
-                <div class="data-list">
-
-                    <div>
-                        <span>最新价</span>
-                        <strong id="detailPrice">—</strong>
-                    </div>
-
-                    <div>
-                        <span>涨跌额</span>
-                        <strong id="detailChange">—</strong>
-                    </div>
-
-                    <div>
-                        <span>涨跌幅</span>
-                        <strong id="detailChangePercent">—</strong>
-                    </div>
-
-                    <div>
-                        <span>成交量</span>
-                        <strong id="detailVolume">—</strong>
-                    </div>
-
-                    <div>
-                        <span>成交额</span>
-                        <strong id="detailAmount">—</strong>
-                    </div>
-
-                    <div>
-                        <span>换手率</span>
-                        <strong id="detailTurnover">—</strong>
-                    </div>
-
-                </div>
 
             </div>
 
 
-            <div class="panel">
 
-                <h3>
-                    52周区间
-                </h3>
+            <div class="ai-question panel">
 
+                <div>
 
-                <div class="range-box">
-
-                    <div class="range-values">
-
-                        <span id="yearLow">
-                            —
-                        </span>
-
-                        <strong id="yearCurrent">
-                            当前 —
-                        </strong>
-
-                        <span id="yearHigh">
-                            —
-                        </span>
-
-                    </div>
-
-
-                    <div class="range-track">
-
-                        <i id="yearRangeProgress"></i>
-
-                    </div>
-
-
-                    <small id="yearRangeDescription">
-                        暂无52周数据
-                    </small>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         财务
-    ====================================================== -->
-
-    <section id="financial"
-             class="research-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span>FINANCIALS</span>
-
-                <h2>财务分析</h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="financial-cards">
-
-            <div class="financial-card">
-
-                <span>营业收入</span>
-
-                <strong id="financialRevenue">
-                    —
-                </strong>
-
-                <em id="financialRevenueGrowth">
-                    —
-                </em>
-
-            </div>
-
-
-            <div class="financial-card">
-
-                <span>归母净利润</span>
-
-                <strong id="financialProfit">
-                    —
-                </strong>
-
-                <em id="financialProfitGrowth">
-                    —
-                </em>
-
-            </div>
-
-
-            <div class="financial-card">
-
-                <span>经营现金流</span>
-
-                <strong id="operatingCashFlow">
-                    —
-                </strong>
-
-                <em id="cashFlowStatus">
-                    —
-                </em>
-
-            </div>
-
-
-            <div class="financial-card">
-
-                <span>净资产</span>
-
-                <strong id="netAssets">
-                    —
-                </strong>
-
-                <em>—</em>
-
-            </div>
-
-        </div>
-
-
-        <div class="panel table-panel">
-
-            <div class="panel-title-row">
-
-                <h3>
-                    财务趋势
-                </h3>
-
-                <span>
-                    单位：—
-                </span>
-
-            </div>
-
-
-            <div class="table-scroll">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>报告期</th>
-                            <th>营业收入</th>
-                            <th>营收增速</th>
-                            <th>净利润</th>
-                            <th>净利润增速</th>
-                            <th>ROE</th>
-
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody id="financialTableBody">
-
-                        <tr>
-
-                            <td colspan="6">
-                                暂无财务数据
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         估值
-    ====================================================== -->
-
-    <section id="valuation"
-             class="research-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span>VALUATION</span>
-
-                <h2>估值分析</h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="valuation-grid">
-
-
-            <div class="valuation-card">
-
-                <span>PE-TTM</span>
-
-                <strong id="valuationPE">
-                    —
-                </strong>
-
-                <small id="valuationPEDesc">
-                    —
-                </small>
-
-            </div>
-
-
-            <div class="valuation-card">
-
-                <span>PB</span>
-
-                <strong id="valuationPB">
-                    —
-                </strong>
-
-                <small id="valuationPBDesc">
-                    —
-                </small>
-
-            </div>
-
-
-            <div class="valuation-card">
-
-                <span>PS</span>
-
-                <strong id="valuationPS">
-                    —
-                </strong>
-
-                <small id="valuationPSDesc">
-                    —
-                </small>
-
-            </div>
-
-
-            <div class="valuation-card">
-
-                <span>股息率</span>
-
-                <strong id="valuationDividend">
-                    —
-                </strong>
-
-                <small>
-                    —
-                </small>
-
-            </div>
-
-        </div>
-
-
-        <div class="panel valuation-history">
-
-            <h3>
-                历史估值区间
-            </h3>
-
-
-            <div class="valuation-band">
-
-                <div class="valuation-point low">
-
-                    <span>低估</span>
-
-                    <strong id="valuationLow">
-                        —
+                    <strong>
+                        想进一步研究这只股票？
                     </strong>
 
-                </div>
-
-
-                <div class="valuation-point current">
-
-                    <span>当前</span>
-
-                    <strong id="valuationCurrent">
-                        —
-                    </strong>
-
-                </div>
-
-
-                <div class="valuation-point median">
-
-                    <span>中位</span>
-
-                    <strong id="valuationMedian">
-                        —
-                    </strong>
-
-                </div>
-
-
-                <div class="valuation-point high">
-
-                    <span>高估</span>
-
-                    <strong id="valuationHigh">
-                        —
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <p class="valuation-note"
-               id="valuationNote">
-
-                暂无估值分析数据。
-
-            </p>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         行业
-    ====================================================== -->
-
-    <section id="industry"
-             class="research-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span>INDUSTRY</span>
-
-                <h2>行业与竞争格局</h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="industry-layout">
-
-
-            <div class="panel">
-
-                <h3>
-                    所属行业
-                </h3>
-
-
-                <div class="industry-main">
-
-                    <strong id="detailIndustry">
-                        —
-                    </strong>
-
-                    <span id="industryPath">
-                        —
+                    <span>
+                        可以让 AI 从估值、财务、行业竞争或投资逻辑继续分析。
                     </span>
 
                 </div>
 
 
-                <p id="industryDescription">
-                    暂无行业分析。
-                </p>
+                <button onclick="navigatePage('research')">
+
+                    ✦ 开始 AI 深度研究
+
+                </button>
 
             </div>
 
+        </section>
 
-            <div class="panel">
 
-                <h3>
-                    行业排名
-                </h3>
 
+    </main>
 
-                <div class="rank-list">
 
-                    <div>
-                        <span>营业收入</span>
-                        <strong id="rankRevenue">—</strong>
-                    </div>
 
-                    <div>
-                        <span>净利润</span>
-                        <strong id="rankProfit">—</strong>
-                    </div>
-
-                    <div>
-                        <span>ROE</span>
-                        <strong id="rankROE">—</strong>
-                    </div>
-
-                    <div>
-                        <span>综合排名</span>
-                        <strong id="rankOverall">—</strong>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="panel">
-
-            <h3>
-                竞争对手
-            </h3>
-
-
-            <div class="competitor-grid"
-                 id="competitorGrid">
-
-                <div>
-                    <strong>—</strong>
-                    <span>—</span>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         技术
-    ====================================================== -->
-
-    <section id="technical"
-             class="research-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span>TECHNICAL</span>
-
-                <h2>技术指标</h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="technical-grid">
-
-
-            <div class="technical-card">
-
-                <span>MA5</span>
-
-                <strong id="technicalMA5">
-                    —
-                </strong>
-
-                <em id="technicalMA5Status">
-                    —
-                </em>
-
-            </div>
-
-
-            <div class="technical-card">
-
-                <span>MA20</span>
-
-                <strong id="technicalMA20">
-                    —
-                </strong>
-
-                <em id="technicalMA20Status">
-                    —
-                </em>
-
-            </div>
-
-
-            <div class="technical-card">
-
-                <span>RSI</span>
-
-                <strong id="technicalRSI">
-                    —
-                </strong>
-
-                <em id="technicalRSIStatus">
-                    —
-                </em>
-
-            </div>
-
-
-            <div class="technical-card">
-
-                <span>MACD</span>
-
-                <strong id="technicalMACD">
-                    —
-                </strong>
-
-                <em id="technicalMACDStatus">
-                    —
-                </em>
-
-            </div>
-
-
-            <div class="technical-card">
-
-                <span>KDJ</span>
-
-                <strong id="technicalKDJ">
-                    —
-                </strong>
-
-                <em id="technicalKDJStatus">
-                    —
-                </em>
-
-            </div>
-
-
-            <div class="technical-card">
-
-                <span>ATR</span>
-
-                <strong id="technicalATR">
-                    —
-                </strong>
-
-                <em id="technicalATRStatus">
-                    —
-                </em>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         资讯
-    ====================================================== -->
-
-    <section id="news"
-             class="research-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span>NEWS</span>
-
-                <h2>公司与市场资讯</h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="panel news-list"
-             id="newsList">
-
-            <div class="empty-state">
-
-                暂无资讯数据
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         公告
-    ====================================================== -->
-
-    <section id="announcement"
-             class="research-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span>ANNOUNCEMENT</span>
-
-                <h2>公司公告</h2>
-
-            </div>
-
-        </div>
-
-
-        <div class="panel announcement-list"
-             id="announcementList">
-
-            <div class="empty-state">
-
-                暂无公告数据
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-
-    <!-- =====================================================
-         AI研究
-    ====================================================== -->
-
-    <section id="ai"
-             class="research-section">
-
-        <div class="section-heading">
-
-            <div>
-
-                <span>AI RESEARCH</span>
-
-                <h2>AI 综合研究</h2>
-
-            </div>
-
-            <span class="ai-badge">
-                ✦ AI MODEL
-            </span>
-
-        </div>
-
-
-        <div class="ai-overview">
-
-
-            <div class="ai-conclusion panel">
-
-                <div class="ai-title">
-
-                    <div class="ai-icon">
-                        ✦
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            综合判断
-                        </strong>
-
-                        <span>
-                            基于行情、财务、估值、行业与技术指标
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="ai-conclusion-text">
-
-                    <strong id="aiConclusion">
-                        暂无 AI 研究结果
-                    </strong>
-
-                    <p id="aiSummary">
-                        暂无 AI 分析数据。
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="ai-factor-grid">
-
-
-                <div>
-
-                    <span>基本面</span>
-
-                    <strong id="aiFundamental">
-                        —
-                    </strong>
-
-                    <small id="aiFundamentalDesc">
-                        —
-                    </small>
-
-                </div>
-
-
-                <div>
-
-                    <span>成长</span>
-
-                    <strong id="aiGrowth">
-                        —
-                    </strong>
-
-                    <small id="aiGrowthDesc">
-                        —
-                    </small>
-
-                </div>
-
-
-                <div>
-
-                    <span>估值</span>
-
-                    <strong id="aiValuation">
-                        —
-                    </strong>
-
-                    <small id="aiValuationDesc">
-                        —
-                    </small>
-
-                </div>
-
-
-                <div>
-
-                    <span>技术</span>
-
-                    <strong id="aiTechnical">
-                        —
-                    </strong>
-
-                    <small id="aiTechnicalDesc">
-                        —
-                    </small>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-
-        <div class="ai-analysis-grid">
-
-
-            <article class="panel">
-
-                <span class="ai-section-label">
-                    FUNDAMENTAL
-                </span>
-
-                <h3>
-                    基本面分析
-                </h3>
-
-                <p id="aiFundamentalAnalysis">
-                    暂无数据。
-                </p>
-
-            </article>
-
-
-            <article class="panel">
-
-                <span class="ai-section-label">
-                    VALUATION
-                </span>
-
-                <h3>
-                    估值分析
-                </h3>
-
-                <p id="aiValuationAnalysis">
-                    暂无数据。
-                </p>
-
-            </article>
-
-
-            <article class="panel">
-
-                <span class="ai-section-label">
-                    TECHNICAL
-                </span>
-
-                <h3>
-                    技术分析
-                </h3>
-
-                <p id="aiTechnicalAnalysis">
-                    暂无数据。
-                </p>
-
-            </article>
-
-
-            <article class="panel risk-panel">
-
-                <span class="ai-section-label">
-                    RISK
-                </span>
-
-                <h3>
-                    主要风险
-                </h3>
-
-                <ul id="aiRiskList">
-
-                    <li>暂无数据</li>
-
-                </ul>
-
-            </article>
-
-
-        </div>
-
-
-
-        <div class="ai-question panel">
-
-            <div>
-
-                <strong>
-                    想进一步研究这只股票？
-                </strong>
-
-                <span>
-                    可以让 AI 从估值、财务、行业竞争或投资逻辑继续分析。
-                </span>
-
-            </div>
-
-
-            <button onclick="navigatePage('research')">
-
-                ✦ 开始 AI 深度研究
-
-            </button>
-
-        </div>
-
-    </section>
-
-
-
-</main>
-
-
-
-<script src="../js/navigation.js"></script>
-<script src="../js/stock_detail.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/stock_detail.js"></script>
 
 
 </body>

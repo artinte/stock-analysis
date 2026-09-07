@@ -226,6 +226,8 @@ def get_quote(symbol: str):
                 symbol,
                 "未获取到行情数据",
             )
+        else:
+            print(quote)
 
         return success(
             symbol,
@@ -249,22 +251,22 @@ def get_quote(symbol: str):
                 ),
                 "open": getattr(
                     quote,
-                    "open",
+                    "open_price",
                     None,
                 ),
                 "high": getattr(
                     quote,
-                    "high",
+                    "high_price",
                     None,
                 ),
                 "low": getattr(
                     quote,
-                    "low",
+                    "low_price",
                     None,
                 ),
                 "prevClose": getattr(
                     quote,
-                    "prev_close",
+                    "previous_close",
                     None,
                 ),
                 "volume": getattr(
@@ -279,7 +281,7 @@ def get_quote(symbol: str):
                 ),
                 "turnoverRate": getattr(
                     quote,
-                    "turnover_rate",
+                    "turnover",
                     None,
                 ),
                 "marketCap": getattr(
@@ -346,19 +348,18 @@ def get_kline(
         # 先返回暂无数据即可。
         # -------------------------------------------------
 
-        if not hasattr(manager, "get_klines"):
+        if not hasattr(manager, "get_kline"):
 
             return failure(
                 symbol,
                 "K线接口暂未实现",
             )
 
-        klines = manager.get_klines(
+        klines = manager.get_kline(
             symbol,
             interval=interval,
             limit=limit,
         )
-
         if not klines:
 
             return failure(

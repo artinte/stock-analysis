@@ -16,22 +16,34 @@ class IndustryAdapter:
     @staticmethod
     def from_stock_query(
         result,
-    ) -> Industry:
+    ) -> Industry | None:
 
-        df = result.to_df()
+        try:
 
-        if df.empty:
-            raise ValueError("行业查询结果为空")
+            # 防止传入错误类型
+            if not hasattr(result, "to_df"):
+                return None
 
-        row = df.iloc[0]
+            df = result.to_df()
 
-        return Industry(
-            symbol=str(row.get("code", "")),
-            name=row.get("l3") or row.get("l2") or row.get("l1"),
-            level_1=row.get("l1"),
-            level_2=row.get("l2"),
-            level_3=row.get("l3"),
-            level_4=row.get("l4"),
-            standard=IndustryStandard.SW,
-            source="stock_query",
-        )
+            if df is None or df.empty:
+                return None
+
+            row = df.iloc[0]
+
+            return Industry(
+                symbol=str(row.get("code", "")),
+                name=row.get("l3") or row.get("l2") or row.get("l1") or "-",
+                level_1=row.get("l1") or "-",
+                level_2=row.get("l2") or "-",
+                level_3=row.get("l3") or "-",
+                level_4=row.get("l4") or "-",
+                standard=IndustryStandard.SW,
+                source="stock_query",
+            )
+
+        except Exception as e:
+
+            print(f"行业数据转换失败: {e}")
+
+            return None
