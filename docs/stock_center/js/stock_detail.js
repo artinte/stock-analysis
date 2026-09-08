@@ -171,6 +171,111 @@ async function loadIndustryCategory() {
     }
 }
 
+
+function updatePrice(price, change, changePercent) {
+
+    const currentPrice =
+        document.getElementById("currentPrice");
+
+    const priceChange =
+        document.getElementById("priceChange");
+
+    const priceChangePercent =
+        document.getElementById("priceChangePercent");
+
+    const priceChangeBlock =
+        document.querySelector(".price-change");
+
+
+    // =========================
+    // 最新价
+    // =========================
+
+    if (price !== null && price !== undefined) {
+
+        currentPrice.textContent =
+            Number(price).toFixed(2);
+
+    } else {
+
+        currentPrice.textContent = "—";
+
+    }
+
+
+    // =========================
+    // 涨跌额
+    // =========================
+
+    if (change !== null && change !== undefined) {
+
+        const value = Number(change);
+
+        priceChange.textContent =
+            value > 0
+                ? `+${value.toFixed(2)}`
+                : value.toFixed(2);
+
+    } else {
+
+        priceChange.textContent = "—";
+
+    }
+
+
+    // =========================
+    // 涨跌幅
+    // =========================
+
+    if (
+        changePercent !== null &&
+        changePercent !== undefined
+    ) {
+
+        const value = Number(changePercent);
+
+        priceChangePercent.textContent =
+            value > 0
+                ? `+${value.toFixed(2)}%`
+                : `${value.toFixed(2)}%`;
+
+    } else {
+
+        priceChangePercent.textContent = "—";
+
+    }
+
+
+    // =========================
+    // 涨跌状态
+    // =========================
+
+    priceChangeBlock.classList.remove(
+        "positive",
+        "negative",
+        "flat"
+    );
+
+
+    const changeValue = Number(change);
+
+
+    if (changeValue > 0) {
+
+        priceChangeBlock.classList.add("positive");
+
+    } else if (changeValue < 0) {
+
+        priceChangeBlock.classList.add("negative");
+
+    } else {
+
+        priceChangeBlock.classList.add("flat");
+
+    }
+
+}
+
 async function loadQuote() {
     try {
         const result = await requestAPI(
@@ -185,22 +290,23 @@ async function loadQuote() {
         console.log("行情数据:", result);
         const quote = result.data ?? result;
 
-        setText(
-            "currentPrice",
-            formatNumber(quote.lastPrice)
-        );
+        updatePrice(quote.lastPrice, quote.change, quote.changePercent)
+
+        // setText(
+        //     "currentPrice",
+        //     formatNumber(quote.lastPrice)
+        // );
+
+        // setText(
+        //     "priceChange",
+        //     formatSignedNumber(quote.change)
+        // );
 
 
-        setText(
-            "priceChange",
-            formatSignedNumber(quote.change)
-        );
-
-
-        setText(
-            "priceChangePercent",
-            formatPercent(quote.changePercent)
-        );
+        // setText(
+        //     "priceChangePercent",
+        //     formatPercent(quote.changePercent)
+        // );
 
 
         setText(

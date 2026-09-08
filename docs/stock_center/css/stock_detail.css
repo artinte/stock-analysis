@@ -242,54 +242,45 @@ body {
 ========================================================= */
 
 .stock-price-block {
-
     text-align: right;
-
 }
 
 
 .current-price {
-
     font-size: 38px;
-
     font-weight: 700;
-
     line-height: 1;
-
     letter-spacing: -1px;
-
 }
 
 
 .price-change {
-
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
     margin-top: 9px;
-
     font-size: 15px;
-
     font-weight: 600;
-
 }
 
 
 .price-change span {
-
     margin-left: 8px;
-
 }
 
-
-.positive {
+.price-change.positive {
 
     color: var(--stock-red);
 
 }
 
-
-.negative {
-
+.price-change.negative {
     color: var(--stock-green);
+}
 
+.price-change.flat {
+    color: var(--text-secondary);
 }
 
 
