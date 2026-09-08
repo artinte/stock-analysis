@@ -335,7 +335,7 @@ def get_quote(symbol: str):
             {
                 "symbol": quote.symbol,
                 "name": getattr(quote, "name", None),
-                "price": getattr(
+                "lastPrice": getattr(
                     quote,
                     "last_price",
                     None,
@@ -350,22 +350,22 @@ def get_quote(symbol: str):
                     "change_percent",
                     None,
                 ),
-                "open": getattr(
+                "openPrice": getattr(
                     quote,
                     "open_price",
                     None,
                 ),
-                "high": getattr(
+                "highPrice": getattr(
                     quote,
                     "high_price",
                     None,
                 ),
-                "low": getattr(
+                "lowPrice": getattr(
                     quote,
                     "low_price",
                     None,
                 ),
-                "prevClose": getattr(
+                "previousClose": getattr(
                     quote,
                     "previous_close",
                     None,

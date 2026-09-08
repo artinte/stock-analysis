@@ -187,7 +187,7 @@ async function loadQuote() {
 
         setText(
             "currentPrice",
-            formatNumber(quote.last_price)
+            formatNumber(quote.lastPrice)
         );
 
 
@@ -199,31 +199,31 @@ async function loadQuote() {
 
         setText(
             "priceChangePercent",
-            formatPercent(quote.change_percent)
+            formatPercent(quote.changePercent)
         );
 
 
         setText(
             "quoteOpen",
-            formatNumber(quote.open)
+            formatNumber(quote.openPrice)
         );
 
 
         setText(
             "quoteHigh",
-            formatNumber(quote.high)
+            formatNumber(quote.highPrice)
         );
 
 
         setText(
             "quoteLow",
-            formatNumber(quote.low)
+            formatNumber(quote.lowPrice)
         );
 
 
         setText(
             "quotePrevClose",
-            formatNumber(quote.previous_close)
+            formatNumber(quote.previousClose)
         );
 
 
@@ -264,7 +264,7 @@ async function loadQuote() {
 
         setText(
             "detailChangePercent",
-            formatPercent(quote.change_percent)
+            formatPercent(quote.changePercent)
         );
 
         setText(
