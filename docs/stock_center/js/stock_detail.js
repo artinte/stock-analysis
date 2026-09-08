@@ -2161,26 +2161,19 @@ function formatAmount(value) {
         Math.abs(number);
 
 
-    if (abs >= 100000000000) {
-
+    if (abs >= 1000000000000) {
         return (
-            number / 100000000000
-        ).toFixed(2) + "千亿";
-
+            number / 1000000000000
+        ).toFixed(2) + "万亿";
     }
 
-
     if (abs >= 100000000) {
-
         return (
             number / 100000000
         ).toFixed(2) + "亿";
-
     }
 
-
     if (abs >= 10000) {
-
         return (
             number / 10000
         ).toFixed(2) + "万";

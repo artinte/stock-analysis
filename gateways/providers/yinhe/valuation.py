@@ -275,7 +275,7 @@ class YinheValuation:
         """
 
         total_shares = None
-        circulating_shares = None
+        float_shares = None
         report_date = None
 
         try:
@@ -315,24 +315,15 @@ class YinheValuation:
                 )
 
             # --------------------------------------------------
-            # 流通股本
+            # 流通A股(万股) 
             # --------------------------------------------------
 
-            for field in (
-                "FLOAT_SHARE",
-                "CIRC_SHARE",
-            ):
-                if field not in row.index:
-                    continue
-
-                value = row.get(field)
-
-                if pandas.notna(value):
-                    circulating_shares = (
-                        float(value)
-                        * TEN_THOUSAND
-                    )
-                    break
+            value = row.get("FLOAT_A_SHARE")
+            if pandas.notna(value):
+                float_shares = (
+                    float(value)
+                    * TEN_THOUSAND
+                )
 
             # --------------------------------------------------
             # 股本变更日期
@@ -351,7 +342,7 @@ class YinheValuation:
 
         return (
             total_shares,
-            circulating_shares,
+            float_shares,
             report_date,
         )
 
