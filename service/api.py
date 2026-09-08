@@ -380,7 +380,7 @@ def get_quote(symbol: str):
                     "amount",
                     None,
                 ),
-                "turnoverRate": getattr(
+                "turnover": getattr(
                     quote,
                     "turnover",
                     None,

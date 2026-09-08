@@ -512,49 +512,9 @@ class YinheQuote:
 
         total_shares = None
         float_shares = None
+        
+        total_shares, float_shares, current_date = self.gateway.valuation._get_equity_structure(symbol)
 
-        if (
-            equity is not None
-            and not equity.empty
-        ):
-
-            if "CHANGE_DATE" in equity.columns:
-
-                equity = equity.sort_values(
-                    "CHANGE_DATE"
-                )
-
-            row = equity.iloc[-1]
-
-            # -------------------------------------------------
-            # 总股本
-            # -------------------------------------------------
-
-            if "TOT_SHARE" in equity.columns:
-
-                value = row["TOT_SHARE"]
-
-                if pandas.notna(value):
-
-                    total_shares = (
-                        float(value)
-                        * TEN_THOUSAND
-                    )
-
-            # -------------------------------------------------
-            # 流通股本
-            # -------------------------------------------------
-
-            if "FLOAT_SHARE" in equity.columns:
-
-                value = row["FLOAT_SHARE"]
-
-                if pandas.notna(value):
-
-                    float_shares = (
-                        float(value)
-                        * TEN_THOUSAND
-                    )
 
         # =====================================================
         # 总市值

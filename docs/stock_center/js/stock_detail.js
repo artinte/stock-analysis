@@ -341,23 +341,6 @@ async function loadQuote() {
 
         updatePrice(quote.lastPrice, quote.change, quote.changePercent)
 
-        // setText(
-        //     "currentPrice",
-        //     formatNumber(quote.lastPrice)
-        // );
-
-        // setText(
-        //     "priceChange",
-        //     formatSignedNumber(quote.change)
-        // );
-
-
-        // setText(
-        //     "priceChangePercent",
-        //     formatPercent(quote.changePercent)
-        // );
-
-
         setText(
             "quoteOpen",
             formatNumber(quote.openPrice)
@@ -389,20 +372,20 @@ async function loadQuote() {
 
 
         setText(
-            "quoteTurnover",
-            formatPercent(quote.turnover_rate)
+            "turnover",
+            formatPercent(quote.turnover, false)
         );
 
 
         setText(
-            "quoteMarketCap",
-            formatAmount(quote.market_cap)
+            "marketCap",
+            formatAmount(quote.marketCap)
         );
 
 
         setText(
-            "quoteFloatMarketCap",
-            formatAmount(quote.float_market_cap)
+            "floatMarketCap",
+            formatAmount(quote.floatMarketCap)
         );
 
 
@@ -434,7 +417,7 @@ async function loadQuote() {
 
         setText(
             "detailTurnover",
-            formatPercent(quote.turnover_rate)
+            formatPercent(quote.turnover)
         );
 
 
@@ -470,13 +453,6 @@ async function loadQuote() {
         setText(
             "stockStatus",
             "行情正常"
-        );
-
-
-        // 涨跌颜色
-        applyChangeClass(
-            "priceChange",
-            quote.change
         );
 
 
@@ -2095,7 +2071,7 @@ function formatSignedNumber(value) {
 
 
 
-function formatPercent(value) {
+function formatPercent(value, showPlus = true) {
 
     if (
         value === undefined ||
@@ -2105,26 +2081,32 @@ function formatPercent(value) {
         return "—";
     }
 
-
-    const number =
-        Number(value);
-
+    const number = Number(value);
 
     if (Number.isNaN(number)) {
         return "—";
     }
 
+    if (number > 0) {
 
-    const prefix =
-        number > 0
-            ? "+"
-            : "";
+        return (
+            (showPlus ? "+" : "") +
+            number.toFixed(2) +
+            "%"
+        );
 
+    }
 
-    return prefix +
-        number.toFixed(2) +
-        "%";
+    if (number < 0) {
 
+        return (
+            number.toFixed(2) +
+            "%"
+        );
+
+    }
+
+    return "0%";
 }
 
 
