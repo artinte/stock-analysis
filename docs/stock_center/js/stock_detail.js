@@ -187,11 +187,15 @@ function updatePrice(price, change, changePercent) {
         document.querySelector(".price-change");
 
 
-    // =========================
+    // =========================================================
     // 最新价
-    // =========================
+    // =========================================================
 
-    if (price !== null && price !== undefined) {
+    if (
+        price !== null &&
+        price !== undefined &&
+        Number.isFinite(Number(price))
+    ) {
 
         currentPrice.textContent =
             Number(price).toFixed(2);
@@ -203,18 +207,22 @@ function updatePrice(price, change, changePercent) {
     }
 
 
-    // =========================
+    // =========================================================
     // 涨跌额
-    // =========================
+    // =========================================================
 
-    if (change !== null && change !== undefined) {
+    if (
+        change !== null &&
+        change !== undefined &&
+        Number.isFinite(Number(change))
+    ) {
 
-        const value = Number(change);
+        const changeValue = Number(change);
 
         priceChange.textContent =
-            value > 0
-                ? `+${value.toFixed(2)}`
-                : value.toFixed(2);
+            changeValue > 0
+                ? `+${changeValue.toFixed(2)}`
+                : changeValue.toFixed(2);
 
     } else {
 
@@ -223,21 +231,22 @@ function updatePrice(price, change, changePercent) {
     }
 
 
-    // =========================
+    // =========================================================
     // 涨跌幅
-    // =========================
+    // =========================================================
 
     if (
         changePercent !== null &&
-        changePercent !== undefined
+        changePercent !== undefined &&
+        Number.isFinite(Number(changePercent))
     ) {
 
-        const value = Number(changePercent);
+        const percentValue = Number(changePercent);
 
         priceChangePercent.textContent =
-            value > 0
-                ? `+${value.toFixed(2)}%`
-                : `${value.toFixed(2)}%`;
+            percentValue > 0
+                ? `+${percentValue.toFixed(2)}%`
+                : `${percentValue.toFixed(2)}%`;
 
     } else {
 
@@ -246,31 +255,71 @@ function updatePrice(price, change, changePercent) {
     }
 
 
-    // =========================
+    // =========================================================
     // 涨跌状态
-    // =========================
-
-    priceChangeBlock.classList.remove(
-        "positive",
-        "negative",
-        "flat"
-    );
-
+    // =========================================================
 
     const changeValue = Number(change);
 
+    const elements = [
+        currentPrice,
+        priceChangeBlock
+    ];
 
-    if (changeValue > 0) {
+    elements.forEach(element => {
 
-        priceChangeBlock.classList.add("positive");
+        if (!element) {
+            return;
+        }
+
+        element.classList.remove(
+            "positive",
+            "negative",
+            "flat"
+        );
+
+    });
+
+
+    if (!Number.isFinite(changeValue)) {
+
+        elements.forEach(element => {
+
+            if (element) {
+                element.classList.add("flat");
+            }
+
+        });
+
+    } else if (changeValue > 0) {
+
+        elements.forEach(element => {
+
+            if (element) {
+                element.classList.add("positive");
+            }
+
+        });
 
     } else if (changeValue < 0) {
 
-        priceChangeBlock.classList.add("negative");
+        elements.forEach(element => {
+
+            if (element) {
+                element.classList.add("negative");
+            }
+
+        });
 
     } else {
 
-        priceChangeBlock.classList.add("flat");
+        elements.forEach(element => {
+
+            if (element) {
+                element.classList.add("flat");
+            }
+
+        });
 
     }
 

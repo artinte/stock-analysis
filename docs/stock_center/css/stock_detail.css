@@ -253,21 +253,50 @@ body {
     letter-spacing: -1px;
 }
 
+.current-price.positive {
+    color: var(--stock-red);
+}
+
+.current-price.negative {
+    color: var(--stock-green);
+}
+
+.current-price.flat {
+    color: var(--text-secondary);
+}
+
 
 .price-change {
+
     display: flex;
+
     justify-content: flex-end;
+
     align-items: center;
+
     gap: 12px;
+
     margin-top: 9px;
+
     font-size: 15px;
+
     font-weight: 600;
+
+    line-height: 1.2;
+
 }
 
 
 .price-change span {
-    margin-left: 8px;
+
+    white-space: nowrap;
+
+    font-variant-numeric: tabular-nums;
+
 }
+
+
+/* 上涨 */
 
 .price-change.positive {
 
@@ -275,12 +304,22 @@ body {
 
 }
 
+
+/* 下跌 */
+
 .price-change.negative {
+
     color: var(--stock-green);
+
 }
 
+
+/* 平盘 / 无数据 */
+
 .price-change.flat {
+
     color: var(--text-secondary);
+
 }
 
 
