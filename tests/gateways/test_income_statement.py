@@ -14,7 +14,7 @@ python -m tests.gateways.test_income_statement
 
 
 def run_income_statement_test(
-    data: DataManager,
+    data_manager: DataManager,
     symbol: str,
     start_year: Optional[int] = None,
     start_quarter: Optional[int] = None,
@@ -40,7 +40,7 @@ def run_income_statement_test(
         print("报告期：全部")
 
     try:
-        statements: list[IncomeStatement] = data.fetch_income_statement(
+        statements: list[IncomeStatement] = data_manager.get_income_statement(
             symbol,
             start_year=start_year,
             start_quarter=start_quarter,
@@ -93,8 +93,8 @@ def test_income_statement(
         data.start()
 
         run_income_statement_test(
-            data,
-            symbol,
+            data_manager=data,
+            symbol=symbol,
             start_year=start_year,
             start_quarter=start_quarter,
             end_year=end_year,
