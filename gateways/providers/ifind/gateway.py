@@ -17,7 +17,7 @@ THS_Trans2DataFrame,
 
 from common.constants import Interval
 from core.models.financial.balance_sheet import BalanceSheet
-from core.models.financial.cash_flow import CashFlowStatement
+from core.models.financial.cash_flow import CashFlow
 from core.models.financial.financial import Financial
 from core.models.financial.income_statement import IncomeStatement
 from core.models.kline import Kline
@@ -590,7 +590,7 @@ class IFinDGateway(StockDataGateway):
     def fetch_cash_flow(
         self,
         symbol: str,
-    ) -> CashFlowStatement:
+    ) -> CashFlow:
         """
         获取现金流量表。
         """

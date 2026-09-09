@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 from core.models.financial.balance_sheet import BalanceSheet
-from core.models.financial.cash_flow import CashFlowStatement
+from core.models.financial.cash_flow import CashFlow
 from core.models.financial.financial import Financial
 from core.models.financial.income_statement import IncomeStatement
 from core.models.financial.financial_indicators import FinancialIndicators
@@ -447,7 +447,7 @@ class FinancialAnalyzer:
     @staticmethod
     def _calculate_cash_flow_quality(
         income: Optional[IncomeStatement],
-        cash_flow: Optional[CashFlowStatement],
+        cash_flow: Optional[CashFlow],
     ) -> Optional[float]:
         """
         现金流质量。
@@ -492,7 +492,7 @@ class FinancialAnalyzer:
 
     @staticmethod
     def _calculate_operating_cash_flow_per_share(
-        cash_flow: Optional[CashFlowStatement],
+        cash_flow: Optional[CashFlow],
         financial: Financial,
     ) -> Optional[float]:
         """

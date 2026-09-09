@@ -7,7 +7,7 @@ from core.models.stock import Stock
 from core.models.quote import Quote
 from core.models.industry import Industry
 from core.models.financial.balance_sheet import BalanceSheet
-from core.models.financial.cash_flow import CashFlowStatement
+from core.models.financial.cash_flow import CashFlow
 from core.models.industry_profile import IndustryProfile
 from common.enums.quote_level import QuoteLevel
 from gateways.data_gateway import StockDataGateway
@@ -504,7 +504,7 @@ class DataManager:
         start_quarter: Optional[int] = None,
         end_year: Optional[int] = None,
         end_quarter: Optional[int] = None,
-    ) -> list[CashFlowStatement]:
+    ) -> list[CashFlow]:
         """
         获取指定股票的现金流量表数据。
 

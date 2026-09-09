@@ -9,7 +9,7 @@ from polars import date
 from common.constants import Interval
 from common.enums.quote_level import QuoteLevel
 from core.models.financial.balance_sheet import BalanceSheet
-from core.models.financial.cash_flow import CashFlowStatement
+from core.models.financial.cash_flow import CashFlow
 from core.models.financial.financial import Financial
 from core.models.financial.income_statement import IncomeStatement
 from core.models.kline import Kline
@@ -114,6 +114,16 @@ class StockDataGateway(ABC):
         end_year: Optional[int] = None,
         end_quarter: Optional[int] = None,
     ) -> list[BalanceSheet]:
+        raise NotImplementedError
+    
+    @abstractmethod
+    def fetch_cash_flow(
+        self,
+        symbol: str,
+    ) -> CashFlow:
+        """
+        由具体数据源实现利润表数据获取。
+        """
         raise NotImplementedError
 
     @abstractmethod
@@ -279,12 +289,7 @@ class StockDataGateway(ABC):
                     f"{end_year}Q{end_quarter}"
                 )
 
-    @abstractmethod
-    def fetch_cash_flow(
-        self,
-        symbol: str,
-    ) -> CashFlowStatement:
-        raise NotImplementedError
+
 
     @abstractmethod
     def fetch_financial(

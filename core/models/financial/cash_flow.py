@@ -5,7 +5,7 @@ from typing import Optional
 
 
 @dataclass(slots=True)
-class CashFlowStatement:
+class CashFlow:
     """
     现金流量表。
 

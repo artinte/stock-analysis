@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from core.models.financial.balance_sheet import BalanceSheet
-from core.models.financial.cash_flow import CashFlowStatement
+from core.models.financial.cash_flow import CashFlow
 from core.models.financial.financial_indicators import FinancialIndicators
 from core.models.financial.income_statement import IncomeStatement
 
@@ -109,7 +109,7 @@ class Financial:
     资产负债表。
     """
 
-    cash_flow: Optional[CashFlowStatement] = None
+    cash_flow: Optional[CashFlow] = None
     """
     现金流量表。
     """
