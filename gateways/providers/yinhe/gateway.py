@@ -437,8 +437,39 @@ class YinheGateway(StockDataGateway):
 
         return df.iloc[-1]
 
+    def fetch_balance_sheet(
+        self,
+        symbol: str,
+        start_year: Optional[int],
+        start_quarter: Optional[int],
+        end_year: Optional[int],
+        end_quarter: Optional[int],
+    ) -> BalanceSheet | None:
+        """
+        获取资产负债表。
 
-    def fetch_income_statement_period(
+        银河 get_balance_sheet() 返回：
+
+            {
+                "600519.SH": DataFrame
+            }
+
+        转换为统一 BalanceSheet 模型。
+        """
+
+        self._ensure_started()
+
+        symbol = normalize_symbol(symbol)
+
+        return self.financial.fetch_balance_sheet(
+            symbol,
+            start_year,
+            start_quarter,
+            end_year,
+            end_quarter,
+        )
+
+    def fetch_income_statement(
         self,
         symbol: str,
         start_year: Optional[int],
@@ -449,7 +480,7 @@ class YinheGateway(StockDataGateway):
         """
         获取银河利润表数据。
 
-        本方法由 StockDataGateway.fetch_income_statement_period()
+        本方法由 StockDataGateway.fetch_income_statement()
         调用，不负责校验报告期参数。
 
         参数：
@@ -484,121 +515,13 @@ class YinheGateway(StockDataGateway):
 
         symbol = normalize_symbol(symbol)
 
-        return self.financial.fetch_income_statement_period(
+        return self.financial.fetch_income_statement(
             symbol,
             start_year,
             start_quarter,
             end_year,
             end_quarter,
         )
-
-    def fetch_balance_sheet(
-        self,
-        symbol: str,
-    ) -> BalanceSheet | None:
-        """
-        获取资产负债表。
-
-        银河 get_balance_sheet() 返回：
-
-            {
-                "600519.SH": DataFrame
-            }
-
-        转换为统一 BalanceSheet 模型。
-        """
-
-        self._ensure_started()
-        symbol = normalize_symbol(symbol)
-
-        try:
-            result = self.info_data.get_balance_sheet(
-                [symbol],
-                local_path=self.local_path,
-                is_local=True,
-            )
-            if not result:
-                print(f"[银河] 未获取到资产负债表数据: {symbol}")
-                return None
-
-            df = result.get(symbol)
-
-            if df is None:
-                print(f"[银河] 未找到资产负债表: {symbol}")
-                return None
-
-            if df.empty:
-                print(f"[银河] 资产负债表为空: {symbol}")
-                return None
-
-            print(f"[银河] get_balance_sheet: " f"shape={df.shape}")
-
-            print(f"[银河] get_balance_sheet columns: " f"{list(df.columns)}")
-
-            row = df.iloc[0]
-
-            return BalanceSheet(
-                # ==================================================
-                # 基础信息
-                # ==================================================
-                symbol=symbol,
-                report_date=self._to_str(row.get("REPORTING_PERIOD")),
-                report_type=self._to_str(row.get("REPORT_TYPE")),
-                statement_type=self._to_str(row.get("STATEMENT_TYPE")),
-                announcement_date=self._to_str(row.get("ANN_DATE")),
-                currency=self._to_str(row.get("CURRENCY_CODE")),
-                # ==================================================
-                # 资产
-                # ==================================================
-                total_assets=self._to_float(row.get("TOTAL_ASSETS")),
-                current_assets=self._to_float(row.get("TOTAL_CUR_ASSETS")),
-                non_current_assets=self._to_float(row.get("TOT_NONCUR_ASSETS")),
-                cash=self._to_float(row.get("CURRENCY_CAP")),
-                accounts_receivable=self._to_float(row.get("ACCT_RECEIVABLE")),
-                inventory=self._to_float(row.get("INV")),
-                fixed_assets=self._to_float(row.get("FIXED_ASSETS")),
-                construction_in_progress=self._to_float(row.get("CONST_IN_PROC")),
-                intangible_assets=self._to_float(row.get("INTANGIBLE_ASSETS")),
-                goodwill=self._to_float(row.get("GOODWILL")),
-                long_term_equity_investment=self._to_float(row.get("LT_EQUITY_INV")),
-                investment_real_estate=self._to_float(row.get("INV_REALESTATE")),
-                right_of_use_assets=self._to_float(row.get("USE_RIGHT_ASSETS")),
-                # ==================================================
-                # 负债
-                # ==================================================
-                total_liabilities=self._to_float(row.get("TOTAL_LIAB")),
-                current_liabilities=self._to_float(row.get("TOTAL_CUR_LIAB")),
-                non_current_liabilities=self._to_float(row.get("TOTAL_NONCUR_LIAB")),
-                short_term_debt=self._to_float(row.get("ST_BORROWING")),
-                long_term_debt=self._to_float(row.get("LT_LOAN")),
-                accounts_payable=self._to_float(row.get("ACCT_PAYABLE")),
-                notes_payable=self._to_float(row.get("NOTES_PAYABLE")),
-                bonds_payable=self._to_float(row.get("BONDS_PAYABLE")),
-                lease_liability=self._to_float(row.get("LEASE_LIABILITY")),
-                tax_payable=self._to_float(row.get("TAX_PAYABLE")),
-                dividends_payable=self._to_float(row.get("DIV_PAYABLE")),
-                # ==================================================
-                # 所有者权益
-                # ==================================================
-                total_equity=self._to_float(row.get("TOT_SHARE_EQUITY_INCL_MIN_INT")),
-                shareholders_equity=self._to_float(
-                    row.get("TOT_SHARE_EQUITY_EXCL_MIN_INT")
-                ),
-                minority_interest=self._to_float(row.get("MINORITY_EQUITY")),
-                share_capital=self._to_float(row.get("CAP_STOCK")),
-                capital_reserve=self._to_float(row.get("CAP_RESV")),
-                surplus_reserve=self._to_float(row.get("SURPLUS_RESV")),
-                undistributed_profit=self._to_float(row.get("UNDISTRIBUTED_PRO")),
-                treasury_stock=self._to_float(row.get("LESS_TREASURY_STK")),
-            )
-
-        except SystemExit as exc:
-            print(f"[银河] get_balance_sheet 调用了 exit(): " f"{exc}")
-            return None
-
-        except BaseException as exc:
-            print(f"[银河] get_balance_sheet 异常: " f"{type(exc).__name__}: {exc}")
-            return None
 
     def fetch_cash_flow(
         self,
@@ -742,9 +665,9 @@ class YinheGateway(StockDataGateway):
 
         由以下三个财务报表接口组合：
 
-            fetch_income_statement()
-            fetch_balance_sheet()
-            fetch_cash_flow()
+            fetch_income_statement
+            fetch_balance_sheet
+            fetch_cash_flow
 
         转换为统一 Financial 模型。
 
@@ -771,7 +694,7 @@ class YinheGateway(StockDataGateway):
             # 1. 利润表
             # ======================================================
 
-            income = self.fetch_income_statement_abandon(symbol)
+            income = self.fetch_income_statement(symbol)
 
             # ======================================================
             # 2. 资产负债表
@@ -856,14 +779,6 @@ class YinheGateway(StockDataGateway):
 
         if not self._started:
             raise RuntimeError("银河数据源尚未启动，" "请先调用 DataManager.start()")
-
-    
-
-    
-
-    
-
-
 
     @property
     def version(self) -> str:

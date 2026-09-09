@@ -98,36 +98,6 @@ class StockDataGateway(ABC):
     ):
         raise NotImplementedError
 
-    @abstractmethod
-    def fetch_balance_sheet(
-        self,
-        symbol: str,
-    ) -> BalanceSheet:
-        raise NotImplementedError
-
-    def fetch_income_statement(
-        self,
-        symbol: str,
-        start_year: Optional[int] = None,
-        start_quarter: Optional[int] = None,
-        end_year: Optional[int] = None,
-        end_quarter: Optional[int] = None,
-    ) -> list[IncomeStatement]:
-        self._validate_report_period(
-            start_year,
-            start_quarter,
-            end_year,
-            end_quarter,
-        )
-
-        return self.fetch_income_statement_period(
-            symbol,
-            start_year,
-            start_quarter,
-            end_year,
-            end_quarter,
-        )
-
     def fetch_etf_composition(
         self,
         symbol: str,
@@ -136,7 +106,18 @@ class StockDataGateway(ABC):
         return self.gateway.fetch_etf_composition(symbol, trade_date)
 
     @abstractmethod
-    def fetch_income_statement_period(
+    def fetch_balance_sheet(
+        self,
+        symbol: str,
+        start_year: Optional[int] = None,
+        start_quarter: Optional[int] = None,
+        end_year: Optional[int] = None,
+        end_quarter: Optional[int] = None,
+    ) -> list[BalanceSheet]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def fetch_income_statement(
         self,
         symbol: str,
         start_year: Optional[int],

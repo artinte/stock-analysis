@@ -28,7 +28,23 @@ class YinheFinancial:
 
         self.gateway = gateway
 
-    def fetch_income_statement_period(
+    def fetch_balance_sheet(
+        self,
+        symbol: str,
+        start_year: int | None = None,
+        start_quarter: int | None = None,
+        end_year: int | None = None,
+        end_quarter: int | None = None,
+    ) -> list[BalanceSheet]:
+        return self.fetch_balance_sheets(
+            [symbol],
+            start_year,
+            start_quarter,
+            end_year,
+            end_quarter,
+        ).get(symbol, [])
+
+    def fetch_income_statement(
         self,
         symbol: str,
         start_year: int | None = None,
@@ -61,7 +77,7 @@ class YinheFinancial:
             符合查询条件的利润表数据列表。
             如果没有匹配数据，则返回空列表。
         """
-        return self.fetch_income_statements_period(
+        return self.fetch_income_statements(
             [symbol],
             start_year,
             start_quarter,
@@ -69,7 +85,218 @@ class YinheFinancial:
             end_quarter,
         ).get(symbol, [])
 
-    def fetch_income_statements_period(
+    def fetch_balance_sheets(
+        self,
+        symbols: list[str],
+        start_year: int | None = None,
+        start_quarter: int | None = None,
+        end_year: int | None = None,
+        end_quarter: int | None = None,
+    ) -> dict[str, list[BalanceSheet]]:
+
+        balance_sheets: dict[str, list[BalanceSheet]] = {}
+
+        try:
+            # ======================================================
+            # 获取银河指定股票列表的上市公司的资产负债表数据
+            # 本地保存全量历史数据，且每次调用接口默认增量更新本地数据，从而加速接口读取速度
+            # ======================================================
+
+            result = self.gateway.info_data.get_balance_sheet(
+                symbols,
+                local_path=self.gateway.local_path,
+                is_local=True,
+            )
+
+            if not result:
+                print(f"[银河] 未获取到资产负债表数据: {symbols}")
+                return {}
+
+            for symbol in symbols:
+
+                # ======================================================
+                # 获取当前股票 DataFrame
+                # ======================================================
+
+                df = result.get(symbol)
+
+                if df is None:
+                    print(f"[银河] 未找到股票资产负债表: {symbol}")
+                    continue
+
+                if df.empty:
+                    print(f"[银河] 资产负债表为空: {symbol}")
+                    continue
+
+                if "REPORTING_PERIOD" not in df.columns:
+                    print(f"[银河] 资产负债表缺少 REPORTING_PERIOD: " f"{symbol}")
+                    continue
+
+                # ======================================================
+                # 根据报告期筛选
+                # ======================================================
+
+                selected_rows = []
+
+                for _, row in df.iterrows():
+
+                    statement_type = row.get("STATEMENT_TYPE")
+
+                    # --------------------------------------------------
+                    # 只使用合并报表
+                    # --------------------------------------------------
+
+                    if statement_type != "1":
+                        continue
+
+                    report_date = str(row.get("REPORTING_PERIOD"))
+
+                    if not report_date:
+                        continue
+
+                    report_year, report_quarter = self._parse_report_period(report_date)
+
+                    # --------------------------------------------------
+                    # 起始报告期
+                    # --------------------------------------------------
+
+                    if start_year is not None:
+                        if self._quarter_index(
+                            report_year,
+                            report_quarter,
+                        ) < self._quarter_index(
+                            start_year,
+                            start_quarter,
+                        ):
+                            continue
+
+                    # --------------------------------------------------
+                    # 结束报告期
+                    # --------------------------------------------------
+
+                    if end_year is not None:
+                        if self._quarter_index(
+                            report_year,
+                            report_quarter,
+                        ) > self._quarter_index(
+                            end_year,
+                            end_quarter,
+                        ):
+                            continue
+
+                    selected_rows.append(row)
+
+                if not selected_rows:
+                    continue
+
+                # ======================================================
+                # 转换为标准 BalanceSheet
+                # ======================================================
+
+                symbol_balance_sheets: list[BalanceSheet] = []
+
+                for row in selected_rows:
+
+                    symbol_balance_sheets.append(
+                        BalanceSheet(
+                            # ==================================================
+                            # 基础信息
+                            # ==================================================
+                            symbol=symbol,
+                            report_date=self._to_str(row.get("REPORTING_PERIOD")),
+                            report_type=self._to_str(row.get("REPORT_TYPE")),
+                            statement_type=self._to_str(row.get("STATEMENT_TYPE")),
+                            announcement_date=self._to_str(row.get("ANN_DATE")),
+                            currency=self._to_str(row.get("CURRENCY_CODE")),
+                            # ==================================================
+                            # 资产
+                            # ==================================================
+                            total_assets=self._to_float(row.get("TOTAL_ASSETS")),
+                            current_assets=self._to_float(row.get("TOTAL_CUR_ASSETS")),
+                            non_current_assets=self._to_float(
+                                row.get("TOT_NONCUR_ASSETS")
+                            ),
+                            cash=self._to_float(row.get("CURRENCY_CAP")),
+                            accounts_receivable=self._to_float(
+                                row.get("ACCT_RECEIVABLE")
+                            ),
+                            inventory=self._to_float(row.get("INV")),
+                            fixed_assets=self._to_float(row.get("FIXED_ASSETS")),
+                            construction_in_progress=self._to_float(
+                                row.get("CONST_IN_PROC")
+                            ),
+                            intangible_assets=self._to_float(
+                                row.get("INTANGIBLE_ASSETS")
+                            ),
+                            goodwill=self._to_float(row.get("GOODWILL")),
+                            long_term_equity_investment=self._to_float(
+                                row.get("LT_EQUITY_INV")
+                            ),
+                            investment_real_estate=self._to_float(
+                                row.get("INV_REALESTATE")
+                            ),
+                            right_of_use_assets=self._to_float(
+                                row.get("USE_RIGHT_ASSETS")
+                            ),
+                            # ==================================================
+                            # 负债
+                            # ==================================================
+                            total_liabilities=self._to_float(row.get("TOTAL_LIAB")),
+                            current_liabilities=self._to_float(
+                                row.get("TOTAL_CUR_LIAB")
+                            ),
+                            non_current_liabilities=self._to_float(
+                                row.get("TOTAL_NONCUR_LIAB")
+                            ),
+                            short_term_debt=self._to_float(row.get("ST_BORROWING")),
+                            long_term_debt=self._to_float(row.get("LT_LOAN")),
+                            accounts_payable=self._to_float(row.get("ACCT_PAYABLE")),
+                            notes_payable=self._to_float(row.get("NOTES_PAYABLE")),
+                            bonds_payable=self._to_float(row.get("BONDS_PAYABLE")),
+                            lease_liability=self._to_float(row.get("LEASE_LIABILITY")),
+                            tax_payable=self._to_float(row.get("TAX_PAYABLE")),
+                            dividends_payable=self._to_float(row.get("DIV_PAYABLE")),
+                            # ==================================================
+                            # 所有者权益
+                            # ==================================================
+                            total_equity=self._to_float(
+                                row.get("TOT_SHARE_EQUITY_INCL_MIN_INT")
+                            ),
+                            shareholders_equity=self._to_float(
+                                row.get("TOT_SHARE_EQUITY_EXCL_MIN_INT")
+                            ),
+                            minority_interest=self._to_float(
+                                row.get("MINORITY_EQUITY")
+                            ),
+                            share_capital=self._to_float(row.get("CAP_STOCK")),
+                            capital_reserve=self._to_float(row.get("CAP_RESV")),
+                            surplus_reserve=self._to_float(row.get("SURPLUS_RESV")),
+                            undistributed_profit=self._to_float(
+                                row.get("UNDISTRIBUTED_PRO")
+                            ),
+                            treasury_stock=self._to_float(row.get("LESS_TREASURY_STK")),
+                        )
+                    )
+
+                # ======================================================
+                # 按报告期升序排列
+                # ======================================================
+
+                symbol_balance_sheets.sort(key=lambda item: item.report_date or "")
+
+                balance_sheets[symbol] = symbol_balance_sheets
+
+            return balance_sheets
+
+        except SystemExit as exc:
+            print(f"[银河] get_balance_sheet 调用了 exit(): " f"{exc}")
+            return {}
+
+        except BaseException as exc:
+            print(f"[银河] get_balance_sheet 异常: " f"{type(exc).__name__}: {exc}")
+            return {}
+
+    def fetch_income_statements(
         self,
         symbols: list[str],
         start_year: int | None = None,
