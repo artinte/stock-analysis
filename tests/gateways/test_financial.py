@@ -4,14 +4,11 @@ from core.models.financial.financial import Financial
 from gateways.data_manager import DataManager
 
 """
-股票财务数据测试。
+股票 Financial 数据测试。
 
 测试内容：
 
-    fetch_income_statement()
-    fetch_balance_sheet()
-    fetch_cash_flow()
-    fetch_financial()
+    get_financial()
 
 运行：
 
@@ -24,85 +21,18 @@ def run_financial_test(
     symbol: str,
 ) -> None:
     """
-    使用已有 DataManager 测试财务数据接口。
-
-    测试四个公开财务接口：
-
-        1. 利润表
-        2. 资产负债表
-        3. 现金流量表
-        4. 统一 Financial
+    使用已有 DataManager 测试 Financial 数据接口。
     """
 
     print("=" * 80)
-    print(f"【股票财务数据】{symbol}")
+    print(f"【股票 Financial】{symbol}")
     print("=" * 80)
 
     # ==========================================================
-    # 1. 利润表
+    # Financial
     # ==========================================================
 
-    print("\n[1] 利润表")
-
-    try:
-        income = data.get_income_statement(symbol)
-
-        if income:
-            income.display()
-        else:
-            print("❌ 未获取到利润表数据")
-
-    except NotImplementedError:
-        print("⚠️ 当前数据源暂未实现利润表接口")
-
-    except Exception as exc:
-        print(f"❌ 获取利润表失败：{exc}")
-
-    # ==========================================================
-    # 2. 资产负债表
-    # ==========================================================
-
-    print("\n[2] 资产负债表")
-
-    try:
-        balance_sheet = data.get_balance_sheet(symbol)
-
-        if balance_sheet:
-            balance_sheet.display()
-        else:
-            print("❌ 未获取到资产负债表数据")
-
-    except NotImplementedError:
-        print("⚠️ 当前数据源暂未实现资产负债表接口")
-
-    except Exception as exc:
-        print(f"❌ 获取资产负债表失败：{exc}")
-
-    # ==========================================================
-    # 3. 现金流量表
-    # ==========================================================
-
-    print("\n[3] 现金流量表")
-
-    try:
-        cash_flow = data.get_cash_flow(symbol)
-
-        if cash_flow:
-            cash_flow.display()
-        else:
-            print("❌ 未获取到现金流量表数据")
-
-    except NotImplementedError:
-        print("⚠️ 当前数据源暂未实现现金流量表接口")
-
-    except Exception as exc:
-        print(f"❌ 获取现金流量表失败：{exc}")
-
-    # ==========================================================
-    # 4. 统一 Financial
-    # ==========================================================
-
-    print("\n[4] Financial")
+    print("\n[1] Financial")
 
     try:
         financial: Financial | None = data.get_financial(symbol)
@@ -129,7 +59,7 @@ def test_financial(
     自己管理 DataManager 生命周期。
     """
 
-    print(f"【股票财务测试】" f"{provider_name} / {symbol}")
+    print(f"【股票 Financial 测试】{provider_name} / {symbol}")
 
     data: DataManager | None = None
 
@@ -155,10 +85,7 @@ def test_financial(
 
 def main() -> None:
     """
-    默认测试 AkShare 财务接口。
-
-    当前使用 Mock 实现，
-    不依赖真实网络数据。
+    默认测试银河 Financial 接口。
     """
 
     test_financial(

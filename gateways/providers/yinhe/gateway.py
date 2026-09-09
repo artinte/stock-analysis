@@ -20,7 +20,7 @@ from core.models.financial.financial import Financial
 from core.models.kline import Kline
 from core.models.valuation import Valuation
 from core.models.quote import Quote
-from gateways.analysis.financial import FinancialAnalyzer
+from gateways.analysis.financial_analyzer import FinancialAnalyzer
 from gateways.providers.yinhe.etf import YinheETF
 from gateways.providers.yinhe.financial import YinheFinancial
 from gateways.providers.yinhe.kline import YinheKline
@@ -172,8 +172,6 @@ class YinheGateway(StockDataGateway):
         self.cash_flow_statement = CashFlow(self)
 
         self.financial = YinheFinancial(self)
-
-        self.financial_analyzer = FinancialAnalyzer()
 
         self.valuation = YinheValuation(self)
 
@@ -573,117 +571,12 @@ class YinheGateway(StockDataGateway):
         self,
         symbol: str,
     ) -> Financial | None:
-        """
-        获取完整财务数据。
-
-        由以下三个财务报表接口组合：
-
-            fetch_income_statement
-            fetch_balance_sheet
-            fetch_cash_flow
-
-        转换为统一 Financial 模型。
-
-        数据流：
-
-            AmazingData
-                |
-                +--> IncomeStatement
-                |
-                +--> BalanceSheet
-                |
-                +--> CashFlowStatement
-                        |
-                        v
-                    Financial
-        """
 
         self._ensure_started()
 
         symbol = normalize_symbol(symbol)
 
-        try:
-            # ======================================================
-            # 1. 利润表
-            # ======================================================
-
-            income = self.fetch_income_statement(symbol)
-
-            # ======================================================
-            # 2. 资产负债表
-            # ======================================================
-
-            balance = self.fetch_balance_sheet(symbol)
-
-            # ======================================================
-            # 3. 现金流量表
-            # ======================================================
-
-            cash_flow = self.fetch_cash_flow(symbol)
-
-            # ======================================================
-            # 三张报表全部没有获取到
-            # ======================================================
-
-            if income is None and balance is None and cash_flow is None:
-                print(f"[银河] 未获取到完整财务数据: " f"{symbol}")
-                return None
-
-            # ======================================================
-            # 以实际获取到的报表作为基础信息来源
-            # ======================================================
-
-            report_date = None
-            report_type = None
-            currency = None
-            announcement_date = None
-
-            if income is not None:
-                report_date = income.report_date
-                report_type = income.report_type
-                currency = income.currency
-                announcement_date = income.announcement_date
-
-            elif balance is not None:
-                report_date = balance.report_date
-                report_type = balance.report_type
-                currency = balance.currency
-                announcement_date = balance.announcement_date
-
-            elif cash_flow is not None:
-                report_date = cash_flow.report_date
-                report_type = cash_flow.report_type
-                currency = cash_flow.currency
-                announcement_date = cash_flow.announcement_date
-
-            # ======================================================
-            # 组合 Financial
-            # ======================================================
-
-            financial = Financial(
-                symbol=symbol,
-                report_date=report_date,
-                report_type=report_type,
-                currency=currency,
-                announcement_date=announcement_date,
-                source=self.name,
-                income=income,
-                balance=balance,
-                cash_flow=cash_flow,
-                # 财务指标由 FinancialAnalyzer 计算
-                indicators=None,
-            )
-
-            # 计算财务指标
-            indicators = self.financial_analyzer.analyze(current=financial)
-
-            financial.indicators = indicators
-
-            return financial
-
-        except Exception as exc:
-            print(f"[银河] 获取财务数据失败 " f"{symbol}: {exc}")
-            return None
+        return self.financial.fetch_financial(symbol)
 
     def _ensure_started(self) -> None:
         """
