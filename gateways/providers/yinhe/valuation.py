@@ -5,7 +5,7 @@ from typing import Optional
 
 import pandas
 
-from gateways.analysis.valuation import ValuationAnalyzer
+from gateways.analysis.valuation_analyzer import ValuationAnalyzer
 from common.constants import Interval, TEN_THOUSAND
 from core.models.valuation import Valuation
 from utils.stock_mapping import normalize_symbol

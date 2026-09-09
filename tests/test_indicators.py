@@ -2,7 +2,7 @@ import datetime
 import os
 from dotenv import load_dotenv
 import pandas
-from gateways.analysis.valuation import ValuationAnalyzer
+from gateways.analysis.valuation_analyzer import ValuationAnalyzer
 from gateways.data_manager import DataManager
 from gateways.providers.yinhe.gateway import YinheGateway
 from gateways.indicators.volatility import calculate_bollinger_bands
