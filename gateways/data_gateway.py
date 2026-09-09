@@ -120,7 +120,7 @@ class StockDataGateway(ABC):
             end_quarter,
         )
 
-        return self._fetch_income_statement(
+        return self.fetch_income_statement_period(
             symbol,
             start_year,
             start_quarter,
@@ -136,7 +136,7 @@ class StockDataGateway(ABC):
         return self.gateway.fetch_etf_composition(symbol, trade_date)
 
     @abstractmethod
-    def _fetch_income_statement(
+    def fetch_income_statement_period(
         self,
         symbol: str,
         start_year: Optional[int],

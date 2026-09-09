@@ -437,160 +437,8 @@ class YinheGateway(StockDataGateway):
 
         return df.iloc[-1]
 
-    def fetch_income_statement_abandon(
-        self,
-        symbol: str,
-    ) -> IncomeStatement | None:
-        """
-        获取利润表。
 
-        银河 get_income() 返回：
-
-            {
-                "600519.SH": DataFrame
-            }
-
-        将指定股票最新一条利润表数据转换为
-        统一 IncomeStatement 模型。
-        """
-
-        self._ensure_started()
-
-        symbol = normalize_symbol(symbol)
-
-        try:
-            # ======================================================
-            # 获取银河原始数据
-            # ======================================================
-
-            result = self.info_data.get_income(
-                [symbol],
-                local_path=self.local_path,
-                is_local=False,
-            )
-
-            if not result:
-                print(f"[银河] 未获取到利润表数据: {symbol}")
-                return None
-
-            # ======================================================
-            # 从 dict 中取出当前股票 DataFrame
-            # ======================================================
-
-            df = result.get(symbol)
-
-            if df is None:
-                print(f"[银河] 未找到股票利润表: {symbol}")
-                return None
-
-            if df.empty:
-                print(f"[银河] 利润表为空: {symbol}")
-                return None
-
-            # ======================================================
-            # 输出调试信息
-            # ======================================================
-
-            print(f"[银河] get_income: " f"shape={df.shape}")
-
-            print(f"[银河] get_income columns: " f"{list(df.columns)}")
-
-            # ======================================================
-            # 选择记录
-            #
-            # 当前先取第一条。
-            # 后续如果需要指定报告期，
-            # 再根据 REPORTING_PERIOD /
-            # REPORT_TYPE / STATEMENT_TYPE 筛选。
-            # ======================================================
-
-            row = df.iloc[0]
-
-            # ======================================================
-            # 转换为标准 IncomeStatement
-            # ======================================================
-
-            return IncomeStatement(
-                # ==========================================================
-                # 基础信息
-                # ==========================================================
-                symbol=symbol,
-                report_date=self._to_str(row.get("REPORTING_PERIOD")),
-                report_type=self._to_str(row.get("REPORT_TYPE")),
-                statement_type=self._to_str(row.get("STATEMENT_TYPE")),
-                announcement_date=self._to_str(row.get("ANN_DATE")),
-                currency=self._to_str(row.get("CURRENCY_CODE")),
-                # ==========================================================
-                # 收入
-                # ==========================================================
-                revenue=self._to_float(row.get("OPERA_REV")),
-                total_operating_income=self._to_float(row.get("TOT_OPERA_REV")),
-                # ==========================================================
-                # 成本费用
-                # ==========================================================
-                operating_cost=self._to_float(row.get("LESS_OPERA_COST")),
-                total_operating_cost=self._to_float(row.get("TOT_OPERA_COST")),
-                selling_expense=self._to_float(row.get("LESS_SELLING_EXP")),
-                administrative_expense=self._to_float(row.get("LESS_ADMIN_EXP")),
-                financial_expense=self._to_float(row.get("LESS_FIN_EXP")),
-                rd_expense=self._to_float(row.get("RD_EXP")),
-                business_tax_and_surcharge=self._to_float(
-                    row.get("LESS_BUS_TAX_SURCHARGE")
-                ),
-                asset_impairment_loss=self._to_float(
-                    row.get("LESS_ASSETS_IMPAIR_LOSS")
-                ),
-                credit_impairment_loss=self._to_float(row.get("CREDIT_IMPAIR_LOSS")),
-                # ==========================================================
-                # 收益项目
-                # ==========================================================
-                investment_income=self._to_float(row.get("PLUS_NET_INV_INC")),
-                fair_value_change_income=self._to_float(
-                    row.get("PLUS_NET_GAIN_CHG_FV")
-                ),
-                exchange_income=self._to_float(row.get("PLUS_NET_FX_INC")),
-                other_income=self._to_float(row.get("OTH_INCOME")),
-                # ==========================================================
-                # 利润
-                # ==========================================================
-                gross_profit=self._calculate_gross_profit(row),
-                operating_profit=self._to_float(row.get("OPERA_PROFIT")),
-                total_profit=self._to_float(row.get("TOTAL_PROFIT")),
-                income_tax=self._to_float(row.get("INCOME_TAX")),
-                net_profit=self._to_float(row.get("NET_PRO_INCL_MIN_INT_INC")),
-                net_profit_attributable=self._to_float(
-                    row.get("NET_PRO_EXCL_MIN_INT_INC")
-                ),
-                non_recurring_net_profit=self._first_float(
-                    row.get("NET_PRO_AFTER_DED_NR_GL"),
-                    row.get("NET_PRO_AFTER_DED_NR_GL_COR"),
-                ),
-                # ==========================================================
-                # 营业外收支
-                # ==========================================================
-                non_operating_income=self._to_float(row.get("PLUS_NON_OPER_A_REV")),
-                non_operating_expense=self._to_float(row.get("LESS_NON_OPER_A_EXP")),
-                # ==========================================================
-                # 其他综合收益
-                # ==========================================================
-                other_comprehensive_income=self._to_float(row.get("OTH_COMPRE_INC")),
-                # ==========================================================
-                # EBIT / EBITDA
-                # ==========================================================
-                ebit=self._to_float(row.get("EBIT")),
-                ebitda=self._to_float(row.get("EBITDA")),
-                # ==========================================================
-                # 每股收益
-                # ==========================================================
-                eps=self._to_float(row.get("BASIC_EPS")),
-                diluted_eps=self._to_float(row.get("DILUTED_EPS")),
-            )
-
-        except Exception as exc:
-            print(f"[银河] 获取利润表失败 " f"{symbol}: {exc}")
-            return None
-
-    def _fetch_income_statement(
+    def fetch_income_statement_period(
         self,
         symbol: str,
         start_year: Optional[int],
@@ -601,7 +449,7 @@ class YinheGateway(StockDataGateway):
         """
         获取银河利润表数据。
 
-        本方法由 StockDataGateway.fetch_income_statement()
+        本方法由 StockDataGateway.fetch_income_statement_period()
         调用，不负责校验报告期参数。
 
         参数：
@@ -636,7 +484,7 @@ class YinheGateway(StockDataGateway):
 
         symbol = normalize_symbol(symbol)
 
-        return self.financial._fetch_income_statement(
+        return self.financial.fetch_income_statement_period(
             symbol,
             start_year,
             start_quarter,
@@ -1011,88 +859,7 @@ class YinheGateway(StockDataGateway):
 
     
 
-    @staticmethod
-    def _parse_report_period(
-        report_date: str,
-    ) -> tuple[int, int]:
-        """
-        将报告期转换为报告年度和季度。
-
-        支持以下格式：
-
-            20260630
-            2026-06-30
-            2026/06/30
-
-        返回：
-
-            (2026, 2)
-
-        对应：
-
-            03-31 -> Q1
-            06-30 -> Q2
-            09-30 -> Q3
-            12-31 -> Q4
-        """
-
-        if report_date is None:
-            raise ValueError("报告期不能为空")
-
-        value = str(report_date).strip()
-
-        # ==========================================================
-        # 统一日期格式
-        # ==========================================================
-
-        value = value.replace("-", "")
-        value = value.replace("/", "")
-
-        if len(value) != 8 or not value.isdigit():
-            raise ValueError(f"无效的财务报告期: {report_date}")
-
-        # ==========================================================
-        # 提取年月日
-        # ==========================================================
-
-        year = int(value[:4])
-        month = int(value[4:6])
-        day = int(value[6:8])
-
-        # ==========================================================
-        # 根据报告期月份判断季度
-        # ==========================================================
-
-        quarter_map = {
-            (3, 31): 1,
-            (6, 30): 2,
-            (9, 30): 3,
-            (12, 31): 4,
-        }
-
-        quarter = quarter_map.get((month, day))
-
-        if quarter is None:
-            raise ValueError(f"无效的财务报告期: {report_date}")
-
-        return year, quarter
-
-    @staticmethod
-    def _quarter_index(
-        year: int,
-        quarter: int,
-    ) -> int:
-        """
-        将报告年度和季度转换为连续季度序号。
-
-        用于报告期之间的先后比较。
-
-        示例：
-            2025Q1 < 2025Q2
-            2025Q4 < 2026Q1
-        """
-
-        return year * 4 + quarter - 1
+    
 
     
 

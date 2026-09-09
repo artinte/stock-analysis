@@ -21,11 +21,21 @@ class IncomeStatement:
     report_date: Optional[str] = None
     """报告期。"""
 
+    """
+    报告期类型代码。
+    1：3月
+    2：6月
+    3：9月
+    4：12月
+    """
     report_type: Optional[str] = None
-    """报告期类型代码。"""
 
+    """
+    报表类型代码。
+    1. 合并报表：涵盖母公司的财务报表数据，为最新报表
+    2. 合并报表（单季度）：合并报表(单季度)=合并报表(本期)-合并报表(上一季) 
+    """
     statement_type: Optional[str] = None
-    """报表类型代码。"""
 
     announcement_date: Optional[str] = None
     """公告日期。"""

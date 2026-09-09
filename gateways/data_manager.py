@@ -401,7 +401,7 @@ class DataManager:
                 符合查询条件的利润表数据。
                 如果没有匹配数据，则返回空列表。
         """
-        return self.gateway.fetch_income_statement(
+        return self.gateway.fetch_income_statement_period(
             symbol,
             start_year,
             start_quarter,
