@@ -761,7 +761,6 @@ class YinheFinancial:
             print(f"[银河] 获取利润表失败 " f"{symbols}: {exc}")
             return {}
 
-
     @staticmethod
     def _safe_float(value):
         """
@@ -940,613 +939,133 @@ class YinheFinancial:
     def fetch_financial(
         self,
         symbol: str,
-        year: int | None = None,
-        quarter: int | None = None,
-    ) -> Financial | None:
+        start_year: int | None = None,
+        start_quarter: int | None = None,
+        end_year: int | None = None,
+        end_quarter: int | None = None,
+    ) -> list[Financial]:
         """
-        获取股票完整财务数据。
-
-        参数：
-            symbol:
-                股票代码。
-
-            year:
-                报告年份。
-
-            quarter:
-                报告季度：
-                    1 -> Q1
-                    2 -> Q2
-                    3 -> Q3
-                    4 -> Q4
+        获取指定股票的财务数据。
 
         返回：
-            Financial | None
 
-        规则：
+            list[Financial]
 
-            1. year 和 quarter 都为空：
-               获取最新报告期。
+        一个 Financial 对应一个报告期。
 
-            2. year 和 quarter 都指定：
-               获取指定报告期。
-               如果指定报告期不存在，返回 None。
+        例如：
 
-            3. 只指定 year：
-               获取该年度最新可用报告期。
-               如果该年度不存在，返回 None。
-
-            4. quarter 不能单独指定。
+            [
+                Financial(20240630),
+                Financial(20240930),
+                Financial(20241231),
+                Financial(20250331),
+                Financial(20250630),
+                Financial(20250930),
+                Financial(20251231),
+                Financial(20260331),
+                Financial(20260630),
+            ]
 
         注意：
 
-            Financial 只表示当前报告期。
-
-            YOY / QOQ 所需要的历史报告期，
-            由 FinancialAnalyzer 负责计算。
+            1. 本方法只负责获取和组装数据
+            2. 不负责财务分析
+            3. 不负责判断同比、环比
+            4. 不负责选择 current / previous_year / previous_quarter
+            5. Analyzer 自己处理这些逻辑
         """
 
         # ======================================================
-        # 参数校验
-        # ======================================================
-
-        if year is None and quarter is not None:
-            raise ValueError("quarter 不能单独指定，必须同时指定 year")
-
-        if year is not None and year <= 0:
-            raise ValueError(f"year 必须大于 0: {year}")
-
-        if quarter is not None and quarter not in (
-            1,
-            2,
-            3,
-            4,
-        ):
-            raise ValueError(f"quarter 必须为 1、2、3、4: {quarter}")
-
-        # ======================================================
-        # 获取三张财务报表
-        #
-        # 这里获取全量历史数据。
-        # 后面统一按照 report_date 对齐。
+        # 获取利润表
         # ======================================================
 
         income_statements = self.fetch_income_statement(
             symbol=symbol,
+            start_year=start_year,
+            start_quarter=start_quarter,
+            end_year=end_year,
+            end_quarter=end_quarter,
         )
+
+        # ======================================================
+        # 获取资产负债表
+        # ======================================================
 
         balance_sheets = self.fetch_balance_sheet(
             symbol=symbol,
+            start_year=start_year,
+            start_quarter=start_quarter,
+            end_year=end_year,
+            end_quarter=end_quarter,
         )
+
+        # ======================================================
+        # 获取现金流量表
+        # ======================================================
 
         cash_flows = self.fetch_cash_flow(
             symbol=symbol,
+            start_year=start_year,
+            start_quarter=start_quarter,
+            end_year=end_year,
+            end_quarter=end_quarter,
         )
 
         # ======================================================
-        # 三张表都没有数据
+        # 建立报告期索引
         # ======================================================
 
-        if not income_statements and not balance_sheets and not cash_flows:
+        income_map = {
+            item.report_date: item for item in income_statements if item.report_date
+        }
+
+        balance_map = {
+            item.report_date: item for item in balance_sheets if item.report_date
+        }
+
+        cash_flow_map = {
+            item.report_date: item for item in cash_flows if item.report_date
+        }
+
+        # ======================================================
+        # 合并所有报告期
+        #
+        # 某一张报表缺失时：
+        #
+        #     income=None
+        #     balance=None
+        #     cash_flow=None
+        #
+        # 仍然保留这个 Financial。
+        #
+        # 这样 Analyzer 可以根据实际数据决定哪些指标可以计算。
+        # ======================================================
+
+        report_dates = sorted(set(income_map) | set(balance_map) | set(cash_flow_map))
+
+        if not report_dates:
             print(f"[财务] 未获取到财务数据: {symbol}")
-            return None
+            return []
 
-        # ======================================================
-        # 获取三张表的报告期
-        # ======================================================
+        financials: list[Financial] = []
 
-        income_dates = {
-            item.report_date for item in income_statements if item.report_date
-        }
+        for report_date in report_dates:
 
-        balance_dates = {
-            item.report_date for item in balance_sheets if item.report_date
-        }
-
-        cash_flow_dates = {item.report_date for item in cash_flows if item.report_date}
-
-        # ======================================================
-        # 优先使用三张表共同存在的报告期
-        #
-        # 一个 Financial 最好由同一个报告期的
-        # 利润表、资产负债表、现金流量表组成。
-        # ======================================================
-
-        common_dates = income_dates & balance_dates & cash_flow_dates
-
-        # ======================================================
-        # 如果三张表没有完全共同的报告期，
-        # 则使用所有可用报告期。
-        #
-        # 这样可以允许某一张表暂时缺失。
-        # ======================================================
-
-        if common_dates:
-            available_dates = sorted(common_dates)
-        else:
-            available_dates = sorted(income_dates | balance_dates | cash_flow_dates)
-
-        if not available_dates:
-            print(f"[财务] 未找到有效报告期: {symbol}")
-            return None
-
-        # ======================================================
-        # 确定当前报告期
-        # ======================================================
-
-        selected_report_date = self._select_financial_report_date(
-            symbol=symbol,
-            available_dates=available_dates,
-            year=year,
-            quarter=quarter,
-        )
-
-        # ======================================================
-        # 指定报告期不存在
-        #
-        # 注意：
-        # 这里绝对不能 fallback 到最新报告期。
-        # ======================================================
-
-        if selected_report_date is None:
-            return None
-
-        # ======================================================
-        # 获取当前报告期三张表
-        # ======================================================
-
-        income = self._find_report(
-            income_statements,
-            selected_report_date,
-        )
-
-        balance = self._find_report(
-            balance_sheets,
-            selected_report_date,
-        )
-
-        cash_flow = self._find_report(
-            cash_flows,
-            selected_report_date,
-        )
-
-        # ======================================================
-        # 当前报告期完全没有数据
-        # ======================================================
-
-        if income is None and balance is None and cash_flow is None:
-            print(f"[财务] 未找到报告期数据: " f"{symbol} {selected_report_date}")
-            return None
-
-        # ======================================================
-        # 构建当前 Financial
-        # ======================================================
-
-        financial = self._build_financial(
-            symbol=symbol,
-            report_date=selected_report_date,
-            income_statements=income_statements,
-            balance_sheets=balance_sheets,
-            cash_flows=cash_flows,
-        )
-
-        if financial is None:
-            print(f"[财务] 构建 Financial 失败: " f"{symbol} {selected_report_date}")
-            return None
-
-        # ======================================================
-        # 获取上一年度同期
-        #
-        # 例如：
-        #
-        # 2026-06-30
-        #     ->
-        # 2025-06-30
-        #
-        # 用于 YOY。
-        # ======================================================
-
-        previous_year_date = self._previous_year_report_date(selected_report_date)
-
-        previous_year_financial = self._build_financial(
-            symbol=symbol,
-            report_date=previous_year_date,
-            income_statements=income_statements,
-            balance_sheets=balance_sheets,
-            cash_flows=cash_flows,
-        )
-
-        # ======================================================
-        # 获取上一季度
-        #
-        # 例如：
-        #
-        # 2026-06-30
-        #     ->
-        # 2026-03-31
-        #
-        # 2026-03-31
-        #     ->
-        # 2025-12-31
-        #
-        # 用于 QOQ。
-        # ======================================================
-
-        previous_quarter_date = self._previous_quarter_report_date(selected_report_date)
-
-        previous_quarter_financial = self._build_financial(
-            symbol=symbol,
-            report_date=previous_quarter_date,
-            income_statements=income_statements,
-            balance_sheets=balance_sheets,
-            cash_flows=cash_flows,
-        )
-
-        # ======================================================
-        # 财务指标计算
-        #
-        # 当前 Financial：
-        #     current
-        #
-        # 上年同期：
-        #     previous_year
-        #
-        # 上一季度：
-        #     previous_quarter
-        #
-        # FinancialAnalyzer 负责计算：
-        #
-        #     YOY
-        #     QOQ
-        #     ROE
-        #     ROA
-        #     ROIC
-        #     各类财务指标
-        # ======================================================
-
-        if hasattr(self, "financial_analyzer"):
-
-            financial.indicators = self.financial_analyzer.analyze(
-                current=financial,
-                previous_year=previous_year_financial,
-                previous_quarter=previous_quarter_financial,
-            )
-
-        return financial
-
-    # ==========================================================
-    # 选择报告期
-    # ==========================================================
-
-    @staticmethod
-    def _select_financial_report_date(
-        symbol: str,
-        available_dates: list[str],
-        year: int | None,
-        quarter: int | None,
-    ) -> str | None:
-        """
-        根据用户指定的年份和季度选择报告期。
-
-        规则：
-
-            year=None, quarter=None
-                -> 最新报告期
-
-            year + quarter
-                -> 指定报告期
-                -> 不存在返回 None
-
-            year only
-                -> 该年度最新季度
-                -> 不存在返回 None
-
-            quarter only
-                -> 参数错误
-        """
-
-        if not available_dates:
-            return None
-
-        # ======================================================
-        # 没有指定报告期
-        #
-        # 默认使用最新报告期
-        # ======================================================
-
-        if year is None and quarter is None:
-
-            return available_dates[-1]
-
-        # ======================================================
-        # quarter 不能单独指定
-        # ======================================================
-
-        if year is None and quarter is not None:
-
-            raise ValueError("quarter 不能单独指定，必须同时指定 year")
-
-        # ======================================================
-        # 指定 year + quarter
-        #
-        # 必须精确匹配。
-        #
-        # 不存在：
-        #     返回 None
-        #
-        # 不允许：
-        #     自动使用最新报告期
-        # ======================================================
-
-        if year is not None and quarter is not None:
-
-            requested_report_date = StockDataGateway._build_report_date(
-                year,
-                quarter,
-            )
-
-            if requested_report_date not in available_dates:
-
-                print(
-                    f"[财务] {symbol} " f"未找到指定报告期: " f"{requested_report_date}"
+            financials.append(
+                Financial(
+                    symbol=symbol,
+                    report_date=report_date,
+                    income=income_map.get(report_date),
+                    balance=balance_map.get(report_date),
+                    cash_flow=cash_flow_map.get(report_date),
                 )
-
-                return None
-
-            return requested_report_date
-
-        # ======================================================
-        # 只指定 year
-        #
-        # 取该年度最新可用季度。
-        #
-        # 例如：
-        #
-        # 2026 年只有 Q1、Q2
-        #     -> 取 2026Q2
-        # ======================================================
-
-        if year is not None:
-
-            year_dates = [
-                report_date
-                for report_date in available_dates
-                if report_date.startswith(str(year))
-            ]
-
-            if not year_dates:
-
-                print(f"[财务] {symbol} " f"未找到指定年份: {year}")
-
-                return None
-
-            return year_dates[-1]
-
-        return None
-
-    # ==========================================================
-    # 构建报告期
-    # ==========================================================
-
-    @staticmethod
-    def _build_report_date(
-        year: int,
-        quarter: int,
-    ) -> str:
-        """
-        根据年份和季度生成报告期。
-
-        例如：
-
-            2026, 1 -> 2026-03-31
-            2026, 2 -> 2026-06-30
-            2026, 3 -> 2026-09-30
-            2026, 4 -> 2026-12-31
-        """
-
-        quarter_dates = {
-            1: "-03-31",
-            2: "-06-30",
-            3: "-09-30",
-            4: "-12-31",
-        }
-
-        if quarter not in quarter_dates:
-            raise ValueError(f"无效季度: {quarter}")
-
-        return f"{year}" f"{quarter_dates[quarter]}"
-
-    # ==========================================================
-    # 获取上一年度同期
-    # ==========================================================
-
-    @staticmethod
-    def _previous_year_report_date(
-        report_date: str,
-    ) -> str:
-        """
-        获取上一年度同期报告期。
-
-        例如：
-
-            2026-03-31
-                ->
-            2025-03-31
-
-            2026-06-30
-                ->
-            2025-06-30
-        """
-
-        if not report_date:
-            return ""
-
-        try:
-
-            year = int(report_date[:4])
-
-            return f"{year - 1}" f"{report_date[4:]}"
-
-        except (
-            ValueError,
-            TypeError,
-        ):
-
-            return ""
-
-    # ==========================================================
-    # 获取上一季度
-    # ==========================================================
-
-    @staticmethod
-    def _previous_quarter_report_date(
-        report_date: str,
-    ) -> str:
-        """
-        获取上一季度报告期。
-
-        例如：
-
-            2026-06-30
-                ->
-            2026-03-31
-
-            2026-09-30
-                ->
-            2026-06-30
-
-            2026-03-31
-                ->
-            2025-12-31
-        """
-
-        if not report_date:
-            return ""
-
-        quarter_map = {
-            "-03-31": 1,
-            "-06-30": 2,
-            "-09-30": 3,
-            "-12-31": 4,
-        }
-
-        try:
-
-            year = int(report_date[:4])
-
-            month_day = report_date[4:]
-
-            quarter = quarter_map.get(month_day)
-
-            if quarter is None:
-                return ""
-
-            # --------------------------------------------------
-            # Q1 的上一季度是上一年的 Q4
-            # --------------------------------------------------
-
-            if quarter == 1:
-
-                year -= 1
-                quarter = 4
-
-            else:
-
-                quarter -= 1
-
-            return StockDataGateway._build_report_date(
-                year,
-                quarter,
             )
 
-        except (
-            ValueError,
-            TypeError,
-        ):
-
-            return ""
-
-    # ==========================================================
-    # 查找指定报告期
-    # ==========================================================
-
-    @staticmethod
-    def _find_report(
-        reports: list,
-        report_date: str,
-    ):
-        """
-        从报告列表中查找指定报告期。
-        """
-
-        if not reports or not report_date:
-            return None
-
-        for report in reports:
-
-            if report.report_date == report_date:
-                return report
-
-        return None
-
-    # ==========================================================
-    # 构建 Financial
-    # ==========================================================
-
-    def _build_financial(
-        self,
-        symbol: str,
-        report_date: str,
-        income_statements: list[IncomeStatement],
-        balance_sheets: list[BalanceSheet],
-        cash_flows: list[CashFlow],
-    ) -> Financial | None:
-        """
-        根据报告期构建 Financial。
-
-        Financial 只表示一个报告期。
-
-        如果该报告期三张表均不存在，
-        返回 None。
-        """
-
-        if not report_date:
-            return None
-
         # ======================================================
-        # 查找三张报表
+        # 按报告期排序
         # ======================================================
 
-        income = self._find_report(
-            income_statements,
-            report_date,
-        )
+        financials.sort(key=lambda item: item.report_date or "")
 
-        balance = self._find_report(
-            balance_sheets,
-            report_date,
-        )
-
-        cash_flow = self._find_report(
-            cash_flows,
-            report_date,
-        )
-
-        # ======================================================
-        # 三张表都不存在
-        # ======================================================
-
-        if income is None and balance is None and cash_flow is None:
-            return None
-
-        # ======================================================
-        # 构建 Financial
-        # ======================================================
-
-        return Financial(
-            symbol=symbol,
-            report_date=report_date,
-            income=income,
-            balance=balance,
-            cash_flow=cash_flow,
-        )
+        return financials
