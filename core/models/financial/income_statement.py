@@ -37,46 +37,50 @@ class IncomeStatement:
     """
     statement_type: Optional[str] = None
 
+    """
+    发布公告日期。
+    """
     announcement_date: Optional[str] = None
-    """公告日期。"""
 
+    """
+    币种。
+    """
     currency: Optional[str] = None
-    """币种。"""
 
     # ==========================================================
     # 收入
     # ==========================================================
 
-    revenue: Optional[float] = None
     """营业收入。"""
+    revenue: Optional[float] = None
 
-    total_operating_income: Optional[float] = None
     """营业总收入。"""
+    total_operating_income: Optional[float] = None
 
     # ==========================================================
     # 成本费用
     # ==========================================================
 
-    operating_cost: Optional[float] = None
     """营业成本。"""
+    operating_cost: Optional[float] = None
 
-    total_operating_cost: Optional[float] = None
     """营业总成本。"""
+    total_operating_cost: Optional[float] = None
 
-    selling_expense: Optional[float] = None
     """销售费用。"""
+    selling_expense: Optional[float] = None
 
-    administrative_expense: Optional[float] = None
     """管理费用。"""
+    administrative_expense: Optional[float] = None
 
-    financial_expense: Optional[float] = None
     """财务费用。"""
+    financial_expense: Optional[float] = None
 
-    rd_expense: Optional[float] = None
     """研发费用。"""
+    rd_expense: Optional[float] = None
 
-    business_tax_and_surcharge: Optional[float] = None
     """营业税金及附加。"""
+    business_tax_and_surcharge: Optional[float] = None
 
     asset_impairment_loss: Optional[float] = None
     """资产减值损失。"""

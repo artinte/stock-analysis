@@ -4,6 +4,8 @@ import pandas
 
 from core.models.financial.financial import Financial
 from core.models.financial.income_statement import IncomeStatement
+from core.models.financial.balance_sheet import BalanceSheet
+from core.models.financial.cash_flow import CashFlowStatement
 from utils.stock_mapping import normalize_symbol
 
 
@@ -83,7 +85,7 @@ class YinheFinancial:
             # 获取银河指定股票列表的上市公司的利润表数据
             # 本地保存全量历史数据，且每次调用接口默认增量更新本地数据，从而加速接口读取速度
             # ======================================================
-            
+
             result = self.gateway.info_data.get_income(
                 symbols,
                 local_path=self.gateway.local_path,
@@ -121,7 +123,6 @@ class YinheFinancial:
                 selected_rows = []
 
                 for _, row in df.iterrows():
-                    
                     statement_type = row.get("STATEMENT_TYPE")
                     if statement_type != "1":
                         continue
@@ -130,9 +131,7 @@ class YinheFinancial:
                     if not report_date:
                         continue
 
-                    report_year, report_quarter = self._parse_report_period(
-                        report_date
-                    )
+                    report_year, report_quarter = self._parse_report_period(report_date)
 
                     # --------------------------------------------------
                     # 起始报告期
@@ -180,53 +179,31 @@ class YinheFinancial:
                             # 基础信息
                             # ==================================================
                             symbol=symbol,
-                            report_date=self._to_str(
-                                row.get("REPORTING_PERIOD")
-                            ),
-                            report_type=self._to_str(
-                                row.get("REPORT_TYPE")
-                            ),
-                            statement_type=self._to_str(
-                                row.get("STATEMENT_TYPE")
-                            ),
-                            announcement_date=self._to_str(
-                                row.get("ANN_DATE")
-                            ),
-                            currency=self._to_str(
-                                row.get("CURRENCY_CODE")
-                            ),
-
+                            report_date=self._to_str(row.get("REPORTING_PERIOD")),
+                            report_type=self._to_str(row.get("REPORT_TYPE")),
+                            statement_type=self._to_str(row.get("STATEMENT_TYPE")),
+                            announcement_date=self._to_str(row.get("ANN_DATE")),
+                            currency=self._to_str(row.get("CURRENCY_CODE")),
                             # ==================================================
                             # 收入
                             # ==================================================
-                            revenue=self._to_float(
-                                row.get("OPERA_REV")
-                            ),
+                            revenue=self._to_float(row.get("OPERA_REV")),
                             total_operating_income=self._to_float(
                                 row.get("TOT_OPERA_REV")
                             ),
-
                             # ==================================================
                             # 成本费用
                             # ==================================================
-                            operating_cost=self._to_float(
-                                row.get("LESS_OPERA_COST")
-                            ),
+                            operating_cost=self._to_float(row.get("LESS_OPERA_COST")),
                             total_operating_cost=self._to_float(
                                 row.get("TOT_OPERA_COST")
                             ),
-                            selling_expense=self._to_float(
-                                row.get("LESS_SELLING_EXP")
-                            ),
+                            selling_expense=self._to_float(row.get("LESS_SELLING_EXP")),
                             administrative_expense=self._to_float(
                                 row.get("LESS_ADMIN_EXP")
                             ),
-                            financial_expense=self._to_float(
-                                row.get("LESS_FIN_EXP")
-                            ),
-                            rd_expense=self._to_float(
-                                row.get("RD_EXP")
-                            ),
+                            financial_expense=self._to_float(row.get("LESS_FIN_EXP")),
+                            rd_expense=self._to_float(row.get("RD_EXP")),
                             business_tax_and_surcharge=self._to_float(
                                 row.get("LESS_BUS_TAX_SURCHARGE")
                             ),
@@ -236,7 +213,6 @@ class YinheFinancial:
                             credit_impairment_loss=self._to_float(
                                 row.get("CREDIT_IMPAIR_LOSS")
                             ),
-
                             # ==================================================
                             # 收益项目
                             # ==================================================
@@ -246,26 +222,15 @@ class YinheFinancial:
                             fair_value_change_income=self._to_float(
                                 row.get("PLUS_NET_GAIN_CHG_FV")
                             ),
-                            exchange_income=self._to_float(
-                                row.get("PLUS_NET_FX_INC")
-                            ),
-                            other_income=self._to_float(
-                                row.get("OTH_INCOME")
-                            ),
-
+                            exchange_income=self._to_float(row.get("PLUS_NET_FX_INC")),
+                            other_income=self._to_float(row.get("OTH_INCOME")),
                             # ==================================================
                             # 利润
                             # ==================================================
                             gross_profit=self._calculate_gross_profit(row),
-                            operating_profit=self._to_float(
-                                row.get("OPERA_PROFIT")
-                            ),
-                            total_profit=self._to_float(
-                                row.get("TOTAL_PROFIT")
-                            ),
-                            income_tax=self._to_float(
-                                row.get("INCOME_TAX")
-                            ),
+                            operating_profit=self._to_float(row.get("OPERA_PROFIT")),
+                            total_profit=self._to_float(row.get("TOTAL_PROFIT")),
+                            income_tax=self._to_float(row.get("INCOME_TAX")),
                             net_profit=self._to_float(
                                 row.get("NET_PRO_INCL_MIN_INT_INC")
                             ),
@@ -276,43 +241,31 @@ class YinheFinancial:
                                 row.get("NET_PRO_AFTER_DED_NR_GL"),
                                 row.get("NET_PRO_AFTER_DED_NR_GL_COR"),
                             ),
-
                             # ==================================================
                             # 营业外收支
                             # ==================================================
                             non_operating_income=self._to_float(
-                                row.get("PLUS_NON_OPER_A_REV")
+                                row.get("PLUS_NON_OPERA_REV")
                             ),
                             non_operating_expense=self._to_float(
-                                row.get("LESS_NON_OPER_A_EXP")
+                                row.get("LESS_NON_OPERA_EXP")
                             ),
-
                             # ==================================================
                             # 其他综合收益
                             # ==================================================
                             other_comprehensive_income=self._to_float(
                                 row.get("OTH_COMPRE_INC")
                             ),
-
                             # ==================================================
                             # EBIT / EBITDA
                             # ==================================================
-                            ebit=self._to_float(
-                                row.get("EBIT")
-                            ),
-                            ebitda=self._to_float(
-                                row.get("EBITDA")
-                            ),
-
+                            ebit=self._to_float(row.get("EBIT")),
+                            ebitda=self._to_float(row.get("EBITDA")),
                             # ==================================================
                             # 每股收益
                             # ==================================================
-                            eps=self._to_float(
-                                row.get("BASIC_EPS")
-                            ),
-                            diluted_eps=self._to_float(
-                                row.get("DILUTED_EPS")
-                            ),
+                            eps=self._to_float(row.get("BASIC_EPS")),
+                            diluted_eps=self._to_float(row.get("DILUTED_EPS")),
                         )
                     )
 
@@ -320,9 +273,7 @@ class YinheFinancial:
                 # 按报告期升序排列
                 # ======================================================
 
-                symbol_statements.sort(
-                    key=lambda item: item.report_date or ""
-                )
+                symbol_statements.sort(key=lambda item: item.report_date or "")
 
                 statements[symbol] = symbol_statements
 
