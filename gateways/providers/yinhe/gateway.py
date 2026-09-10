@@ -442,10 +442,10 @@ class YinheGateway(StockDataGateway):
     def fetch_balance_sheet(
         self,
         symbol: str,
-        start_year: Optional[int],
-        start_quarter: Optional[int],
-        end_year: Optional[int],
-        end_quarter: Optional[int],
+        start_year: Optional[int] = None,
+        start_quarter: Optional[int] = None,
+        end_year: Optional[int] = None,
+        end_quarter: Optional[int] = None,
     ) -> BalanceSheet | None:
         """
         获取资产负债表。
@@ -474,10 +474,10 @@ class YinheGateway(StockDataGateway):
     def fetch_income_statement(
         self,
         symbol: str,
-        start_year: Optional[int],
-        start_quarter: Optional[int],
-        end_year: Optional[int],
-        end_quarter: Optional[int],
+        start_year: Optional[int] = None,
+        start_quarter: Optional[int] = None,
+        end_year: Optional[int] = None,
+        end_quarter: Optional[int] = None,
     ) -> list[IncomeStatement]:
         """
         获取银河利润表数据。
@@ -535,10 +535,10 @@ class YinheGateway(StockDataGateway):
     def fetch_cash_flow(
         self,
         symbol: str,
-        start_year: Optional[int],
-        start_quarter: Optional[int],
-        end_year: Optional[int],
-        end_quarter: Optional[int],
+        start_year: Optional[int] = None,
+        start_quarter: Optional[int] = None,
+        end_year: Optional[int] = None,
+        end_quarter: Optional[int] = None,
     ) -> list[CashFlow]:
         """
         获取现金流量表。

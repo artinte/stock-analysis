@@ -874,11 +874,14 @@ function renderValuation(data) {
     if (!data) {
         return;
     }
-
+    setText(
+        "peTtm",
+        formatNumber(data.peTtm)
+    );
 
     setText(
         "summaryPE",
-        formatMultiple(data.pe_ttm)
+        formatMultiple(data.peTtm)
     );
 
     setText(
@@ -894,7 +897,7 @@ function renderValuation(data) {
 
     setText(
         "valuationPE",
-        formatMultiple(data.pe_ttm)
+        formatMultiple(data.peTtm)
     );
 
     setText(

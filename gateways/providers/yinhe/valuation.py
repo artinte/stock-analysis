@@ -5,6 +5,10 @@ from typing import Optional
 
 import pandas
 
+from core.models.financial.balance_sheet import BalanceSheet
+from core.models.financial.cash_flow import CashFlow
+from core.models.financial.income_statement import IncomeStatement
+from core.models.quote import Quote
 from gateways.analysis.valuation_analyzer import ValuationAnalyzer
 from common.constants import Interval, TEN_THOUSAND
 from core.models.valuation import Valuation
@@ -50,173 +54,124 @@ class YinheValuation:
         symbol: str,
     ) -> Valuation | None:
         """
-        获取完整估值数据。
+        获取股票估值数据。
+
+        数据获取与估值计算分离：
+
+        Gateway:
+            负责获取 Quote / IncomeStatement /
+            BalanceSheet / CashFlow
+
+        ValuationAnalyzer:
+            负责根据原始数据计算 PE / PB / PS /
+            PEG / EV / EBITDA 等估值指标。
         """
 
         self.gateway._ensure_started()
 
         symbol = normalize_symbol(symbol)
 
-        print(
-            f"[{symbol}] 正在获取估值数据..."
-        )
+        print(f"[{symbol}] 正在获取估值数据...")
 
         try:
             # ==================================================
-            # 1. 当前价格
+            # 1. 获取当前行情
             # ==================================================
 
-            price = self._get_current_price(
-                symbol
+            quote: Quote | None = self.gateway.fetch_quote(
+                symbol=symbol,
             )
 
-            if price is None:
+            if quote is None:
                 print(
-                    f"[银河估值] 未获取到当前价格: "
+                    f"[银河估值] 未获取到行情数据: "
                     f"{symbol}"
                 )
                 return None
 
             # ==================================================
-            # 2. 股本
-            # ==================================================
-
-            (
-                total_shares,
-                circulating_shares,
-                equity_report_date,
-            ) = self._get_equity_structure(
-                symbol
-            )
-
-            # ==================================================
-            # 3. 财务基础数据
-            # ==================================================
-
-            base = self._get_financial_base(
-                symbol
-            )
-
-            # ==================================================
-            # 4. 计算估值指标
+            # 2. 获取利润表
             #
-            # 注意：
-            # 这里传入的已经全部是统一后的基础数据，
-            # ValuationAnalyzer 不接触 DataFrame。
+            # 用于：
+            # - PE
+            # - PE TTM
+            # - PEG
+            # - PS
+            # - EV / EBITDA
             # ==================================================
 
-            metrics = self.analyzer.analyze(
-                price=price,
-
-                total_shares=total_shares,
-
-                circulating_shares=circulating_shares,
-
-                net_profit=base["net_profit"],
-
-                net_profit_ttm=base["net_profit_ttm"],
-
-                net_profit_forecast=(
-                    base["net_profit_forecast"]
-                ),
-
-                revenue=base["revenue"],
-
-                revenue_ttm=base["revenue_ttm"],
-
-                total_equity=base["total_equity"],
-
-                cash=base["cash"],
-
-                debt=base["debt"],
-
-                ebitda=base["ebitda"],
-
-                dividend=base["dividend"],
-
-                profit_growth=base["profit_growth"],
+            income_statements: list[IncomeStatement] = (
+                self.gateway.fetch_income_statement(
+                    symbol=symbol,
+                )
             )
 
             # ==================================================
-            # 5. 报告期
+            # 3. 获取资产负债表
+            #
+            # 用于：
+            # - PB
+            # - 每股净资产
+            # - Enterprise Value
             # ==================================================
 
-            report_date = (
-                base["report_date"]
-                or equity_report_date
+            balance_sheets: list[BalanceSheet] = (
+                self.gateway.fetch_balance_sheet(
+                    symbol=symbol,
+                )
             )
 
             # ==================================================
-            # 6. 返回 Valuation
+            # 4. 获取现金流量表
+            #
+            # 当前估值指标暂时不依赖现金流量表，
+            # 但保留传入，为后续：
+            # - FCF
+            # - FCFF
+            # - FCFE
+            # - DCF
+            # 做准备。
             # ==================================================
 
-            return Valuation(
-                symbol=symbol,
-
-                timestamp=datetime.datetime.now(),
-
-                report_date=report_date,
-
-                # --------------------------------------------------
-                # 基础数据
-                # --------------------------------------------------
-
-                price=price,
-
-                total_shares=total_shares,
-
-                circulating_shares=circulating_shares,
-
-                net_profit=base["net_profit"],
-
-                net_profit_ttm=(
-                    base["net_profit_ttm"]
-                ),
-
-                net_profit_forecast=(
-                    base["net_profit_forecast"]
-                ),
-
-                revenue=base["revenue"],
-
-                revenue_ttm=(
-                    base["revenue_ttm"]
-                ),
-
-                total_equity=(
-                    base["total_equity"]
-                ),
-
-                book_value_per_share=(
-                    base["book_value_per_share"]
-                ),
-
-                cash=base["cash"],
-
-                debt=base["debt"],
-
-                ebitda=base["ebitda"],
-
-                dividend=base["dividend"],
-
-                # --------------------------------------------------
-                # 计算结果
-                # --------------------------------------------------
-
-                metrics=metrics,
-
-                # --------------------------------------------------
-                # 来源
-                # --------------------------------------------------
-
-                source=self.gateway.display_name,
-
-                data_type="report",
+            cash_flows: list[CashFlow] = (
+                self.gateway.fetch_cash_flow(
+                    symbol=symbol,
+                )
             )
+
+            # ==================================================
+            # 5. 使用 ValuationAnalyzer 计算估值
+            #
+            # Analyzer 只接收统一模型，
+            # 不接触 DataFrame / 数据源 API。
+            # ==================================================
+
+            valuation = self.analyzer.analyze(
+                quote=quote,
+                income_statements=income_statements,
+                balance_sheets=balance_sheets,
+                cash_flows=cash_flows,
+            )
+
+            if valuation is None:
+                print(
+                    f"[银河估值] 估值计算失败: "
+                    f"{symbol}"
+                )
+                return None
+
+            # ==================================================
+            # 6. 补充数据源信息
+            # ==================================================
+
+            valuation.timestamp = datetime.datetime.now()
+            valuation.source = self.gateway.display_name
+
+            return valuation
 
         except Exception as exc:
             print(
-                f"[银河估值] 获取失败 "
+                f"[银河估值] 获取估值失败 "
                 f"{symbol}: {exc}"
             )
 

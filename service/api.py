@@ -628,6 +628,8 @@ def get_valuation(symbol: str):
                 symbol,
                 "暂无估值数据",
             )
+        else:
+            print(valuation)
 
         return success(
             symbol,

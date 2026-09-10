@@ -20,38 +20,7 @@ def run_valuation_test(
     print(f"【股票估值分析】{symbol}")
 
     try:
-        quote = data.get_quote(
-            symbol=symbol,
-        )
-
-        if quote is None:
-            print("❌ 未获取到 Quote 数据")
-            return
-
-        income_statements = data.get_income_statement(
-            symbol=symbol,
-        )
-
-        if not income_statements:
-            print("❌ 未获取到 Financial 数据")
-            return
-
-        balance_sheets = data.get_balance_sheet(
-            symbol=symbol,
-        )
-
-        cash_flows = data.get_cash_flow(
-            symbol=symbol,
-        )
-
-        analyzer = ValuationAnalyzer()
-
-        valuation = analyzer.analyze(
-            quote=quote,
-            income_statements=income_statements,
-            balance_sheets=balance_sheets,
-            cash_flows=cash_flows,
-        )
+        valuation = data.get_valuation(symbol)
 
         if valuation is None:
             print("❌ 未生成估值数据")
