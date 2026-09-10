@@ -7,7 +7,7 @@ from typing import Any
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-
+from service.stock_financial_service import StockFinancialService
 from gateways.data_manager import DataManager
 
 # ============================================================
@@ -15,6 +15,7 @@ from gateways.data_manager import DataManager
 # ============================================================
 
 data: DataManager | None = None
+financial_service: StockFinancialService | None = None
 
 
 # ============================================================
@@ -25,6 +26,7 @@ data: DataManager | None = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global data
+    global financial_service
 
     # ==================== 启动 ====================
 
@@ -37,6 +39,8 @@ async def lifespan(app: FastAPI):
     try:
         data = DataManager("yinhe")
         data.start()
+        
+        financial_service = StockFinancialService(data)
 
         print("✅ 股票数据服务启动成功")
 
@@ -1073,3 +1077,27 @@ def index():
     """
 
     return FileResponse(FRONTEND_DIR / "index.html")
+
+@app.get("/api/stock/{symbol}/financial")
+def get_stock_financial(symbol: str):
+
+    try:
+        data = financial_service.get_financial_data(symbol)
+
+        return {
+            "success": True,
+            "data": data,
+        }
+
+    except Exception as exc:
+
+        print(
+            f"❌ 获取财务数据失败: "
+            f"{symbol} - {exc}"
+        )
+
+        return {
+            "success": False,
+            "message": str(exc),
+            "data": None,
+        }

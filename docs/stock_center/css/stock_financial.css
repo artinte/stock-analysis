@@ -1,0 +1,351 @@
+/* =========================================================
+   Financial Page
+========================================================= */
+
+.financial-page {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 36px 40px 80px;
+}
+
+
+/* =========================================================
+   Header
+========================================================= */
+
+.financial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 30px;
+}
+
+.financial-header h1 {
+    margin: 6px 0 8px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.financial-header p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    color: var(--text-secondary);
+}
+
+.financial-meta {
+    text-align: right;
+}
+
+.financial-meta span {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.financial-meta strong {
+    font-size: 16px;
+}
+
+
+/* =========================================================
+   Summary
+========================================================= */
+
+.financial-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 38px;
+}
+
+.financial-card {
+    min-height: 118px;
+    padding: 20px 22px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+
+    background: var(--panel-bg);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.financial-card > span {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.financial-card strong {
+    margin-top: 12px;
+
+    font-size: 25px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.financial-card em {
+    margin-top: 7px;
+
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-style: normal;
+}
+
+
+/* =========================================================
+   Section
+========================================================= */
+
+.financial-section {
+    margin-top: 42px;
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 18px;
+}
+
+.section-heading > div > span {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+}
+
+.section-heading h2 {
+    margin: 5px 0 0;
+
+    font-size: 21px;
+    font-weight: 650;
+}
+
+.section-unit {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   Period Selector
+========================================================= */
+
+.period-selector {
+    display: flex;
+    gap: 5px;
+}
+
+.period-button {
+    border: 1px solid var(--border-color);
+    background: transparent;
+
+    padding: 6px 13px;
+
+    border-radius: 6px;
+
+    color: var(--text-secondary);
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.period-button:hover {
+    color: var(--text-primary);
+}
+
+.period-button.active {
+    background: var(--panel-bg);
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+
+
+/* =========================================================
+   Charts
+========================================================= */
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.chart-panel {
+    min-height: 340px;
+
+    padding: 22px;
+
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+
+    background: var(--panel-bg);
+}
+
+.chart-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.chart-title span {
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+.chart-title h3 {
+    margin: 5px 0 0;
+    font-size: 16px;
+}
+
+.chart-title small {
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+.financial-chart {
+    position: relative;
+    height: 260px;
+    margin-top: 20px;
+}
+
+.financial-chart canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.chart-empty {
+    position: absolute;
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   Tables
+========================================================= */
+
+.table-panel {
+    overflow: hidden;
+
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+
+    background: var(--panel-bg);
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.table-panel table {
+    width: 100%;
+    min-width: 1050px;
+
+    border-collapse: collapse;
+
+    font-size: 13px;
+}
+
+.table-panel th,
+.table-panel td {
+    padding: 13px 16px;
+
+    border-bottom: 1px solid var(--border-color);
+
+    text-align: right;
+
+    white-space: nowrap;
+}
+
+.table-panel th {
+    background: var(--panel-bg);
+
+    color: var(--text-secondary);
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.table-panel th:first-child,
+.table-panel td:first-child {
+    text-align: left;
+}
+
+.table-panel tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-panel tbody tr:hover {
+    background: rgba(127, 127, 127, 0.04);
+}
+
+.table-panel td:first-child {
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   Responsive
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .financial-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .financial-page {
+        padding: 24px 18px 60px;
+    }
+
+    .financial-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .financial-meta {
+        text-align: left;
+    }
+
+    .financial-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+}

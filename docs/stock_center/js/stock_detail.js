@@ -392,7 +392,7 @@ async function loadQuote() {
         // 详情页行情
         setText(
             "detailPrice",
-            formatNumber(quote.last_price)
+            formatNumber(quote.lastPrice)
         );
 
         setText(
@@ -419,17 +419,6 @@ async function loadQuote() {
             "detailTurnover",
             formatPercent(quote.turnover)
         );
-
-
-        // 行业
-        // if (quote.industry) {
-
-        //     setText(
-        //         "stockIndustry",
-        //         quote.industry
-        //     );
-
-        // }
 
 
         // 数据时间

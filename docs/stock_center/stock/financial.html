@@ -1,0 +1,597 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>财务分析 - STOCK LAB</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/stock_financial.css"
+    >
+
+</head>
+
+
+<body>
+
+<main class="financial-page">
+
+    <!-- =====================================================
+         页面标题
+    ====================================================== -->
+
+    <section class="financial-header">
+
+        <div>
+
+            <span class="section-label">
+                FINANCIALS
+            </span>
+
+            <h1>
+                财务分析
+            </h1>
+
+            <p id="financialDescription">
+                财务表现、盈利能力与现金流分析
+            </p>
+
+        </div>
+
+        <div class="financial-meta">
+
+            <span>最新报告期</span>
+
+            <strong id="latestReportDate">
+                —
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         核心指标
+    ====================================================== -->
+
+    <section class="financial-summary">
+
+        <div class="financial-card">
+
+            <span>营业收入</span>
+
+            <strong id="financialRevenue">
+                —
+            </strong>
+
+            <em id="financialRevenueGrowth">
+                —
+            </em>
+
+        </div>
+
+
+        <div class="financial-card">
+
+            <span>归母净利润</span>
+
+            <strong id="financialProfit">
+                —
+            </strong>
+
+            <em id="financialProfitGrowth">
+                —
+            </em>
+
+        </div>
+
+
+        <div class="financial-card">
+
+            <span>经营现金流</span>
+
+            <strong id="operatingCashFlow">
+                —
+            </strong>
+
+            <em id="cashFlowStatus">
+                —
+            </em>
+
+        </div>
+
+
+        <div class="financial-card">
+
+            <span>净资产</span>
+
+            <strong id="netAssets">
+                —
+            </strong>
+
+            <em>
+                —
+            </em>
+
+        </div>
+
+
+        <div class="financial-card">
+
+            <span>毛利率</span>
+
+            <strong id="grossMargin">
+                —
+            </strong>
+
+            <em>
+                —
+            </em>
+
+        </div>
+
+
+        <div class="financial-card">
+
+            <span>净利率</span>
+
+            <strong id="netMargin">
+                —
+            </strong>
+
+            <em>
+                —
+            </em>
+
+        </div>
+
+
+        <div class="financial-card">
+
+            <span>ROE</span>
+
+            <strong id="roe">
+                —
+            </strong>
+
+            <em>
+                —
+            </em>
+
+        </div>
+
+
+        <div class="financial-card">
+
+            <span>资产负债率</span>
+
+            <strong id="debtRatio">
+                —
+            </strong>
+
+            <em>
+                —
+            </em>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         财务趋势
+    ====================================================== -->
+
+    <section class="financial-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>FINANCIAL TREND</span>
+
+                <h2>
+                    财务趋势
+                </h2>
+
+            </div>
+
+            <div class="period-selector">
+
+                <button
+                    class="period-button active"
+                    data-period="8"
+                >
+                    8期
+                </button>
+
+                <button
+                    class="period-button"
+                    data-period="12"
+                >
+                    12期
+                </button>
+
+                <button
+                    class="period-button"
+                    data-period="all"
+                >
+                    全部
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="chart-grid">
+
+            <div class="chart-panel">
+
+                <div class="chart-title">
+
+                    <div>
+                        <span>REVENUE</span>
+                        <h3>营业收入趋势</h3>
+                    </div>
+
+                    <small>
+                        单位：亿元
+                    </small>
+
+                </div>
+
+                <div class="financial-chart">
+
+                    <canvas id="revenueChart"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="revenueChartEmpty"
+                    >
+                        暂无数据
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-panel">
+
+                <div class="chart-title">
+
+                    <div>
+                        <span>PROFIT</span>
+                        <h3>归母净利润趋势</h3>
+                    </div>
+
+                    <small>
+                        单位：亿元
+                    </small>
+
+                </div>
+
+                <div class="financial-chart">
+
+                    <canvas id="profitChart"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="profitChartEmpty"
+                    >
+                        暂无数据
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-panel">
+
+                <div class="chart-title">
+
+                    <div>
+                        <span>CASH FLOW</span>
+                        <h3>经营现金流趋势</h3>
+                    </div>
+
+                    <small>
+                        单位：亿元
+                    </small>
+
+                </div>
+
+                <div class="financial-chart">
+
+                    <canvas id="cashFlowChart"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="cashFlowChartEmpty"
+                    >
+                        暂无数据
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="chart-panel">
+
+                <div class="chart-title">
+
+                    <div>
+                        <span>PROFITABILITY</span>
+                        <h3>盈利能力</h3>
+                    </div>
+
+                    <small>
+                        单位：%
+                    </small>
+
+                </div>
+
+                <div class="financial-chart">
+
+                    <canvas id="profitabilityChart"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="profitabilityChartEmpty"
+                    >
+                        暂无数据
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         利润表
+    ====================================================== -->
+
+    <section class="financial-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>INCOME STATEMENT</span>
+
+                <h2>
+                    利润表
+                </h2>
+
+            </div>
+
+            <span class="section-unit">
+                单位：亿元，EPS 除外
+            </span>
+
+        </div>
+
+
+        <div class="table-panel">
+
+            <div class="table-scroll">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+
+                        <th>报告期</th>
+                        <th>营业收入</th>
+                        <th>营业成本</th>
+                        <th>毛利润</th>
+                        <th>营业利润</th>
+                        <th>利润总额</th>
+                        <th>净利润</th>
+                        <th>归母净利润</th>
+                        <th>EBITDA</th>
+                        <th>EPS</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="incomeStatementBody">
+
+                    <tr>
+
+                        <td colspan="10">
+                            暂无财务数据
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         资产负债表
+    ====================================================== -->
+
+    <section class="financial-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>BALANCE SHEET</span>
+
+                <h2>
+                    资产负债表
+                </h2>
+
+            </div>
+
+            <span class="section-unit">
+                单位：亿元
+            </span>
+
+        </div>
+
+
+        <div class="table-panel">
+
+            <div class="table-scroll">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+
+                        <th>报告期</th>
+                        <th>总资产</th>
+                        <th>现金</th>
+                        <th>应收账款</th>
+                        <th>存货</th>
+                        <th>固定资产</th>
+                        <th>总负债</th>
+                        <th>短期借款</th>
+                        <th>长期借款</th>
+                        <th>净资产</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="balanceSheetBody">
+
+                    <tr>
+
+                        <td colspan="10">
+                            暂无财务数据
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         现金流量表
+    ====================================================== -->
+
+    <section class="financial-section">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span>CASH FLOW STATEMENT</span>
+
+                <h2>
+                    现金流量表
+                </h2>
+
+            </div>
+
+            <span class="section-unit">
+                单位：亿元
+            </span>
+
+        </div>
+
+
+        <div class="table-panel">
+
+            <div class="table-scroll">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+
+                        <th>报告期</th>
+                        <th>经营现金流</th>
+                        <th>经营流入</th>
+                        <th>经营流出</th>
+                        <th>投资现金流</th>
+                        <th>资本开支</th>
+                        <th>筹资现金流</th>
+                        <th>期末现金</th>
+                        <th>现金净增加</th>
+                        <th>自由现金流</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="cashFlowBody">
+
+                    <tr>
+
+                        <td colspan="10">
+                            暂无财务数据
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/chart.js"
+></script>
+
+<script
+    src="../js/stock_financial.js"
+></script>
+
+</body>
+
+</html>
