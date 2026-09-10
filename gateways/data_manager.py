@@ -3,6 +3,8 @@ from datetime import date
 from typing import Optional
 
 from core.models.financial.income_statement import IncomeStatement
+from core.models.financial.financial import Financial
+from core.models.valuation import Valuation
 from core.models.stock import Stock
 from core.models.quote import Quote
 from core.models.industry import Industry

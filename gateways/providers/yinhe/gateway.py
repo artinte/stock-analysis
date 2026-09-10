@@ -384,11 +384,12 @@ class YinheGateway(StockDataGateway):
     def fetch_quotes(
         self,
         symbols: list[str],
+        quote_level: Optional[QuoteLevel] = None,
     ):
         """
         批量获取股票最新行情。
         """
-        return self.quote.fetch_quotes(symbols=symbols)
+        return self.quote.fetch_quotes(symbols, quote_level,)
 
     def fetch_valuation(
         self,
