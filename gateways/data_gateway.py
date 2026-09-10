@@ -115,7 +115,7 @@ class StockDataGateway(ABC):
         end_quarter: Optional[int] = None,
     ) -> list[BalanceSheet]:
         raise NotImplementedError
-    
+
     @abstractmethod
     def fetch_cash_flow(
         self,
@@ -289,12 +289,14 @@ class StockDataGateway(ABC):
                     f"{end_year}Q{end_quarter}"
                 )
 
-
-
     @abstractmethod
     def fetch_financial(
         self,
         symbol: str,
+        start_year,
+        start_quarter,
+        end_year,
+        end_quarter,
     ) -> Financial:
         raise NotImplementedError
 

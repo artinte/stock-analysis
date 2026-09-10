@@ -389,7 +389,10 @@ class YinheGateway(StockDataGateway):
         """
         批量获取股票最新行情。
         """
-        return self.quote.fetch_quotes(symbols, quote_level,)
+        return self.quote.fetch_quotes(
+            symbols,
+            quote_level,
+        )
 
     def fetch_valuation(
         self,
@@ -571,13 +574,23 @@ class YinheGateway(StockDataGateway):
     def fetch_financial(
         self,
         symbol: str,
+        start_year,
+        start_quarter,
+        end_year,
+        end_quarter,
     ) -> Financial | None:
 
         self._ensure_started()
 
         symbol = normalize_symbol(symbol)
 
-        return self.financial.fetch_financial(symbol)
+        return self.financial.fetch_financial(
+            symbol,
+            start_year,
+            start_quarter,
+            end_year,
+            end_quarter,
+        )
 
     def _ensure_started(self) -> None:
         """

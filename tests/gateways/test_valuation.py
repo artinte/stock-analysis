@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from core.models.valuation import Valuation
+from gateways.analysis.valuation_analyzer import ValuationAnalyzer
 from gateways.data_manager import DataManager
 
 """
-股票估值数据测试。
+股票估值分析测试。
 
 运行：
-python -m tests.gateways.test_valuation
+python -m tests.analysis.test_valuation
 """
 
 
@@ -15,39 +15,66 @@ def run_valuation_test(
     data: DataManager,
     symbol: str,
 ) -> None:
-    """使用已有 DataManager 测试估值信息。
+    """使用已有 DataManager 获取原始数据，并测试估值分析。"""
 
-    用于集成测试。
-    """
-    print(f"【股票估值数据】{symbol}")
+    print(f"【股票估值分析】{symbol}")
 
     try:
-        # 调用获取估值的方法
-        valuation: Valuation | None = data.get_valuation(symbol)
+        quote = data.get_quote(
+            symbol=symbol,
+        )
 
-        if valuation is None:
-            print("❌ 未获取到估值数据")
+        if quote is None:
+            print("❌ 未获取到 Quote 数据")
             return
 
-        # 打印估值数据
+        income_statements = data.get_income_statement(
+            symbol=symbol,
+        )
+
+        if not income_statements:
+            print("❌ 未获取到 Financial 数据")
+            return
+
+        balance_sheets = data.get_balance_sheet(
+            symbol=symbol,
+        )
+
+        cash_flows = data.get_cash_flow(
+            symbol=symbol,
+        )
+
+        analyzer = ValuationAnalyzer()
+
+        valuation = analyzer.analyze(
+            quote=quote,
+            income_statements=income_statements,
+            balance_sheets=balance_sheets,
+            cash_flows=cash_flows,
+        )
+
+        if valuation is None:
+            print("❌ 未生成估值数据")
+            return
+
+        print("✅ 估值分析完成")
+
         valuation.display()
 
-    except NotImplementedError:
-        print("⚠️ 当前数据源暂未实现估值数据接口")
+    except NotImplementedError as exc:
+        print(f"⚠️ 当前数据源暂未实现接口：{exc}")
 
     except Exception as exc:
-        print(f"❌ 获取股票估值失败：{exc}")
+        print(f"❌ 估值分析失败：{exc}")
 
 
 def test_valuation(
     provider_name: str,
     symbol: str,
 ) -> None:
-    """独立测试入口。
+    """独立测试股票估值分析。"""
 
-    自己管理 DataManager 生命周期。
-    """
-    print(f"【股票估值测试】" f"{provider_name} / {symbol}")
+    print(f"【股票估值测试】{provider_name} / {symbol}")
 
     data: DataManager | None = None
 
@@ -70,7 +97,6 @@ def test_valuation(
 
 
 def main() -> None:
-    # 默认测试银河证券的贵州茅台估值
     test_valuation(
         provider_name="yinhe",
         symbol="600519.SH",
