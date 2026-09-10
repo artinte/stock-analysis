@@ -583,6 +583,10 @@ class DataManager:
     def get_financial(
         self,
         symbol: str,
+        start_year: Optional[int] = None,
+        start_quarter: Optional[int] = None,
+        end_year: Optional[int] = None,
+        end_quarter: Optional[int] = None,
     ) -> list[Financial]:
         """获取指定标的财务数据（如利润表、资产负债表、现金流量表等）。
 
@@ -596,8 +600,13 @@ class DataManager:
             ValueError: 当输入的 symbol 格式非法时抛出。
             GatewayError: 当底层行情网关连接失败或无权访问该数据时抛出。
         """
-        return self.gateway.fetch_financial(symbol)
-        return self.gateway.fetch_financial(symbol)
+        return self.gateway.fetch_financial(
+            symbol,
+            start_year,
+            start_quarter,
+            end_year,
+            end_quarter,
+        )
 
     def get_valuation(
         self,
