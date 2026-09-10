@@ -279,8 +279,9 @@ class DataManager:
     def get_quotes(
         self,
         symbols: list[str],
+        level: QuoteLevel = QuoteLevel.LEVEL_1,
     ):
-        return self.gateway.fetch_quotes(symbols)
+        return self.gateway.fetch_quotes(symbols, level)
 
     def get_kline(
         self,
@@ -313,12 +314,6 @@ class DataManager:
             end_time=end_time,
             limit=limit,
         )
-
-    def get_valuation(
-        self,
-        symbol: str,
-    ):
-        return self.gateway.fetch_valuation(symbol)
 
     def get_income_statement(
         self,
@@ -588,8 +583,27 @@ class DataManager:
     def get_financial(
         self,
         symbol: str,
-    ):
+    ) -> list[Financial]:
+        """获取指定标的财务数据（如利润表、资产负债表、现金流量表等）。
+
+        该接口通常用于基本面选股策略、多因子模型的定期财务因子计算。数据源更新频率
+        通常为季度（季报/年报）或每日维护。
+
+        Args:
+            symbol: 证券代码（例如: "SH.600000" 或 "AAPL.US"）。
+
+        Raises:
+            ValueError: 当输入的 symbol 格式非法时抛出。
+            GatewayError: 当底层行情网关连接失败或无权访问该数据时抛出。
+        """
         return self.gateway.fetch_financial(symbol)
+        return self.gateway.fetch_financial(symbol)
+
+    def get_valuation(
+        self,
+        symbol: str,
+    ) -> Valuation:
+        return self.gateway.fetch_valuation(symbol)
 
     def get_etf_composition(
         self,
