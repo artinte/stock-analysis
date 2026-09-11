@@ -1760,6 +1760,65 @@
     <script src="../js/navigation.js"></script>
     <script src="../js/stock_detail.js"></script>
 
+    <script>
+
+        function renderStockScore() {
+
+            const score = {
+                overall: 82,
+                fundamental: 91,
+                growth: 68,
+                valuation: 94,
+                technical: 75,
+
+                label: "稳健型",
+
+                description:
+                    "基本面稳健，估值较低，盈利和股东回报能力较强，但成长性相对有限。"
+            };
+
+
+            document.getElementById("overallScore").textContent =
+                score.overall;
+
+            document.getElementById("scoreLabel").textContent =
+                score.label;
+
+            document.getElementById("scoreDescription").textContent =
+                score.description;
+
+
+            document.getElementById("fundamentalScore").textContent =
+                score.fundamental;
+
+            document.getElementById("growthScore").textContent =
+                score.growth;
+
+            document.getElementById("valuationScore").textContent =
+                score.valuation;
+
+            document.getElementById("technicalScore").textContent =
+                score.technical;
+
+
+            document.getElementById("fundamentalScoreBar").style.width =
+                score.fundamental + "%";
+
+            document.getElementById("growthScoreBar").style.width =
+                score.growth + "%";
+
+            document.getElementById("valuationScoreBar").style.width =
+                score.valuation + "%";
+
+            document.getElementById("technicalScoreBar").style.width =
+                score.technical + "%";
+        }
+
+
+        renderStockScore();
+
+    </script>
+
 
 </body>
 
