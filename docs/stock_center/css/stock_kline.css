@@ -1,0 +1,668 @@
+/* =========================================================
+   STOCK LAB - 专业K线页面
+========================================================= */
+
+.kline-page {
+
+    min-height: 100vh;
+
+    background:
+        var(--page-bg, #f5f6f8);
+
+    color:
+        var(--text-color, #222);
+
+}
+
+
+/* =========================================================
+   Header
+========================================================= */
+
+.kline-header {
+
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 24px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5e7eb;
+
+}
+
+
+.header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+}
+
+
+.brand {
+
+    font-size: 18px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.5px;
+
+    color: #111827;
+
+    text-decoration: none;
+
+}
+
+
+.divider {
+
+    width: 1px;
+
+    height: 22px;
+
+    background: #e5e7eb;
+
+}
+
+
+.stock-selector {
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+
+.stock-selector input {
+
+    width: 150px;
+
+    height: 34px;
+
+    padding: 0 10px;
+
+    border: 1px solid #d1d5db;
+
+    border-right: none;
+
+    border-radius: 4px 0 0 4px;
+
+    outline: none;
+
+    font-size: 13px;
+
+}
+
+
+.stock-selector input:focus {
+
+    border-color: #9ca3af;
+
+}
+
+
+.stock-selector button {
+
+    height: 34px;
+
+    padding: 0 14px;
+
+    border: none;
+
+    border-radius: 0 4px 4px 0;
+
+    background: #111827;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+}
+
+
+.header-button {
+
+    height: 34px;
+
+    padding: 0 14px;
+
+    border: 1px solid #d1d5db;
+
+    background: #ffffff;
+
+    border-radius: 4px;
+
+    cursor: pointer;
+
+}
+
+
+.header-button:hover {
+
+    background: #f3f4f6;
+
+}
+
+
+/* =========================================================
+   Stock Summary
+========================================================= */
+
+.stock-summary {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 40px;
+
+    padding: 20px 24px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5e7eb;
+
+}
+
+
+.stock-info {
+
+    min-width: 180px;
+
+}
+
+
+.stock-name {
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+}
+
+
+.stock-symbol {
+
+    margin-top: 5px;
+
+    font-size: 13px;
+
+    color: #6b7280;
+
+}
+
+
+.stock-price {
+
+    min-width: 150px;
+
+}
+
+
+.current-price {
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+}
+
+
+.price-change {
+
+    display: flex;
+
+    gap: 12px;
+
+    margin-top: 8px;
+
+    font-size: 14px;
+
+}
+
+
+.quote-items {
+
+    display: flex;
+
+    gap: 32px;
+
+    margin-left: auto;
+
+}
+
+
+.quote-item {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+}
+
+
+.quote-item span {
+
+    font-size: 12px;
+
+    color: #9ca3af;
+
+}
+
+
+.quote-item strong {
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   Toolbar
+========================================================= */
+
+.chart-toolbar {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 12px 24px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5e7eb;
+
+}
+
+
+.period-group,
+.range-group {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+}
+
+
+.period-button,
+.range-button {
+
+    min-width: 48px;
+
+    height: 30px;
+
+    padding: 0 10px;
+
+    border: none;
+
+    background: transparent;
+
+    border-radius: 4px;
+
+    color: #6b7280;
+
+    cursor: pointer;
+
+    font-size: 13px;
+
+}
+
+
+.period-button:hover,
+.range-button:hover {
+
+    background: #f3f4f6;
+
+}
+
+
+.period-button.active,
+.range-button.active {
+
+    background: #111827;
+
+    color: #ffffff;
+
+}
+
+
+/* =========================================================
+   Date Toolbar
+========================================================= */
+
+.date-toolbar {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 10px 24px;
+
+    background: #fafafa;
+
+    border-bottom: 1px solid #e5e7eb;
+
+}
+
+
+.date-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+
+.date-item label {
+
+    font-size: 12px;
+
+    color: #6b7280;
+
+}
+
+
+.date-item input {
+
+    height: 30px;
+
+    padding: 0 8px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 4px;
+
+    background: #ffffff;
+
+    font-size: 12px;
+
+}
+
+
+.date-button {
+
+    height: 30px;
+
+    padding: 0 14px;
+
+    border: none;
+
+    border-radius: 4px;
+
+    background: #111827;
+
+    color: #ffffff;
+
+    cursor: pointer;
+
+    font-size: 12px;
+
+}
+
+
+.date-button.secondary {
+
+    background: #e5e7eb;
+
+    color: #374151;
+
+}
+
+
+.chart-status {
+
+    margin-left: auto;
+
+    font-size: 12px;
+
+    color: #9ca3af;
+
+}
+
+
+/* =========================================================
+   Indicator
+========================================================= */
+
+.indicator-bar {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 28px;
+
+    padding: 8px 24px;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e5e7eb;
+
+    font-size: 12px;
+
+    color: #6b7280;
+
+}
+
+
+.indicator-bar strong {
+
+    margin-left: 5px;
+
+    font-weight: 600;
+
+    color: #374151;
+
+}
+
+
+/* =========================================================
+   Chart
+========================================================= */
+
+.chart-panel {
+
+    position: relative;
+
+    margin: 16px 24px 0;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 6px;
+
+    overflow: hidden;
+
+}
+
+
+.kline-chart {
+
+    width: 100%;
+
+    height: 700px;
+
+}
+
+
+.chart-loading {
+
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(255, 255, 255, 0.85);
+
+    color: #6b7280;
+
+    font-size: 14px;
+
+}
+
+
+.chart-loading.hidden {
+
+    display: none;
+
+}
+
+
+/* =========================================================
+   Footer
+========================================================= */
+
+.kline-footer {
+
+    display: flex;
+
+    gap: 28px;
+
+    padding: 12px 24px 24px;
+
+    font-size: 12px;
+
+    color: #9ca3af;
+
+}
+
+
+.kline-footer strong {
+
+    color: #4b5563;
+
+    font-weight: 500;
+
+}
+
+
+/* =========================================================
+   Responsive
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .stock-summary {
+
+        flex-wrap: wrap;
+
+        gap: 20px;
+
+    }
+
+    .quote-items {
+
+        width: 100%;
+
+        margin-left: 0;
+
+        overflow-x: auto;
+
+    }
+
+    .chart-toolbar {
+
+        overflow-x: auto;
+
+        justify-content: flex-start;
+
+        gap: 20px;
+
+    }
+
+    .date-toolbar {
+
+        flex-wrap: wrap;
+
+    }
+
+    .chart-status {
+
+        width: 100%;
+
+        margin-left: 0;
+
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .kline-header {
+
+        padding: 0 12px;
+
+    }
+
+    .stock-summary {
+
+        padding: 16px;
+
+    }
+
+    .chart-toolbar,
+    .date-toolbar,
+    .indicator-bar {
+
+        padding-left: 12px;
+
+        padding-right: 12px;
+
+    }
+
+    .chart-panel {
+
+        margin-left: 12px;
+
+        margin-right: 12px;
+
+    }
+
+    .kline-chart {
+
+        height: 550px;
+
+    }
+
+    .quote-items {
+
+        gap: 20px;
+
+    }
+
+}

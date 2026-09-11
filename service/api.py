@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -429,29 +430,38 @@ def get_kline(
     symbol: str,
     interval: str = Query(
         "1d",
-        description="K线周期",
+        description="K线周期：1m/5m/15m/30m/60m/1d/1w/1M",
+    ),
+    start_time: datetime | None = Query(
+        None,
+        description="开始时间",
+    ),
+    end_time: datetime | None = Query(
+        None,
+        description="结束时间",
     ),
     limit: int = Query(
         120,
         ge=1,
-        le=1000,
+        le=5000,
+        description="最多返回K线数量",
     ),
 ):
 
     symbol = symbol.strip().upper()
 
-    print(f"📊 获取K线：" f"{symbol} " f"interval={interval} " f"limit={limit}")
+    print(
+        f"📊 获取K线："
+        f"{symbol} "
+        f"interval={interval} "
+        f"start={start_time} "
+        f"end={end_time} "
+        f"limit={limit}"
+    )
 
     try:
 
         manager = require_data()
-
-        # -------------------------------------------------
-        # 这里暂时调用你的 DataManager
-        #
-        # 如果你现在还没有这个方法，
-        # 先返回暂无数据即可。
-        # -------------------------------------------------
 
         if not hasattr(manager, "get_kline"):
 
@@ -463,8 +473,11 @@ def get_kline(
         klines = manager.get_kline(
             symbol,
             interval=interval,
+            start_time=start_time,
+            end_time=end_time,
             limit=limit,
         )
+
         if not klines:
 
             return failure(
@@ -472,47 +485,27 @@ def get_kline(
                 "暂无K线数据",
             )
 
+        print(
+            f"  获取到 {len(klines)} 根K线"
+        )
+
         result = []
 
         for item in klines:
 
             result.append(
                 {
-                    "timestamp": getattr(
-                        item,
-                        "timestamp",
-                        None,
+                    "timestamp": (
+                        item.timestamp.isoformat()
+                        if item.timestamp
+                        else None
                     ),
-                    "open": getattr(
-                        item,
-                        "open",
-                        None,
-                    ),
-                    "high": getattr(
-                        item,
-                        "high",
-                        None,
-                    ),
-                    "low": getattr(
-                        item,
-                        "low",
-                        None,
-                    ),
-                    "close": getattr(
-                        item,
-                        "close",
-                        None,
-                    ),
-                    "volume": getattr(
-                        item,
-                        "volume",
-                        None,
-                    ),
-                    "amount": getattr(
-                        item,
-                        "amount",
-                        None,
-                    ),
+                    "open": item.open,
+                    "high": item.high,
+                    "low": item.low,
+                    "close": item.close,
+                    "volume": item.volume,
+                    "amount": item.amount,
                 }
             )
 
@@ -520,6 +513,16 @@ def get_kline(
             symbol,
             {
                 "interval": interval,
+                "start_time": (
+                    start_time.isoformat()
+                    if start_time
+                    else None
+                ),
+                "end_time": (
+                    end_time.isoformat()
+                    if end_time
+                    else None
+                ),
                 "data": result,
             },
         )
@@ -533,7 +536,10 @@ def get_kline(
 
     except Exception as exc:
 
-        print(f"❌ K线获取失败：{symbol} -> {exc}")
+        print(
+            f"❌ K线获取失败："
+            f"{symbol} -> {exc}"
+        )
 
         return failure(
             symbol,

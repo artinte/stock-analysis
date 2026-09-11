@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>专业行情 - STOCK LAB</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/global.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/stock_kline.css"
+    >
+
+    <!-- ECharts -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js">
+    </script>
+
+</head>
+
+
+<body>
+
+<div class="kline-page">
+
+    <!-- ==================== 顶部 ==================== -->
+
+    <header class="kline-header">
+
+        <div class="header-left">
+
+            <a
+                class="brand"
+                href="../"
+            >
+                STOCK LAB
+            </a>
+
+            <span class="divider"></span>
+
+            <div class="stock-selector">
+
+                <input
+                    id="symbolInput"
+                    type="text"
+                    placeholder="输入股票代码"
+                    autocomplete="off"
+                >
+
+                <button id="searchButton">
+                    行情
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-right">
+
+            <button
+                class="header-button"
+                id="backButton"
+            >
+                返回股票
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==================== 股票信息 ==================== -->
+
+    <section class="stock-summary">
+
+        <div class="stock-info">
+
+            <div
+                class="stock-name"
+                id="stockName"
+            >
+                —
+            </div>
+
+            <div
+                class="stock-symbol"
+                id="stockSymbol"
+            >
+                —
+            </div>
+
+        </div>
+
+
+        <div class="stock-price">
+
+            <div
+                class="current-price"
+                id="currentPrice"
+            >
+                —
+            </div>
+
+            <div class="price-change">
+
+                <span id="priceChange">
+                    —
+                </span>
+
+                <span id="priceChangePercent">
+                    —
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="quote-items">
+
+            <div class="quote-item">
+
+                <span>开盘</span>
+
+                <strong id="quoteOpen">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="quote-item">
+
+                <span>最高</span>
+
+                <strong id="quoteHigh">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="quote-item">
+
+                <span>最低</span>
+
+                <strong id="quoteLow">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="quote-item">
+
+                <span>成交量</span>
+
+                <strong id="quoteVolume">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="quote-item">
+
+                <span>成交额</span>
+
+                <strong id="quoteAmount">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== 工具栏 ==================== -->
+
+    <section class="chart-toolbar">
+
+        <div class="period-group">
+
+            <button
+                class="period-button"
+                data-interval="1m"
+            >
+                1分
+            </button>
+
+            <button
+                class="period-button"
+                data-interval="5m"
+            >
+                5分
+            </button>
+
+            <button
+                class="period-button"
+                data-interval="15m"
+            >
+                15分
+            </button>
+
+            <button
+                class="period-button"
+                data-interval="30m"
+            >
+                30分
+            </button>
+
+            <button
+                class="period-button"
+                data-interval="60m"
+            >
+                60分
+            </button>
+
+            <button
+                class="period-button active"
+                data-interval="1d"
+            >
+                日K
+            </button>
+
+            <button
+                class="period-button"
+                data-interval="1w"
+            >
+                周K
+            </button>
+
+            <button
+                class="period-button"
+                data-interval="1M"
+            >
+                月K
+            </button>
+
+        </div>
+
+
+        <div class="range-group">
+
+            <button
+                class="range-button"
+                data-range="60"
+            >
+                60
+            </button>
+
+            <button
+                class="range-button active"
+                data-range="120"
+            >
+                120
+            </button>
+
+            <button
+                class="range-button"
+                data-range="250"
+            >
+                250
+            </button>
+
+            <button
+                class="range-button"
+                data-range="500"
+            >
+                500
+            </button>
+
+            <button
+                class="range-button"
+                data-range="1000"
+            >
+                1000
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================== 时间范围 ==================== -->
+
+    <section class="date-toolbar">
+
+        <div class="date-item">
+
+            <label for="startTime">
+                开始
+            </label>
+
+            <input
+                id="startTime"
+                type="datetime-local"
+            >
+
+        </div>
+
+
+        <div class="date-item">
+
+            <label for="endTime">
+                结束
+            </label>
+
+            <input
+                id="endTime"
+                type="datetime-local"
+            >
+
+        </div>
+
+
+        <button
+            class="date-button"
+            id="applyDateButton"
+        >
+            查询
+        </button>
+
+
+        <button
+            class="date-button secondary"
+            id="clearDateButton"
+        >
+            清除时间
+        </button>
+
+
+        <div
+            class="chart-status"
+            id="chartStatus"
+        >
+            —
+        </div>
+
+    </section>
+
+
+    <!-- ==================== MA 信息 ==================== -->
+
+    <section class="indicator-bar">
+
+        <span>
+            MA5
+            <strong id="ma5">—</strong>
+        </span>
+
+        <span>
+            MA10
+            <strong id="ma10">—</strong>
+        </span>
+
+        <span>
+            MA20
+            <strong id="ma20">—</strong>
+        </span>
+
+        <span>
+            MA60
+            <strong id="ma60">—</strong>
+        </span>
+
+    </section>
+
+
+    <!-- ==================== K线 ==================== -->
+
+    <main class="chart-panel">
+
+        <div
+            id="klineChart"
+            class="kline-chart"
+        ></div>
+
+        <div
+            id="loading"
+            class="chart-loading"
+        >
+            正在加载K线...
+        </div>
+
+    </main>
+
+
+    <!-- ==================== 底部信息 ==================== -->
+
+    <footer class="kline-footer">
+
+        <span>
+            周期：
+            <strong id="currentInterval">
+                1d
+            </strong>
+        </span>
+
+        <span>
+            数据：
+            <strong id="dataCount">
+                —
+            </strong>
+        </span>
+
+        <span>
+            最后时间：
+            <strong id="lastTime">
+                —
+            </strong>
+        </span>
+
+    </footer>
+
+</div>
+
+
+<script src="../js/stock_kline.js"></script>
+
+</body>
+
+</html>
