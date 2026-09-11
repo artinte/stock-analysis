@@ -482,13 +482,13 @@ async function loadQuote() {
 ========================================================= */
 
 async function loadKline(
-    period = "day"
+    interval = "1d"
 ) {
 
-    const chart = document.getElementById(
-        "chartContainer"
-    );
-
+    const chart =
+        document.getElementById(
+            "chartContainer"
+        );
 
     try {
 
@@ -497,11 +497,11 @@ async function loadKline(
                 正在加载K线数据...
              </div>`;
 
-
         const result = await requestAPI(
-            `/api/kline/${encodeURIComponent(currentSymbol)}?period=${period}`
+            `/api/kline/${encodeURIComponent(currentSymbol)}` +
+            `?interval=${encodeURIComponent(interval)}` +
+            `&limit=120`
         );
-
 
         if (!result || result.success === false) {
 
@@ -511,11 +511,16 @@ async function loadKline(
 
         }
 
-
         const data =
-            result.data ??
-            result;
+            result.data?.data ?? [];
 
+        if (!data.length) {
+
+            throw new Error(
+                "暂无K线数据"
+            );
+
+        }
 
         renderKline(data);
 
@@ -526,7 +531,6 @@ async function loadKline(
             "K线加载失败:",
             error
         );
-
 
         chart.innerHTML =
             `<div class="empty-state">
@@ -545,15 +549,17 @@ async function loadKline(
 
 function renderKline(data) {
 
-    const chart =
+    const chartContainer =
         document.getElementById(
             "chartContainer"
         );
 
+    if (
+        !Array.isArray(data) ||
+        data.length === 0
+    ) {
 
-    if (!Array.isArray(data) || data.length === 0) {
-
-        chart.innerHTML =
+        chartContainer.innerHTML =
             `<div class="empty-state">
                 暂无K线数据
              </div>`;
@@ -563,59 +569,535 @@ function renderKline(data) {
 
 
     /*
-       这里暂时不接具体图表库。
+     * 创建图表容器
+     */
 
-       后面可以接：
-       ECharts
-       Lightweight Charts
-       TradingView Lightweight Charts
+    chartContainer.innerHTML =
+        `<div
+            id="klineChart"
+            style="
+                width: 100%;
+                height: 500px;
+            "
+        ></div>`;
 
-       现在先把接口数据准备好。
-    */
+
+    const chart =
+        echarts.init(
+            document.getElementById(
+                "klineChart"
+            )
+        );
 
 
-    chart.innerHTML =
-        `<div class="chart-placeholder">
-            <div>
-                <strong>
-                    K线数据已加载
-                </strong>
+    /*
+     * 按时间排序
+     */
 
-                <span>
-                    ${data.length} 条数据
-                </span>
-            </div>
-        </div>`;
+    const sortedData =
+        [...data].sort(
+            (a, b) =>
+                new Date(a.timestamp) -
+                new Date(b.timestamp)
+        );
 
+
+    /*
+     * X轴时间
+     */
+
+    const dates =
+        sortedData.map(
+            item =>
+                formatKlineTime(
+                    item.timestamp
+                )
+        );
+
+
+    /*
+     * K线数据
+     *
+     * ECharts 顺序：
+     *
+     * [open, close, low, high]
+     */
+
+    const candles =
+        sortedData.map(
+            item => [
+                Number(item.open),
+                Number(item.close),
+                Number(item.low),
+                Number(item.high)
+            ]
+        );
+
+
+    /*
+     * 成交量
+     */
+
+    const volumes =
+        sortedData.map(
+            item =>
+                Number(item.volume) || 0
+        );
+
+
+    /*
+     * 成交量颜色
+     */
+
+    const volumeData =
+        sortedData.map(
+            item => {
+
+                const open =
+                    Number(item.open);
+
+                const close =
+                    Number(item.close);
+
+                return {
+                    value:
+                        Number(item.volume) || 0,
+
+                    itemStyle: {
+                        color:
+                            close >= open
+                                ? "#ef4444"
+                                : "#22c55e"
+                    }
+                };
+
+            }
+        );
+
+
+    /*
+     * 配置
+     */
+
+    const option = {
+
+        animation: false,
+
+        tooltip: {
+
+            trigger: "axis",
+
+            axisPointer: {
+                type: "cross"
+            },
+
+            formatter: function (params) {
+
+                const index =
+                    params[0].dataIndex;
+
+                const item =
+                    sortedData[index];
+
+                if (!item) {
+                    return "";
+                }
+
+                return `
+                    <div>
+                        <strong>
+                            ${formatKlineTooltipTime(
+                                item.timestamp
+                            )}
+                        </strong>
+
+                        <div>
+                            开盘：
+                            ${formatNumber(item.open)}
+                        </div>
+
+                        <div>
+                            最高：
+                            ${formatNumber(item.high)}
+                        </div>
+
+                        <div>
+                            最低：
+                            ${formatNumber(item.low)}
+                        </div>
+
+                        <div>
+                            收盘：
+                            ${formatNumber(item.close)}
+                        </div>
+
+                        <div>
+                            成交量：
+                            ${formatVolume(item.volume)}
+                        </div>
+
+                        <div>
+                            成交额：
+                            ${formatAmount(item.amount)}
+                        </div>
+                    </div>
+                `;
+            }
+        },
+
+
+        grid: [
+            {
+                left: 60,
+                right: 20,
+                top: 20,
+                height: "65%"
+            },
+
+            {
+                left: 60,
+                right: 20,
+                top: "76%",
+                height: "16%"
+            }
+        ],
+
+
+        xAxis: [
+
+            {
+                type: "category",
+
+                data: dates,
+
+                boundaryGap: true,
+
+                axisLine: {
+                    lineStyle: {
+                        color: "#d1d5db"
+                    }
+                },
+
+                axisLabel: {
+                    color: "#6b7280",
+                    hideOverlap: true
+                }
+            },
+
+            {
+                type: "category",
+
+                gridIndex: 1,
+
+                data: dates,
+
+                boundaryGap: true,
+
+                axisLabel: {
+                    show: false
+                },
+
+                axisLine: {
+                    show: false
+                }
+            }
+        ],
+
+
+        yAxis: [
+
+            {
+                scale: true,
+
+                splitArea: {
+                    show: false
+                },
+
+                axisLabel: {
+                    color: "#6b7280"
+                },
+
+                splitLine: {
+                    lineStyle: {
+                        color: "#f0f0f0"
+                    }
+                }
+            },
+
+            {
+                scale: true,
+
+                gridIndex: 1,
+
+                axisLabel: {
+                    color: "#9ca3af"
+                },
+
+                splitLine: {
+                    show: false
+                }
+            }
+        ],
+
+
+        dataZoom: [
+
+            {
+                type: "inside",
+
+                xAxisIndex: [
+                    0,
+                    1
+                ],
+
+                start:
+                    sortedData.length > 60
+                        ? 50
+                        : 0,
+
+                end: 100
+            },
+
+            {
+                type: "slider",
+
+                xAxisIndex: [
+                    0,
+                    1
+                ],
+
+                bottom: 5,
+
+                height: 18,
+
+                start:
+                    sortedData.length > 60
+                        ? 50
+                        : 0,
+
+                end: 100
+            }
+        ],
+
+
+        series: [
+
+            {
+                name: "K线",
+
+                type: "candlestick",
+
+                data: candles,
+
+                itemStyle: {
+
+                    color: "#ef4444",
+
+                    color0: "#22c55e",
+
+                    borderColor: "#ef4444",
+
+                    borderColor0: "#22c55e"
+                }
+            },
+
+            {
+                name: "成交量",
+
+                type: "bar",
+
+                xAxisIndex: 1,
+
+                yAxisIndex: 1,
+
+                data: volumeData
+            }
+
+        ]
+
+    };
+
+
+    chart.setOption(
+        option
+    );
+
+
+    /*
+     * 自适应
+     */
+
+    window.addEventListener(
+        "resize",
+        () => {
+            chart.resize();
+        }
+    );
+
+
+    /*
+     * 更新最新指标
+     */
 
     const latest =
-        data[data.length - 1];
-
+        sortedData[
+            sortedData.length - 1
+        ];
 
     if (latest) {
 
         setText(
             "ma5",
-            formatNumber(latest.ma5)
+            "-"
         );
 
         setText(
             "ma20",
-            formatNumber(latest.ma20)
+            "-"
         );
 
         setText(
             "ma60",
-            formatNumber(latest.ma60)
+            "-"
         );
 
         setText(
             "rsi",
-            formatNumber(latest.rsi)
+            "-"
         );
 
     }
 
+}
+
+function formatKlineTime(timestamp) {
+
+    if (!timestamp) {
+        return "";
+    }
+
+    const date =
+        new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) {
+        return "";
+    }
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+
+function formatKlineTooltipTime(timestamp) {
+
+    if (!timestamp) {
+        return "-";
+    }
+
+    const date =
+        new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) {
+        return "-";
+    }
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    const hour =
+        String(
+            date.getHours()
+        ).padStart(2, "0");
+
+    const minute =
+        String(
+            date.getMinutes()
+        ).padStart(2, "0");
+
+    return (
+        `${year}-${month}-${day} ` +
+        `${hour}:${minute}`
+    );
+}
+
+
+function formatVolume(value) {
+
+    const number =
+        Number(value);
+
+    if (!Number.isFinite(number)) {
+        return "-";
+    }
+
+    if (number >= 100000000) {
+        return (
+            (number / 100000000)
+                .toFixed(2) +
+            "亿"
+        );
+    }
+
+    if (number >= 10000) {
+        return (
+            (number / 10000)
+                .toFixed(2) +
+            "万"
+        );
+    }
+
+    return number.toLocaleString();
+}
+
+
+function formatAmount(value) {
+
+    const number =
+        Number(value);
+
+    if (!Number.isFinite(number)) {
+        return "-";
+    }
+
+    if (number >= 100000000) {
+        return (
+            (number / 100000000)
+                .toFixed(2) +
+            "亿"
+        );
+    }
+
+    if (number >= 10000) {
+        return (
+            (number / 10000)
+                .toFixed(2) +
+            "万"
+        );
+    }
+
+    return number.toLocaleString();
 }
 
 

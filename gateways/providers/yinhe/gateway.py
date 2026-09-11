@@ -379,6 +379,16 @@ class YinheGateway(StockDataGateway):
 
             list[Kline]
         """
+        if end_time is None:
+            end_time = datetime.datetime.now()
+
+        if start_time is None:
+            if interval == "1d":
+                start_time = end_time - datetime.timedelta(days=limit * 2)
+            elif interval == "1w":
+                start_time = end_time - datetime.timedelta(weeks=limit * 2)
+            elif interval == "1M":
+                start_time = end_time - datetime.timedelta(days=limit * 31 * 2)
         return self.kline.fetch_kline(symbol, interval, start_time, end_time, limit)
 
     def fetch_quotes(
