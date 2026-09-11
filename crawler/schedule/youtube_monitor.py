@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 import time
 from datetime import datetime
-
 import requests
 from dotenv import load_dotenv
 
@@ -283,7 +282,7 @@ def check_channels(
             print(f"    标题:   {video['title']}")
             print(f"    时间:   {video['published_at']}")
             print(f"    链接:   " f"https://www.youtube.com/watch?v={video_id}")
-            print(f"    描述: {video['description'] or '-'}")
+            # print(f"    描述: {video['description'] or '-'}")
             print()
             continue
 
