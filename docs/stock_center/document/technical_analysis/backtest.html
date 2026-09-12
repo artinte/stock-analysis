@@ -1,0 +1,2710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>技术分析 - STOCK LAB</title>
+
+    <meta
+        name="description"
+        content="学习股票技术分析，系统了解均线、MACD、KDJ、RSI、成交量、布林带等常用技术指标，以及趋势判断、指标背离和多指标组合分析方法。"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f6f7f9;
+            color: #20242b;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Microsoft YaHei",
+                Arial,
+                sans-serif;
+            line-height: 1.8;
+        }
+
+        .document {
+            width: min(1100px, calc(100% - 40px));
+            margin: 40px auto 80px;
+        }
+
+        .document-header {
+            background: #ffffff;
+            border: 1px solid #e7e9ed;
+            border-radius: 14px;
+            padding: 42px 48px;
+            margin-bottom: 24px;
+        }
+
+        .document-category {
+            display: inline-block;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .document-title {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.3;
+            font-weight: 700;
+            color: #17191d;
+        }
+
+        .document-description {
+            margin: 16px 0 0;
+            color: #68707c;
+            font-size: 16px;
+            max-width: 820px;
+        }
+
+        .document-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .meta-item {
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: #f1f3f5;
+            color: #666d78;
+            font-size: 12px;
+        }
+
+        .document-content {
+            background: #ffffff;
+            border: 1px solid #e7e9ed;
+            border-radius: 14px;
+            padding: 48px;
+        }
+
+        h2 {
+            margin: 48px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e8eaed;
+            font-size: 24px;
+            line-height: 1.4;
+            color: #17191d;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        h3 {
+            margin: 32px 0 14px;
+            font-size: 19px;
+            color: #24272d;
+        }
+
+        h4 {
+            margin: 24px 0 10px;
+            font-size: 16px;
+            color: #30343b;
+        }
+
+        p {
+            margin: 12px 0;
+            color: #4f5661;
+            font-size: 15px;
+        }
+
+        ul,
+        ol {
+            margin: 12px 0 18px;
+            padding-left: 24px;
+            color: #4f5661;
+        }
+
+        li {
+            margin: 6px 0;
+        }
+
+        strong {
+            color: #292d33;
+        }
+
+        code {
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #f1f3f5;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+        }
+
+        .lead {
+            font-size: 17px;
+            color: #414750;
+        }
+
+        .notice {
+            margin: 22px 0;
+            padding: 18px 20px;
+            background: #f7f8fa;
+            border-left: 3px solid #8b929d;
+            border-radius: 6px;
+        }
+
+        .notice p {
+            margin: 0;
+        }
+
+        .formula {
+            margin: 18px 0;
+            padding: 18px 20px;
+            background: #f7f8fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, monospace;
+            color: #30343b;
+            overflow-x: auto;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e7e9ed;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f7f8fa;
+            color: #30343b;
+            font-weight: 600;
+        }
+
+        td {
+            color: #555c67;
+        }
+
+        .indicator-card {
+            margin: 24px 0;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .indicator-title {
+            margin: 0 0 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #24272d;
+        }
+
+        .indicator-subtitle {
+            margin: 0 0 16px;
+            font-size: 13px;
+            color: #8a919c;
+        }
+
+        .signal {
+            margin: 16px 0;
+            padding: 15px 18px;
+            background: #f7f8fa;
+            border-radius: 7px;
+        }
+
+        .signal-title {
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #30343b;
+        }
+
+        .summary-box {
+            margin: 24px 0;
+            padding: 24px;
+            background: #f7f8fa;
+            border-radius: 10px;
+        }
+
+        .summary-box ul {
+            margin-bottom: 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            margin: 18px 0;
+        }
+
+        .step-number {
+            flex: 0 0 32px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef0f3;
+            color: #3d434c;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .toc {
+            margin: 24px 0;
+            padding: 20px 24px;
+            background: #f7f8fa;
+            border-radius: 8px;
+        }
+
+        .toc-title {
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #30343b;
+        }
+
+        .toc ol {
+            margin: 0;
+        }
+
+        .warning {
+            margin: 24px 0;
+            padding: 18px 20px;
+            background: #fafafa;
+            border: 1px solid #e1e3e6;
+            border-radius: 8px;
+        }
+
+        .footer-note {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #e7e9ed;
+            color: #8a919c;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+
+            .document {
+                width: calc(100% - 20px);
+                margin-top: 20px;
+            }
+
+            .document-header {
+                padding: 28px 24px;
+            }
+
+            .document-content {
+                padding: 28px 22px;
+            }
+
+            .document-title {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 21px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            p,
+            li {
+                font-size: 14px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="document">
+
+    <!-- ==================== 页面头部 ==================== -->
+
+    <header class="document-header">
+
+        <div class="document-category">
+            TECHNICAL ANALYSIS
+        </div>
+
+        <h1 class="document-title">
+            技术分析
+        </h1>
+
+        <p class="document-description">
+            从 K 线与趋势出发，系统学习均线、MACD、KDJ、RSI、
+            成交量、布林带等常用技术分析工具，并建立一套完整的股票技术分析框架。
+        </p>
+
+        <div class="document-meta">
+
+            <span class="meta-item">
+                股票研究
+            </span>
+
+            <span class="meta-item">
+                技术分析
+            </span>
+
+            <span class="meta-item">
+                K 线
+            </span>
+
+            <span class="meta-item">
+                指标
+            </span>
+
+            <span class="meta-item">
+                入门 → 进阶
+            </span>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==================== 正文 ==================== -->
+
+    <main class="document-content">
+
+        <div class="notice">
+
+            <p>
+                <strong>核心观点：</strong>
+                技术分析不是预测未来价格的工具，而是一种研究
+                <strong>价格、成交量、趋势和市场行为</strong>
+                的方法。
+                单一指标很少能够独立构成可靠的交易依据，
+                更合理的方法是结合趋势、量价关系、多个指标以及不同时间周期进行综合判断。
+            </p>
+
+        </div>
+
+
+        <!-- ==================== 目录 ==================== -->
+
+        <div class="toc">
+
+            <div class="toc-title">
+                本文目录
+            </div>
+
+            <ol>
+
+                <li>什么是技术分析</li>
+
+                <li>K 线与价格行为</li>
+
+                <li>趋势分析</li>
+
+                <li>移动平均线 MA</li>
+
+                <li>MACD</li>
+
+                <li>KDJ</li>
+
+                <li>RSI</li>
+
+                <li>成交量分析</li>
+
+                <li>布林带 BOLL</li>
+
+                <li>指标背离</li>
+
+                <li>多指标组合分析</li>
+
+                <li>不同时间周期分析</li>
+
+                <li>一个完整的技术分析流程</li>
+
+                <li>技术分析中的常见误区</li>
+
+                <li>技术分析与基本面分析</li>
+
+                <li>进一步学习：量化技术分析</li>
+
+            </ol>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            1. 什么是技术分析
+        </h2>
+
+        <p class="lead">
+            技术分析（Technical Analysis）是一种通过研究金融资产的历史价格、
+            成交量以及价格变化规律，分析市场趋势和投资者行为的方法。
+        </p>
+
+        <p>
+            对股票而言，技术分析最基本的输入数据通常包括：
+        </p>
+
+        <ul>
+
+            <li>开盘价（Open）</li>
+
+            <li>最高价（High）</li>
+
+            <li>最低价（Low）</li>
+
+            <li>收盘价（Close）</li>
+
+            <li>成交量（Volume）</li>
+
+            <li>成交额（Amount）</li>
+
+        </ul>
+
+        <p>
+            通过这些基础数据，可以进一步计算出均线、MACD、KDJ、RSI、
+            布林带等技术指标。
+        </p>
+
+        <h3>
+            技术分析研究的核心问题
+        </h3>
+
+        <p>
+            实际进行技术分析时，并不是简单地寻找“买入信号”或“卖出信号”，
+            而应该回答几个更重要的问题：
+        </p>
+
+        <ol>
+
+            <li>
+                当前股票处于上涨、下跌还是震荡状态？
+            </li>
+
+            <li>
+                当前趋势是否具有持续性？
+            </li>
+
+            <li>
+                当前价格处于趋势的什么位置？
+            </li>
+
+            <li>
+                成交量是否支持当前价格变化？
+            </li>
+
+            <li>
+                动能是在增强还是减弱？
+            </li>
+
+            <li>
+                当前上涨或下跌是否出现异常信号？
+            </li>
+
+        </ol>
+
+
+        <h3>
+            技术分析的三个核心维度
+        </h3>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            维度
+                        </th>
+
+                        <th>
+                            关注内容
+                        </th>
+
+                        <th>
+                            常用工具
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            趋势
+                        </td>
+
+                        <td>
+                            判断上涨、下跌或震荡
+                        </td>
+
+                        <td>
+                            MA、趋势线
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            动能
+                        </td>
+
+                        <td>
+                            判断上涨或下跌的力量
+                        </td>
+
+                        <td>
+                            MACD、RSI、KDJ
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            量价
+                        </td>
+
+                        <td>
+                            判断价格变化是否得到成交量支持
+                        </td>
+
+                        <td>
+                            成交量、成交额
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            2. K 线与价格行为
+        </h2>
+
+        <p>
+            K 线是技术分析最基础的数据结构。
+            一根 K 线通常包含一个交易周期内的开盘价、最高价、最低价和收盘价。
+        </p>
+
+        <div class="formula">
+
+            Open = 开盘价<br>
+
+            High = 最高价<br>
+
+            Low = 最低价<br>
+
+            Close = 收盘价
+
+        </div>
+
+        <h3>
+            阳线与阴线
+        </h3>
+
+        <p>
+            当收盘价高于开盘价时，通常称为阳线；
+            当收盘价低于开盘价时，通常称为阴线。
+        </p>
+
+        <p>
+            需要注意的是，K 线颜色本身并不是最重要的信息。
+            更重要的是价格所处的位置、K 线的连续结构以及成交量变化。
+        </p>
+
+        <h3>
+            K 线应该怎么看？
+        </h3>
+
+        <p>
+            不建议孤立地研究某一根 K 线。
+            一根 K 线只有放到前后价格结构中才有意义。
+        </p>
+
+        <p>
+            例如：
+        </p>
+
+        <ul>
+
+            <li>
+                上涨趋势中的大阳线，通常说明买方力量较强。
+            </li>
+
+            <li>
+                高位放量长上影线，可能意味着上方存在较强抛压。
+            </li>
+
+            <li>
+                下跌趋势中的大阴线，通常说明卖方占据主动。
+            </li>
+
+            <li>
+                低位缩量横盘，可能说明市场正在等待新的方向。
+            </li>
+
+        </ul>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            3. 趋势分析
+        </h2>
+
+        <p>
+            技术分析最重要的基础之一就是趋势。
+        </p>
+
+        <p>
+            市场通常可以简单分为三种状态：
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            市场状态
+                        </th>
+
+                        <th>
+                            价格特征
+                        </th>
+
+                        <th>
+                            主要关注
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            上升趋势
+                        </td>
+
+                        <td>
+                            高点不断抬高，低点不断抬高
+                        </td>
+
+                        <td>
+                            回调、支撑、趋势持续性
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            下降趋势
+                        </td>
+
+                        <td>
+                            高点不断降低，低点不断降低
+                        </td>
+
+                        <td>
+                            反弹压力、趋势是否结束
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            横盘震荡
+                        </td>
+
+                        <td>
+                            价格在一定区间内反复波动
+                        </td>
+
+                        <td>
+                            区间支撑、压力和突破
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h3>
+            为什么趋势如此重要？
+        </h3>
+
+        <p>
+            因为很多技术指标在不同市场环境下会产生完全不同的效果。
+        </p>
+
+        <p>
+            例如，在明显上涨趋势中，RSI 长时间处于较高位置，
+            并不意味着股票马上就会下跌。
+            相反，它可能说明市场具有较强动能。
+        </p>
+
+        <p>
+            因此：
+        </p>
+
+        <div class="summary-box">
+
+            <ul>
+
+                <li>
+                    趋势市场中，应更加重视趋势指标。
+                </li>
+
+                <li>
+                    震荡市场中，可以更加关注超买超卖指标。
+                </li>
+
+                <li>
+                    突破行情中，应重点观察价格与成交量是否同步。
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            4. 移动平均线 MA
+        </h2>
+
+        <p class="lead">
+            移动平均线（Moving Average，MA）是最基础也是最重要的技术指标之一。
+        </p>
+
+        <p>
+            它通过计算一定周期内的平均价格，
+            将短期价格波动进行平滑，从而帮助投资者观察市场趋势。
+        </p>
+
+        <h3>
+            4.1 简单移动平均线 SMA
+        </h3>
+
+        <p>
+            最常见的移动平均线是简单移动平均线。
+        </p>
+
+        <div class="formula">
+
+            MA(n) =
+            （最近 n 个交易日收盘价之和）
+            ÷ n
+
+        </div>
+
+        <p>
+            例如 MA20，就是最近 20 个交易日收盘价的平均值。
+        </p>
+
+        <h3>
+            4.2 常见均线
+        </h3>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            均线
+                        </th>
+
+                        <th>
+                            常见用途
+                        </th>
+
+                        <th>
+                            特征
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            MA5
+                        </td>
+
+                        <td>
+                            短期趋势
+                        </td>
+
+                        <td>
+                            对价格变化非常敏感
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            MA10
+                        </td>
+
+                        <td>
+                            短期趋势
+                        </td>
+
+                        <td>
+                            比 MA5 更平滑
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            MA20
+                        </td>
+
+                        <td>
+                            短中期趋势
+                        </td>
+
+                        <td>
+                            常用于观察一个月左右的交易趋势
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            MA60
+                        </td>
+
+                        <td>
+                            中期趋势
+                        </td>
+
+                        <td>
+                            常用于判断中期趋势
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            MA120
+                        </td>
+
+                        <td>
+                            中长期趋势
+                        </td>
+
+                        <td>
+                            对短期波动不敏感
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            MA250
+                        </td>
+
+                        <td>
+                            长期趋势
+                        </td>
+
+                        <td>
+                            常被视为年度级别趋势参考
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h3>
+            4.3 均线怎么看？
+        </h3>
+
+        <p>
+            观察均线时，可以重点关注三个方面：
+        </p>
+
+        <ol>
+
+            <li>
+                股价与均线的位置关系
+            </li>
+
+            <li>
+                均线本身的方向
+            </li>
+
+            <li>
+                不同周期均线之间的关系
+            </li>
+
+        </ol>
+
+        <div class="indicator-card">
+
+            <div class="indicator-title">
+                股价站上均线
+            </div>
+
+            <p>
+                如果股价从均线下方重新站上均线，
+                说明短期价格重新获得一定支撑。
+            </p>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <div class="indicator-title">
+                均线向上
+            </div>
+
+            <p>
+                如果 MA20、MA60 等中期均线持续向上，
+                通常说明对应周期的价格趋势偏强。
+            </p>
+
+        </div>
+
+        <div class="indicator-card">
+
+            <div class="indicator-title">
+                均线多头排列
+            </div>
+
+            <p>
+                例如短期均线位于中期均线上方，
+                中期均线又位于长期均线上方，
+                并且各条均线同时向上，
+                可以认为市场处于较明显的多头结构。
+            </p>
+
+        </div>
+
+        <h3>
+            4.4 金叉与死叉
+        </h3>
+
+        <p>
+            当短期均线向上穿越长期均线时，
+            通常称为“金叉”；
+            当短期均线向下穿越长期均线时，
+            通常称为“死叉”。
+        </p>
+
+        <p>
+            但是，金叉和死叉并不是独立的买卖信号。
+            因为均线本身具有滞后性，
+            趋势发生之后均线才会逐渐发生变化。
+        </p>
+
+        <div class="warning">
+
+            <p>
+                <strong>注意：</strong>
+                越短周期的均线越敏感，但假信号越多；
+                越长周期的均线越稳定，但反应越慢。
+                实际使用时需要在灵敏度和稳定性之间进行平衡。
+            </p>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            5. MACD
+        </h2>
+
+        <p class="lead">
+            MACD（Moving Average Convergence Divergence）
+            是最常用的趋势与动能指标之一。
+        </p>
+
+        <p>
+            MACD 的核心思想是：
+            通过比较不同周期指数移动平均线之间的关系，
+            判断市场趋势和动能变化。
+        </p>
+
+        <h3>
+            5.1 MACD 的三个核心组成
+        </h3>
+
+        <ul>
+
+            <li>
+                DIF：快线
+            </li>
+
+            <li>
+                DEA：慢线，也称 Signal
+            </li>
+
+            <li>
+                MACD Histogram：柱状图
+            </li>
+
+        </ul>
+
+        <h3>
+            5.2 DIF
+        </h3>
+
+        <div class="formula">
+
+            DIF = EMA(12) - EMA(26)
+
+        </div>
+
+        <p>
+            EMA 是指数移动平均线。
+            与简单移动平均线相比，EMA 对近期价格给予更高权重。
+        </p>
+
+        <h3>
+            5.3 DEA
+        </h3>
+
+        <div class="formula">
+
+            DEA = DIF 的 9 日 EMA
+
+        </div>
+
+        <p>
+            DEA 对 DIF 进行再次平滑，
+            因此 DIF 和 DEA 的交叉关系可以用于观察短期趋势变化。
+        </p>
+
+        <h3>
+            5.4 MACD 柱
+        </h3>
+
+        <div class="formula">
+
+            MACD = 2 × (DIF - DEA)
+
+        </div>
+
+        <p>
+            不同软件对 MACD 柱的具体显示方式可能有所不同，
+            因此在比较数据时应注意公式和参数设置。
+        </p>
+
+        <h3>
+            5.5 MACD 金叉
+        </h3>
+
+        <p>
+            当 DIF 从下方向上穿过 DEA 时，
+            通常称为 MACD 金叉。
+        </p>
+
+        <p>
+            如果金叉同时发生在零轴上方，
+            通常意味着市场中期趋势已经相对较强。
+        </p>
+
+        <h3>
+            5.6 MACD 死叉
+        </h3>
+
+        <p>
+            当 DIF 从上方向下穿过 DEA 时，
+            通常称为 MACD 死叉。
+        </p>
+
+        <p>
+            如果死叉发生在零轴下方，
+            通常意味着市场整体趋势偏弱。
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            MACD 状态
+                        </th>
+
+                        <th>
+                            常见含义
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            DIF > DEA
+                        </td>
+
+                        <td>
+                            短期动能相对较强
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            DIF < DEA
+                        </td>
+
+                        <td>
+                            短期动能相对较弱
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            DIF、DEA > 0
+                        </td>
+
+                        <td>
+                            整体趋势偏强
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            DIF、DEA < 0
+                        </td>
+
+                        <td>
+                            整体趋势偏弱
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h3>
+            5.7 MACD 背离
+        </h3>
+
+        <p>
+            背离是 MACD 非常重要的应用。
+        </p>
+
+        <p>
+            例如：
+        </p>
+
+        <ul>
+
+            <li>
+                股价创出新高，但 MACD 没有创出新高，
+                可以称为顶部背离。
+            </li>
+
+            <li>
+                股价创出新低，但 MACD 没有创出新低，
+                可以称为底部背离。
+            </li>
+
+        </ul>
+
+        <p>
+            背离并不意味着趋势一定立即反转，
+            它更适合被理解为：
+            <strong>当前趋势的动能可能正在减弱。</strong>
+        </p>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            6. KDJ
+        </h2>
+
+        <p class="lead">
+            KDJ 是一种典型的摆动指标，
+            常用于观察价格在近期波动区间中的相对位置。
+        </p>
+
+        <p>
+            KDJ 包括：
+        </p>
+
+        <ul>
+
+            <li>K 值</li>
+
+            <li>D 值</li>
+
+            <li>J 值</li>
+
+        </ul>
+
+        <h3>
+            6.1 KDJ 的基本思想
+        </h3>
+
+        <p>
+            KDJ 的核心是 RSV（Raw Stochastic Value）。
+        </p>
+
+        <div class="formula">
+
+            RSV =
+            (Close - Lowest Low)
+            ÷
+            (Highest High - Lowest Low)
+            × 100
+
+        </div>
+
+        <p>
+            也就是说，
+            它试图回答一个简单的问题：
+        </p>
+
+        <div class="summary-box">
+
+            <p>
+                当前收盘价位于最近一段时间价格区间的什么位置？
+            </p>
+
+        </div>
+
+        <h3>
+            6.2 K、D、J 的关系
+        </h3>
+
+        <p>
+            K 和 D 是经过平滑处理的随机指标，
+            J 则进一步放大 K 与 D 的差异。
+        </p>
+
+        <p>
+            因此 J 值的波动通常比 K、D 更明显。
+        </p>
+
+        <h3>
+            6.3 超买与超卖
+        </h3>
+
+        <p>
+            在传统技术分析中，
+            KDJ 高位通常被视为超买区域，
+            低位通常被视为超卖区域。
+        </p>
+
+        <p>
+            但“超买”并不等于“马上下跌”，
+            “超卖”也不等于“马上上涨”。
+        </p>
+
+        <p>
+            在强趋势市场中，
+            指标可能长时间处于高位或低位。
+        </p>
+
+        <h3>
+            6.4 KDJ 金叉与死叉
+        </h3>
+
+        <p>
+            K 线上穿 D 线通常称为金叉，
+            K 线下穿 D 线通常称为死叉。
+        </p>
+
+        <p>
+            KDJ 更适合用于震荡行情和短周期分析，
+            不宜单独用来判断长期趋势。
+        </p>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            7. RSI
+        </h2>
+
+        <p class="lead">
+            RSI（Relative Strength Index，相对强弱指标）
+            是另一种非常常见的动量指标。
+        </p>
+
+        <p>
+            RSI 主要用于衡量一段时间内上涨力量与下跌力量之间的相对强弱。
+        </p>
+
+        <h3>
+            7.1 RSI 的基本范围
+        </h3>
+
+        <p>
+            RSI 通常位于 0 到 100 之间。
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            RSI 区间
+                        </th>
+
+                        <th>
+                            常见解释
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            70 以上
+                        </td>
+
+                        <td>
+                            传统意义上的高位 / 超买区域
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            50 附近
+                        </td>
+
+                        <td>
+                            多空力量相对平衡
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            30 以下
+                        </td>
+
+                        <td>
+                            传统意义上的低位 / 超卖区域
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h3>
+            7.2 RSI 为什么会有效？
+        </h3>
+
+        <p>
+            因为价格上涨和下跌的速度，
+            本身就是市场动能的一种表现。
+        </p>
+
+        <p>
+            如果近期上涨幅度明显大于下跌幅度，
+            RSI 会逐渐提高；
+            如果近期下跌力量明显增强，
+            RSI 会逐渐下降。
+        </p>
+
+        <h3>
+            7.3 RSI 的正确理解
+        </h3>
+
+        <p>
+            不要简单地认为：
+        </p>
+
+        <div class="warning">
+
+            <p>
+                RSI > 70 = 卖出
+            </p>
+
+            <p>
+                RSI < 30 = 买入
+            </p>
+
+        </div>
+
+        <p>
+            更合理的理解是：
+        </p>
+
+        <ul>
+
+            <li>
+                RSI 高位：市场短期动能较强，同时需要关注过热风险。
+            </li>
+
+            <li>
+                RSI 低位：市场短期动能较弱，同时关注超跌可能。
+            </li>
+
+            <li>
+                RSI 长时间高位：可能说明趋势非常强，而不是马上见顶。
+            </li>
+
+            <li>
+                RSI 长时间低位：可能说明趋势非常弱，而不是马上反弹。
+            </li>
+
+        </ul>
+
+        <h3>
+            7.4 RSI 背离
+        </h3>
+
+        <p>
+            RSI 同样可以观察价格与动能之间的背离。
+        </p>
+
+        <p>
+            如果股价持续创出新高，
+            RSI 却没有同步创新高，
+            说明上涨动能可能正在减弱。
+        </p>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            8. 成交量分析
+        </h2>
+
+        <p class="lead">
+            如果说价格告诉我们“发生了什么”，
+            那么成交量可以帮助我们理解“市场参与程度如何”。
+        </p>
+
+        <h3>
+            8.1 放量上涨
+        </h3>
+
+        <p>
+            价格上涨同时成交量明显增加，
+            通常说明市场参与度提高，
+            当前上涨得到更多资金参与。
+        </p>
+
+        <p>
+            但放量上涨并不意味着一定继续上涨，
+            高位巨量也可能意味着资金开始分歧。
+        </p>
+
+        <h3>
+            8.2 缩量上涨
+        </h3>
+
+        <p>
+            价格上涨但成交量没有明显增加，
+            可能意味着卖方抛压较小。
+        </p>
+
+        <p>
+            在某些上涨趋势中，
+            缩量回调甚至可能属于正常的趋势调整。
+        </p>
+
+        <h3>
+            8.3 放量下跌
+        </h3>
+
+        <p>
+            下跌过程中成交量明显放大，
+            通常说明卖方力量较强，
+            应当更加关注趋势是否发生变化。
+        </p>
+
+        <h3>
+            8.4 缩量下跌
+        </h3>
+
+        <p>
+            缩量下跌说明成交意愿下降，
+            但不能简单理解为“马上反弹”。
+        </p>
+
+        <div class="summary-box">
+
+            <strong>
+                技术分析中的一个重要原则：
+            </strong>
+
+            <p>
+                不要只看价格，也不要只看成交量。
+                更重要的是观察价格与成交量之间是否匹配。
+            </p>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            9. 布林带 BOLL
+        </h2>
+
+        <p class="lead">
+            布林带（Bollinger Bands）是一种同时研究趋势和波动率的指标。
+        </p>
+
+        <p>
+            它通常由三条线组成：
+        </p>
+
+        <ul>
+
+            <li>中轨</li>
+
+            <li>上轨</li>
+
+            <li>下轨</li>
+
+        </ul>
+
+        <div class="formula">
+
+            中轨 = MA(n)
+
+            <br><br>
+
+            上轨 = 中轨 + k × 标准差
+
+            <br><br>
+
+            下轨 = 中轨 - k × 标准差
+
+        </div>
+
+        <h3>
+            9.1 布林带收窄
+        </h3>
+
+        <p>
+            当上下轨之间的距离明显缩小时，
+            说明近期价格波动率下降。
+        </p>
+
+        <p>
+            市场可能进入整理阶段，
+            后续出现较明显价格波动的概率可能增加。
+        </p>
+
+        <h3>
+            9.2 布林带扩张
+        </h3>
+
+        <p>
+            当上下轨快速扩大时，
+            通常说明价格波动正在增加。
+        </p>
+
+        <p>
+            但扩张本身并不决定上涨还是下跌，
+            方向仍然需要结合价格和成交量判断。
+        </p>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            10. 指标背离
+        </h2>
+
+        <p class="lead">
+            背离是技术分析中非常重要，但也最容易被误解的概念之一。
+        </p>
+
+        <p>
+            所谓背离，
+            是指价格走势与某个技术指标的走势出现不一致。
+        </p>
+
+        <h3>
+            顶部背离
+        </h3>
+
+        <p>
+            例如：
+        </p>
+
+        <ul>
+
+            <li>
+                股价创出新高
+            </li>
+
+            <li>
+                MACD 没有创出新高
+            </li>
+
+            <li>
+                RSI 没有创出新高
+            </li>
+
+        </ul>
+
+        <p>
+            这可能意味着价格虽然继续上涨，
+            但内部动能正在减弱。
+        </p>
+
+        <h3>
+            底部背离
+        </h3>
+
+        <p>
+            如果股价创出新低，
+            但 MACD 或 RSI 没有同步创新低，
+            则可能说明下跌动能正在减弱。
+        </p>
+
+        <div class="warning">
+
+            <p>
+                <strong>重要：</strong>
+                背离不是反转确认。
+                背离出现以后，价格仍然可能继续沿原方向运行。
+                因此最好等待价格结构、成交量或其他指标进一步确认。
+            </p>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            11. 多指标组合分析
+        </h2>
+
+        <p>
+            实际投资中，不建议把所有指标同时打开。
+            指标太多反而容易造成信息冲突。
+        </p>
+
+        <p>
+            更合理的方法是：
+            <strong>让不同指标承担不同任务。</strong>
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            分析问题
+                        </th>
+
+                        <th>
+                            推荐工具
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            当前趋势是什么？
+                        </td>
+
+                        <td>
+                            MA、MACD
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            趋势是否有动能？
+                        </td>
+
+                        <td>
+                            MACD、RSI
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            短期是否过热？
+                        </td>
+
+                        <td>
+                            RSI、KDJ
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            当前上涨是否有量？
+                        </td>
+
+                        <td>
+
+                            成交量
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            当前波动率如何？
+                        </td>
+
+                        <td>
+
+                            BOLL
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h3>
+            一个简单的组合框架
+        </h3>
+
+        <div class="step">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    先看趋势
+                </strong>
+
+                <p>
+                    使用 MA20、MA60 等判断中短期趋势。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    再看动能
+                </strong>
+
+                <p>
+                    使用 MACD 判断趋势动能是否增强或减弱。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    再看量价
+                </strong>
+
+                <p>
+                    判断上涨或下跌是否得到成交量支持。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                04
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    最后观察短期状态
+                </strong>
+
+                <p>
+                    使用 RSI、KDJ 判断短期是否过热或超跌。
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            12. 不同时间周期分析
+        </h2>
+
+        <p>
+            同一只股票，在不同时间周期上的技术形态可能完全不同。
+        </p>
+
+        <p>
+            因此技术分析不能脱离时间周期。
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            周期
+                        </th>
+
+                        <th>
+                            适合观察
+                        </th>
+
+                        <th>
+                            特点
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            1分钟 / 5分钟
+                        </td>
+
+                        <td>
+                            极短期价格行为
+                        </td>
+
+                        <td>
+                            噪声非常多
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            15分钟 / 30分钟
+                        </td>
+
+                        <td>
+                            短线趋势
+                        </td>
+
+                        <td>
+                            适合观察日内结构
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            60分钟
+                        </td>
+
+                        <td>
+                            短中期趋势
+                        </td>
+
+                        <td>
+                            介于日线和日内之间
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            日线
+                        </td>
+
+                        <td>
+                            中短期趋势
+                        </td>
+
+                        <td>
+                            最常见的股票分析周期
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            周线
+                        </td>
+
+                        <td>
+                            中长期趋势
+                        </td>
+
+                        <td>
+                            过滤大量短期噪声
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            月线
+                        </td>
+
+                        <td>
+                            长期趋势
+                        </td>
+
+                        <td>
+                            更适合长期投资研究
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <h3>
+            多周期分析
+        </h3>
+
+        <p>
+            一个比较实用的方法是：
+        </p>
+
+        <div class="summary-box">
+
+            <p>
+                <strong>
+                    大周期决定方向，小周期寻找位置。
+                </strong>
+            </p>
+
+            <p>
+                例如先通过周线判断长期趋势，
+                再通过日线判断中期趋势，
+                最后通过 60 分钟或更短周期观察短期价格结构。
+            </p>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            13. 一个完整的技术分析流程
+        </h2>
+
+        <p>
+            如果面对一只股票，不知道应该从哪里开始，
+            可以按照下面的顺序进行分析。
+        </p>
+
+        <div class="step">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    判断大趋势
+                </strong>
+
+                <p>
+                    先看周线和日线，判断股票处于上涨、下跌还是震荡阶段。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    判断均线结构
+                </strong>
+
+                <p>
+                    观察 MA20、MA60、MA120 等均线方向以及多空排列关系。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    判断 MACD
+                </strong>
+
+                <p>
+                    观察 DIF、DEA、零轴以及柱状图变化。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                04
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    判断成交量
+                </strong>
+
+                <p>
+                    判断价格变化是否得到成交量支持。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                05
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    判断短期动能
+                </strong>
+
+                <p>
+                    使用 RSI、KDJ 等指标观察短期市场状态。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                06
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    寻找关键价格位置
+                </strong>
+
+                <p>
+                    观察前高、前低、成交密集区、均线以及重要支撑压力位置。
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="step">
+
+            <div class="step-number">
+                07
+            </div>
+
+            <div class="step-content">
+
+                <strong>
+                    最后才考虑交易计划
+                </strong>
+
+                <p>
+                    明确自己的持有周期、风险承受范围以及退出条件。
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            14. 技术分析中的常见误区
+        </h2>
+
+        <h3>
+            误区一：认为指标可以预测未来
+        </h3>
+
+        <p>
+            技术指标本质上都是根据历史价格和成交量计算出来的。
+            它们不能直接知道未来发生什么。
+        </p>
+
+        <p>
+            因此指标更适合用于：
+        </p>
+
+        <ul>
+
+            <li>
+                描述当前市场状态
+            </li>
+
+            <li>
+                识别趋势
+            </li>
+
+            <li>
+                衡量动能
+            </li>
+
+            <li>
+                发现异常变化
+            </li>
+
+        </ul>
+
+        <h3>
+            误区二：看到金叉就买
+        </h3>
+
+        <p>
+            金叉只是一个状态变化。
+            如果市场本身处于长期下跌趋势，
+            短周期金叉可能只是一次反弹。
+        </p>
+
+        <h3>
+            误区三：RSI 超买就卖
+        </h3>
+
+        <p>
+            强势股票可以长时间保持高 RSI。
+            超买说明价格动能较强，
+            而不是保证价格马上下跌。
+        </p>
+
+        <h3>
+            误区四：指标越多越准确
+        </h3>
+
+        <p>
+            MACD、KDJ、RSI 等指标虽然名称不同，
+            但很多指标都来自价格数据。
+        </p>
+
+        <p>
+            如果同时使用十几个指标，
+            并不意味着拥有十几个独立的信息源。
+        </p>
+
+        <p>
+            更好的方法是选择功能互补的指标。
+        </p>
+
+        <h3>
+            误区五：忽视市场环境
+        </h3>
+
+        <p>
+            牛市、熊市、震荡市场中，
+            同一个指标的表现可能完全不同。
+        </p>
+
+        <p>
+            因此技术指标必须放在具体市场环境中理解。
+        </p>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            15. 技术分析与基本面分析
+        </h2>
+
+        <p>
+            技术分析和基本面分析并不是互相排斥的两套体系。
+        </p>
+
+        <p>
+            它们回答的问题不同。
+        </p>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            分析方式
+                        </th>
+
+                        <th>
+                            核心问题
+                        </th>
+
+                        <th>
+                            常见数据
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            技术分析
+                        </td>
+
+                        <td>
+                            市场现在怎么走？
+                        </td>
+
+                        <td>
+                            价格、成交量、技术指标
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            基本面分析
+                        </td>
+
+                        <td>
+                            企业值多少钱？
+                        </td>
+
+                        <td>
+                            营收、利润、现金流、资产、估值
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            量化分析
+                        </td>
+
+                        <td>
+                            历史数据中是否存在可重复的规律？
+                        </td>
+
+                        <td>
+                            因子、价格、财务、交易数据
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p>
+            对长期投资者而言，
+            技术分析可以用于研究价格趋势和买卖时机，
+            基本面分析则可以用于判断企业质量和估值。
+        </p>
+
+        <p>
+            一个更加完整的研究框架可以是：
+        </p>
+
+        <div class="summary-box">
+
+            <p>
+                <strong>
+                    基本面决定“研究什么”，
+                    估值决定“价格是否合理”，
+                    技术分析帮助理解“市场正在怎么交易”。
+                </strong>
+            </p>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            16. 进一步学习：量化技术分析
+        </h2>
+
+        <p>
+            当掌握基本技术指标以后，
+            可以进一步进入量化分析阶段。
+        </p>
+
+        <p>
+            与人工观察不同，
+            量化分析会将技术指标转换成可以计算和回测的规则。
+        </p>
+
+        <h3>
+            例如均线策略
+        </h3>
+
+        <div class="formula">
+
+            IF MA20 > MA60
+
+            <br>
+
+            → 趋势状态 = Bullish
+
+            <br><br>
+
+            IF MA20 < MA60
+
+            <br>
+
+            → 趋势状态 = Bearish
+
+        </div>
+
+        <p>
+            再例如 MACD：
+        </p>
+
+        <div class="formula">
+
+            IF DIF > DEA AND DIF > 0
+
+            <br>
+
+            → 动能状态 = Strong
+
+        </div>
+
+        <p>
+            然后可以进一步将这些条件组合起来，
+            构建因子、选股策略和回测模型。
+        </p>
+
+        <h3>
+            从技术指标走向量化策略
+        </h3>
+
+        <ol>
+
+            <li>
+                获取历史行情数据
+            </li>
+
+            <li>
+                计算技术指标
+            </li>
+
+            <li>
+                定义交易规则
+            </li>
+
+            <li>
+                进行历史回测
+            </li>
+
+            <li>
+                计算收益率和风险指标
+            </li>
+
+            <li>
+                分析最大回撤
+            </li>
+
+            <li>
+                检查策略是否具有稳定性
+            </li>
+
+            <li>
+                使用样本外数据验证
+            </li>
+
+        </ol>
+
+
+        <!-- ========================================================= -->
+
+        <h2>
+            17. 技术分析总结
+        </h2>
+
+        <div class="summary-box">
+
+            <ul>
+
+                <li>
+                    <strong>MA：</strong>
+                    主要用于判断趋势和价格的平均成本变化。
+                </li>
+
+                <li>
+                    <strong>MACD：</strong>
+                    主要用于研究趋势和动能变化。
+                </li>
+
+                <li>
+                    <strong>KDJ：</strong>
+                    主要用于观察短期价格位置和超买超卖状态。
+                </li>
+
+                <li>
+                    <strong>RSI：</strong>
+                    主要用于衡量价格动量和相对强弱。
+                </li>
+
+                <li>
+                    <strong>成交量：</strong>
+                    用于观察市场参与程度以及量价关系。
+                </li>
+
+                <li>
+                    <strong>BOLL：</strong>
+                    用于观察价格波动率和价格相对位置。
+                </li>
+
+                <li>
+                    <strong>背离：</strong>
+                    用于观察价格与动能之间的不一致。
+                </li>
+
+            </ul>
+
+        </div>
+
+        <p>
+            真正的技术分析并不是寻找一个“神奇指标”，
+            而是建立一套结构化的观察方法。
+        </p>
+
+        <p>
+            一个比较完整的分析逻辑可以概括为：
+        </p>
+
+        <div class="formula">
+
+            趋势
+            →
+            价格结构
+            →
+            均线
+            →
+            动能
+            →
+            成交量
+            →
+            支撑与压力
+            →
+            多周期确认
+            →
+            风险管理
+
+        </div>
+
+        <p>
+            当这些信息相互验证时，
+            技术分析的参考价值通常会高于单独依赖某一个指标。
+        </p>
+
+
+        <!-- ========================================================= -->
+
+        <div class="footer-note">
+
+            <p>
+                STOCK LAB · 技术分析学习文档
+            </p>
+
+            <p>
+                本文用于股票研究与技术分析学习，
+                技术指标并不能保证投资收益，
+                实际投资应结合基本面、估值、市场环境以及个人风险承受能力进行判断。
+            </p>
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
+
