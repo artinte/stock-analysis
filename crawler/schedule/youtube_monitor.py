@@ -26,14 +26,82 @@ CHECK_INTERVAL = 300
 # ============================================================
 
 MONITOR_CHANNELS = {
+    # =========================================================
+    # AI / 大模型
+    # =========================================================
     "Google": "UCK8sQmJBp8GCxrOtXWBpyEA",
     "NVIDIA": "UCHuiy8bXnmK5nisYHUd1J5g",
-    "SpaceX": "UCtI0Hodo5o5dUb67FeUjDeA",
-    "Tesla": "UC5WjFrtBdufl6CZojX3D8dQ",
-    "Microsoft": "UCFtEEv80fQVKkD4h1PF-Xqw",
-    "Apple": "UCE_M8A5yxnLfW0KghEeajjw",
-    "Amazon": "UCkLXELm63_pH7L-r-548kig",
     "OpenAI": "UCXZCJLdBC09xxGZ6gcdrc6A",
+    "Microsoft": "UCFtEEv80fQVKkD4h1PF-Xqw",
+    "Amazon": "UCkLXELm63_pH7L-r-548kig",
+    "Meta": "UC04FyDIvYXNecpbG8gyOw4A",
+    "Anthropic": "UCrDwWp7EBBv4NwvScIpBDOA",
+    "IBM Technology": "UCKWaEZ-_VweaEx1j62do_vQ",
+    "Google DeepMind": "UCP7jMXSY2xbc3KCAE0MHQ-A",
+    # =========================================================
+    # 半导体 / 芯片
+    # =========================================================
+    "TSMC": "UC02yNxGj2MxhynehcWSxcLg",
+    "Intel": "UCk7SjrXVXAj8m8BLgzh6dGA",
+    "AMD": "UCHQDjDDW8w2RieO-IuqYlyg",
+    "Qualcomm": "UCH6eZr6vbZ6Bx53TyuSzxrg",
+    "Broadcom Inc.": "UCTr3zah69bISSVdBcHiKhpA",
+    "Micron Technology": "UCBqcI352Dc2ExKq1uSdwZvg",
+    "Texas Instruments": "UC-EXTfLnOmCKVRJrv8xoGrQ",
+    "ASML": "UCIT9d3JjHEnsVi_w9guSXvA",
+    "Applied Materials": "UCRtDxSpmTncPvzBvXLurThA",
+    "Lam Research": "UCGBYhq34JyAzewhkas7r1OQ",
+    "Arm®": "UCvcBJFXTzCfU_sILnYVd4gg",
+    # =========================================================
+    # 云计算 / 软件 / 企业服务
+    # =========================================================
+    "Amazon News": "UCzE5rz2KHTFYAkmMksUpPLA",
+    "Google Cloud Tech": "UCJS9pqu9BzkAMNTmzNMNhvg",
+    "Microsoft Azure": "UC0m-80FnNY2Qb7obvTL_2fA",
+    "Oracle": "UCHCThmyZ-2yWkv0UVeBDdnQ",
+    "Salesforce": "UCUpquzY878NEaZm5bc7m2sQ",
+    "Cisco": "UCEWiIE6Htd8mvlOR6YQez1g",
+    "Dell Technologies": "UCZHb3OEEJ0WkizEH9ErlgvA",
+    # =========================================================
+    # 消费电子 / 互联网
+    # =========================================================
+    "Apple": "UCE_M8A5yxnLfW0KghEeajjw",
+    "Samsung": "UCWwgaK7x0_FR1goeSRazfsQ",
+    "Xiaomi": "UCCspJ6mFfCwOV4qFjZWi2wg",
+    "Huawei": "UCtjV1_XU6gvPYyreaFScxBQ",
+    "Lenovo": "UCpvg0uZH-oxmCagOWJo9p9g",
+    "Adobe": "UC5_SBQbLA9Kg7Jh5GpXoP3g",
+    # =========================================================
+    # 汽车 / 新能源 / 自动驾驶
+    # =========================================================
+    "Tesla": "UC5WjFrtBdufl6CZojX3D8dQ",
+    "BYD Global": "UCHlKiZpRUfYpxgiNrFzpjbA",
+    "Volkswagen": "UC0US_GEXVmwMH04OMcNuhpQ",
+    "Ford Motor Company": "UCKA96UxTdgFBwGZMGZ-135w",
+    # =========================================================
+    # 航天 / 商业航天
+    # =========================================================
+    "SpaceX": "UCtI0Hodo5o5dUb67FeUjDeA",
+    "NASA": "UCLA_DiR1FfKNvjuUpBHmylQ",
+    "Blue Origin": "UCVxTHEKKLxNjGcvVaZindlg",
+    "Rocket Lab": "UCsWq7LZaizhIi-c-Yo_bcpw",
+    "European Space Agency, ESA": "UCIBaDdAbGlFDeS33shmlD0A",
+    # =========================================================
+    # 金融 / 投资机构
+    # =========================================================
+    "Bank of America": "UCtHZ1qs5h4sx9TijVBQCMIA",
+    # =========================================================
+    # 财经媒体 / 宏观经济
+    # =========================================================
+    "财经风云": "UC-1F7DZmxTd1YZUJZUsA0nw",
+    "CNBC Television": "UCrp_UI8XtuYfpiqluWLD7Lw",
+    "Bloomberg Television": "UCIALMKvObZNtJ6AmdCLP7Lg",
+    "Reuters": "UChqUTb7kYRX8-EiaN3XFrSQ",
+    "Financial Times": "UCoUxsWakJucWg46KW5RsvPw",
+    "The Wall Street Journal": "UCK7tptUDHh-RYDsdxO1-5QQ",
+    "Yahoo Finance": "UCEAZeUIeJs0IjQiqTCdVSIg",
+    "Forbes": "UCmh7afBz-uWwOSSNTqUBAhg",
+    "The Economist": "UC0p5jTq6Xx_DosDFxVXnWaQ",
 }
 
 
@@ -247,15 +315,11 @@ def check_channels(
 
         # 跳过还没有填写真实 ID 的频道
         if channel_id.endswith("_CHANNEL_ID"):
-
             print(f"  ⚠️ {name}: " "还没有配置频道 ID")
-
             continue
 
         if channel_id.endswith("_ID"):
-
             print(f"  ⚠️ {name}: " "还没有配置频道 ID")
-
             continue
 
         print(f"  检查: {name}")
@@ -272,9 +336,7 @@ def check_channels(
 
         # 第一次运行
         if channel_id not in last_videos:
-
             last_videos[channel_id] = video_id
-
             print("    📌 当前最新视频")
             print(f"    频道:   {name}")
             print(f"    频道ID: {channel_id}")
@@ -407,20 +469,16 @@ def main():
     # --------------------------------------------------------
 
     while True:
-
         try:
-
             check_channels(last_videos)
 
         except KeyboardInterrupt:
-
             print()
             print("监控已停止")
 
             break
 
         except Exception as e:
-
             print(f"❌ 监控发生异常: {e}")
 
         print()
