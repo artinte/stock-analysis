@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>股票基础｜STOCK LAB 学习中心</title>
+
+    <meta
+        name="description"
+        content="股票基础学习专题，从股票的起源、基本概念、A股市场、交易制度到投资风险，系统建立股票投资知识体系。"
+    >
+
+    <link rel="stylesheet" href="../../css/style.css">
+
+    <style>
+        /* =========================================================
+           STOCK LAB - 股票基础专题总览
+        ========================================================= */
+
+        :root {
+            --article-bg: #f7f8fa;
+            --article-panel: #ffffff;
+            --article-text: #1f2937;
+            --article-muted: #6b7280;
+            --article-border: #e5e7eb;
+            --article-primary: #2563eb;
+            --article-primary-soft: #eff6ff;
+            --article-heading: #111827;
+            --article-stage-bg: #f9fafb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--article-bg);
+            color: var(--article-text);
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "PingFang SC",
+                "Microsoft YaHei",
+                sans-serif;
+            line-height: 1.75;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .article-page {
+            width: min(1280px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 34px 0 90px;
+        }
+
+        .article-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 260px;
+            gap: 64px;
+            align-items: start;
+        }
+
+        .article-main {
+            min-width: 0;
+        }
+
+        .article-header {
+            padding: 42px 46px;
+            margin-bottom: 28px;
+            background: var(--article-panel);
+            border: 1px solid var(--article-border);
+            border-radius: 16px;
+        }
+
+        .article-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            color: var(--article-primary);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+        }
+
+        .article-eyebrow::before {
+            content: "";
+            width: 24px;
+            height: 2px;
+            background: var(--article-primary);
+        }
+
+        .article-header h1 {
+            margin: 0 0 16px;
+            color: var(--article-heading);
+            font-size: clamp(30px, 4vw, 46px);
+            font-weight: 750;
+            line-height: 1.25;
+            letter-spacing: -0.035em;
+        }
+
+        .article-header .article-lead {
+            max-width: 760px;
+            margin: 0;
+            color: var(--article-muted);
+            font-size: 17px;
+            line-height: 1.9;
+        }
+
+        .article-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 26px;
+        }
+
+        .article-meta-item {
+            padding: 6px 12px;
+            color: #4b5563;
+            background: #f3f4f6;
+            border-radius: 999px;
+            font-size: 12px;
+        }
+
+        .article-section {
+            margin-bottom: 28px;
+            padding: 34px 40px;
+            background: var(--article-panel);
+            border: 1px solid var(--article-border);
+            border-radius: 16px;
+        }
+
+        .article-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-kicker {
+            margin-bottom: 8px;
+            color: var(--article-primary);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .article-section h2 {
+            margin: 0 0 18px;
+            color: var(--article-heading);
+            font-size: 26px;
+            line-height: 1.4;
+            letter-spacing: -0.025em;
+        }
+
+        .article-section h3 {
+            margin: 30px 0 10px;
+            color: var(--article-heading);
+            font-size: 19px;
+            line-height: 1.5;
+        }
+
+        .article-section p {
+            margin: 0 0 16px;
+            color: #374151;
+            font-size: 15px;
+        }
+
+        .article-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .article-section strong {
+            color: #111827;
+            font-weight: 700;
+        }
+
+        .article-section ul,
+        .article-section ol {
+            margin: 12px 0 18px;
+            padding-left: 24px;
+            color: #374151;
+            font-size: 15px;
+        }
+
+        .article-section li {
+            margin: 7px 0;
+        }
+
+        .article-note {
+            margin: 22px 0;
+            padding: 18px 20px;
+            background: var(--article-primary-soft);
+            border-left: 3px solid var(--article-primary);
+            border-radius: 8px;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .article-note strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #1d4ed8;
+        }
+
+        .learning-roadmap {
+            display: grid;
+            gap: 20px;
+            margin-top: 26px;
+        }
+
+        .stage-card {
+            overflow: hidden;
+            border: 1px solid var(--article-border);
+            border-radius: 14px;
+            background: var(--article-stage-bg);
+        }
+
+        .stage-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 22px 24px;
+            background: #ffffff;
+            border-bottom: 1px solid var(--article-border);
+        }
+
+        .stage-title-wrap {
+            min-width: 0;
+        }
+
+        .stage-number {
+            margin-bottom: 4px;
+            color: var(--article-primary);
+            font-size: 11px;
+            font-weight: 750;
+            letter-spacing: 0.12em;
+        }
+
+        .stage-header h3 {
+            margin: 0;
+            font-size: 21px;
+            line-height: 1.4;
+        }
+
+        .stage-description {
+            margin: 6px 0 0;
+            color: var(--article-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .stage-count {
+            flex: 0 0 auto;
+            padding: 5px 10px;
+            color: #6b7280;
+            background: #f3f4f6;
+            border-radius: 999px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .lesson-list {
+            display: grid;
+        }
+
+        .lesson-item {
+            display: grid;
+            grid-template-columns: 44px minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--article-border);
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .lesson-item:last-child {
+            border-bottom: 0;
+        }
+
+        .lesson-item:hover {
+            background: #ffffff;
+        }
+
+        .lesson-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            color: #4b5563;
+            background: #f3f4f6;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        .lesson-content {
+            min-width: 0;
+        }
+
+        .lesson-content h4 {
+            margin: 0 0 4px;
+            color: var(--article-heading);
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.5;
+        }
+
+        .lesson-content p {
+            margin: 0;
+            color: var(--article-muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .lesson-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            min-width: 82px;
+        }
+
+        .lesson-level {
+            color: #6b7280;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .lesson-time {
+            color: #9ca3af;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .lesson-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            color: var(--article-primary);
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .lesson-link:hover {
+            color: #1d4ed8;
+        }
+
+        .study-principles {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .principle-card {
+            padding: 20px;
+            border: 1px solid var(--article-border);
+            border-radius: 12px;
+            background: #fafafa;
+        }
+
+        .principle-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            margin-bottom: 12px;
+            color: var(--article-primary);
+            background: var(--article-primary-soft);
+            border-radius: 9px;
+            font-size: 16px;
+        }
+
+        .principle-card h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+        }
+
+        .principle-card p {
+            margin: 0;
+            color: var(--article-muted);
+            font-size: 13px;
+            line-height: 1.75;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        .checklist-item::before {
+            content: "✓";
+            display: inline-flex;
+            flex: 0 0 auto;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            color: #2563eb;
+            background: #eff6ff;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .article-toc {
+            position: sticky;
+            top: 90px;
+            padding: 22px 20px;
+            background: var(--article-panel);
+            border: 1px solid var(--article-border);
+            border-radius: 14px;
+        }
+
+        .toc-label {
+            margin-bottom: 14px;
+            color: #9ca3af;
+            font-size: 10px;
+            font-weight: 750;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .toc-title {
+            margin-bottom: 18px;
+            color: var(--article-heading);
+            font-size: 16px;
+            font-weight: 750;
+        }
+
+        .toc-list {
+            display: grid;
+            gap: 3px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .toc-list li {
+            margin: 0;
+        }
+
+        .toc-list a {
+            display: block;
+            padding: 8px 10px;
+            color: #6b7280;
+            border-radius: 7px;
+            font-size: 12px;
+            line-height: 1.6;
+            transition:
+                color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .toc-list a:hover {
+            color: var(--article-primary);
+            background: var(--article-primary-soft);
+        }
+
+        .toc-list .toc-stage {
+            margin-top: 12px;
+            padding: 8px 10px 5px;
+            color: #9ca3af;
+            font-size: 10px;
+            font-weight: 750;
+            letter-spacing: 0.08em;
+        }
+
+        .toc-list .toc-stage:first-child {
+            margin-top: 0;
+        }
+
+        .toc-footer {
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 1px solid var(--article-border);
+            color: #9ca3af;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 22px;
+            color: #6b7280;
+            font-size: 13px;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--article-primary);
+        }
+
+        .page-footer {
+            margin-top: 28px;
+            padding: 24px 0 0;
+            color: #9ca3af;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 1100px) {
+            .article-page {
+                width: min(100% - 40px, 1100px);
+            }
+
+            .article-layout {
+                grid-template-columns: minmax(0, 1fr) 230px;
+                gap: 40px;
+            }
+
+            .article-header {
+                padding: 36px 32px;
+            }
+
+            .article-section {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .article-page {
+                width: min(100% - 32px, 760px);
+                padding-top: 24px;
+            }
+
+            .article-layout {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .article-toc {
+                position: static;
+                order: -1;
+            }
+
+            .toc-list {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                column-gap: 8px;
+            }
+
+            .toc-list .toc-stage {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .article-page {
+                width: calc(100% - 24px);
+                padding-top: 16px;
+                padding-bottom: 50px;
+            }
+
+            .article-header {
+                padding: 28px 22px;
+                border-radius: 12px;
+            }
+
+            .article-header h1 {
+                font-size: 31px;
+            }
+
+            .article-header .article-lead {
+                font-size: 15px;
+            }
+
+            .article-section {
+                padding: 24px 20px;
+                border-radius: 12px;
+            }
+
+            .article-section h2 {
+                font-size: 23px;
+            }
+
+            .stage-header {
+                padding: 18px;
+            }
+
+            .lesson-item {
+                grid-template-columns: 34px minmax(0, 1fr);
+                gap: 12px;
+                padding: 16px 18px;
+            }
+
+            .lesson-number {
+                width: 32px;
+                height: 32px;
+                border-radius: 8px;
+            }
+
+            .lesson-info {
+                display: none;
+            }
+
+            .lesson-content h4 {
+                font-size: 15px;
+            }
+
+            .lesson-content p {
+                font-size: 12px;
+            }
+
+            .study-principles {
+                grid-template-columns: 1fr;
+            }
+
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+
+            .toc-list .toc-stage {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="article-page">
+
+        <a class="back-link" href="../index.html">
+            ← 返回学习中心
+        </a>
+
+        <div class="article-layout">
+
+            <div class="article-main">
+
+                <!-- =====================================================
+                     页面头部
+                ====================================================== -->
+                <header class="article-header" id="top">
+
+                    <div class="article-eyebrow">
+                        STOCK LAB LEARNING CENTER
+                    </div>
+
+                    <h1>
+                        股票基础
+                    </h1>
+
+                    <p class="article-lead">
+                        从股票的起源与发展开始，逐步理解股票的基本概念、
+                        股票市场的运行结构、A股交易制度以及股票投资中的收益与风险，
+                        建立完整、清晰、可持续扩展的股票知识体系。
+                    </p>
+
+                    <div class="article-meta">
+                        <span class="article-meta-item">
+                            BEGINNER
+                        </span>
+
+                        <span class="article-meta-item">
+                            14 篇系统课程
+                        </span>
+
+                        <span class="article-meta-item">
+                            预计学习 6–10 小时
+                        </span>
+
+                        <span class="article-meta-item">
+                            适合零基础读者
+                        </span>
+                    </div>
+
+                </header>
+
+
+                <!-- =====================================================
+                     专题介绍
+                ====================================================== -->
+                <section class="article-section" id="overview">
+
+                    <div class="section-kicker">
+                        Course overview
+                    </div>
+
+                    <h2>
+                        这套课程要解决什么问题？
+                    </h2>
+
+                    <p>
+                        很多初学者接触股票时，通常会先看到股票代码、K线、
+                        涨跌幅、成交量、市盈率等各种信息。但如果缺乏基础知识，
+                        这些数据很容易变成彼此孤立的名词。
+                    </p>
+
+                    <p>
+                        例如，知道“市值”这个词，并不代表真正理解公司市值与股票价格的关系；
+                        知道“T+1”，也不代表理解股票买入后为什么不能当天卖出；
+                        知道“涨停”，也不代表理解价格限制、买卖委托和成交之间的区别。
+                    </p>
+
+                    <p>
+                        本专题的目标不是让读者记住大量术语，而是建立一套能够相互连接的基础认知：
+                    </p>
+
+                    <div class="article-note">
+                        <strong>学习目标</strong>
+                        学完本专题后，你应该能够解释股票是什么、股票市场由哪些角色组成、
+                        A股股票如何交易、股票价格为什么波动，以及股票投资可能面临哪些风险。
+                    </div>
+
+                    <p>
+                        本专题不会直接进入复杂的技术分析、财务建模、量化策略或高级估值。
+                        这些内容将在后续学习模块中展开。股票基础阶段最重要的任务，
+                        是先建立正确的概念、市场结构和风险意识。
+                    </p>
+
+                </section>
+
+
+                <!-- =====================================================
+                     学习路线
+                ====================================================== -->
+                <section class="article-section" id="roadmap">
+
+                    <div class="section-kicker">
+                        Learning roadmap
+                    </div>
+
+                    <h2>
+                        学习路线
+                    </h2>
+
+                    <p>
+                        整个专题分为四个阶段。四个阶段按照“认识股票 → 认识市场 →
+                        理解交易 → 建立风险意识”的顺序组织，建议按照编号依次学习。
+                    </p>
+
+                    <div class="learning-roadmap">
+
+                        <!-- 第一阶段 -->
+                        <section class="stage-card" id="stage-1">
+
+                            <div class="stage-header">
+                                <div class="stage-title-wrap">
+                                    <div class="stage-number">
+                                        STAGE 01
+                                    </div>
+
+                                    <h3>
+                                        认识股票
+                                    </h3>
+
+                                    <p class="stage-description">
+                                        从股票的历史、定义和价格形成机制开始，建立最基本的股票认知。
+                                    </p>
+                                </div>
+
+                                <span class="stage-count">
+                                    3 篇
+                                </span>
+                            </div>
+
+                            <div class="lesson-list">
+
+                                <article class="lesson-item" id="lesson-1">
+                                    <div class="lesson-number">01</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票的起源与发展
+                                        </h4>
+
+                                        <p>
+                                            了解股票制度为什么出现，股票市场如何形成，
+                                            以及现代股票市场的发展过程。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_origin.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 25 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-2">
+                                    <div class="lesson-number">02</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票是什么？
+                                        </h4>
+
+                                        <p>
+                                            理解股票的本质、股东权利、普通股与优先股，
+                                            以及股票与债券的区别。
+                                        </p>
+
+                                        <a class="lesson-link" href="./what_is_stock.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 30 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-3">
+                                    <div class="lesson-number">03</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票为什么会有价格？
+                                        </h4>
+
+                                        <p>
+                                            理解股票价格、供求关系、公司价值和市场预期之间的关系。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_price.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 30 分钟</span>
+                                    </div>
+                                </article>
+
+                            </div>
+                        </section>
+
+
+                        <!-- 第二阶段 -->
+                        <section class="stage-card" id="stage-2">
+
+                            <div class="stage-header">
+                                <div class="stage-title-wrap">
+                                    <div class="stage-number">
+                                        STAGE 02
+                                    </div>
+
+                                    <h3>
+                                        认识股票市场
+                                    </h3>
+
+                                    <p class="stage-description">
+                                        了解股票市场的参与者、交易场所、A股市场结构和股票分类。
+                                    </p>
+                                </div>
+
+                                <span class="stage-count">
+                                    4 篇
+                                </span>
+                            </div>
+
+                            <div class="lesson-list">
+
+                                <article class="lesson-item" id="lesson-4">
+                                    <div class="lesson-number">04</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票市场是什么？
+                                        </h4>
+
+                                        <p>
+                                            认识一级市场、二级市场，以及上市公司、
+                                            投资者、证券公司和交易所等市场角色。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_market.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 30 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-5">
+                                    <div class="lesson-number">05</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            A股市场概览
+                                        </h4>
+
+                                        <p>
+                                            了解上海证券交易所、深圳证券交易所、
+                                            北京证券交易所以及A股主要市场板块。
+                                        </p>
+
+                                        <a class="lesson-link" href="./a_share_market.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 35 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-6">
+                                    <div class="lesson-number">06</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票的分类
+                                        </h4>
+
+                                        <p>
+                                            从上市市场、公司规模、投资风格、行业和特殊状态等角度，
+                                            理解股票的常见分类方式。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_types.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 30 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-7">
+                                    <div class="lesson-number">07</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            上市公司与证券交易所
+                                        </h4>
+
+                                        <p>
+                                            理解公司为什么上市、上市需要什么作用，
+                                            以及证券交易所承担的主要职责。
+                                        </p>
+
+                                        <a class="lesson-link" href="./listed_company_exchange.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 25 分钟</span>
+                                    </div>
+                                </article>
+
+                            </div>
+                        </section>
+
+
+                        <!-- 第三阶段 -->
+                        <section class="stage-card" id="stage-3">
+
+                            <div class="stage-header">
+                                <div class="stage-title-wrap">
+                                    <div class="stage-number">
+                                        STAGE 03
+                                    </div>
+
+                                    <h3>
+                                        理解股票交易
+                                    </h3>
+
+                                    <p class="stage-description">
+                                        从实际买卖流程出发，理解A股交易制度、价格波动和常见交易术语。
+                                    </p>
+                                </div>
+
+                                <span class="stage-count">
+                                    4 篇
+                                </span>
+                            </div>
+
+                            <div class="lesson-list">
+
+                                <article class="lesson-item" id="lesson-8">
+                                    <div class="lesson-number">08</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票是如何交易的？
+                                        </h4>
+
+                                        <p>
+                                            了解开户、委托、撮合、成交、持仓和资金变化等基本流程。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_trading.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 35 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-9">
+                                    <div class="lesson-number">09</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            A股交易制度
+                                        </h4>
+
+                                        <p>
+                                            系统了解交易时间、集合竞价、连续竞价、
+                                            T+1、涨跌停、交易单位和交易费用。
+                                        </p>
+
+                                        <a class="lesson-link" href="./trading_system.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 45 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-10">
+                                    <div class="lesson-number">10</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票价格涨跌的原因
+                                        </h4>
+
+                                        <p>
+                                            从公司、行业、宏观经济、资金和市场情绪等层面，
+                                            理解股票价格波动的主要原因。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_price_change.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 35 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-11">
+                                    <div class="lesson-number">11</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票交易中的常见术语
+                                        </h4>
+
+                                        <p>
+                                            掌握行情、持仓、资金、公司和市场中经常出现的基础术语。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_terms.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">工具</span>
+                                        <span class="lesson-time">约 40 分钟</span>
+                                    </div>
+                                </article>
+
+                            </div>
+                        </section>
+
+
+                        <!-- 第四阶段 -->
+                        <section class="stage-card" id="stage-4">
+
+                            <div class="stage-header">
+                                <div class="stage-title-wrap">
+                                    <div class="stage-number">
+                                        STAGE 04
+                                    </div>
+
+                                    <h3>
+                                        建立风险意识
+                                    </h3>
+
+                                    <p class="stage-description">
+                                        理解股票投资的收益来源、风险类型和常见认知误区。
+                                    </p>
+                                </div>
+
+                                <span class="stage-count">
+                                    3 篇
+                                </span>
+                            </div>
+
+                            <div class="lesson-list">
+
+                                <article class="lesson-item" id="lesson-12">
+                                    <div class="lesson-number">12</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票投资的收益与风险
+                                        </h4>
+
+                                        <p>
+                                            理解股价收益、分红收益、波动率、最大回撤、
+                                            流动性风险和市场风险。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_risk.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">基础</span>
+                                        <span class="lesson-time">约 40 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-13">
+                                    <div class="lesson-number">13</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票投资中的常见误区
+                                        </h4>
+
+                                        <p>
+                                            识别低价股等于便宜、跌得多就会反弹、
+                                            分红是额外收益等常见错误认知。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_misconceptions.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">认知</span>
+                                        <span class="lesson-time">约 35 分钟</span>
+                                    </div>
+                                </article>
+
+                                <article class="lesson-item" id="lesson-14">
+                                    <div class="lesson-number">14</div>
+
+                                    <div class="lesson-content">
+                                        <h4>
+                                            股票基础知识总结
+                                        </h4>
+
+                                        <p>
+                                            将股票、市场、交易和风险四个阶段串联起来，
+                                            建立完整的基础知识框架。
+                                        </p>
+
+                                        <a class="lesson-link" href="./stock_summary.html">
+                                            阅读文章 →
+                                        </a>
+                                    </div>
+
+                                    <div class="lesson-info">
+                                        <span class="lesson-level">总结</span>
+                                        <span class="lesson-time">约 30 分钟</span>
+                                    </div>
+                                </article>
+
+                            </div>
+                        </section>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     学习方式
+                ====================================================== -->
+                <section class="article-section" id="how-to-study">
+
+                    <div class="section-kicker">
+                        How to study
+                    </div>
+
+                    <h2>
+                        建议如何学习？
+                    </h2>
+
+                    <p>
+                        这套课程不建议只按照标题快速浏览。股票基础中的很多概念相互关联，
+                        如果只记住名词而没有理解它们之间的关系，后续学习财务分析、
+                        估值分析或技术分析时仍然容易混淆。
+                    </p>
+
+                    <div class="study-principles">
+
+                        <div class="principle-card">
+                            <div class="principle-icon">01</div>
+
+                            <h3>
+                                先理解，再记忆
+                            </h3>
+
+                            <p>
+                                不要急于背诵术语。先理解一个概念解决什么问题，
+                                再记住它的定义和使用场景。
+                            </p>
+                        </div>
+
+                        <div class="principle-card">
+                            <div class="principle-icon">02</div>
+
+                            <h3>
+                                结合真实股票
+                            </h3>
+
+                            <p>
+                                阅读过程中，可以打开任意一只熟悉的股票，
+                                对照查看它的价格、市值、成交量和交易状态。
+                            </p>
+                        </div>
+
+                        <div class="principle-card">
+                            <div class="principle-icon">03</div>
+
+                            <h3>
+                                区分事实与判断
+                            </h3>
+
+                            <p>
+                                股票价格、成交量和财务数据属于事实信息，
+                                “值得买入”“一定上涨”等属于投资判断，不能混为一谈。
+                            </p>
+                        </div>
+
+                        <div class="principle-card">
+                            <div class="principle-icon">04</div>
+
+                            <h3>
+                                重视风险内容
+                            </h3>
+
+                            <p>
+                                股票基础不仅是认识股票和交易规则，
+                                也包括理解亏损、波动、流动性和错误认知。
+                            </p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     学习完成标准
+                ====================================================== -->
+                <section class="article-section" id="completion">
+
+                    <div class="section-kicker">
+                        Completion checklist
+                    </div>
+
+                    <h2>
+                        学完后，你应该能够回答这些问题
+                    </h2>
+
+                    <p>
+                        如果完成本专题后，下面这些问题你都能够用自己的话解释，
+                        就说明已经建立了比较完整的股票基础。
+                    </p>
+
+                    <div class="checklist">
+
+                        <div class="checklist-item">
+                            能够解释股票是什么，以及股票代表什么权利。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够区分股票价格、公司市值和公司价值。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够说出股票市场中的主要参与者及其作用。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够区分上海、深圳和北京证券交易所的基本定位。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够解释股票从委托到成交的大致流程。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够理解集合竞价、连续竞价、T+1和涨跌停等基本制度。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够看懂开盘价、收盘价、成交量、成交额、换手率和市值等常见字段。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够列举影响股票价格涨跌的主要因素。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够区分股票投资的收益来源和主要风险。
+                        </div>
+
+                        <div class="checklist-item">
+                            能够识别一些常见但危险的股票投资误区。
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================================
+                     下一阶段提示
+                ====================================================== -->
+                <section class="article-section" id="next">
+
+                    <div class="section-kicker">
+                        Next step
+                    </div>
+
+                    <h2>
+                        完成股票基础后，下一步学什么？
+                    </h2>
+
+                    <p>
+                        完成股票基础专题后，可以继续进入 STOCK LAB 的其他学习模块。
+                        推荐按照以下顺序逐步深入：
+                    </p>
+
+                    <ol>
+                        <li>
+                            <strong>行情基础：</strong>
+                            学习K线、成交量、均线、技术指标和行情数据。
+                        </li>
+
+                        <li>
+                            <strong>财务分析：</strong>
+                            学习资产负债表、利润表、现金流量表和财务指标。
+                        </li>
+
+                        <li>
+                            <strong>估值分析：</strong>
+                            学习市盈率、市净率、市销率、现金流估值和企业价值。
+                        </li>
+
+                        <li>
+                            <strong>行业分析：</strong>
+                            学习行业空间、竞争格局、商业模式和产业链。
+                        </li>
+
+                        <li>
+                            <strong>量化分析：</strong>
+                            学习数据处理、因子构建、策略设计和回测系统。
+                        </li>
+                    </ol>
+
+                    <div class="article-note">
+                        <strong>学习建议</strong>
+                        股票基础不是为了让你立即做出买卖决定，而是帮助你建立理解市场、
+                        阅读数据和识别风险所需要的共同语言。
+                    </div>
+
+                </section>
+
+
+                <div class="page-footer">
+                    STOCK LAB · 股票研究与学习中心
+                </div>
+
+            </div>
+
+
+            <!-- =========================================================
+                 右侧目录
+            ========================================================== -->
+            <aside class="article-toc">
+
+                <div class="toc-label">
+                    On this page
+                </div>
+
+                <div class="toc-title">
+                    股票基础目录
+                </div>
+
+                <nav aria-label="股票基础专题目录">
+
+                    <ul class="toc-list">
+
+                        <li>
+                            <a href="#top">
+                                专题首页
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#overview">
+                                课程介绍
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#roadmap">
+                                学习路线
+                            </a>
+                        </li>
+
+                        <li class="toc-stage">
+                            第一阶段 · 认识股票
+                        </li>
+
+                        <li>
+                            <a href="#lesson-1">
+                                01　股票的起源与发展
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-2">
+                                02　股票是什么
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-3">
+                                03　股票为什么会有价格
+                            </a>
+                        </li>
+
+                        <li class="toc-stage">
+                            第二阶段 · 认识股票市场
+                        </li>
+
+                        <li>
+                            <a href="#lesson-4">
+                                04　股票市场是什么
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-5">
+                                05　A股市场概览
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-6">
+                                06　股票的分类
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-7">
+                                07　上市公司与证券交易所
+                            </a>
+                        </li>
+
+                        <li class="toc-stage">
+                            第三阶段 · 理解股票交易
+                        </li>
+
+                        <li>
+                            <a href="#lesson-8">
+                                08　股票是如何交易的
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-9">
+                                09　A股交易制度
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-10">
+                                10　股票价格涨跌的原因
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-11">
+                                11　股票交易常见术语
+                            </a>
+                        </li>
+
+                        <li class="toc-stage">
+                            第四阶段 · 建立风险意识
+                        </li>
+
+                        <li>
+                            <a href="#lesson-12">
+                                12　股票投资的收益与风险
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-13">
+                                13　股票投资中的常见误区
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#lesson-14">
+                                14　股票基础知识总结
+                            </a>
+                        </li>
+
+                        <li class="toc-stage">
+                            学习辅助
+                        </li>
+
+                        <li>
+                            <a href="#how-to-study">
+                                学习方法
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#completion">
+                                完成检查
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="#next">
+                                下一步学习
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </nav>
+
+                <div class="toc-footer">
+                    建议按照 01 → 14 的顺序学习。
+                    每篇文章都将独立解释一个主题，
+                    避免在一篇文章中快速堆叠过多概念。
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>
