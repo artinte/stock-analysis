@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        股票估值｜STOCK LAB
+    </title>
+
+    <meta name="description" content="理解股票估值，从市盈率 PE、市净率 PB、市销率 PS、企业价值 EV 等常见指标出发，学习如何判断股票贵不贵，以及不同类型企业应该使用什么估值方法。">
+
+    <meta name="keywords" content="股票估值,PE,PB,PS,市盈率,市净率,市销率,企业价值,EV,EV/EBITDA,PEG,股息率,估值方法,股票贵不贵,股票分析,基本面分析,价值投资">
+
+    <link rel="stylesheet" href="../../css/article.css">
+
+</head>
+
+
+<body>
+
+    <main class="article-page">
+
+        <a class="back-link" href="../index.html">
+            ← 返回学习文档
+        </a>
+
+
+        <div class="article-layout">
+
+            <article class="article-main">
+
+                <header class="article-header">
+
+                    <div class="article-eyebrow">
+                        LESSON 12 · STOCK VALUATION
+                    </div>
+
+                    <h1>
+                        股票估值
+                    </h1>
+
+                    <p class="article-lead">
+                        研究完一家公司的商业模式、财务状况、成长能力和竞争优势之后，
+                        还需要回答一个非常重要的问题：
+                        <strong>这家公司现在值多少钱？</strong>
+                        本篇将从 PE、PB、PS、PEG、EV/EBITDA、股息率等常见估值指标出发，
+                        理解股票价格与企业价值之间的关系，
+                        并学习为什么不同类型的公司需要使用不同的估值方法。
+                    </p>
+
+                </header>
+
+
+                <section class="article-section" id="what-is-valuation">
+
+                    <h2>
+                        1. 什么是股票估值？
+                    </h2>
+
+                    <p>
+                        股票估值，就是尝试判断一家上市公司
+                        <strong>大致值多少钱</strong>。
+                    </p>
+
+                    <p>
+                        股票市场每天都会给公司一个价格。
+                        例如，一家公司当前股价为 20 元，
+                        但这并不意味着 20 元就是它真正的价值。
+                    </p>
+
+                    <p>
+                        市场价格是投资者在交易中形成的结果，
+                        而企业价值则与公司的盈利能力、
+                        资产、现金流、成长空间和风险有关。
+                    </p>
+
+                    <p>
+                        因此，估值真正要解决的问题是：
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            股票价格是否已经反映了公司的价值和未来预期？
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        这也是为什么：
+                        <strong>好公司不一定是好股票。</strong>
+                    </p>
+
+                    <p>
+                        一家非常优秀的公司，
+                        如果股票价格已经高到反映了未来很多年的高速增长，
+                        那么投资者未来获得的回报仍然可能并不高。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="price-value">
+
+                    <h2>
+                        2. 股票价格和企业价值有什么区别？
+                    </h2>
+
+                    <p>
+                        股票价格是市场交易出来的价格，
+                        企业价值则是投资者根据企业基本面进行分析后，
+                        对公司价值的一种判断。
+                    </p>
+
+                    <p>
+                        假设一家公司的股票价格是 50 元。
+                    </p>
+
+                    <p>
+                        如果投资者分析认为公司合理价值大约为 70 元，
+                        那么可能认为股票相对便宜。
+                    </p>
+
+                    <p>
+                        如果投资者分析认为公司合理价值只有 30 元，
+                        那么可能认为股票相对昂贵。
+                    </p>
+
+                    <div class="article-note">
+
+                        股票价格 ≠ 企业价值
+
+                        <br><br>
+
+                        估值的目的，就是研究两者之间的关系。
+
+                    </div>
+
+                    <p>
+                        当然，企业价值并不是一个精确到个位数的数字。
+                        它通常是一种基于假设和概率的判断。
+                    </p>
+
+                    <p>
+                        因此估值更适合看成一个
+                        <strong>合理区间</strong>，
+                        而不是一个绝对准确的数字。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="market-cap">
+
+                    <h2>
+                        3. 什么是市值？
+                    </h2>
+
+                    <p>
+                        股票估值的第一步，是理解市值。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            公司市值 =
+                        </strong>
+
+                        股价 × 总股本
+
+                    </div>
+
+                    <p>
+                        例如，一家公司总股本为 10 亿股，
+                        当前股价为 20 元，
+                        那么公司的市值就是：
+                    </p>
+
+                    <div class="article-note">
+
+                        20 元 × 10 亿股
+                        =
+                        200 亿元
+
+                    </div>
+
+                    <p>
+                        市值代表市场当前给整个公司股票权益的定价。
+                    </p>
+
+                    <p>
+                        需要注意，
+                        市值并不等于企业价值。
+                    </p>
+
+                    <p>
+                        因为企业还可能存在大量债务、现金和其他金融资产。
+                    </p>
+
+                    <p>
+                        这也是后面理解
+                        <strong>EV（企业价值）</strong>
+                        的基础。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="pe">
+
+                    <h2>
+                        4. 什么是 PE？为什么最常用？
+                    </h2>
+
+                    <p>
+                        PE 是股票估值中最常见的指标之一。
+                    </p>
+
+                    <p>
+                        PE 的中文叫做
+                        <strong>市盈率</strong>。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            PE =
+                        </strong>
+
+                        市值 ÷ 净利润
+
+                    </div>
+
+                    <p>
+                        从每股角度理解，也可以表示为：
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            PE =
+                        </strong>
+
+                        股价 ÷ 每股收益 EPS
+
+                    </div>
+
+                    <p>
+                        例如，一家公司市值为 100 亿元，
+                        一年净利润为 10 亿元，
+                        那么 PE 就是 10 倍。
+                    </p>
+
+                    <p>
+                        可以简单理解为：
+                        如果公司未来利润保持不变，
+                        当前市值相当于公司一年利润的多少倍。
+                    </p>
+
+                    <p>
+                        但这并不意味着投资者真的需要等待 10 年才能回本。
+                        因为企业利润可能增长，
+                        同时市场估值也可能发生变化。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="pe-meaning">
+
+                    <h2>
+                        5. PE 越低是不是越便宜？
+                    </h2>
+
+                    <p>
+                        不一定。
+                    </p>
+
+                    <p>
+                        这是学习估值时最容易犯的错误之一。
+                    </p>
+
+                    <p>
+                        假设公司 A 的 PE 是 10 倍，
+                        公司 B 的 PE 是 30 倍。
+                    </p>
+
+                    <p>
+                        如果只看数字，
+                        A 看起来明显更便宜。
+                    </p>
+
+                    <p>
+                        但如果 A 是一家利润不断下降的传统企业，
+                        而 B 是一家未来五年仍然可能高速增长的企业，
+                        那么 30 倍 PE 并不一定比 10 倍 PE 更贵。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            PE 必须结合增长、盈利质量、行业和风险一起分析。
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        所以估值不能只问：
+                        <strong>“PE 是多少？”</strong>
+                    </p>
+
+                    <p>
+                        更应该问：
+                        <strong>“这个 PE 对应了什么样的未来预期？”</strong>
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="pe-types">
+
+                    <h2>
+                        6. 静态 PE、动态 PE 和 PE TTM 有什么区别？
+                    </h2>
+
+                    <p>
+                        实际研究股票时，
+                        经常会看到不同类型的 PE。
+                    </p>
+
+                    <h3>
+                        静态 PE
+                    </h3>
+
+                    <p>
+                        静态 PE 通常使用上一完整年度的净利润计算。
+                    </p>
+
+                    <p>
+                        优点是数据相对稳定，
+                        缺点是可能比较滞后。
+                    </p>
+
+                    <h3>
+                        PE TTM
+                    </h3>
+
+                    <p>
+                        TTM 是
+                        <strong>Trailing Twelve Months</strong>，
+                        即过去连续十二个月。
+                    </p>
+
+                    <p>
+                        PE TTM 使用最近十二个月的利润，
+                        因此通常比静态 PE 更能反映企业当前盈利水平。
+                    </p>
+
+                    <h3>
+                        动态 PE
+                    </h3>
+
+                    <p>
+                        动态 PE 通常使用对未来利润的预测。
+                    </p>
+
+                    <p>
+                        因为未来利润本身就是预测值，
+                        所以动态 PE 的不确定性也更高。
+                    </p>
+
+                    <div class="article-note">
+
+                        静态 PE：过去完整年度
+
+                        <br>
+
+                        PE TTM：过去十二个月
+
+                        <br>
+
+                        动态 PE：未来利润预测
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="pe-growth">
+
+                    <h2>
+                        7. PE 为什么必须和增长放在一起？
+                    </h2>
+
+                    <p>
+                        股票估值本质上是在给未来盈利定价。
+                    </p>
+
+                    <p>
+                        假设公司 A PE 为 10 倍，
+                        未来利润预计基本不增长。
+                    </p>
+
+                    <p>
+                        公司 B PE 为 30 倍，
+                        但未来几年利润可能保持较快增长。
+                    </p>
+
+                    <p>
+                        两家公司不能简单通过 PE 高低判断谁更便宜。
+                    </p>
+
+                    <p>
+                        因为投资者购买股票，
+                        买的不只是今天的利润，
+                        还包括未来很多年的利润。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            估值高低，本质上与未来盈利增长预期有关。
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="peg">
+
+                    <h2>
+                        8. 什么是 PEG？
+                    </h2>
+
+                    <p>
+                        PEG 是把 PE 和利润增长速度联系起来的指标。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            PEG ≈ PE ÷ 盈利增长率
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        例如，一家公司 PE 为 30 倍，
+                        预计未来利润增长率为 30%，
+                        那么 PEG 大约为 1。
+                    </p>
+
+                    <p>
+                        PEG 的思路很简单：
+                        如果企业增长更快，
+                        市场可能愿意给予更高 PE。
+                    </p>
+
+                    <p>
+                        但 PEG 并不是一个精确的估值公式。
+                    </p>
+
+                    <p>
+                        最大的问题在于：
+                        <strong>未来增长率很难准确预测。</strong>
+                    </p>
+
+                    <p>
+                        因此 PEG 更适合作为辅助指标，
+                        而不能单独决定买卖。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="pb">
+
+                    <h2>
+                        9. 什么是 PB？
+                    </h2>
+
+                    <p>
+                        PB 是
+                        <strong>市净率</strong>。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            PB =
+                        </strong>
+
+                        市值 ÷ 净资产
+
+                    </div>
+
+                    <p>
+                        从每股角度看：
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            PB =
+                        </strong>
+
+                        股价 ÷ 每股净资产
+
+                    </div>
+
+                    <p>
+                        例如，一家公司每股净资产为 10 元，
+                        当前股价为 20 元，
+                        那么 PB 就是 2 倍。
+                    </p>
+
+                    <p>
+                        也就是说，
+                        市场愿意用 2 元的价格购买公司账面上 1 元的净资产。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="pb-use">
+
+                    <h2>
+                        10. 什么类型的公司适合看 PB？
+                    </h2>
+
+                    <p>
+                        PB 特别适合分析
+                        <strong>资产较重、账面资产比较重要</strong>
+                        的企业。
+                    </p>
+
+                    <p>
+                        例如：
+                    </p>
+
+                    <ul>
+
+                        <li>银行</li>
+                        <li>保险</li>
+                        <li>证券公司</li>
+                        <li>部分传统制造企业</li>
+                        <li>部分资源类企业</li>
+
+                    </ul>
+
+                    <p>
+                        例如银行拥有大量金融资产和负债，
+                        净资产是非常重要的经营基础。
+                    </p>
+
+                    <p>
+                        因此研究银行时，
+                        PB 往往比单独使用 PE 更有参考意义。
+                    </p>
+
+                    <p>
+                        但对于互联网平台、
+                        软件公司或者品牌公司，
+                        PB 的参考价值可能明显降低。
+                    </p>
+
+                    <p>
+                        因为这些企业真正重要的价值，
+                        可能来自品牌、客户、技术、数据和商业模式，
+                        而这些资产并不一定完整地反映在账面净资产中。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="roe-pb">
+
+                    <h2>
+                        11. PB 为什么要和 ROE 一起看？
+                    </h2>
+
+                    <p>
+                        单独看 PB 并不完整。
+                    </p>
+
+                    <p>
+                        一个非常重要的关系是：
+                        <strong>PB 应该结合 ROE 观察。</strong>
+                    </p>
+
+                    <p>
+                        假设两家公司 PB 都是 1.5 倍。
+                    </p>
+
+                    <p>
+                        公司 A ROE 为 5%，
+                        公司 B ROE 为 20%。
+                    </p>
+
+                    <p>
+                        两家公司的资产创造利润的能力明显不同。
+                    </p>
+
+                    <p>
+                        如果一家企业能够长期以较高 ROE 创造利润，
+                        市场通常可能愿意给予更高 PB。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            估值指标不能脱离盈利能力单独使用。
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="ps">
+
+                    <h2>
+                        12. 什么是 PS？
+                    </h2>
+
+                    <p>
+                        PS 是
+                        <strong>市销率</strong>。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            PS =
+                        </strong>
+
+                        市值 ÷ 营业收入
+
+                    </div>
+
+                    <p>
+                        PS 和 PE 最大的区别是：
+                        PS 使用收入，
+                        而 PE 使用净利润。
+                    </p>
+
+                    <p>
+                        这使得 PS 在一些
+                        <strong>收入增长很快但利润暂时较低</strong>
+                        的公司中具有一定参考价值。
+                    </p>
+
+                    <p>
+                        例如一家新兴科技公司，
+                        收入正在高速增长，
+                        但由于研发和市场投入很大，
+                        当前仍然没有明显利润。
+                    </p>
+
+                    <p>
+                        这时候 PE 可能无法使用，
+                        PS 就可能成为辅助估值指标。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="ps-limit">
+
+                    <h2>
+                        13. PS 有什么明显缺点？
+                    </h2>
+
+                    <p>
+                        PS 最大的问题是：
+                        <strong>收入不等于利润。</strong>
+                    </p>
+
+                    <p>
+                        假设两家公司收入都是 100 亿元。
+                    </p>
+
+                    <p>
+                        公司 A 净利润率为 20%，
+                        公司 B 净利润率只有 2%。
+                    </p>
+
+                    <p>
+                        如果两家公司 PS 都是 3 倍，
+                        它们的盈利能力显然完全不同。
+                    </p>
+
+                    <p>
+                        因此使用 PS 时，
+                        必须继续观察：
+                    </p>
+
+                    <ul>
+
+                        <li>毛利率</li>
+                        <li>营业利润率</li>
+                        <li>净利率</li>
+                        <li>未来利润率变化</li>
+                        <li>经营现金流</li>
+
+                    </ul>
+
+                    <div class="article-note">
+
+                        <strong>
+                            PS 解决的是“收入规模如何定价”，
+                            但最终仍然需要回到利润和现金流。
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="ev">
+
+                    <h2>
+                        14. 什么是 EV？为什么不能只看市值？
+                    </h2>
+
+                    <p>
+                        前面我们看到，
+                        市值主要代表股东权益的市场价值。
+                    </p>
+
+                    <p>
+                        但企业经营还涉及债务和现金。
+                    </p>
+
+                    <p>
+                        因此在比较不同资本结构的公司时，
+                        经常会使用
+                        <strong>EV（Enterprise Value，企业价值）</strong>。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            EV ≈ 市值 + 有息负债 − 现金及现金等价物
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        简单理解，
+                        EV 更接近于：
+                        <strong>从整个企业经营角度看，它大约值多少钱。</strong>
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="ev-ebitda">
+
+                    <h2>
+                        15. 什么是 EV / EBITDA？
+                    </h2>
+
+                    <p>
+                        EV/EBITDA 是一种常见的企业估值指标。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            EV / EBITDA =
+                        </strong>
+
+                        企业价值 ÷ EBITDA
+
+                    </div>
+
+                    <p>
+                        EBITDA 可以理解为企业在扣除利息、
+                        所得税以及折旧摊销之前的经营收益。
+                    </p>
+
+                    <p>
+                        这种指标特别适合用于比较：
+                        <strong>资本结构不同、折旧较重的企业。</strong>
+                    </p>
+
+                    <p>
+                        例如两家公司的经营业务非常类似，
+                        但一家负债很多，
+                        另一家几乎没有负债。
+                    </p>
+
+                    <p>
+                        单独比较 PE 可能受到融资结构影响，
+                        EV/EBITDA 有时能够提供另外一个角度。
+                    </p>
+
+                    <p>
+                        但 EBITDA 也不是现金流，
+                        所以同样不能脱离资本开支和现金流单独使用。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="cash-flow">
+
+                    <h2>
+                        16. 为什么最终还要回到现金流？
+                    </h2>
+
+                    <p>
+                        企业的利润很重要，
+                        但利润并不等于真正进入公司的现金。
+                    </p>
+
+                    <p>
+                        一家公司可能账面上拥有很高利润，
+                        但如果大量收入没有真正收回，
+                        应收账款不断增加，
+                        经营现金流可能并不好。
+                    </p>
+
+                    <p>
+                        从长期投资角度看，
+                        企业最终能够为股东创造的价值，
+                        与未来能够产生多少现金密切相关。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            利润是会计结果，
+                            现金流更接近企业真正能够支配的资金。
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        因此估值时，
+                        不能只看 PE、PB、PS，
+                        还需要检查：
+                    </p>
+
+                    <ul>
+
+                        <li>经营现金流</li>
+                        <li>资本开支</li>
+                        <li>自由现金流</li>
+                        <li>债务水平</li>
+                        <li>未来现金创造能力</li>
+
+                    </ul>
+
+                </section>
+
+
+                <section class="article-section" id="dividend-yield">
+
+                    <h2>
+                        17. 什么是股息率？
+                    </h2>
+
+                    <p>
+                        对于成熟型企业，
+                        股息也是股票回报的重要组成部分。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            股息率 =
+                        </strong>
+
+                        每股股息 ÷ 股价
+
+                    </div>
+
+                    <p>
+                        例如一家公司每股一年分红 1 元，
+                        当前股价为 20 元，
+                        那么股息率约为 5%。
+                    </p>
+
+                    <p>
+                        股息率越高，
+                        并不意味着股票一定越便宜。
+                    </p>
+
+                    <p>
+                        因为高股息可能来自：
+                    </p>
+
+                    <ul>
+
+                        <li>企业盈利稳定</li>
+                        <li>企业缺乏新的投资机会</li>
+                        <li>股票价格下跌</li>
+                        <li>一次性高分红</li>
+
+                    </ul>
+
+                    <p>
+                        因此研究股息时，
+                        还需要观察分红是否具有持续性。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="valuation-methods">
+
+                    <h2>
+                        18. 为什么不同公司需要不同估值方法？
+                    </h2>
+
+                    <p>
+                        这是股票估值中非常重要的原则。
+                    </p>
+
+                    <p>
+                        不存在一个指标能够适用于所有公司。
+                    </p>
+
+                    <p>
+                        不同企业的商业模式、资产结构、
+                        盈利能力和成长阶段不同，
+                        因此适合的估值方法也不同。
+                    </p>
+
+                    <div class="study-principles">
+
+                        <div class="principle-card">
+
+                            <strong>
+                                银行、保险、券商
+                            </strong>
+
+                            <span>
+                                PB、PE、ROE 等指标通常更有参考价值。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                成熟盈利企业
+                            </strong>
+
+                            <span>
+                                PE、现金流、股息率等方法比较常见。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                高成长企业
+                            </strong>
+
+                            <span>
+                                PE、PEG、PS、未来利润增长等需要结合分析。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                重资产企业
+                            </strong>
+
+                            <span>
+                                PB、EV/EBITDA、资产价值等指标值得关注。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                周期行业
+                            </strong>
+
+                            <span>
+                                需要结合行业周期观察利润，而不能机械使用 PE。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                尚未盈利企业
+                            </strong>
+
+                            <span>
+                                PE 可能失效，可以观察 PS、现金消耗和未来盈利路径。
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="relative-valuation">
+
+                    <h2>
+                        19. 什么是相对估值？
+                    </h2>
+
+                    <p>
+                        前面介绍的 PE、PB、PS 等，
+                        很多时候都属于相对估值思路。
+                    </p>
+
+                    <p>
+                        所谓相对估值，
+                        就是把一家公司的估值
+                        与其他公司或者历史水平进行比较。
+                    </p>
+
+                    <p>
+                        例如：
+                    </p>
+
+                    <ul>
+
+                        <li>公司 PE 与行业平均 PE 比较</li>
+                        <li>公司 PB 与竞争对手比较</li>
+                        <li>当前 PE 与公司过去五年 PE 比较</li>
+                        <li>当前股息率与历史水平比较</li>
+
+                    </ul>
+
+                    <p>
+                        相对估值的优点是简单、直观，
+                        很适合投资者进行快速比较。
+                    </p>
+
+                    <p>
+                        但它也有一个问题：
+                        <strong>市场整体可能都很贵。</strong>
+                    </p>
+
+                    <p>
+                        如果整个行业都处于高估值状态，
+                        那么一家公司的 PE 比行业平均低，
+                        并不代表它绝对便宜。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="historical-valuation">
+
+                    <h2>
+                        20. 为什么要看历史估值？
+                    </h2>
+
+                    <p>
+                        一家公司当前 PE 为 20 倍，
+                        单独看这个数字其实很难判断贵不贵。
+                    </p>
+
+                    <p>
+                        如果这家公司过去五年 PE
+                        大部分时间都在 10～15 倍，
+                        那么 20 倍可能已经处于较高水平。
+                    </p>
+
+                    <p>
+                        但如果它过去长期处于 30～40 倍，
+                        当前 20 倍可能反而比较便宜。
+                    </p>
+
+                    <div class="article-note">
+
+                        当前估值
+                        +
+                        历史估值
+                        +
+                        行业估值
+                        +
+                        企业基本面
+
+                    </div>
+
+                    <p>
+                        这样得到的判断通常比单独看一个 PE 更可靠。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="valuation-range">
+
+                    <h2>
+                        21. 为什么估值应该看区间，而不是一个数字？
+                    </h2>
+
+                    <p>
+                        企业未来的利润、增长率、利率和竞争格局，
+                        都存在不确定性。
+                    </p>
+
+                    <p>
+                        因此很难准确地说：
+                        <strong>“这家公司真正价值就是 37.26 元。”</strong>
+                    </p>
+
+                    <p>
+                        更合理的方法通常是建立一个估值区间。
+                    </p>
+
+                    <p>
+                        例如通过不同假设得到：
+                    </p>
+
+                    <div class="article-note">
+
+                        悲观情景：30 元
+
+                        <br>
+
+                        中性情景：40 元
+
+                        <br>
+
+                        乐观情景：55 元
+
+                    </div>
+
+                    <p>
+                        这样投资者就可以进一步观察：
+                        当前市场价格位于这个区间的什么位置。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="valuation-expectation">
+
+                    <h2>
+                        22. 高估值真正意味着什么？
+                    </h2>
+
+                    <p>
+                        高估值并不一定意味着股票马上下跌。
+                    </p>
+
+                    <p>
+                        高估值真正意味着：
+                        <strong>市场已经对公司未来抱有较高期待。</strong>
+                    </p>
+
+                    <p>
+                        例如一家公司的 PE 已经达到 50 倍，
+                        那么市场通常已经在价格中反映了
+                        较高的未来盈利增长。
+                    </p>
+
+                    <p>
+                        如果未来公司真的能够高速增长，
+                        高估值可能逐渐被增长消化。
+                    </p>
+
+                    <p>
+                        但如果未来增长低于预期，
+                        就可能出现：
+                    </p>
+
+                    <div class="article-note">
+
+                        增长不及预期
+                        →
+                        盈利预期下降
+                        →
+                        估值下降
+                        →
+                        股价下跌
+
+                    </div>
+
+                    <p>
+                        因此投资者真正需要研究的是：
+                        <strong>当前价格隐含了什么样的未来预期？</strong>
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="low-valuation">
+
+                    <h2>
+                        23. 低估值为什么也可能是陷阱？
+                    </h2>
+
+                    <p>
+                        低 PE、低 PB 并不一定代表低估。
+                    </p>
+
+                    <p>
+                        一家公司 PE 只有 6 倍，
+                        看起来非常便宜。
+                    </p>
+
+                    <p>
+                        但如果它所在行业正在萎缩，
+                        公司利润未来可能持续下降，
+                        那么当前 6 倍 PE 可能并不便宜。
+                    </p>
+
+                    <p>
+                        如果未来利润下降 50%，
+                        那么现在看起来很低的 PE，
+                        可能只是暂时的低估值。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            低估值不一定是机会，
+                            也可能反映市场对企业未来的担忧。
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="valuation-cycle">
+
+                    <h2>
+                        24. 周期股为什么不能简单看 PE？
+                    </h2>
+
+                    <p>
+                        周期性行业是估值学习中非常典型的例子。
+                    </p>
+
+                    <p>
+                        假设一家周期公司在行业景气高峰时，
+                        利润达到历史最高水平。
+                    </p>
+
+                    <p>
+                        此时由于利润非常高，
+                        PE 可能只有 5 倍。
+                    </p>
+
+                    <p>
+                        看起来非常便宜。
+                    </p>
+
+                    <p>
+                        但如果行业已经接近周期顶部，
+                        未来利润开始下降，
+                        那么这个 5 倍 PE 可能反而处于危险阶段。
+                    </p>
+
+                    <p>
+                        相反，在行业低谷时，
+                        公司利润可能非常低，
+                        PE 可能达到 30～40 倍。
+                    </p>
+
+                    <p>
+                        这时候单独看 PE，
+                        反而会认为股票非常贵。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            周期股估值必须结合行业周期和正常化盈利能力。
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="dcf">
+
+                    <h2>
+                        25. 什么是 DCF？
+                    </h2>
+
+                    <p>
+                        DCF 是
+                        <strong>Discounted Cash Flow，
+                            现金流折现模型</strong>。
+                    </p>
+
+                    <p>
+                        它的核心思想非常简单：
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            一家企业今天值多少钱，
+                            取决于它未来能够产生多少现金，
+                            以及这些未来现金在今天值多少钱。
+                        </strong>
+
+                    </div>
+
+                    <p>
+                        未来的钱通常不能直接按照面值计算，
+                        因为存在时间价值和风险。
+                    </p>
+
+                    <p>
+                        因此需要使用折现率，
+                        将未来现金流折算到今天。
+                    </p>
+
+                    <p>
+                        DCF 的基本逻辑可以理解为：
+                    </p>
+
+                    <div class="article-note">
+
+                        未来自由现金流
+                        →
+                        折现
+                        →
+                        得到今天的价值
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="dcf-limit">
+
+                    <h2>
+                        26. DCF 为什么看起来很科学，却很难准确？
+                    </h2>
+
+                    <p>
+                        DCF 最大的优点，
+                        是直接从企业未来现金创造能力出发。
+                    </p>
+
+                    <p>
+                        但它最大的缺点也是：
+                        <strong>非常依赖假设。</strong>
+                    </p>
+
+                    <p>
+                        例如你需要预测：
+                    </p>
+
+                    <ul>
+
+                        <li>未来收入增长率</li>
+                        <li>未来利润率</li>
+                        <li>资本开支</li>
+                        <li>营运资本变化</li>
+                        <li>未来自由现金流</li>
+                        <li>折现率</li>
+                        <li>长期增长率</li>
+
+                    </ul>
+
+                    <p>
+                        只要其中一个关键假设发生较大变化，
+                        最终估值就可能发生明显变化。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            DCF 不是预测未来的水晶球，
+                            而是一种帮助投资者理解“价值由什么决定”的工具。
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="margin-safety">
+
+                    <h2>
+                        27. 什么是安全边际？
+                    </h2>
+
+                    <p>
+                        安全边际是价值投资中非常重要的概念。
+                    </p>
+
+                    <p>
+                        假设你估计一家公司的合理价值大约为 100 元。
+                    </p>
+
+                    <p>
+                        如果市场价格也是 100 元，
+                        那么你对估值错误的容忍空间非常小。
+                    </p>
+
+                    <p>
+                        如果市场价格只有 70 元，
+                        那么即使你的估值存在一定误差，
+                        仍然可能拥有一定缓冲。
+                    </p>
+
+                    <div class="article-note">
+
+                        合理价值：100 元
+
+                        <br>
+
+                        市场价格：70 元
+
+                        <br>
+
+                        差额：30 元
+
+                        <br>
+
+                        这部分缓冲空间，就是安全边际思维。
+
+                    </div>
+
+                    <p>
+                        安全边际并不意味着股票越便宜越好，
+                        而是提醒投资者：
+                        <strong>估值永远存在误差。</strong>
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="valuation-framework">
+
+                    <h2>
+                        28. 建立自己的股票估值框架
+                    </h2>
+
+                    <p>
+                        实际研究一家公司时，
+                        不需要一开始就计算非常复杂的模型。
+                    </p>
+
+                    <p>
+                        可以按照下面的顺序进行。
+                    </p>
+
+                    <div class="study-principles">
+
+                        <div class="principle-card">
+
+                            <strong>
+                                01 · 先看公司
+                            </strong>
+
+                            <span>
+                                先理解商业模式、行业和竞争优势。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                02 · 再看盈利
+                            </strong>
+
+                            <span>
+                                收入、利润、ROE 和现金流是否健康？
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                03 · 选择指标
+                            </strong>
+
+                            <span>
+                                根据企业类型选择 PE、PB、PS 或 EV/EBITDA。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                04 · 横向比较
+                            </strong>
+
+                            <span>
+                                与同行竞争对手进行估值比较。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                05 · 纵向比较
+                            </strong>
+
+                            <span>
+                                与企业自身历史估值进行比较。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                06 · 分析增长
+                            </strong>
+
+                            <span>
+                                判断当前估值对应了多少未来增长预期。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                07 · 建立区间
+                            </strong>
+
+                            <span>
+                                不追求一个精确数字，而是建立合理价值区间。
+                            </span>
+
+                        </div>
+
+
+                        <div class="principle-card">
+
+                            <strong>
+                                08 · 留出安全边际
+                            </strong>
+
+                            <span>
+                                为估值错误和未来不确定性留出空间。
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="example">
+
+                    <h2>
+                        29. 用一个简单例子理解估值
+                    </h2>
+
+                    <p>
+                        假设有一家制造企业 A。
+                    </p>
+
+                    <p>
+                        公司目前净利润为 10 亿元，
+                        当前市值为 150 亿元。
+                    </p>
+
+                    <p>
+                        那么当前 PE 为：
+                    </p>
+
+                    <div class="article-note">
+
+                        150 ÷ 10 = 15 倍
+
+                    </div>
+
+                    <p>
+                        假设同行公司的平均 PE 为 20 倍。
+                    </p>
+
+                    <p>
+                        单独看起来，
+                        公司 A 的估值低于行业平均水平。
+                    </p>
+
+                    <p>
+                        但继续研究后发现：
+                    </p>
+
+                    <ul>
+
+                        <li>公司收入增长较慢</li>
+
+                        <li>市场份额基本没有提升</li>
+
+                        <li>行业竞争越来越激烈</li>
+
+                        <li>利润率正在下降</li>
+
+                        <li>未来利润可能继续下滑</li>
+
+                    </ul>
+
+                    <p>
+                        那么 15 倍 PE 就不能简单认为是便宜。
+                    </p>
+
+                    <p>
+                        如果另一家公司 PE 为 25 倍，
+                        但收入和利润增长很快，
+                        市场份额不断提升，
+                        竞争优势明显，
+                        那么 25 倍 PE 也不一定更贵。
+                    </p>
+
+                    <div class="article-note">
+
+                        <strong>
+                            估值必须与企业质量和未来成长结合起来看。
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <section class="article-section" id="valuation-checklist">
+
+                    <h2>
+                        30. 股票估值检查清单
+                    </h2>
+
+                    <p>
+                        当你准备研究一只股票是否值得投资时，
+                        可以依次问自己下面这些问题。
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            公司当前市值是多少？
+                        </li>
+
+                        <li>
+                            当前 PE、PB、PS 分别是多少？
+                        </li>
+
+                        <li>
+                            PE 使用的是静态、TTM 还是未来预测利润？
+                        </li>
+
+                        <li>
+                            当前估值与历史估值相比处于什么位置？
+                        </li>
+
+                        <li>
+                            当前估值与同行相比处于什么位置？
+                        </li>
+
+                        <li>
+                            公司未来几年可能增长多少？
+                        </li>
+
+                        <li>
+                            当前股价已经反映了多少增长预期？
+                        </li>
+
+                        <li>
+                            如果未来增长低于预期，估值会怎样？
+                        </li>
+
+                        <li>
+                            公司是否拥有稳定的现金流？
+                        </li>
+
+                        <li>
+                            当前价格是否存在一定安全边际？
+                        </li>
+
+                    </ul>
+
+                </section>
+
+
+                <section class="article-section" id="common-mistakes">
+
+                    <h2>
+                        31. 初学者容易犯的几个估值错误
+                    </h2>
+
+                    <h3>
+                        只看 PE
+                    </h3>
+
+                    <p>
+                        PE 很重要，但并不适合所有企业。
+                        银行、周期股、亏损企业等都需要结合其他方法。
+                    </p>
+
+                    <h3>
+                        认为 PE 越低越好
+                    </h3>
+
+                    <p>
+                        低 PE 可能意味着股票便宜，
+                        也可能意味着市场认为企业未来利润会下降。
+                    </p>
+
+                    <h3>
+                        认为高 PE 一定危险
+                    </h3>
+
+                    <p>
+                        高 PE 可能反映企业拥有较高成长性。
+                        关键是未来增长能否兑现。
+                    </p>
+
+                    <h3>
+                        只和同行比较
+                    </h3>
+
+                    <p>
+                        行业整体可能处于高估或者低估状态，
+                        因此还需要观察历史估值和基本面。
+                    </p>
+
+                    <h3>
+                        把估值算得非常精确
+                    </h3>
+
+                    <p>
+                        企业价值本身存在大量不确定性。
+                        精确到小数点后的估值通常没有实际意义。
+                    </p>
+
+                    <h3>
+                        忽略未来预期
+                    </h3>
+
+                    <p>
+                        股票价格反映的不只是今天的利润，
+                        还包含市场对未来的预期。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="good-stock">
+
+                    <h2>
+                        32. 什么才是“便宜的好股票”？
+                    </h2>
+
+                    <p>
+                        真正值得研究的股票，
+                        往往不是简单的低 PE 股票。
+                    </p>
+
+                    <p>
+                        更完整的逻辑应该是：
+                    </p>
+
+                    <div class="article-note">
+
+                        好公司
+                        +
+                        合理成长
+                        +
+                        健康财务
+                        +
+                        合理估值
+                        +
+                        安全边际
+
+                    </div>
+
+                    <p>
+                        如果一家企业拥有优秀的商业模式，
+                        长期保持较强竞争优势，
+                        盈利和现金流持续增长，
+                        同时市场价格又没有过度反映未来预期，
+                        那么它才可能成为值得长期研究的股票。
+                    </p>
+
+                    <p>
+                        这也是为什么股票研究不能只停留在
+                        “找低 PE 股票”。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="research-process">
+
+                    <h2>
+                        33. 从公司分析走向估值分析
+                    </h2>
+
+                    <p>
+                        到这里，我们已经把前面的公司研究
+                        与股票价格连接起来。
+                    </p>
+
+                    <p>
+                        前面的课程帮助我们理解：
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            公司是谁？
+                        </li>
+
+                        <li>
+                            公司做什么生意？
+                        </li>
+
+                        <li>
+                            公司如何赚钱？
+                        </li>
+
+                        <li>
+                            财务状况是否健康？
+                        </li>
+
+                        <li>
+                            企业是否能够持续成长？
+                        </li>
+
+                        <li>
+                            企业为什么能够保持竞争优势？
+                        </li>
+
+                    </ul>
+
+                    <p>
+                        而这一篇开始回答：
+                    </p>
+
+                    <div class="article-note">
+
+                        公司未来能够赚多少钱？
+
+                        <br>
+                        ↓
+                        <br>
+                        市场现在给它多少钱？
+
+                        <br>
+                        ↓
+                        <br>
+                        当前价格是否合理？
+
+                    </div>
+
+                    <p>
+                        这就是从
+                        <strong>“研究公司”</strong>
+                        走向
+                        <strong>“研究股票”</strong>
+                        的重要一步。
+                    </p>
+
+                </section>
+
+
+                <section class="article-section" id="summary">
+
+                    <h2>
+                        34. 本篇总结
+                    </h2>
+
+                    <p>
+                        股票估值并不是寻找一个神奇的数字，
+                        而是建立价格、价值、盈利和成长之间的联系。
+                    </p>
+
+                    <ul>
+
+                        <li>
+                            市值代表市场当前给公司股票权益的定价。
+                        </li>
+
+                        <li>
+                            PE 主要从盈利角度观察股票估值。
+                        </li>
+
+                        <li>
+                            PB 主要从净资产角度观察企业价值。
+                        </li>
+
+                        <li>
+                            PS 可以用于部分尚未形成稳定利润的成长企业。
+                        </li>
+
+                        <li>
+                            EV 可以从企业整体经营价值角度进行分析。
+                        </li>
+
+                        <li>
+                            EV/EBITDA 可以辅助比较不同资本结构的企业。
+                        </li>
+
+                        <li>
+                            股息率对于成熟、高分红企业具有重要参考意义。
+                        </li>
+
+                        <li>
+                            不同类型企业应该选择不同的估值方法。
+                        </li>
+
+                        <li>
+                            高 PE 不一定贵，低 PE 也不一定便宜。
+                        </li>
+
+                        <li>
+                            估值必须结合企业成长、盈利质量和竞争优势。
+                        </li>
+
+                        <li>
+                            企业价值应该更适合用区间而不是单一数字表达。
+                        </li>
+
+                        <li>
+                            安全边际可以帮助投资者应对估值误差和未来不确定性。
+                        </li>
+
+                    </ul>
+
+                    <div class="article-note">
+
+                        <strong>
+                            最重要的一句话：
+                        </strong>
+
+                        不要只问一只股票的 PE 是多少，
+                        而要问这个价格对应了多少未来盈利，
+                        这些盈利能不能实现，
+                        以及当前价格是否已经把未来的好消息充分反映了。
+
+                    </div>
+
+                </section>
+
+
+                <div class="article-next">
+
+                    <div>
+
+                        <span>
+                            下一阶段
+                        </span>
+
+                        <strong>
+                            从估值走向投资决策
+                        </strong>
+
+                    </div>
+
+                    <a href="../index.html">
+                        返回课程目录 →
+                    </a>
+
+                </div>
+
+            </article>
+
+
+            <aside class="article-toc">
+
+                <div class="toc-label">
+                    LESSON 12
+                </div>
+
+                <div class="toc-title">
+                    股票估值
+                </div>
+
+                <nav class="toc-list">
+
+                    <a href="#what-is-valuation">
+                        什么是股票估值？
+                    </a>
+
+                    <a href="#price-value">
+                        股票价格与企业价值
+                    </a>
+
+                    <a href="#market-cap">
+                        什么是市值？
+                    </a>
+
+                    <a href="#pe">
+                        什么是 PE？
+                    </a>
+
+                    <a href="#pe-meaning">
+                        PE 越低越便宜吗？
+                    </a>
+
+                    <a href="#pe-types">
+                        静态 PE、TTM 与动态 PE
+                    </a>
+
+                    <a href="#pe-growth">
+                        PE 与企业增长
+                    </a>
+
+                    <a href="#peg">
+                        什么是 PEG？
+                    </a>
+
+                    <a href="#pb">
+                        什么是 PB？
+                    </a>
+
+                    <a href="#pb-use">
+                        PB 适合什么公司？
+                    </a>
+
+                    <a href="#roe-pb">
+                        PB 与 ROE
+                    </a>
+
+                    <a href="#ps">
+                        什么是 PS？
+                    </a>
+
+                    <a href="#ps-limit">
+                        PS 的局限
+                    </a>
+
+                    <a href="#ev">
+                        什么是 EV？
+                    </a>
+
+                    <a href="#ev-ebitda">
+                        EV / EBITDA
+                    </a>
+
+                    <a href="#cash-flow">
+                        为什么要看现金流？
+                    </a>
+
+                    <a href="#dividend-yield">
+                        股息率
+                    </a>
+
+                    <a href="#valuation-methods">
+                        不同公司不同估值方法
+                    </a>
+
+                    <a href="#relative-valuation">
+                        相对估值
+                    </a>
+
+                    <a href="#historical-valuation">
+                        历史估值
+                    </a>
+
+                    <a href="#valuation-range">
+                        估值区间
+                    </a>
+
+                    <a href="#valuation-expectation">
+                        高估值意味着什么？
+                    </a>
+
+                    <a href="#low-valuation">
+                        低估值陷阱
+                    </a>
+
+                    <a href="#valuation-cycle">
+                        周期股估值
+                    </a>
+
+                    <a href="#dcf">
+                        什么是 DCF？
+                    </a>
+
+                    <a href="#dcf-limit">
+                        DCF 的局限
+                    </a>
+
+                    <a href="#margin-safety">
+                        安全边际
+                    </a>
+
+                    <a href="#valuation-framework">
+                        股票估值框架
+                    </a>
+
+                    <a href="#example">
+                        估值案例
+                    </a>
+
+                    <a href="#valuation-checklist">
+                        估值检查清单
+                    </a>
+
+                    <a href="#common-mistakes">
+                        常见错误
+                    </a>
+
+                    <a href="#good-stock">
+                        什么是便宜的好股票？
+                    </a>
+
+                    <a href="#research-process">
+                        公司分析走向估值
+                    </a>
+
+                    <a href="#summary">
+                        本篇总结
+                    </a>
+
+                </nav>
+
+                <div class="toc-footer">
+                    约 30 分钟
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <footer class="page-footer">
+            STOCK LAB · 股票研究中心
+        </footer>
+
+    </main>
+
+
+    <script src="../../js/article.js"></script>
+
+</body>
+
+</html>
