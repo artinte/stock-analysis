@@ -11,7 +11,7 @@
 
     <title>股票基础｜STOCK LAB</title>
 
-    <link rel="stylesheet" href="../../css/document.css">
+    <link rel="stylesheet" href="../../css/article.css">
 
 </head>
 
@@ -1591,6 +1591,79 @@
         </footer>
 
     </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const tocLinks = document.querySelectorAll(".toc-list a");
+            const sections = [];
+
+            tocLinks.forEach(link => {
+
+                const id = link.getAttribute("href");
+
+                if (!id || !id.startsWith("#")) {
+                    return;
+                }
+
+                const section = document.querySelector(id);
+
+                if (section) {
+                    sections.push({
+                        element: section,
+                        link: link
+                    });
+                }
+
+            });
+
+            if (!sections.length) {
+                return;
+            }
+
+            const observer = new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        if (!entry.isIntersecting) {
+                            return;
+                        }
+
+                        sections.forEach(item => {
+                            item.link.classList.remove("active");
+                        });
+
+                        const current = sections.find(
+                            item => item.element === entry.target
+                        );
+
+                        if (current) {
+                            current.link.classList.add("active");
+                        }
+
+                    });
+
+                },
+                {
+                    root: null,
+
+                    /*
+                     * 把视口划成一个阅读区域。
+                     * 当前章节进入这个区域时，就认为正在阅读。
+                     */
+                    rootMargin: "-15% 0px -65% 0px",
+
+                    threshold: 0
+                }
+            );
+
+            sections.forEach(item => {
+                observer.observe(item.element);
+            });
+
+        });
+    </script>
 
 </body>
 
