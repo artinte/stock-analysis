@@ -1,0 +1,6220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>量化分析 - STOCK LAB</title>
+
+    <meta name="description" content="从量化研究架构、数据、因子、策略、回测、组合、风险管理到实盘执行，系统学习如何搭建一个完整的量化分析与交易系统。">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f6f7f9;
+            color: #20242b;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "Microsoft YaHei",
+                Arial,
+                sans-serif;
+            line-height: 1.8;
+        }
+
+        .document {
+            width: min(1100px, calc(100% - 40px));
+            margin: 40px auto 80px;
+        }
+
+        .document-header {
+            background: #ffffff;
+            border: 1px solid #e7e9ed;
+            border-radius: 14px;
+            padding: 42px 48px;
+            margin-bottom: 24px;
+        }
+
+        .document-category {
+            display: inline-block;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .document-title {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.3;
+            font-weight: 700;
+            color: #17191d;
+        }
+
+        .document-description {
+            margin: 16px 0 0;
+            color: #68707c;
+            font-size: 16px;
+            max-width: 850px;
+        }
+
+        .document-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 22px;
+        }
+
+        .meta-item {
+            padding: 5px 10px;
+            border-radius: 6px;
+            background: #f1f3f5;
+            color: #666d78;
+            font-size: 12px;
+        }
+
+        .document-content {
+            background: #ffffff;
+            border: 1px solid #e7e9ed;
+            border-radius: 14px;
+            padding: 48px;
+        }
+
+        h2 {
+            margin: 52px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e8eaed;
+            font-size: 24px;
+            line-height: 1.4;
+            color: #17191d;
+        }
+
+        h2:first-child {
+            margin-top: 0;
+        }
+
+        h3 {
+            margin: 34px 0 14px;
+            font-size: 19px;
+            line-height: 1.5;
+            color: #24272d;
+        }
+
+        h4 {
+            margin: 24px 0 10px;
+            font-size: 16px;
+            color: #30343b;
+        }
+
+        p {
+            margin: 12px 0;
+            color: #4f5661;
+            font-size: 15px;
+        }
+
+        ul,
+        ol {
+            margin: 12px 0 18px;
+            padding-left: 24px;
+            color: #4f5661;
+        }
+
+        li {
+            margin: 7px 0;
+        }
+
+        strong {
+            color: #292d33;
+        }
+
+        code {
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #f1f3f5;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+        }
+
+        pre {
+            margin: 20px 0;
+            padding: 20px;
+            overflow-x: auto;
+            border: 1px solid #e4e7eb;
+            border-radius: 8px;
+            background: #f7f8fa;
+            color: #30343b;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            white-space: pre;
+        }
+
+        .lead {
+            font-size: 17px;
+            color: #414750;
+        }
+
+        .notice {
+            margin: 22px 0;
+            padding: 18px 20px;
+            background: #f7f8fa;
+            border-left: 3px solid #8b929d;
+            border-radius: 6px;
+        }
+
+        .notice p {
+            margin: 0;
+        }
+
+        .formula {
+            margin: 18px 0;
+            padding: 18px 20px;
+            overflow-x: auto;
+            background: #f7f8fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, monospace;
+            color: #30343b;
+            line-height: 1.9;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 680px;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e7e9ed;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: #f7f8fa;
+            color: #30343b;
+            font-weight: 600;
+        }
+
+        td {
+            color: #555c67;
+        }
+
+        .indicator-card {
+            margin: 24px 0;
+            padding: 24px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            background: #ffffff;
+        }
+
+        .indicator-title {
+            margin: 0 0 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #24272d;
+        }
+
+        .indicator-subtitle {
+            margin: 0 0 16px;
+            font-size: 13px;
+            color: #8a919c;
+        }
+
+        .signal {
+            margin: 16px 0;
+            padding: 15px 18px;
+            background: #f7f8fa;
+            border-radius: 7px;
+        }
+
+        .signal-title {
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #30343b;
+        }
+
+        .summary-box {
+            margin: 24px 0;
+            padding: 24px;
+            background: #f7f8fa;
+            border-radius: 10px;
+        }
+
+        .summary-box ul,
+        .summary-box ol {
+            margin-bottom: 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .step-number {
+            flex: 0 0 32px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef0f3;
+            color: #3d434c;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .step-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .step-content strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .toc {
+            margin: 24px 0;
+            padding: 20px 24px;
+            background: #f7f8fa;
+            border-radius: 8px;
+        }
+
+        .toc-title {
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #30343b;
+        }
+
+        .toc ol {
+            margin: 0;
+        }
+
+        .warning {
+            margin: 24px 0;
+            padding: 18px 20px;
+            background: #fafafa;
+            border: 1px solid #e1e3e6;
+            border-radius: 8px;
+        }
+
+        .warning p:last-child {
+            margin-bottom: 0;
+        }
+
+        .architecture {
+            margin: 24px 0;
+            padding: 24px;
+            background: #f7f8fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+        }
+
+        .architecture-layer {
+            margin: 10px 0;
+            padding: 14px 16px;
+            background: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 7px;
+        }
+
+        .architecture-layer strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .architecture-arrow {
+            text-align: center;
+            color: #9aa1aa;
+            font-size: 13px;
+        }
+
+        .tag {
+            display: inline-block;
+            margin: 3px 4px 3px 0;
+            padding: 3px 8px;
+            border-radius: 5px;
+            background: #f0f2f4;
+            color: #626a75;
+            font-size: 12px;
+        }
+
+        .folder-tree {
+            margin: 20px 0;
+            padding: 22px;
+            overflow-x: auto;
+            background: #f7f8fa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.9;
+            white-space: pre;
+        }
+
+        .checklist {
+            margin: 20px 0;
+            padding: 20px 24px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+
+        .checklist-item {
+            margin: 9px 0;
+            color: #555c67;
+        }
+
+        .checklist-item::before {
+            content: "□";
+            display: inline-block;
+            width: 24px;
+            color: #7b838e;
+        }
+
+        .footer-note {
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #e7e9ed;
+            color: #8a919c;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+
+            .document {
+                width: calc(100% - 20px);
+                margin-top: 20px;
+            }
+
+            .document-header {
+                padding: 28px 24px;
+            }
+
+            .document-content {
+                padding: 28px 22px;
+            }
+
+            .document-title {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 21px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            p,
+            li {
+                font-size: 14px;
+            }
+
+            pre,
+            .folder-tree {
+                font-size: 12px;
+            }
+
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="document">
+
+        <!-- ==================== 页面头部 ==================== -->
+
+        <header class="document-header">
+
+            <div class="document-category">
+                QUANTITATIVE RESEARCH
+            </div>
+
+            <h1 class="document-title">
+                量化分析
+            </h1>
+
+            <p class="document-description">
+                从数据、因子、策略、选股到回测与实盘执行，
+                系统理解量化研究体系的组成部分，
+                并学习如何使用 Python 逐步搭建一个可维护的量化分析系统。
+            </p>
+
+            <div class="document-meta">
+
+                <span class="meta-item">
+                    QUANT
+                </span>
+
+                <span class="meta-item">
+                    数据工程
+                </span>
+
+                <span class="meta-item">
+                    因子研究
+                </span>
+
+                <span class="meta-item">
+                    策略回测
+                </span>
+
+                <span class="meta-item">
+                    Python
+                </span>
+
+                <span class="meta-item">
+                    入门 → 工程实践
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- ==================== 正文 ==================== -->
+
+        <main class="document-content">
+
+            <div class="notice">
+
+                <p>
+                    <strong>核心观点：</strong>
+                    量化交易不是“把几个指标写成 Python 就完成了”。
+                    一个真正可用的量化系统，需要同时解决
+                    <strong>数据质量、研究逻辑、策略定义、回测真实性、组合风险、交易执行和系统稳定性</strong>
+                    等问题。
+                    策略代码只是其中的一部分。
+                </p>
+
+            </div>
+
+
+            <!-- ==================== 目录 ==================== -->
+
+            <div class="toc">
+
+                <div class="toc-title">
+                    本文目录
+                </div>
+
+                <ol>
+
+                    <li>什么是量化分析</li>
+
+                    <li>量化系统到底解决什么问题</li>
+
+                    <li>量化系统的完整架构</li>
+
+                    <li>第一步：明确研究目标</li>
+
+                    <li>第二步：搭建行情与基础数据层</li>
+
+                    <li>第三步：数据清洗、标准化与存储</li>
+
+                    <li>第四步：什么是因子</li>
+
+                    <li>第五步：如何计算技术因子</li>
+
+                    <li>第六步：如何计算基本面因子</li>
+
+                    <li>第七步：因子检验与有效性分析</li>
+
+                    <li>第八步：从因子到选股策略</li>
+
+                    <li>第九步：策略信号如何生成</li>
+
+                    <li>第十步：如何搭建回测系统</li>
+
+                    <li>第十一步：回测中的收益与风险指标</li>
+
+                    <li>第十二步：组合构建与仓位管理</li>
+
+                    <li>第十三步：交易成本与滑点</li>
+
+                    <li>第十四步：避免未来函数与回测偏差</li>
+
+                    <li>第十五步：从回测到模拟盘</li>
+
+                    <li>第十六步：如何搭建实盘交易系统</li>
+
+                    <li>第十七步：推荐的 Python 项目结构</li>
+
+                    <li>第十八步：一个最小量化系统的开发路线</li>
+
+                    <li>第十九步：机器学习与 AI 如何接入</li>
+
+                    <li>第二十步：量化系统总结</li>
+
+                </ol>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                1. 什么是量化分析？
+            </h2>
+
+            <p class="lead">
+                量化分析（Quantitative Analysis）是使用数学、统计学、计算机程序和数据，
+                将投资研究过程转化为可以计算、验证和重复执行的分析方法。
+            </p>
+
+            <p>
+                传统投资研究可能会这样进行：
+            </p>
+
+            <div class="summary-box">
+
+                <p>
+                    “我感觉这只股票趋势不错，估值也不高，可能值得买入。”
+                </p>
+
+            </div>
+
+            <p>
+                量化研究则会进一步追问：
+            </p>
+
+            <ul>
+
+                <li>
+                    “趋势不错”具体如何定义？
+                </li>
+
+                <li>
+                    “估值不高”使用什么指标衡量？
+                </li>
+
+                <li>
+                    这个条件在过去十年是否有效？
+                </li>
+
+                <li>
+                    如果同时有 3000 只股票满足条件，应该买哪些？
+                </li>
+
+                <li>
+                    每只股票买多少？
+                </li>
+
+                <li>
+                    交易成本和滑点是多少？
+                </li>
+
+                <li>
+                    最大回撤是多少？
+                </li>
+
+                <li>
+                    换一个市场环境，策略是否仍然有效？
+                </li>
+
+            </ul>
+
+            <p>
+                量化的价值就在于：
+                <strong>将模糊的投资想法转化为明确的规则，再使用历史数据检验这些规则。</strong>
+            </p>
+
+            <h3>
+                量化不等于高频交易
+            </h3>
+
+            <p>
+                量化是一个很大的领域，并不只指高频交易。
+            </p>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                类型
+                            </th>
+
+                            <th>
+                                典型特点
+                            </th>
+
+                            <th>
+                                常见研究内容
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                量化选股
+                            </td>
+
+                            <td>
+                                根据因子筛选股票
+                            </td>
+
+                            <td>
+                                价值、成长、质量、动量
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                趋势策略
+                            </td>
+
+                            <td>
+                                根据价格趋势交易
+                            </td>
+
+                            <td>
+                                均线、突破、动量
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                均值回归
+                            </td>
+
+                            <td>
+                                研究价格偏离与回归
+                            </td>
+
+                            <td>
+                                价差、布林带、统计偏离
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                统计套利
+                            </td>
+
+                            <td>
+                                研究相关资产之间的统计关系
+                            </td>
+
+                            <td>
+                                配对交易、协整
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                组合优化
+                            </td>
+
+                            <td>
+                                在风险约束下配置资产
+                            </td>
+
+                            <td>
+                                权重、波动率、相关性
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                高频 / 算法交易
+                            </td>
+
+                            <td>
+                                高频率、低延迟执行
+                            </td>
+
+                            <td>
+                                订单簿、微观结构、执行算法
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <p>
+                对个人投资者和股票研究平台而言，
+                最适合的起点通常是：
+                <strong>日线数据 + 因子研究 + 量化选股 + 组合回测。</strong>
+            </p>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                2. 量化系统到底解决什么问题？
+            </h2>
+
+            <p>
+                一个量化系统的目标，不是单纯生成一个“买入”或“卖出”字符串，
+                而是把整个研究和交易流程标准化。
+            </p>
+
+            <h3>
+                2.1 从人工判断到可执行规则
+            </h3>
+
+            <p>
+                例如，一个模糊的投资想法是：
+            </p>
+
+            <div class="summary-box">
+
+                <p>
+                    “选择趋势向上、估值合理、盈利质量较好的股票。”
+                </p>
+
+            </div>
+
+            <p>
+                量化系统需要把它拆解为：
+            </p>
+
+            <ol>
+
+                <li>
+                    趋势向上：收盘价高于 MA60，且 MA60 向上。
+                </li>
+
+                <li>
+                    估值合理：PE TTM 处于指定范围内。
+                </li>
+
+                <li>
+                    盈利质量较好：ROE、现金流或利润增长满足条件。
+                </li>
+
+                <li>
+                    股票池：只研究指定市场和可交易股票。
+                </li>
+
+                <li>
+                    调仓频率：每周或每月执行一次。
+                </li>
+
+                <li>
+                    仓位规则：最多持有 N 只股票，单只股票不超过组合的一定比例。
+                </li>
+
+            </ol>
+
+            <h3>
+                2.2 量化系统的基本闭环
+            </h3>
+
+            <div class="architecture">
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        研究假设
+                    </strong>
+
+                    <span>
+                        例如：低估值、强趋势、盈利改善可能与未来收益有关。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        数据
+                    </strong>
+
+                    <span>
+                        获取历史行情、财务、估值、行业和交易状态数据。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        因子
+                    </strong>
+
+                    <span>
+                        将原始数据转换成可比较的数值特征。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        策略
+                    </strong>
+
+                    <span>
+                        根据因子或价格规则生成选股、买入、卖出和持仓信号。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        回测
+                    </strong>
+
+                    <span>
+                        在历史时间轴上模拟资金、持仓、订单、成交和收益。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        评估
+                    </strong>
+
+                    <span>
+                        分析收益、回撤、波动率、换手率、稳定性和风险。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        模拟盘 / 实盘
+                    </strong>
+
+                    <span>
+                        使用实时数据和真实交易规则检验策略的可执行性。
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                3. 量化系统的完整架构
+            </h2>
+
+            <p class="lead">
+                如果要搭建一个长期维护的量化平台，
+                最重要的不是先写策略，而是先设计模块边界。
+            </p>
+
+            <p>
+                一个较完整的量化系统，可以分为以下几个层次。
+            </p>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                层级
+                            </th>
+
+                            <th>
+                                主要职责
+                            </th>
+
+                            <th>
+                                输出
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                数据接入层
+                            </td>
+
+                            <td>
+                                从行情、财务、新闻、交易接口获取数据
+                            </td>
+
+                            <td>
+                                原始数据
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                数据标准化层
+                            </td>
+
+                            <td>
+                                清洗、去重、复权、统一字段和时间
+                            </td>
+
+                            <td>
+                                标准化数据集
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                数据存储层
+                            </td>
+
+                            <td>
+                                保存历史数据、版本、更新时间和元数据
+                            </td>
+
+                            <td>
+                                可复用数据
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                因子层
+                            </td>
+
+                            <td>
+                                计算技术、基本面、估值和风险因子
+                            </td>
+
+                            <td>
+                                因子矩阵
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                策略层
+                            </td>
+
+                            <td>
+                                将因子转换成选股和交易规则
+                            </td>
+
+                            <td>
+                                信号、目标持仓
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                组合层
+                            </td>
+
+                            <td>
+                                决定仓位、权重、资金和风险约束
+                            </td>
+
+                            <td>
+                                目标组合
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                回测层
+                            </td>
+
+                            <td>
+                                模拟订单、成交、资金、持仓和成本
+                            </td>
+
+                            <td>
+                                回测结果
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                执行层
+                            </td>
+
+                            <td>
+                                将目标订单发送到券商或交易接口
+                            </td>
+
+                            <td>
+                                订单、成交记录
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                监控层
+                            </td>
+
+                            <td>
+                                监控数据、策略、订单、风险和系统异常
+                            </td>
+
+                            <td>
+                                日志、告警、报告
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                3.1 研究系统与交易系统的区别
+            </h3>
+
+            <p>
+                量化平台通常包含两个相互关联但职责不同的系统。
+            </p>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    研究系统 Research
+                </div>
+
+                <p>
+                    用于探索想法、计算因子、分析数据、回测策略和生成研究报告。
+                </p>
+
+                <p>
+                    特点：灵活、可实验、允许频繁修改。
+                </p>
+
+            </div>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    交易系统 Trading
+                </div>
+
+                <p>
+                    用于读取实时数据、生成交易指令、检查风险、发送订单和记录成交。
+                </p>
+
+                <p>
+                    特点：稳定、可控、可追踪，不能因为研究代码修改而影响正在运行的交易逻辑。
+                </p>
+
+            </div>
+
+            <p>
+                一个常见的工程原则是：
+            </p>
+
+            <div class="summary-box">
+
+                <p>
+                    <strong>
+                        研究代码可以快速迭代，交易代码必须谨慎变更。
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                4. 第一步：明确研究目标
+            </h2>
+
+            <p>
+                在写任何代码之前，首先要明确你究竟想研究什么。
+                不同目标需要完全不同的数据、策略和回测方式。
+            </p>
+
+            <h3>
+                4.1 先确定市场
+            </h3>
+
+            <ul>
+
+                <li>
+                    A 股
+                </li>
+
+                <li>
+                    港股
+                </li>
+
+                <li>
+                    美股
+                </li>
+
+                <li>
+                    ETF
+                </li>
+
+                <li>
+                    期货
+                </li>
+
+                <li>
+                    加密资产
+                </li>
+
+            </ul>
+
+            <p>
+                不同市场的交易制度不同，例如交易时间、涨跌停、T+1、
+                做空机制、最小交易单位和手续费结构。
+                这些都会影响策略能否真实执行。
+            </p>
+
+            <h3>
+                4.2 再确定投资周期</h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                周期
+                            </th>
+
+                            <th>
+                                典型策略
+                            </th>
+
+                            <th>
+                                主要要求
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                日内
+                            </td>
+
+                            <td>
+                                日内动量、突破、做市
+                            </td>
+
+                            <td>
+                                高频数据、执行质量、低延迟
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                日线
+                            </td>
+
+                            <td>
+                                趋势、动量、量化选股
+                            </td>
+
+                            <td>
+                                稳定的日线和财务数据
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                周线
+                            </td>
+
+                            <td>
+                                中期趋势、行业轮动
+                            </td>
+
+                            <td>
+                                中长期数据和换手控制
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                月度
+                            </td>
+
+                            <td>
+                                多因子、价值、质量、资产配置
+                            </td>
+
+                            <td>
+                                财务数据、组合优化、长期回测
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                4.3 写下研究假设
+            </h3>
+
+            <p>
+                一个好的量化研究应该从假设开始，而不是从“哪个指标最赚钱”开始。
+            </p>
+
+            <p>
+                例如：
+            </p>
+
+            <div class="formula">
+
+                研究假设：
+
+                <br>
+
+                过去一段时间表现较强的股票，
+
+                <br>
+
+                在控制行业、规模和交易成本后，
+
+                <br>
+
+                未来一段时间是否仍然具有相对收益？
+
+            </div>
+
+            <p>
+                这个假设可以对应“动量因子”研究。
+            </p>
+
+            <p>
+                再例如：
+            </p>
+
+            <div class="formula">
+
+                研究假设：
+
+                <br>
+
+                估值较低、盈利质量较高的股票，
+
+                <br>
+
+                是否具有更好的长期风险收益特征？
+
+            </div>
+
+            <p>
+                这就对应价值与质量因子研究。
+            </p>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                5. 第二步：搭建行情与基础数据层
+            </h2>
+
+            <p class="lead">
+                数据是量化系统的地基。
+                如果数据存在错误，后面再复杂的因子和模型也没有意义。
+            </p>
+
+            <h3>
+                5.1 量化系统需要哪些数据？
+            </h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                数据类型
+                            </th>
+
+                            <th>
+                                典型字段
+                            </th>
+
+                            <th>
+                                用途
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                日线行情
+                            </td>
+
+                            <td>
+                                open、high、low、close、volume、amount
+                            </td>
+
+                            <td>
+                                K 线、技术指标、回测
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                分钟行情
+                            </td>
+
+                            <td>
+                                时间、价格、成交量、成交额
+                            </td>
+
+                            <td>
+                                日内策略、执行研究
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                股票基本信息
+                            </td>
+
+                            <td>
+                                symbol、name、exchange、listing_date
+                            </td>
+
+                            <td>
+                                股票池、上市时间、市场分类
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                财务报表
+                            </td>
+
+                            <td>
+                                revenue、net_profit、assets、cash_flow
+                            </td>
+
+                            <td>
+                                基本面因子、质量因子
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                估值数据
+                            </td>
+
+                            <td>
+                                PE、PB、PS、market_cap
+                            </td>
+
+                            <td>
+                                价值因子、估值分析
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                公司行为
+                            </td>
+
+                            <td>
+                                分红、送股、拆股、配股
+                            </td>
+
+                            <td>
+                                复权、收益计算
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                交易状态
+                            </td>
+
+                            <td>
+                                停牌、涨跌停、ST、上市状态
+                            </td>
+
+                            <td>
+                                可交易性判断
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                行业与指数
+                            </td>
+
+                            <td>
+                                industry、index_membership、index_price
+                            </td>
+
+                            <td>
+                                行业中性、基准比较
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                5.2 原始数据与计算数据必须分开
+            </h3>
+
+            <p>
+                这是量化系统中非常重要的设计原则。
+            </p>
+
+            <p>
+                例如，原始行情数据应该保存：
+            </p>
+
+            <pre>
+symbol
+trade_date
+open
+high
+low
+close
+volume
+amount
+        </pre>
+
+            <p>
+                而 MA20、RSI、MACD、动量等属于计算结果，
+                不应该和原始行情混在一起当作同一种数据。
+            </p>
+
+            <p>
+                原因包括：
+            </p>
+
+            <ul>
+
+                <li>
+                    不同策略可能使用不同参数。
+                </li>
+
+                <li>
+                    指标可以重新计算。
+                </li>
+
+                <li>
+                    原始数据修正后，需要重新生成计算结果。
+                </li>
+
+                <li>
+                    便于排查数据错误和复现研究结果。
+                </li>
+
+                <li>
+                    避免某个策略修改了数据后影响其他策略。
+                </li>
+
+            </ul>
+
+            <h3>
+                5.3 数据接口应该统一
+            </h3>
+
+            <p>
+                你的 STOCK LAB 已经在做 Gateway / DataManager 这一类数据抽象，
+                这个方向非常适合继续扩展到量化系统。
+            </p>
+
+            <p>
+                策略不应该关心底层数据究竟来自哪个供应商。
+            </p>
+
+            <pre>
+strategy
+    ↓
+DataManager
+    ↓
+StockDataGateway
+    ↓
+Yinhe / AkShare / TDX / Tencent
+        </pre>
+
+            <p>
+                例如，策略只需要请求：
+            </p>
+
+            <pre>
+history = data.get_daily_bars(
+    symbol="600519.SH",
+    start_date="2020-01-01",
+    end_date="2025-12-31",
+)
+        </pre>
+
+            <p>
+                而不应该在策略内部直接调用某个供应商的专有 API。
+            </p>
+
+            <div class="notice">
+
+                <p>
+                    <strong>工程建议：</strong>
+                    数据源负责“获取数据”，
+                    数据标准化负责“统一数据”，
+                    因子负责“计算特征”，
+                    策略负责“研究逻辑”。
+                    不要让一个策略文件同时负责这四件事。
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                6. 第三步：数据清洗、标准化与存储
+            </h2>
+
+            <p>
+                获取数据只是开始。
+                量化研究真正困难的部分之一，是确保数据在时间上、字段上和统计意义上可靠。
+            </p>
+
+            <h3>
+                6.1 数据清洗
+            </h3>
+
+            <p>
+                常见清洗工作包括：
+            </p>
+
+            <ul>
+
+                <li>
+                    统一股票代码格式。
+                </li>
+
+                <li>
+                    统一日期格式和时区。
+                </li>
+
+                <li>
+                    处理重复记录。
+                </li>
+
+                <li>
+                    处理缺失值。
+                </li>
+
+                <li>
+                    检查价格和成交量的异常值。
+                </li>
+
+                <li>
+                    检查停牌、退市和上市日期。
+                </li>
+
+                <li>
+                    检查财务数据的报告期和公告日期。
+                </li>
+
+                <li>
+                    处理分红、送股、拆股等公司行为。
+                </li>
+
+            </ul>
+
+            <h3>
+                6.2 复权是什么？
+            </h3>
+
+            <p>
+                股票发生分红、送股或拆股后，
+                历史价格可能出现不连续变化。
+            </p>
+
+            <p>
+                例如股票发生拆股时，
+                价格可能按照比例调整，
+                但投资者实际持有的经济价值并不一定发生同等幅度的损失。
+            </p>
+
+            <p>
+                为了研究连续收益，常见数据处理方式包括：
+            </p>
+
+            <ul>
+
+                <li>
+                    前复权
+                </li>
+
+                <li>
+                    后复权
+                </li>
+
+                <li>
+                    不复权
+                </li>
+
+            </ul>
+
+            <p>
+                不同用途应该选择合适的数据口径。
+            </p>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                数据口径
+                            </th>
+
+                            <th>
+                                常见用途
+                            </th>
+
+                            <th>
+                                注意事项
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                不复权
+                            </td>
+
+                            <td>
+                                研究实际交易价格、盘口和部分执行场景
+                            </td>
+
+                            <td>
+                                公司行为可能导致价格不连续
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                前复权
+                            </td>
+
+                            <td>
+                                技术分析、连续价格走势研究
+                            </td>
+
+                            <td>
+                                历史价格会随后续公司行为调整
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                后复权
+                            </td>
+
+                            <td>
+                                某些长期收益展示和价格序列研究
+                            </td>
+
+                            <td>
+                                价格尺度与实际历史交易价格不同
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                6.3 财务数据更需要“时间意识”
+            </h3>
+
+            <p>
+                行情数据通常按交易日组织，
+                但财务数据还涉及报告期、公告日和数据可用日。
+            </p>
+
+            <p>
+                例如：
+            </p>
+
+            <div class="formula">
+
+                2024 年年度报告对应的财务数据，
+
+                <br>
+
+                不一定在 2024-12-31 当天已经可以被市场知道。
+
+            </div>
+
+            <p>
+                如果回测在 2024-12-31 就使用了后来才公布的年度财务数据，
+                就会产生未来信息泄漏。
+            </p>
+
+            <p>
+                因此基本面量化必须尽可能区分：
+            </p>
+
+            <ul>
+
+                <li>
+                    报告期：财务数据描述的是哪个期间。
+                </li>
+
+                <li>
+                    公告日：公司何时发布报告。
+                </li>
+
+                <li>
+                    可用日：策略在什么时间点真正可以使用这条数据。
+                </li>
+
+            </ul>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                7. 第四步：什么是因子？
+            </h2>
+
+            <p class="lead">
+                因子（Factor）是量化研究中用于描述资产某种特征的变量。
+            </p>
+
+            <p>
+                简单来说，因子就是：
+                <strong>把原始数据转换成可以用于比较、排序或建模的数值。</strong>
+            </p>
+
+            <h3>
+                7.1 从原始数据到因子
+            </h3>
+
+            <p>
+                例如，原始数据中有：
+            </p>
+
+            <pre>
+symbol       close       revenue       net_profit
+600519.SH    1500.00     150000000000  80000000000
+000858.SZ    120.00      80000000000   30000000000
+        </pre>
+
+            <p>
+                可以计算出：
+            </p>
+
+            <pre>
+PE = market_cap / net_profit
+
+ROE = net_profit / average_equity
+
+Momentum20 = close / close.shift(20) - 1
+
+Volatility20 = daily_return.rolling(20).std()
+        </pre>
+
+            <p>
+                这些计算结果就是可以用于量化研究的因子或特征。
+            </p>
+
+            <h3>
+                7.2 常见因子分类
+            </h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                因子类型
+                            </th>
+
+                            <th>
+                                代表因子
+                            </th>
+
+                            <th>
+                                研究逻辑
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                价值 Value
+                            </td>
+
+                            <td>
+                                PE、PB、PS、股息率
+                            </td>
+
+                            <td>
+                                研究估值水平与未来收益的关系
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                动量 Momentum
+                            </td>
+
+                            <td>
+                                过去收益率、价格突破
+                            </td>
+
+                            <td>
+                                研究价格趋势延续
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                质量 Quality
+                            </td>
+
+                            <td>
+                                ROE、ROA、利润率、现金流
+                            </td>
+
+                            <td>
+                                研究企业盈利质量和经营稳定性
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                成长 Growth
+                            </td>
+
+                            <td>
+                                营收增长、利润增长、现金流增长
+                            </td>
+
+                            <td>
+                                研究企业未来经营扩张能力
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                波动率 Volatility
+                            </td>
+
+                            <td>
+                                收益率标准差、ATR
+                            </td>
+
+                            <td>
+                                研究价格风险和波动特征
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                流动性 Liquidity
+                            </td>
+
+                            <td>
+                                成交额、换手率、买卖价差
+                            </td>
+
+                            <td>
+                                研究交易容量和执行难度
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                规模 Size
+                            </td>
+
+                            <td>
+                                总市值、流通市值
+                            </td>
+
+                            <td>
+                                研究规模与收益、风险的关系
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                技术 Technical
+                            </td>
+
+                            <td>
+                                MA、RSI、MACD、布林带
+                            </td>
+
+                            <td>
+                                研究价格、趋势和动能特征
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                7.3 因子不是策略
+            </h3>
+
+            <p>
+                这是初学者非常容易混淆的地方。
+            </p>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    因子
+                </div>
+
+                <p>
+                    描述某种特征，例如“过去 20 日收益率”。
+                </p>
+
+                <p>
+                    它本身只是一个变量，不一定直接决定买卖。
+                </p>
+
+            </div>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    策略
+                </div>
+
+                <p>
+                    使用一个或多个因子，制定选股、排序、仓位和交易规则。
+                </p>
+
+                <p>
+                    例如：每月买入动量排名前 20% 的股票，并进行行业约束。
+                </p>
+
+            </div>
+
+            <p>
+                可以理解为：
+            </p>
+
+            <div class="formula">
+
+                因子 = 特征
+
+                <br>
+
+                策略 = 使用特征做决策的规则
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                8. 第五步：如何计算技术因子？
+            </h2>
+
+            <p>
+                技术因子通常从价格和成交量出发，
+                是最适合入门量化研究的一类因子。
+            </p>
+
+            <h3>
+                8.1 收益率因子
+            </h3>
+
+            <p>
+                最基本的收益率是：
+            </p>
+
+            <div class="formula">
+
+                Return(t) = Close(t) / Close(t-1) - 1
+
+            </div>
+
+            <p>
+                N 日动量可以写为：
+            </p>
+
+            <div class="formula">
+
+                Momentum(N) = Close(t) / Close(t-N) - 1
+
+            </div>
+
+            <p>
+                例如 Momentum20 表示过去 20 个交易日的价格变化。
+            </p>
+
+            <h3>
+                8.2 均线因子
+            </h3>
+
+            <p>
+                可以将均线直接转换为因子：
+            </p>
+
+            <div class="formula">
+
+                MA20 = Close.rolling(20).mean()
+
+                <br><br>
+
+                MA60 = Close.rolling(60).mean()
+
+                <br><br>
+
+                MA_Ratio = Close / MA60 - 1
+
+            </div>
+
+            <p>
+                MA_Ratio 表示当前价格相对于 MA60 的偏离程度。
+            </p>
+
+            <p>
+                也可以构造趋势状态：
+            </p>
+
+            <pre>
+trend_up = (
+    (close > ma20)
+    &amp;
+    (ma20 > ma60)
+)
+        </pre>
+
+            <h3>
+                8.3 波动率因子
+            </h3>
+
+            <p>
+                常见做法是计算历史收益率的滚动标准差。
+            </p>
+
+            <div class="formula">
+
+                Volatility20 =
+                Std(Return(t-19), ..., Return(t))
+
+            </div>
+
+            <p>
+                波动率越高，代表近期价格变化越剧烈。
+                但高波动并不必然意味着高收益或低收益，
+                它更多描述的是风险和价格行为特征。
+            </p>
+
+            <h3>
+                8.4 成交量因子
+            </h3>
+
+            <p>
+                例如成交量相对于过去平均成交量的变化：
+            </p>
+
+            <div class="formula">
+
+                Volume_Ratio20 =
+                Volume / Volume.rolling(20).mean()
+
+            </div>
+
+            <p>
+                这个因子可以用于研究：
+            </p>
+
+            <ul>
+
+                <li>
+                    放量突破
+                </li>
+
+                <li>
+                    缩量回调
+                </li>
+
+                <li>
+                    成交活跃度
+                </li>
+
+                <li>
+                    流动性变化
+                </li>
+
+            </ul>
+
+            <h3>
+                8.5 Python 示例：计算技术因子
+            </h3>
+
+            <p>
+                下面是一个简单的 Pandas 因子计算示例。
+                假设数据已经按照交易日期升序排列。
+            </p>
+
+            <pre>
+from __future__ import annotations
+
+import pandas as pd
+
+
+def calculate_technical_factors(
+    df: pd.DataFrame,
+) -> pd.DataFrame:
+
+    result = df.copy()
+
+    close = result["close"]
+    volume = result["volume"]
+
+    result["return_1d"] = close.pct_change()
+
+    result["momentum_20"] = (
+        close / close.shift(20) - 1
+    )
+
+    result["momentum_60"] = (
+        close / close.shift(60) - 1
+    )
+
+    result["ma_20"] = (
+        close.rolling(20).mean()
+    )
+
+    result["ma_60"] = (
+        close.rolling(60).mean()
+    )
+
+    result["price_to_ma60"] = (
+        close / result["ma_60"] - 1
+    )
+
+    result["volatility_20"] = (
+        result["return_1d"]
+        .rolling(20)
+        .std()
+    )
+
+    result["volume_ratio_20"] = (
+        volume
+        / volume.rolling(20).mean()
+    )
+
+    result["trend_up"] = (
+        (close > result["ma_20"])
+        & (result["ma_20"] > result["ma_60"])
+    )
+
+    return result
+        </pre>
+
+            <div class="notice">
+
+                <p>
+                    <strong>注意：</strong>
+                    这段代码只是因子计算，不是完整交易策略。
+                    它没有处理复权口径、停牌、交易成本、股票池、信号时间和订单执行。
+                    真正回测前，还需要进一步处理这些问题。
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                9. 第六步：如何计算基本面因子？
+            </h2>
+
+            <p>
+                基本面因子主要来自财务报表、估值数据和公司经营信息。
+            </p>
+
+            <h3>
+                9.1 价值因子
+            </h3>
+
+            <p>
+                常见价值因子包括：
+            </p>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                因子
+                            </th>
+
+                            <th>
+                                常见公式
+                            </th>
+
+                            <th>
+                                解释
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                PE
+                            </td>
+
+                            <td>
+                                市值 ÷ 净利润
+                            </td>
+
+                            <td>
+                                价格相对于盈利的水平
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                PB
+                            </td>
+
+                            <td>
+                                市值 ÷ 净资产
+                            </td>
+
+                            <td>
+                                价格相对于账面价值的水平
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                PS
+                            </td>
+
+                            <td>
+                                市值 ÷ 营业收入
+                            </td>
+
+                            <td>
+                                价格相对于收入的水平
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Dividend Yield
+                            </td>
+
+                            <td>
+                                每股股息 ÷ 股价
+                            </td>
+
+                            <td>
+                                股息相对于价格的水平
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <p>
+                这些指标不能简单地直接横向比较所有行业。
+                例如银行、软件、周期、消费和制造业的资产结构、
+                盈利模式和估值区间可能差异很大。
+            </p>
+
+            <h3>
+                9.2 质量因子
+            </h3>
+
+            <p>
+                质量因子试图衡量企业盈利能力、经营效率和财务稳健程度。
+            </p>
+
+            <ul>
+
+                <li>
+                    ROE：净资产收益率
+                </li>
+
+                <li>
+                    ROA：总资产收益率
+                </li>
+
+                <li>
+                    毛利率
+                </li>
+
+                <li>
+                    净利率
+                </li>
+
+                <li>
+                    经营现金流质量
+                </li>
+
+                <li>
+                    资产负债率
+                </li>
+
+                <li>
+                    利润与现金流匹配程度
+                </li>
+
+            </ul>
+
+            <h3>
+                9.3 成长因子
+            </h3>
+
+            <p>
+                成长因子通常研究企业经营指标在一段时间内的变化。
+            </p>
+
+            <div class="formula">
+
+                Revenue_Growth =
+                Revenue(t) / Revenue(t-1) - 1
+
+                <br><br>
+
+                Profit_Growth =
+                NetProfit(t) / NetProfit(t-1) - 1
+
+            </div>
+
+            <p>
+                需要注意：
+                单纯的高增长不一定意味着高质量。
+                如果增长来自高杠杆、一次性收益或低基数，
+                其可持续性可能较弱。
+            </p>
+
+            <h3>
+                9.4 财务因子必须使用可用数据
+            </h3>
+
+            <p>
+                这是基本面量化和普通财务分析之间非常重要的区别。
+            </p>
+
+            <p>
+                普通财务分析可能会直接使用“最新修订后的财务数据”。
+                但历史回测必须模拟当时市场能够看到的信息。
+            </p>
+
+            <div class="summary-box">
+
+                <p>
+                    <strong>
+                        研究某个历史交易日时，只能使用当时已经公开且可获得的数据。
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                10. 第七步：因子检验与有效性分析
+            </h2>
+
+            <p class="lead">
+                计算出一个因子，并不代表它有效。
+                因子研究的核心是判断：
+                这个特征是否与未来收益存在稳定、可重复、具有经济意义的关系？
+            </p>
+
+            <h3>
+                10.1 因子研究的基本流程
+            </h3>
+
+            <div class="step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        计算因子
+                    </strong>
+
+                    <p>
+                        对每个股票、每个交易日计算因子值。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        定义未来收益
+                    </strong>
+
+                    <p>
+                        例如未来 5 日、20 日或 60 日收益。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        横截面排序
+                    </strong>
+
+                    <p>
+                        在同一个交易日，将股票按照因子值排序。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    04
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        分组回测
+                    </strong>
+
+                    <p>
+                        将股票分成多个组，观察不同组的未来收益。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    05
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        检查稳定性
+                    </strong>
+
+                    <p>
+                        检查不同年份、行业、市场环境和样本外时期的表现。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <h3>
+                10.2 什么是分组回测？
+            </h3>
+
+            <p>
+                假设某一天有 1000 只股票，
+                根据动量因子从低到高排序，
+                分成 5 组：
+            </p>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                组别
+                            </th>
+
+                            <th>
+                                因子水平
+                            </th>
+
+                            <th>
+                                研究意义
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                Q1
+                            </td>
+
+                            <td>
+                                因子最低的 20%
+                            </td>
+
+                            <td>
+                                低因子组
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Q2
+                            </td>
+
+                            <td>
+                                20% - 40%
+                            </td>
+
+                            <td>
+                                较低因子组
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Q3
+                            </td>
+
+                            <td>
+                                40% - 60%
+                            </td>
+
+                            <td>
+                                中间组
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Q4
+                            </td>
+
+                            <td>
+                                60% - 80%
+                            </td>
+
+                            <td>
+                                较高因子组
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Q5
+                            </td>
+
+                            <td>
+                                因子最高的 20%
+                            </td>
+
+                            <td>
+                                高因子组
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <p>
+                然后比较每组未来收益。
+            </p>
+
+            <p>
+                如果 Q5 长期明显优于 Q1，
+                说明这个因子可能具有一定的排序能力。
+            </p>
+
+            <p>
+                但还需要进一步检查：
+            </p>
+
+            <ul>
+
+                <li>
+                    是否只是某一个年份贡献了全部收益？
+                </li>
+
+                <li>
+                    是否被某一个行业主导？
+                </li>
+
+                <li>
+                    是否存在极端值影响？
+                </li>
+
+                <li>
+                    是否忽略了交易成本？
+                </li>
+
+                <li>
+                    是否存在未来数据泄漏？
+                </li>
+
+                <li>
+                    是否在样本外仍然有效？
+                </li>
+
+            </ul>
+
+            <h3>
+                10.3 IC：因子与未来收益的相关性
+            </h3>
+
+            <p>
+                IC（Information Coefficient）常用于衡量因子值与未来收益之间的横截面相关性。
+            </p>
+
+            <div class="formula">
+
+                IC(t) =
+                Corr(Factor(t), FutureReturn(t))
+
+            </div>
+
+            <p>
+                在实际因子研究中，
+                常见的是使用 Spearman Rank Correlation，
+                因为它关注排序关系，而不是严格的线性关系。
+            </p>
+
+            <p>
+                因子研究不应该只看 IC 的均值，
+                还应该关注：
+            </p>
+
+            <ul>
+
+                <li>
+                    IC 均值
+                </li>
+
+                <li>
+                    IC 标准差
+                </li>
+
+                <li>
+                    ICIR
+                </li>
+
+                <li>
+                    IC 正值比例
+                </li>
+
+                <li>
+                    IC 随时间的稳定性
+                </li>
+
+            </ul>
+
+            <div class="formula">
+
+                ICIR =
+                Mean(IC) / Std(IC)
+
+            </div>
+
+            <p>
+                ICIR 可以帮助研究者了解因子信号相对于自身波动的稳定程度，
+                但它不是收益保证，也不能脱离样本和统计显著性单独判断。
+            </p>
+
+            <h3>
+                10.4 因子中性化
+            </h3>
+
+            <p>
+                一个因子看起来有效，
+                可能只是因为它与规模、行业或其他已知特征相关。
+            </p>
+
+            <p>
+                例如，一个“低 PE”策略可能大量买入银行股。
+                最终收益到底来自低估值，还是来自银行行业特征？
+            </p>
+
+            <p>
+                为了回答这个问题，可以进行：
+            </p>
+
+            <ul>
+
+                <li>
+                    行业中性化
+                </li>
+
+                <li>
+                    市值中性化
+                </li>
+
+                <li>
+                    Beta 中性化
+                </li>
+
+                <li>
+                    风格因子中性化
+                </li>
+
+            </ul>
+
+            <p>
+                中性化不是所有策略都必须做，
+                但它是理解因子真实来源的重要研究工具。
+
+
+                <!-- ========================================================= -->
+
+            <h2>
+                11. 第八步：从因子到选股策略
+            </h2>
+
+            <p>
+                因子研究的下一步，是将因子转换为实际的选股规则。
+            </p>
+
+            <h3>
+                11.1 最简单的单因子选股
+            </h3>
+
+            <p>
+                例如，使用过去 60 日收益率作为动量因子：
+            </p>
+
+            <div class="formula">
+
+                每月调仓：
+
+                <br>
+
+                1. 计算所有股票的 Momentum60
+
+                <br>
+
+                2. 按 Momentum60 从高到低排序
+
+                <br>
+
+                3. 选择排名前 50 的股票
+
+                <br>
+
+                4. 等权持有
+
+            </div>
+
+            <p>
+                这已经是一个完整的量化策略雏形。
+            </p>
+
+            <h3>
+                11.2 多因子选股
+            </h3>
+
+            <p>
+                多因子策略会将多个因子组合起来。
+            </p>
+
+            <p>
+                例如：
+            </p>
+
+            <div class="formula">
+
+                综合评分 =
+
+                <br>
+
+                0.4 × 动量评分
+
+                <br>
+
+                + 0.3 × 质量评分
+
+                <br>
+
+                + 0.2 × 价值评分
+
+                <br>
+
+                + 0.1 × 低波动评分
+
+            </div>
+
+            <p>
+                这里的权重只是示例，
+                不代表真实有效的最优配置。
+            </p>
+
+            <p>
+                实际研究中，权重可以通过：
+            </p>
+
+            <ul>
+
+                <li>
+                    等权
+                </li>
+
+                <li>
+                    研究者设定
+                </li>
+
+                <li>
+                    历史统计
+                </li>
+
+                <li>
+                    回归模型
+                </li>
+
+                <li>
+                    优化算法
+                </li>
+
+                <li>
+                    机器学习模型
+                </li>
+
+            </ul>
+
+            <p>
+                但越复杂的权重优化，越容易产生过拟合，
+                因此复杂度必须与样本量和研究目标匹配。
+            </p>
+
+            <h3>
+                11.3 因子标准化
+            </h3>
+
+            <p>
+                不同因子的量纲可能不同。
+                例如 PE 是倍数，动量是百分比，ROE 也是百分比。
+                如果直接相加，可能导致某些因子主导结果。
+            </p>
+
+            <p>
+                常见处理方式包括：
+            </p>
+
+            <ul>
+
+                <li>
+                    排名标准化
+                </li>
+
+                <li>
+                    Z-Score 标准化
+                </li>
+
+                <li>
+                    分位数转换
+                </li>
+
+                <li>
+                    去极值
+                </li>
+
+            </ul>
+
+            <div class="formula">
+
+                Z-Score =
+
+                (Factor - Mean)
+
+                ÷
+
+                StandardDeviation
+
+            </div>
+
+            <p>
+                但标准化参数也必须使用当时可用的数据计算，
+                不能用全样本未来数据计算历史时点的均值和标准差。
+            </p>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                12. 第九步：策略信号如何生成？
+            </h2>
+
+            <p class="lead">
+                策略层的任务是将研究逻辑转换为明确的信号。
+                一个好的策略定义必须能够回答“何时、买什么、买多少、何时卖”。
+            </p>
+
+            <h3>
+                12.1 策略的四个核心部分
+            </h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                部分
+                            </th>
+
+                            <th>
+                                需要回答的问题
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                股票池
+                            </td>
+
+                            <td>
+                                哪些股票允许进入研究和交易？
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                入场规则
+                            </td>
+
+                            <td>
+                                什么条件下建立仓位？
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                出场规则
+                            </td>
+
+                            <td>
+                                什么条件下减仓或卖出？
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                仓位规则
+                            </td>
+
+                            <td>
+                                每只股票买多少，组合持有多少？
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                12.2 示例：均线趋势策略
+            </h3>
+
+            <p>
+                假设我们设计一个非常简单的日线策略：
+            </p>
+
+            <div class="summary-box">
+
+                <p>
+                    当 MA20 高于 MA60，且收盘价高于 MA20 时，
+                    认为趋势偏强；
+                    当 MA20 低于 MA60 时，退出仓位。
+                </p>
+
+            </div>
+
+            <pre>
+entry = (
+    (close > ma20)
+    &amp;
+    (ma20 > ma60)
+)
+
+exit = (
+    ma20 < ma60
+)
+        </pre>
+
+            <p>
+                这个规则看起来简单，
+                但真正回测时还必须明确：
+            </p>
+
+            <ul>
+
+                <li>
+                    信号是在收盘时生成，还是盘中生成？
+                </li>
+
+                <li>
+                    是当天收盘成交，还是下一个交易日开盘成交？
+                </li>
+
+                <li>
+                    如果当天涨停，是否能够买入？
+                </li>
+
+                <li>
+                    如果当天停牌，是否能够卖出？
+                </li>
+
+                <li>
+                    如果已经持仓，是否每天重复下单？
+                </li>
+
+                <li>
+                    交易手续费如何计算？
+                </li>
+
+            </ul>
+
+            <p>
+                这些细节决定了回测结果是否可信。
+            </p>
+
+            <h3>
+                12.3 信号与订单不是一回事
+            </h3>
+
+            <p>
+                这是搭建量化系统时必须明确的概念。
+            </p>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    Signal：信号
+                </div>
+
+                <p>
+                    策略认为应该做什么。
+                </p>
+
+                <p>
+                    例如：目标持仓为 10%。
+                </p>
+
+            </div>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    Order：订单
+                </div>
+
+                <p>
+                    系统实际准备发送给交易接口的指令。
+                </p>
+
+                <p>
+                    例如：以某种价格买入 1000 股。
+                </p>
+
+            </div>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    Fill：成交
+                </div>
+
+                <p>
+                    交易所或券商实际返回的成交结果。
+                </p>
+
+                <p>
+                    例如：成交 600 股，成交均价为某个价格。
+                </p>
+
+            </div>
+
+            <p>
+                实盘中，信号不一定会立即变成成交。
+                订单可能被拒绝、部分成交、撤单或延迟成交。
+            </p>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                13. 第十步：如何搭建回测系统？
+            </h2>
+
+            <p class="lead">
+                回测（Backtesting）是将策略规则应用到历史数据，
+                模拟过去如果按照这套规则交易，可能产生什么结果。
+            </p>
+
+            <p>
+                回测的本质不是“证明策略赚钱”，
+                而是检查策略在历史样本中的行为和风险特征。
+            </p>
+
+            <h3>
+                13.1 回测系统需要模拟什么？
+            </h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                模块
+                            </th>
+
+                            <th>
+                                模拟内容
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                时间引擎
+                            </td>
+
+                            <td>
+                                按交易日或交易事件推进
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                数据引擎
+                            </td>
+
+                            <td>
+                                在每个时点提供当时可用的数据
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                策略引擎
+                            </td>
+
+                            <td>
+                                计算因子、生成信号
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                组合引擎
+                            </td>
+
+                            <td>
+                                计算目标权重、资金和仓位
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                订单引擎
+                            </td>
+
+                            <td>
+                                模拟下单、成交、撤单和部分成交
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                费用模型
+                            </td>
+
+                            <td>
+                                模拟佣金、印花税、过户费、滑点等
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                账户引擎
+                            </td>
+
+                            <td>
+                                更新现金、持仓、市值和净值
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                分析引擎
+                            </td>
+
+                            <td>
+                                计算收益、回撤、风险和交易统计
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                13.2 回测的基本时间循环
+            </h3>
+
+            <p>
+                一个最基本的事件驱动回测逻辑可以理解为：
+            </p>
+
+            <div class="architecture">
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        读取当前交易日 t
+                    </strong>
+
+                    <span>
+                        获取当前时点允许使用的数据。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        更新指标和因子
+                    </strong>
+
+                    <span>
+                        只能使用 t 时点之前已经可用的信息。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        策略生成目标持仓
+                    </strong>
+
+                    <span>
+                        例如目标持仓从 0% 变为 10%。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        订单撮合与成本计算
+                    </strong>
+
+                    <span>
+                        根据成交规则、价格、滑点和手续费模拟成交。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        更新账户
+                    </strong>
+
+                    <span>
+                        更新现金、持仓、净值和交易记录。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        进入下一个交易日
+                    </strong>
+
+                    <span>
+                        重复执行整个流程。
+                    </span>
+
+                </div>
+
+            </div>
+
+            <h3>
+                13.3 向量化回测与事件驱动回测
+            </h3>
+
+            <p>
+                Python 量化系统中常见两种回测方式。
+            </p>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    向量化回测 Vectorized Backtest
+                </div>
+
+                <p>
+                    使用 Pandas / NumPy 一次性计算大量时间序列，
+                    然后根据信号计算收益。
+                </p>
+
+                <p>
+                    优点：开发快、适合研究、适合大量参数实验。
+                </p>
+
+                <p>
+                    缺点：复杂成交逻辑、部分成交、资金约束和多资产事件处理较难表达。
+                </p>
+
+            </div>
+
+            <div class="indicator-card">
+
+                <div class="indicator-title">
+                    事件驱动回测 Event-driven Backtest
+                </div>
+
+                <p>
+                    按时间顺序逐步处理数据事件、信号事件、订单事件和成交事件。
+                </p>
+
+                <p>
+                    优点：更接近真实交易系统，适合复杂组合和实盘扩展。
+                </p>
+
+                <p>
+                    缺点：开发成本更高，调试和性能优化更复杂。
+                </p>
+
+            </div>
+
+            <p>
+                对你的项目，我建议：
+            </p>
+
+            <div class="summary-box">
+
+                <p>
+                    <strong>
+                        早期研究使用向量化回测快速验证想法，
+                        当策略和交易模型逐渐稳定后，再建设事件驱动回测核心。
+                    </strong>
+                </p>
+
+            </div>
+
+            <h3>
+                13.4 一个教学版向量化回测示例
+            </h3>
+
+            <p>
+                下面示例展示一个非常简化的均线策略回测。
+                它用于理解基本思想，不代表完整的生产级回测引擎。
+            </p>
+
+            <pre>
+from __future__ import annotations
+
+import pandas as pd
+
+
+def backtest_ma_strategy(
+    df: pd.DataFrame,
+    initial_capital: float = 100_000.0,
+) -> pd.DataFrame:
+
+    data = df.copy()
+    data = data.sort_index()
+
+    data["ma20"] = (
+        data["close"].rolling(20).mean()
+    )
+
+    data["ma60"] = (
+        data["close"].rolling(60).mean()
+    )
+
+    data["signal"] = (
+        (
+            (data["close"] > data["ma20"])
+            &amp;
+            (data["ma20"] > data["ma60"])
+        )
+        .astype(int)
+    )
+
+    # 使用下一交易日的信号，
+    # 避免直接使用当前收盘价产生不现实的成交。
+    data["position"] = (
+        data["signal"].shift(1).fillna(0)
+    )
+
+    data["return"] = (
+        data["close"].pct_change().fillna(0)
+    )
+
+    data["strategy_return"] = (
+        data["position"] * data["return"]
+    )
+
+    data["equity"] = (
+        initial_capital
+        * (1 + data["strategy_return"]).cumprod()
+    )
+
+    return data
+        </pre>
+
+            <p>
+                这段代码表达了一个核心思想：
+            </p>
+
+            <div class="formula">
+
+                当前持仓收益 = 当前资产收益 × 上一个时点确定的持仓
+
+            </div>
+
+            <p>
+                但它仍然非常简化，实际使用时还需要加入：
+            </p>
+
+            <ul>
+
+                <li>
+                    交易成本
+                </li>
+
+                <li>
+                    滑点
+                </li>
+
+                <li>
+                    停牌与涨跌停
+                </li>
+
+                <li>
+                    资金约束
+                </li>
+
+                <li>
+                    真实成交价格
+                </li>
+
+                <li>
+                    仓位变化与换手率
+                </li>
+
+                <li>
+                    多股票组合
+                </li>
+
+            </ul>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                14. 第十一步：回测中的收益与风险指标
+            </h2>
+
+            <p>
+                判断策略不能只看“赚了多少钱”。
+                一个年化收益很高但最大回撤极大的策略，
+                可能并不适合实际投资。
+            </p>
+
+            <h3>
+                14.1 累计收益率
+            </h3>
+
+            <div class="formula">
+
+                CumulativeReturn =
+                FinalEquity / InitialEquity - 1
+
+            </div>
+
+            <p>
+                它描述从开始到结束的总收益。
+            </p>
+
+            <h3>
+                14.2 年化收益率 CAGR
+            </h3>
+
+            <div class="formula">
+
+                CAGR =
+
+                (FinalEquity / InitialEquity)
+                ^ (1 / Years) - 1
+
+            </div>
+
+            <p>
+                年化收益率用于将不同时间长度的策略进行一定程度的比较。
+            </p>
+
+            <h3>
+                14.3 最大回撤 Maximum Drawdown
+            </h3>
+
+            <p>
+                最大回撤表示净值从历史高点到之后低点的最大跌幅。
+            </p>
+
+            <div class="formula">
+
+                Drawdown(t) =
+                Equity(t) / RunningMax(Equity) - 1
+
+            </div>
+
+            <p>
+                最大回撤是投资者实际体验风险的重要指标。
+            </p>
+
+            <h3>
+                14.4 夏普比率 Sharpe Ratio
+            </h3>
+
+            <p>
+                夏普比率用于衡量单位风险下的超额收益。
+            </p>
+
+            <div class="formula">
+
+                Sharpe Ratio =
+
+                (Annualized Return - RiskFreeRate)
+                ÷
+                Annualized Volatility
+
+            </div>
+
+            <p>
+                实际计算时需要明确收益频率、无风险利率和年化方式。
+                不同实现方式可能导致数值差异。
+            </p>
+
+            <h3>
+                14.5 其他重要指标
+            </h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                指标
+                            </th>
+
+                            <th>
+                                关注什么
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                Calmar Ratio
+                            </td>
+
+                            <td>
+                                年化收益与最大回撤的关系
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Sortino Ratio
+                            </td>
+
+                            <td>
+                                重点关注下行波动的风险调整收益
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Volatility
+                            </td>
+
+                            <td>
+                                收益波动程度
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Win Rate
+                            </td>
+
+                            <td>
+                                盈利交易占比
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Profit Factor
+                            </td>
+
+                            <td>
+                                总盈利与总亏损绝对值之比
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Turnover
+                            </td>
+
+                            <td>
+                                组合换手程度
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Exposure
+                            </td>
+
+                            <td>
+                                资金处于市场风险中的比例
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Benchmark
+                            </td>
+
+                            <td>
+                                与沪深 300、中证 500或其他基准比较
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="warning">
+
+                <p>
+                    <strong>不要只看收益曲线。</strong>
+                    一条平滑的回测曲线可能来自未来函数、幸存者偏差、
+                    过低的成本假设、过度优化或不现实的成交模型。
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                15. 第十二步：组合构建与仓位管理
+            </h2>
+
+            <p class="lead">
+                选出股票只是量化系统的一半。
+                真正决定组合风险的，还有买多少、持有多少以及如何控制集中度。
+            </p>
+
+            <h3>
+                15.1 等权组合
+            </h3>
+
+            <p>
+                假设选出 20 只股票，等权配置：
+            </p>
+
+            <div class="formula">
+
+                每只股票权重 = 1 / 20 = 5%
+
+            </div>
+
+            <p>
+                等权组合简单、透明、容易实现，
+                是量化选股的常见起点。
+            </p>
+
+            <h3>
+                15.2 市值加权
+            </h3>
+
+            <p>
+                按股票市值决定权重。
+                这是很多市场指数常见的构建方式。
+            </p>
+
+            <p>
+                优点是交易相对自然，
+                缺点是可能对大市值股票产生较高集中度。
+            </p>
+
+            <h3>
+                15.3 因子加权
+            </h3>
+
+            <p>
+                可以根据综合评分或风险调整后的评分配置权重。
+            </p>
+
+            <p>
+                但需要警惕：
+                如果权重过度集中在少数股票，
+                组合可能失去分散化效果。
+            </p>
+
+            <h3>
+                15.4 常见风险约束
+            </h3>
+
+            <ul>
+
+                <li>
+                    单只股票最大权重。
+                </li>
+
+                <li>
+                    单个行业最大权重。
+                </li>
+
+                <li>
+                    单个市场或资产类别最大权重。
+                </li>
+
+                <li>
+                    最低流动性要求。
+                </li>
+
+                <li>
+                    最大组合波动率。
+                </li>
+
+                <li>
+                    最大杠杆比例。
+                </li>
+
+                <li>
+                    最大换手率。
+                </li>
+
+                <li>
+                    组合与基准的偏离限制。
+                </li>
+
+            </ul>
+
+            <h3>
+                15.5 风险管理不是策略失败后的补救
+            </h3>
+
+            <p>
+                风险管理应该在策略设计阶段就存在，
+                而不是等到回撤发生后才考虑。
+            </p>
+
+            <div class="summary-box">
+
+                <p>
+                    <strong>
+                        策略负责产生预期收益来源，
+                        组合负责决定风险暴露，
+                        风控负责限制不可接受的损失。
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                16. 第十三步：交易成本与滑点
+            </h2>
+
+            <p class="lead">
+                很多看起来优秀的回测策略，
+                在加入交易成本后可能明显变差。
+            </p>
+
+            <h3>
+                16.1 交易成本包括什么？
+            </h3>
+
+            <ul>
+
+                <li>
+                    佣金
+                </li>
+
+                <li>
+                    印花税
+                </li>
+
+                <li>
+                    过户费
+                </li>
+
+                <li>
+                    买卖价差
+                </li>
+
+                <li>
+                    滑点
+                </li>
+
+                <li>
+                    市场冲击成本
+                </li>
+
+                <li>
+                    融资融券或借券成本（适用时）
+                </li>
+
+            </ul>
+
+            <h3>
+                16.2 什么是滑点？
+            </h3>
+
+            <p>
+                滑点是预期成交价格与实际成交价格之间的差异。
+            </p>
+
+            <p>
+                例如：
+            </p>
+
+            <div class="formula">
+
+                预期买入价格：10.00 元
+
+                <br>
+
+                实际成交价格：10.03 元
+
+                <br>
+
+                滑点：0.03 元
+
+            </div>
+
+            <p>
+                对高换手策略而言，
+                即使单次滑点很小，长期累计影响也可能很大。
+            </p>
+
+            <h3>
+                16.3 换手率为什么重要？
+            </h3>
+
+            <p>
+                假设两个策略年化毛收益相同：
+            </p>
+
+            <ul>
+
+                <li>
+                    策略 A：每月调仓一次，换手较低。
+                </li>
+
+                <li>
+                    策略 B：每天频繁交易，换手很高。
+                </li>
+
+            </ul>
+
+            <p>
+                策略 B 可能因为成本更高，
+                最终净收益反而更低。
+            </p>
+
+            <p>
+                因此回测报告应该同时展示：
+            </p>
+
+            <ul>
+
+                <li>
+                    毛收益
+                </li>
+
+                <li>
+                    净收益
+                </li>
+
+                <li>
+                    交易成本
+                </li>
+
+                <li>
+                    换手率
+                </li>
+
+                <li>
+                    成交金额
+                </li>
+
+            </ul>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                17. 第十四步：避免未来函数与回测偏差
+            </h2>
+
+            <p class="lead">
+                回测中最危险的问题之一，是使用了当时不可能知道的信息。
+                这类问题会让策略看起来远比现实优秀。
+            </p>
+
+            <h3>
+                17.1 什么是未来函数？
+            </h3>
+
+            <p>
+                未来函数（Look-ahead Bias）是指：
+                在历史某个时点做决策时，使用了该时点之后才会出现的数据。
+            </p>
+
+            <p>
+                例如：
+            </p>
+
+            <pre>
+# 错误示意：
+# 使用未来一天的价格决定今天是否买入
+
+future_return = close.shift(-1) / close - 1
+
+signal = future_return > 0
+        </pre>
+
+            <p>
+                这段代码可以用于研究标签，
+                但绝对不能直接作为历史交易时点的可用信号。
+            </p>
+
+            <h3>
+                17.2 常见未来函数来源
+            </h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                来源
+                            </th>
+
+                            <th>
+                                错误示例
+                            </th>
+
+                            <th>
+                                正确思路
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                信号与成交混淆
+                            </td>
+
+                            <td>
+                                用收盘后才知道的收盘价，在同一收盘价成交
+                            </td>
+
+                            <td>
+                                使用下一交易日可实现的价格或明确的撮合规则
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                财务数据泄漏
+                            </td>
+
+                            <td>
+                                在报告发布前使用年度报告数据
+                            </td>
+
+                            <td>
+                                按公告日或可用日构建数据
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                全样本标准化
+                            </td>
+
+                            <td>
+                                用整个历史区间均值标准化早期数据
+                            </td>
+
+                            <td>
+                                只使用当时可获得的历史窗口
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                未来滚动统计
+                            </td>
+
+                            <td>
+                                使用 centered rolling 等包含未来数据的计算
+                            </td>
+
+                            <td>
+                                使用只向后看的滚动窗口
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                退市股票遗漏
+                            </td>
+
+                            <td>
+                                只使用今天仍然存在的股票回测过去
+                            </td>
+
+                            <td>
+                                尽量使用包含历史股票状态的股票池
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                后见之明筛选
+                            </td>
+
+                            <td>
+                                只选择后来表现优秀的股票作为历史股票池
+                            </td>
+
+                            <td>
+                                在每个时点根据当时规则生成股票池
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                17.3 幸存者偏差
+            </h3>
+
+            <p>
+                幸存者偏差（Survivorship Bias）是指研究数据只包含今天仍然存在的资产，
+                而忽略了已经退市、破产或消失的资产。
+            </p>
+
+            <p>
+                例如，如果今天只选择仍然上市的股票，
+                再回测十年前的策略，
+                结果可能会比当时真实可投资的股票池更乐观。
+            </p>
+
+            <h3>
+                17.4 过拟合
+            </h3>
+
+            <p>
+                过拟合（Overfitting）是量化研究中最常见的风险之一。
+            </p>
+
+            <p>
+                例如，一个研究者不断尝试：
+            </p>
+
+            <pre>
+MA = 17
+RSI = 63
+MACD = 某个参数
+持有天数 = 13
+止损 = 7.4%
+        </pre>
+
+            <p>
+                最后在历史数据上找到一组表现极好的参数。
+                但这组参数可能只是适应了历史噪声，
+                并不代表未来仍然有效。
+            </p>
+
+            <p>
+                常见的应对方法包括：
+            </p>
+
+            <ul>
+
+                <li>
+                    减少不必要的参数。
+                </li>
+
+                <li>
+                    使用训练集、验证集和测试集。
+                </li>
+
+                <li>
+                    进行样本外测试。
+                </li>
+
+                <li>
+                    进行滚动回测和 Walk-forward 分析。
+                </li>
+
+                <li>
+                    检查参数敏感性。
+                </li>
+
+                <li>
+                    避免为了追求历史收益反复修改规则。
+                </li>
+
+            </ul>
+
+            <h3>
+                17.5 Walk-forward 分析
+            </h3>
+
+            <p>
+                Walk-forward 的基本思想是：
+                使用过去一段时间研究或训练模型，
+                再在之后一段没有参与研究的数据上测试。
+            </p>
+
+            <div class="formula">
+
+                训练区间 → 测试区间
+
+                <br>
+
+                向前滚动 → 重新训练 → 再测试
+
+            </div>
+
+            <p>
+                这样可以更接近真实的策略开发过程，
+                减少一次性使用全部历史数据优化参数造成的偏差。
+            </p>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                18. 第十五步：从回测到模拟盘
+            </h2>
+
+            <p>
+                回测表现良好，并不意味着策略已经可以直接投入真实资金。
+            </p>
+
+            <p>
+                在回测之后，通常还需要进行模拟盘或纸面交易。
+            </p>
+
+            <h3>
+                18.1 为什么需要模拟盘？
+            </h3>
+
+            <p>
+                因为有些问题无法通过普通历史回测完全发现：
+            </p>
+
+            <ul>
+
+                <li>
+                    实时数据延迟。
+                </li>
+
+                <li>
+                    数据字段变化。
+                </li>
+
+                <li>
+                    交易接口异常。
+                </li>
+
+                <li>
+                    订单拒绝。
+                </li>
+
+                <li>
+                    部分成交。
+                </li>
+
+                <li>
+                    撤单失败。
+                </li>
+
+                <li>
+                    交易时间判断错误。
+                </li>
+
+                <li>
+                    实际滑点与历史假设不一致。
+                </li>
+
+                <li>
+                    程序重启后持仓状态不同步。
+                </li>
+
+            </ul>
+
+            <h3>
+                18.2 模拟盘应该验证什么？
+            </h3>
+
+            <div class="checklist">
+
+                <div class="checklist-item">
+                    数据是否按预期更新？
+                </div>
+
+                <div class="checklist-item">
+                    策略是否在正确时间生成信号？
+                </div>
+
+                <div class="checklist-item">
+                    订单数量和价格是否正确？
+                </div>
+
+                <div class="checklist-item">
+                    订单状态是否能够正确跟踪？
+                </div>
+
+                <div class="checklist-item">
+                    账户持仓与系统记录是否一致？
+                </div>
+
+                <div class="checklist-item">
+                    交易成本是否与预期接近？
+                </div>
+
+                <div class="checklist-item">
+                    程序异常后能否恢复？
+                </div>
+
+                <div class="checklist-item">
+                    日志和告警是否完整？
+                </div>
+
+            </div>
+
+            <h3>
+                18.3 回测、模拟盘和实盘的关系
+            </h3>
+
+            <div class="architecture">
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        回测
+                    </strong>
+
+                    <span>
+                        验证研究假设和历史表现。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        模拟盘
+                    </strong>
+
+                    <span>
+                        验证实时数据、信号和交易流程。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        小资金实盘
+                    </strong>
+
+                    <span>
+                        验证真实成本、执行和系统稳定性。
+                    </span>
+
+                </div>
+
+                <div class="architecture-arrow">
+                    ↓
+                </div>
+
+                <div class="architecture-layer">
+
+                    <strong>
+                        逐步扩大规模
+                    </strong>
+
+                    <span>
+                        只有在策略和系统经过持续验证后，才考虑扩大资金。
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                19. 第十六步：如何搭建实盘交易系统？
+            </h2>
+
+            <p class="lead">
+                实盘系统和回测系统的最大区别在于：
+                回测可以重新运行，实盘则需要面对真实资金、真实订单和真实故障。
+            </p>
+
+            <h3>
+                19.1 实盘系统的核心模块
+            </h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                模块
+                            </th>
+
+                            <th>
+                                主要职责
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                Market Data
+                            </td>
+
+                            <td>
+                                接收实时行情和交易状态
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Strategy Engine
+                            </td>
+
+                            <td>
+                                根据数据生成信号
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Portfolio Engine
+                            </td>
+
+                            <td>
+                                计算目标持仓和资金分配
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Risk Engine
+                            </td>
+
+                            <td>
+                                检查单笔、单股、组合和账户风险
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Order Manager
+                            </td>
+
+                            <td>
+                                创建、提交、撤销和跟踪订单
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Broker Gateway
+                            </td>
+
+                            <td>
+                                对接券商或交易 API
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Position Manager
+                            </td>
+
+                            <td>
+                                维护持仓、现金和成交状态
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Reconciliation
+                            </td>
+
+                            <td>
+                                对比系统记录与券商实际账户
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                Monitoring
+                            </td>
+
+                            <td>
+                                日志、指标、告警和故障监控
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                19.2 为什么需要订单管理器？
+            </h3>
+
+            <p>
+                不能简单地在策略中写：
+            </p>
+
+            <pre>
+if signal:
+    broker.buy(symbol, quantity)
+        </pre>
+
+            <p>
+                因为真实交易中，订单存在多个状态：
+            </p>
+
+            <div class="formula">
+
+                CREATED
+
+                →
+                SUBMITTED
+
+                →
+                ACCEPTED
+
+                →
+                PARTIALLY_FILLED
+
+                →
+                FILLED
+
+                <br><br>
+
+                或：
+
+                REJECTED / CANCELLED / FAILED
+
+            </div>
+
+            <p>
+                订单管理器需要记录：
+            </p>
+
+            <ul>
+
+                <li>
+                    客户端订单 ID
+                </li>
+
+                <li>
+                    券商订单 ID
+                </li>
+
+                <li>
+                    股票代码
+                </li>
+
+                <li>
+                    买卖方向
+                </li>
+
+                <li>
+                    委托数量
+                </li>
+
+                <li>
+                    成交数量
+                </li>
+
+                <li>
+                    委托价格
+                </li>
+
+                <li>
+                    成交均价
+                </li>
+
+                <li>
+                    订单状态
+                </li>
+
+                <li>
+                    创建时间和更新时间
+                </li>
+
+            </ul>
+
+            <h3>
+                19.3 风控必须在订单发送之前
+            </h3>
+
+            <p>
+                一个合理的实盘链路应该是：
+            </p>
+
+            <div class="formula">
+
+                策略信号
+
+                →
+                目标持仓
+
+                →
+                风控检查
+
+                →
+                生成订单
+
+                →
+                订单检查
+
+                →
+                券商接口
+
+                →
+                成交回报
+
+            </div>
+
+            <p>
+                风控可以检查：
+            </p>
+
+            <ul>
+
+                <li>
+                    是否超过单只股票最大仓位？
+                </li>
+
+                <li>
+                    是否超过账户最大使用资金？
+                </li>
+
+                <li>
+                    是否处于禁止交易时间？
+                </li>
+
+                <li>
+                    股票是否停牌或不可交易？
+                </li>
+
+                <li>
+                    是否超过每日最大交易金额？
+                </li>
+
+                <li>
+                    是否出现异常订单数量？
+                </li>
+
+                <li>
+                    是否存在重复下单？
+                </li>
+
+                <li>
+                    是否与当前实际持仓冲突？
+                </li>
+
+            </ul>
+
+            <div class="warning">
+
+                <p>
+                    <strong>重要：</strong>
+                    自动交易系统必须具备停止交易、撤单和人工接管机制。
+                    任何策略都不应该拥有不受限制的下单权限。
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                20. 第十七步：推荐的 Python 项目结构
+            </h2>
+
+            <p class="lead">
+                如果以你现在的 STOCK LAB 为基础继续扩展，
+                我建议把量化研究作为独立的业务模块，
+                不要把因子、回测和实盘逻辑全部塞进现有行情接口中。
+            </p>
+
+            <p>
+                一个适合逐步演进的结构可以是：
+            </p>
+
+            <div class="folder-tree">
+                stock-analysis/
+                │
+                ├── gateways/ # 数据源与交易网关
+                │ ├── base.py
+                │ ├── manager.py
+                │ ├── registry.py
+                │ ├── yinhe/
+                │ ├── akshare/
+                │ ├── tdx/
+                │ └── tencent/
+                │
+                ├── models/ # 领域模型
+                │ ├── market.py
+                │ ├── financial.py
+                │ ├── valuation.py
+                │ ├── factor.py
+                │ ├── signal.py
+                │ ├── portfolio.py
+                │ ├── order.py
+                │ └── backtest.py
+                │
+                ├── quant/ # 量化核心模块
+                │ │
+                │ ├── data/ # 量化数据接口与数据集
+                │ │ ├── loader.py
+                │ │ ├── universe.py
+                │ │ ├── dataset.py
+                │ │ └── calendar.py
+                │ │
+                │ ├── factors/ # 因子计算
+                │ │ ├── base.py
+                │ │ ├── technical.py
+                │ │ ├── value.py
+                │ │ ├── quality.py
+                │ │ ├── growth.py
+                │ │ ├── momentum.py
+                │ │ └── risk.py
+                │ │
+                │ ├── strategies/ # 策略
+                │ │ ├── base.py
+                │ │ ├── trend.py
+                │ │ ├── momentum.py
+                │ │ ├── mean_reversion.py
+                │ │ └── multi_factor.py
+                │ │
+                │ ├── portfolio/ # 组合构建
+                │ │ ├── allocator.py
+                │ │ ├── optimizer.py
+                │ │ ├── constraints.py
+                │ │ └── rebalancer.py
+                │ │
+                │ ├── backtest/ # 回测引擎
+                │ │ ├── engine.py
+                │ │ ├── broker.py
+                │ │ ├── execution.py
+                │ │ ├── costs.py
+                │ │ ├── account.py
+                │ │ └── analyzers.py
+                │ │
+                │ ├── execution/ # 实盘执行
+                │ │ ├── broker.py
+                │ │ ├── order_manager.py
+                │ │ ├── position_manager.py
+                │ │ └── reconciliation.py
+                │ │
+                │ ├── risk/ # 风控
+                │ │ ├── rules.py
+                │ │ ├── limits.py
+                │ │ └── monitor.py
+                │ │
+                │ └── research/ # 研究分析
+                │ ├── factor_test.py
+                │ ├── performance.py
+                │ ├── walk_forward.py
+                │ └── reports.py
+                │
+                ├── tasks/ # 数据获取、计算、报告任务
+                │ ├── fetch_market.py
+                │ ├── fetch_financial.py
+                │ ├── calculate_factors.py
+                │ └── run_backtest.py
+                │
+                ├── notebooks/ # 研究实验
+                │ ├── factor_research/
+                │ ├── strategy_research/
+                │ └── reports/
+                │
+                ├── data/ # 本地缓存或数据存储
+                │ ├── raw/
+                │ ├── processed/
+                │ └── backtest/
+                │
+                ├── tests/
+                │ ├── gateways/
+                │ ├── quant/
+                │ │ ├── factors/
+                │ │ ├── strategies/
+                │ │ ├── backtest/
+                │ │ └── portfolio/
+                │ └── execution/
+                │
+                └── service/
+                └── api.py
+            </div>
+
+            <h3>
+                20.1 为什么这样分层？
+            </h3>
+
+            <p>
+                核心原因是：
+                <strong>不同模块的变化速度不同。</strong>
+            </p>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                模块
+                            </th>
+
+                            <th>
+                                变化特点
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                数据网关
+                            </td>
+
+                            <td>
+                                数据供应商可能变化，需要统一接口
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                因子
+                            </td>
+
+                            <td>
+                                研究者会持续增加和修改
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                策略
+                            </td>
+
+                            <td>
+                                研究假设变化频繁
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                回测引擎
+                            </td>
+
+                            <td>
+                                应保持稳定，避免每个策略重复实现资金逻辑
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                实盘执行
+                            </td>
+
+                            <td>
+                                需要高稳定性和严格测试
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                前端
+                            </td>
+
+                            <td>
+                                展示研究结果、回测报告和交易状态
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                20.2 因子接口可以怎么设计？
+            </h3>
+
+            <p>
+                因子最好具有统一的输入和输出形式。
+            </p>
+
+            <p>
+                例如：
+            </p>
+
+            <pre>
+from abc import ABC, abstractmethod
+
+import pandas as pd
+
+
+class Factor(ABC):
+
+    name: str
+
+    @abstractmethod
+    def calculate(
+        self,
+        data: pd.DataFrame,
+    ) -> pd.Series:
+        """Calculate factor values."""
+        raise NotImplementedError
+        </pre>
+
+            <p>
+                然后具体因子实现：
+            </p>
+
+            <pre>
+class Momentum20Factor(Factor):
+
+    name = "momentum_20"
+
+    def calculate(
+        self,
+        data: pd.DataFrame,
+    ) -> pd.Series:
+
+        close = data["close"]
+
+        return close / close.shift(20) - 1
+        </pre>
+
+            <p>
+                这样策略只需要知道：
+            </p>
+
+            <pre>
+momentum = momentum_factor.calculate(data)
+        </pre>
+
+            <p>
+                而不需要知道因子的具体计算细节。
+            </p>
+
+            <h3>
+                20.3 策略接口可以怎么设计？
+            </h3>
+
+            <pre>
+from abc import ABC, abstractmethod
+
+import pandas as pd
+
+
+class Strategy(ABC):
+
+    name: str
+
+    @abstractmethod
+    def generate_signals(
+        self,
+        data: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """Generate strategy signals."""
+        raise NotImplementedError
+        </pre>
+
+            <p>
+                这里的重点不是具体代码，而是接口职责：
+            </p>
+
+            <ul>
+
+                <li>
+                    因子负责计算特征。
+                </li>
+
+                <li>
+                    策略负责生成信号。
+                </li>
+
+                <li>
+                    组合负责计算目标权重。
+                </li>
+
+                <li>
+                    回测引擎负责模拟交易。
+                </li>
+
+            </ul>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                21. 第十八步：一个最小量化系统的开发路线
+            </h2>
+
+            <p class="lead">
+                不建议一开始就开发一个包含机器学习、自动交易、组合优化和复杂回测的庞大系统。
+                更合理的方法是先做出一个能够验证完整闭环的 MVP。
+            </p>
+
+            <h3>
+                阶段一：数据与指标
+            </h3>
+
+            <div class="step">
+
+                <div class="step-number">
+                    01
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        获取历史日线
+                    </strong>
+
+                    <p>
+                        先支持一批股票的 OHLCV 数据。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    02
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        统一数据格式
+                    </strong>
+
+                    <p>
+                        统一 symbol、trade_date、open、high、low、close、volume、amount。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    03
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        计算基础指标
+                    </strong>
+
+                    <p>
+                        实现 MA、收益率、波动率、成交量比率等。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <h3>
+                阶段二：单策略回测
+            </h3>
+
+            <div class="step">
+
+                <div class="step-number">
+                    04
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        实现一个简单策略
+                    </strong>
+
+                    <p>
+                        例如 MA20 / MA60 趋势策略。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    05
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        实现单股票回测
+                    </strong>
+
+                    <p>
+                        模拟持仓、收益、净值和交易记录。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    06
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        加入交易成本
+                    </strong>
+
+                    <p>
+                        让回测结果从毛收益转向更接近净收益。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <h3>
+                阶段三：多股票量化选股
+            </h3>
+
+            <div class="step">
+
+                <div class="step-number">
+                    07
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        建立股票池
+                    </strong>
+
+                    <p>
+                        支持指定市场、行业、上市时间和交易状态筛选。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    08
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        实现横截面因子排序
+                    </strong>
+
+                    <p>
+                        例如按动量、PE、ROE 对股票排序。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    09
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        实现组合构建
+                    </strong>
+
+                    <p>
+                        支持等权、最大持仓数和单只股票权重限制。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <h3>
+                阶段四：研究质量
+            </h3>
+
+            <div class="step">
+
+                <div class="step-number">
+                    10
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        加入样本外测试
+                    </strong>
+
+                    <p>
+                        将研究区间与测试区间分开。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    11
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        加入 Walk-forward
+                    </strong>
+
+                    <p>
+                        检查策略在滚动时间窗口中的稳定性。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    12
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        加入因子分析报告
+                    </strong>
+
+                    <p>
+                        展示 IC、分组收益、换手率、回撤和行业暴露。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <h3>
+                阶段五：模拟盘与实盘
+            </h3>
+
+            <div class="step">
+
+                <div class="step-number">
+                    13
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        统一信号和目标持仓接口
+                    </strong>
+
+                    <p>
+                        让回测和模拟盘尽量使用相同策略逻辑。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    14
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        增加订单管理和风控
+                    </strong>
+
+                    <p>
+                        处理订单状态、资金限制、重复下单和异常情况。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    15
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        模拟盘验证
+                    </strong>
+
+                    <p>
+                        在不承担真实资金风险的情况下检查整个交易链路。
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="step">
+
+                <div class="step-number">
+                    16
+                </div>
+
+                <div class="step-content">
+
+                    <strong>
+                        小规模实盘
+                    </strong>
+
+                    <p>
+                        仅在策略、系统和风险控制经过充分验证后考虑。
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                22. 第十九步：机器学习与 AI 如何接入？
+            </h2>
+
+            <p class="lead">
+                机器学习可以成为量化系统的一部分，
+                但它不是量化系统的起点，也不是策略有效的保证。
+            </p>
+
+            <h3>
+                22.1 传统量化与机器学习量化的区别
+            </h3>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                方式
+                            </th>
+
+                            <th>
+                                规则来源
+                            </th>
+
+                            <th>
+                                典型示例
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>
+                                规则型量化
+                            </td>
+
+                            <td>
+                                研究者明确编写规则
+                            </td>
+
+                            <td>
+                                MA 金叉、低 PE、高 ROE
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                统计型量化
+                            </td>
+
+                            <td>
+                                根据统计关系构建模型
+                            </td>
+
+                            <td>
+                                回归、协整、因子模型
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                机器学习量化
+                            </td>
+
+                            <td>
+                                从历史特征中学习预测关系
+                            </td>
+
+                            <td>
+                                预测未来收益、分类涨跌、排序股票
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>
+                                深度学习量化
+                            </td>
+
+                            <td>
+                                使用神经网络学习复杂非线性关系
+                            </td>
+
+                            <td>
+                                时序模型、Transformer、多模态模型
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <h3>
+                22.2 机器学习量化的基本流程
+            </h3>
+
+            <div class="formula">
+
+                历史数据
+
+                →
+                特征工程
+
+                →
+                标签构建
+
+                →
+                训练集
+
+                →
+                模型训练
+
+                →
+                验证集
+
+                →
+                样本外预测
+
+                →
+                组合构建
+
+                →
+                回测
+
+            </div>
+
+            <h3>
+                22.3 特征与标签
+            </h3>
+
+            <p>
+                例如，使用过去 20 日动量、波动率、成交量和估值作为特征，
+                预测未来 20 日收益。
+            </p>
+
+            <pre>
+features = [
+    "momentum_20",
+    "volatility_20",
+    "volume_ratio_20",
+    "pe_ttm",
+    "roe",
+]
+
+target = "future_return_20"
+        </pre>
+
+            <p>
+                这里最重要的原则是：
+                <strong>特征只能使用预测时点已经知道的信息，标签可以来自未来，但不能泄漏回特征。</strong>
+            </p>
+
+            <h3>
+                22.4 为什么 AI 不应该直接决定买卖？
+            </h3>
+
+            <p>
+                在实际量化系统中，
+                AI 更适合先作为研究和辅助分析模块，例如：
+            </p>
+
+            <ul>
+
+                <li>
+                    财报文本结构化。
+                </li>
+
+                <li>
+                    新闻事件分类。
+                </li>
+
+                <li>
+                    管理层表述变化分析。
+                </li>
+
+                <li>
+                    研究假设生成。
+                </li>
+
+                <li>
+                    因子解释与研究报告生成。
+                </li>
+
+                <li>
+                    异常数据检测。
+                </li>
+
+                <li>
+                    策略代码辅助开发。
+                </li>
+
+            </ul>
+
+            <p>
+                如果让 AI 直接生成真实订单，
+                则必须经过严格的信号约束、风控和人工授权机制。
+            </p>
+
+            <div class="summary-box">
+
+                <p>
+                    <strong>
+                        AI 可以帮助理解数据和生成研究假设，
+                        但交易决策仍然需要可验证的规则、风险限制和执行控制。
+                    </strong>
+                </p>
+
+            </div>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                23. 量化系统中最重要的工程原则
+            </h2>
+
+            <h3>
+                原则一：先保证数据正确，再追求策略复杂
+            </h3>
+
+            <p>
+                数据错误会污染整个研究链路。
+                先解决数据时间、复权、重复、缺失和可用性问题，
+                通常比增加一个新指标更重要。
+            </p>
+
+            <h3>
+                原则二：研究逻辑与交易执行分离
+            </h3>
+
+            <p>
+                策略只负责产生信号或目标持仓，
+                不应该直接管理所有券商接口细节。
+            </p>
+
+            <h3>
+                原则三：回测和实盘尽量共享核心逻辑
+            </h3>
+
+            <p>
+                如果回测使用一套策略代码，实盘又重新手写一套，
+                两者很容易出现行为不一致。
+            </p>
+
+            <h3>
+                原则四：每个结果都应该可以追溯
+            </h3>
+
+            <p>
+                一份回测报告应该能够回答：
+            </p>
+
+            <ul>
+
+                <li>
+                    使用了什么数据？
+                </li>
+
+                <li>
+                    数据截至什么日期？
+                </li>
+
+                <li>
+                    使用了哪些参数？
+                </li>
+
+                <li>
+                    使用了什么股票池？
+                </li>
+
+                <li>
+                    使用了什么交易成本？
+                </li>
+
+                <li>
+                    使用了什么成交规则？
+                </li>
+
+                <li>
+                    使用了哪个版本的策略代码？
+                </li>
+
+            </ul>
+
+            <h3>
+                原则五：不要把历史收益当作未来承诺
+            </h3>
+
+            <p>
+                回测只能说明：
+                在给定数据、规则和假设下，历史上发生了什么。
+            </p>
+
+            <p>
+                它不能保证未来收益，
+                也不能消除市场结构变化、交易成本变化和模型失效风险。
+            </p>
+
+
+            <!-- ========================================================= -->
+
+            <h2>
+                24. 量化分析总结
+            </h2>
+
+            <p class="lead">
+                一个完整的量化系统，本质上是一个将投资研究流程工程化的系统。
+            </p>
+
+            <div class="summary-box">
+
+                <ul>
+
+                    <li>
+                        <strong>数据层：</strong>
+                        获取、清洗、标准化和存储历史与实时数据。
+                    </li>
+
+                    <li>
+                        <strong>因子层：</strong>
+                        将价格、财务和其他信息转换成可研究的特征。
+                    </li>
+
+                    <li>
+                        <strong>策略层：</strong>
+                        根据因子或规则生成选股、买卖和目标持仓信号。
+                    </li>
+
+                    <li>
+                        <strong>组合层：</strong>
+                        决定股票权重、仓位、资金分配和风险暴露。
+                    </li>
+
+                    <li>
+                        <strong>回测层：</strong>
+                        模拟历史交易、成交、费用、账户和净值变化。
+                    </li>
+
+                    <li>
+                        <strong>评估层：</strong>
+                        分析收益、回撤、波动率、换手率和策略稳定性。
+                    </li>
+
+                    <li>
+                        <strong>执行层：</strong>
+                        将目标持仓转化为订单，并处理真实成交与异常。
+                    </li>
+
+                    <li>
+                        <strong>风控层：</strong>
+                        限制仓位、资金、订单和系统风险。
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <p>
+                如果把整个过程压缩成一句话：
+            </p>
+
+            <div class="formula">
+
+                数据
+
+                →
+                因子
+
+                →
+                策略
+
+                →
+                组合
+
+                →
+                回测
+
+                →
+                风险评估
+
+                →
+                模拟盘
+
+                →
+                实盘
+
+            </div>
+
+            <p>
+                真正值得长期建设的量化平台，
+                不是“拥有多少个指标”，
+                而是能否让研究过程具备：
+            </p>
+
+            <ul>
+
+                <li>
+                    可重复
+                </li>
+
+                <li>
+                    可验证
+                </li>
+
+                <li>
+                    可回测
+                </li>
+
+                <li>
+                    可解释
+                </li>
+
+                <li>
+                    可维护
+                </li>
+
+                <li>
+                    可扩展
+                </li>
+
+                <li>
+                    可安全执行
+                </li>
+
+            </ul>
+
+            <p>
+                对 STOCK LAB 而言，
+                未来可以逐步从“股票数据与研究展示平台”，
+                演进为一个包含
+                <strong>数据研究、因子实验、策略回测、组合分析和交易管理</strong>
+                的完整投资研究工作台。
+            </p>
+
+
+            <!-- ========================================================= -->
+
+            <div class="footer-note">
+
+                <p>
+                    STOCK LAB · 量化分析学习文档
+                </p>
+
+                <p>
+                    本文用于量化研究与系统设计学习。
+                    历史回测结果不代表未来收益，
+                    量化策略仍然面临模型风险、数据风险、执行风险和市场环境变化风险。
+                </p>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</body>
+
+</html>
