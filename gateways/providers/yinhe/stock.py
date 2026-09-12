@@ -18,9 +18,6 @@ class YinheStock:
     def __init__(self, gateway):
         self.gateway = gateway
 
-        # 内存中的股票名称缓存，主要用于快速读取名称
-        self._stock_name_cache: dict[str, str] = {}
-
         # 本地文件缓存
         self._stock_cache = FileCache[Stock](
             path=get_cache_path(
@@ -28,9 +25,58 @@ class YinheStock:
                 name="stock_basic",
             ),
             ttl_days=90,
-            serializer=self._stock_to_dict,
-            deserializer=self._stock_from_dict,
+            serializer=Stock.to_dict,
+            deserializer=Stock.from_dict,
         )
+
+    @staticmethod
+    def _parse_date(value) -> date | None:
+        """
+        将数据源日期转换为 date。
+        """
+        if value is None:
+            return None
+
+        if isinstance(value, date):
+            return value
+
+        value = str(value).strip()
+
+        if not value or value == "-":
+            return None
+
+        # 兼容 20210827
+        if len(value) == 8 and value.isdigit():
+            return date(
+                int(value[:4]),
+                int(value[4:6]),
+                int(value[6:8]),
+            )
+
+        # 兼容 2021-08-27
+        return date.fromisoformat(value)
+
+    @staticmethod
+    def _clean_value(value):
+        """
+        清理数据源中的空值。
+        """
+        if value is None:
+            return None
+
+        # 兼容 pandas NaN
+        try:
+            if value != value:
+                return None
+        except Exception:
+            pass
+
+        value = str(value).strip()
+
+        if not value or value == "-":
+            return None
+
+        return value
 
     def fetch_stock(
         self,
@@ -72,11 +118,6 @@ class YinheStock:
 
             if cached_stock is not None:
                 stocks.append(cached_stock)
-
-                # 同步名称缓存
-                if cached_stock.name and cached_stock.name != "-":
-                    self._stock_name_cache[cached_stock.symbol] = cached_stock.name
-
             else:
                 missing_symbols.append(symbol)
 
@@ -96,20 +137,28 @@ class YinheStock:
             # 5. 解析数据源返回结果
             for _, row in stock_basic.iterrows():
 
-                symbol = row.get("MARKET_CODE") or "-"
-                stock_name = row.get("SECURITY_NAME") or "-"
+                symbol = self._clean_value(row.get("MARKET_CODE"))
 
-                exchange = get_exchange(symbol) if symbol != "-" else "-"
+                if symbol is None:
+                    continue
+
+                stock_name = self._clean_value(row.get("SECURITY_NAME"))
+
+                exchange = get_exchange(symbol)
 
                 stock = Stock(
                     symbol=symbol,
                     name=stock_name,
-                    company_name=row.get("COMP_NAME") or "-",
+                    company_name=self._clean_value(row.get("COMP_NAME")),
                     exchange=exchange,
-                    market=row.get("LISTPLATE_NAME") or "-",
-                    listing_date=row.get("LISTDATE") or "-",
-                    delisting_date=row.get("DELISTDATE") or "-",
-                    listed_status=row.get("IS_LISTED") or "-",
+                    market=self._clean_value(row.get("LISTPLATE_NAME")),
+                    listing_date=self._parse_date(row.get("LISTDATE")),
+                    delisting_date=self._parse_date(row.get("DELISTDATE")),
+                    listed_status=(
+                        bool(row.get("IS_LISTED"))
+                        if self._clean_value(row.get("IS_LISTED")) is not None
+                        else None
+                    ),
                     source=self.gateway.display_name,
                 )
 
@@ -119,10 +168,6 @@ class YinheStock:
                     value=stock,
                 )
 
-                # 7. 同步内存名称缓存
-                if stock.name and stock.name != "-":
-                    self._stock_name_cache[stock.symbol] = stock.name
-
                 stocks.append(stock)
 
             return stocks
@@ -130,147 +175,3 @@ class YinheStock:
         except Exception as e:
             print(f"[银河网关] 获取股票信息失败 " f"{missing_symbols}: {e}")
             return stocks
-
-    def fetch_stock_by_name(
-        self,
-        name: str,
-    ) -> Optional[Stock]:
-        """
-        根据股票名称获取股票基础信息。
-
-        当前实现需要数据源支持按名称查询。
-        """
-        self.gateway._ensure_started()
-
-        if not name:
-            return None
-
-        try:
-            stock_basic = self.gateway.info_data.get_stock_basic_by_name(
-                name,
-            )
-
-            if stock_basic is None or stock_basic.empty:
-                return None
-
-            row = stock_basic.iloc[0]
-
-            symbol = row.get("MARKET_CODE") or "-"
-            stock_name = row.get("SECURITY_NAME") or "-"
-
-            stock = Stock(
-                symbol=symbol,
-                name=stock_name,
-                company_name=row.get("COMP_NAME") or "-",
-                exchange=(get_exchange(symbol) if symbol != "-" else "-"),
-                market=row.get("LISTPLATE_NAME") or "-",
-                listing_date=row.get("LISTDATE") or "-",
-                delisting_date=row.get("DELISTDATE") or "-",
-                listed_status=row.get("IS_LISTED") or "-",
-                source=self.gateway.display_name,
-            )
-
-            if stock.symbol != "-":
-                self._stock_cache.set(
-                    key=stock.symbol,
-                    value=stock,
-                )
-
-            if stock.name and stock.name != "-":
-                self._stock_name_cache[stock.symbol] = stock.name
-
-            return stock
-
-        except Exception as e:
-            print(f"[银河网关] 根据名称获取股票信息失败 " f"{name}: {e}")
-            return None
-
-    def fetch_stock_name(
-        self,
-        symbol: str,
-    ) -> str:
-        """
-        获取股票名称。
-        """
-
-        formatted_symbol = normalize_symbol(symbol)
-
-        # 1. 先查内存名称缓存
-        cached_name = self._stock_name_cache.get(
-            formatted_symbol,
-        )
-
-        if cached_name:
-            return cached_name
-
-        # 2. 再查 Stock 文件缓存
-        cached_stock = self._stock_cache.get(
-            formatted_symbol,
-        )
-
-        if cached_stock is not None:
-            if cached_stock.name and cached_stock.name != "-":
-                self._stock_name_cache[formatted_symbol] = cached_stock.name
-
-                return cached_stock.name
-
-        # 3. 最后请求数据源
-        try:
-            self.gateway._ensure_started()
-
-            stock_basic = self.gateway.info_data.get_stock_basic(
-                [formatted_symbol],
-            )
-
-            if stock_basic is None or stock_basic.empty:
-                return "未知名称"
-
-            row = stock_basic.iloc[0]
-            stock_name = row.get("SECURITY_NAME") or "-"
-
-            if stock_name == "-":
-                return "未知名称"
-
-            self._stock_name_cache[formatted_symbol] = stock_name
-
-            return stock_name
-
-        except Exception as e:
-            print(f"[银河网关] 获取股票名称失败 " f"{formatted_symbol}: {e}")
-            return "获取失败"
-
-    @staticmethod
-    def _stock_to_dict(stock: Stock) -> dict:
-        """
-        将 Stock 对象序列化为 JSON 字典。
-        """
-
-        return {
-            "symbol": stock.symbol,
-            "name": stock.name,
-            "company_name": stock.company_name,
-            "exchange": stock.exchange,
-            "market": stock.market,
-            "listing_date": stock.listing_date,
-            "delisting_date": stock.delisting_date,
-            "listed_status": stock.listed_status,
-            "source": stock.source,
-        }
-
-    @staticmethod
-    def _stock_from_dict(data: dict) -> Stock:
-        """
-        将 JSON 字典反序列化为 Stock 对象。
-        """
-
-        return Stock(
-            symbol=data.get("symbol", "-"),
-            name=data.get("name", "-"),
-            company_name=data.get("company_name", "-"),
-            exchange=data.get("exchange", "-"),
-            market=data.get("market", "-"),
-            listing_date=data.get("listing_date", "-"),
-            delisting_date=data.get("delisting_date", "-"),
-            listed_status=data.get("listed_status", "-"),
-            source=data.get("source", "-"),
-        )

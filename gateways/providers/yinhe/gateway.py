@@ -311,34 +311,6 @@ class YinheGateway(StockDataGateway):
         """
         return self.stock.fetch_stocks(symbols)
 
-    def fetch_stock_by_name(
-        self,
-        name: str,
-    ) -> Stock:
-        """
-        根据股票名称获取股票基础信息。
-
-        当前返回：
-
-            {
-                "symbol": "...",
-                "name": "..."
-            }
-        """
-        return self.stock.fetch_stock_by_name(name)
-
-    def fetch_stock_name(
-        self,
-        symbol: str,
-    ) -> str:
-        """
-        获取股票名称。
-
-        这是银河数据源内部辅助方法，
-        不属于 StockDataGateway 统一接口。
-        """
-        return self.stock.fetch_stock_name(symbol)
-
     def fetch_quote(
         self,
         symbol: str,

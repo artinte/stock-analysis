@@ -65,13 +65,6 @@ class StockDataGateway(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def fetch_stock_by_name(
-        self,
-        name: str,
-    ) -> Stock:
-        raise NotImplementedError
-
-    @abstractmethod
     def fetch_kline(
         self,
         symbol: str,

@@ -238,24 +238,6 @@ class TencentGateway(StockDataGateway):
 
             return None
 
-    def fetch_stock_name(
-        self,
-        symbol: str,
-    ) -> str:
-        """
-        获取股票名称。
-        """
-
-        stock = self.fetch_stock(symbol)
-
-        if not stock:
-            return "未知名称"
-
-        return stock.get(
-            "name",
-            "未知名称",
-        )
-
     # ==========================================================
     # 实时行情
     # ==========================================================

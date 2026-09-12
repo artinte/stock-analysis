@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
+
 from common.enums.exchange import Exchange
 from utils.stock_mapping import exchange_name
 
@@ -46,6 +47,66 @@ class Stock:
 
     # 数据来源
     source: str | None = None
+
+    def to_dict(self) -> dict:
+        """
+        将 Stock 对象转换为可 JSON 序列化的字典。
+        """
+        return {
+            "symbol": self.symbol,
+            "name": self.name,
+            "market": self.market,
+            "exchange": self.exchange.value if self.exchange else None,
+            "listing_date": (
+                self.listing_date.isoformat() if self.listing_date is not None else None
+            ),
+            "ipo_price": self.ipo_price,
+            "delisting_date": (
+                self.delisting_date.isoformat()
+                if self.delisting_date is not None
+                else None
+            ),
+            "listed_status": self.listed_status,
+            "company_name": self.company_name,
+            "source": self.source,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> Stock:
+        """
+        从字典恢复 Stock 对象。
+        """
+
+        listing_date = data.get("listing_date")
+        if listing_date and listing_date != "-":
+            listing_date = date.fromisoformat(listing_date)
+        else:
+            listing_date = None
+
+        delisting_date = data.get("delisting_date")
+        if delisting_date and delisting_date != "-":
+            delisting_date = date.fromisoformat(delisting_date)
+        else:
+            delisting_date = None
+
+        exchange = data.get("exchange")
+        if exchange and exchange != "-":
+            exchange = Exchange(exchange)
+        else:
+            exchange = None
+
+        return cls(
+            symbol=data.get("symbol", ""),
+            name=data.get("name"),
+            market=data.get("market"),
+            exchange=exchange,
+            listing_date=listing_date,
+            ipo_price=data.get("ipo_price"),
+            delisting_date=delisting_date,
+            listed_status=data.get("listed_status"),
+            company_name=data.get("company_name"),
+            source=data.get("source"),
+        )
 
     def display(self) -> None:
         """
