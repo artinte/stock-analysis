@@ -10,7 +10,6 @@
     <title>股票研究中心 - STOCK LAB</title>
 
     <link rel="stylesheet" href="../css/global.css">
-
     <link rel="stylesheet" href="../css/stock.css">
 
     <script src="../js/navigation.js"></script>
@@ -26,10 +25,7 @@
 ========================================================= -->
 
     <header class="topbar">
-
         <div class="topbar-inner">
-
-
             <!-- 品牌 -->
 
             <div class="brand" onclick="goHome('home')">
@@ -66,16 +62,13 @@
                     市场
                 </button>
 
-
                 <button class="nav-item active">
                     股票
                 </button>
 
-
                 <button class="nav-item" onclick="navigatePage('news')">
                     资讯
                 </button>
-
 
                 <button class="nav-item" onclick="navigatePage('research')">
                     AI研究
@@ -149,27 +142,18 @@
     ====================================================== -->
 
         <section class="stock-search-section">
-
-
             <div class="stock-section-header">
-
-
                 <div>
-
                     <div class="section-eyebrow">
                         STOCK SEARCH
                     </div>
-
-
                     <h2>
                         找到你想研究的股票
                     </h2>
                     <p>
                         输入股票名称、股票代码或关键词。
                     </p>
-
                 </div>
-
 
                 <span class="stock-section-count">
                     SEARCH
@@ -181,29 +165,16 @@
 
 
             <div class="stock-search-box">
-
-
                 <span class="stock-search-icon">
                     ⌕
                 </span>
-
-
                 <input id="stockSearch" type="text" autocomplete="off" placeholder="例如：贵州茅台、600519、半导体、人工智能">
-
-
                 <button id="stockSearchButton" type="button" onclick="searchStockPage()">
                     查询
                 </button>
-
-
             </div>
-
-
-
             <div id="stockSearchResults" class="stock-search-results">
             </div>
-
-
         </section>
 
 
@@ -215,39 +186,22 @@
     ====================================================== -->
 
         <section class="stock-section">
-
-
             <div class="stock-section-header">
-
-
                 <div>
-
                     <div class="section-eyebrow">
                         DISCOVER
                     </div>
-
-
                     <h2>
                         从不同方向发现股票
                     </h2>
-
-
                     <p>
                         不知道研究哪只股票？先从市场、行业和主题开始。
                     </p>
-
                 </div>
-
-
             </div>
 
-
-
             <div class="discover-grid">
-
-
                 <article class="discover-card discover-card-primary" onclick="scrollToScreening()">
-
                     <div class="discover-card-top">
 
                         <span class="discover-number">
@@ -259,7 +213,6 @@
                         </span>
 
                     </div>
-
 
                     <div class="discover-icon">
                         ◇
@@ -282,8 +235,6 @@
                     </strong>
 
                 </article>
-
-
 
                 <article class="discover-card" onclick="filterByCategory('technology')">
 
@@ -670,8 +621,6 @@
 
                 </div>
 
-
-
                 <div class="screening-actions">
 
                     <button class="screening-reset" type="button" onclick="resetScreening()">
@@ -688,8 +637,6 @@
 
 
             </div>
-
-
 
             <!-- 筛选结果 -->
 
@@ -708,8 +655,6 @@
                         </h3>
 
                     </div>
-
-
                     <span id="screeningCount">
                         12 RESULTS
                     </span>
@@ -725,10 +670,6 @@
 
 
         </section>
-
-
-
-
 
         <!-- =====================================================
          热门股票池
@@ -1795,14 +1736,9 @@
 
         ];
 
-
-
-
-
         /* =========================================================
            我的股票池
         ========================================================= */
-
         const WATCHLIST = [
 
             "600519",
@@ -1811,10 +1747,6 @@
             "300308"
 
         ];
-
-
-
-
 
         /* =========================================================
            页面导航
