@@ -63,6 +63,7 @@
                     首页
                 </button>
 
+
                 <button class="nav-item" data-page="market" onclick="navigatePage('market')">
                     市场
                 </button>
@@ -277,7 +278,7 @@
                     </h2>
 
                     <p>
-                        根据工具名称、研究方向或关键词快速筛选。
+                        根据工具名称、研究方向、网站或关键词快速筛选。
                     </p>
 
                 </div>
@@ -292,7 +293,7 @@
                 </span>
 
 
-                <input id="toolSearch" type="text" autocomplete="off" placeholder="搜索工具，例如：行业、估值、收益、K线、ETF...">
+                <input id="toolSearch" type="text" autocomplete="off" placeholder="搜索工具、网站、行业资料、专题...">
 
 
                 <button id="clearToolSearch" type="button">
@@ -331,6 +332,11 @@
 
                 <button class="tool-filter-item" data-filter="quant">
                     量化工具
+                </button>
+
+
+                <button class="tool-filter-item" data-filter="resource">
+                    研究资源
                 </button>
 
             </div>
@@ -374,9 +380,7 @@
             <div class="tool-grid">
 
 
-                <!-- =================================================
-                 01 股票研究
-            ================================================== -->
+                <!-- 01 -->
 
                 <article class="tool-card tool-card-featured" data-category="research"
                     data-keywords="股票研究 股票 行情 财务 估值 行业 新闻 公告" onclick="goHome('stock')">
@@ -436,9 +440,7 @@
                 </article>
 
 
-                <!-- =================================================
-                 02 行业查询
-            ================================================== -->
+                <!-- 02 -->
 
                 <article class="tool-card tool-card-featured" data-category="research"
                     data-keywords="行业 行业查询 股票行业 行业分类 所属行业 产业" onclick="openIndustry()">
@@ -497,9 +499,7 @@
                 </article>
 
 
-                <!-- =================================================
-                 03 估值分析
-            ================================================== -->
+                <!-- 03 -->
 
                 <article class="tool-card" data-category="analysis" data-keywords="估值 PE PB PS PEG 股息率 市值 估值分析">
 
@@ -557,9 +557,7 @@
                 </article>
 
 
-                <!-- =================================================
-                 04 技术分析
-            ================================================== -->
+                <!-- 04 -->
 
                 <article class="tool-card" data-category="analysis"
                     data-keywords="技术分析 技术指标 MA MACD RSI KDJ BOLL K线 趋势">
@@ -653,9 +651,7 @@
             <div class="tool-grid">
 
 
-                <!-- =================================================
-                 05 行情查询
-            ================================================== -->
+                <!-- 05 -->
 
                 <article class="tool-card" data-category="data" data-keywords="行情 实时行情 股票价格 行情查询 quote">
 
@@ -713,9 +709,7 @@
                 </article>
 
 
-                <!-- =================================================
-                 06 K线查询
-            ================================================== -->
+                <!-- 06 -->
 
                 <article class="tool-card" data-category="data" data-keywords="K线 日K 周K 月K 分钟K 历史行情 OHLC">
 
@@ -773,9 +767,7 @@
                 </article>
 
 
-                <!-- =================================================
-                 07 数据查询
-            ================================================== -->
+                <!-- 07 -->
 
                 <article class="tool-card" data-category="data" data-keywords="数据查询 财务 行情 行业 ETF 新闻 公告 API 数据源">
 
@@ -833,9 +825,7 @@
                 </article>
 
 
-                <!-- =================================================
-                 08 股票代码工具
-            ================================================== -->
+                <!-- 08 -->
 
                 <article class="tool-card" data-category="data" data-keywords="股票代码 代码转换 SH SZ BJ symbol code">
 
@@ -1168,6 +1158,596 @@
 
 
         <!-- =====================================================
+         研究资源
+    ====================================================== -->
+
+        <section class="tool-section research-resource-section">
+
+
+            <div class="tool-section-header">
+
+                <div>
+
+                    <div class="section-eyebrow">
+                        RESEARCH RESOURCES
+                    </div>
+
+                    <h2>
+                        研究资源
+                    </h2>
+
+                    <p>
+                        投资研究过程中常用的交易所、监管机构、行业协会与专题资料。
+                    </p>
+
+                </div>
+
+
+                <span class="tool-section-count">
+                    RESOURCES
+                </span>
+
+            </div>
+
+
+            <!-- =================================================
+             常用网站
+        ================================================== -->
+
+            <div class="resource-group">
+
+
+                <div class="resource-group-header">
+
+                    <div>
+
+                        <span class="resource-group-eyebrow">
+                            COMMON WEBSITES
+                        </span>
+
+                        <h3>
+                            常用网站
+                        </h3>
+
+                    </div>
+
+
+                    <span>
+                        01
+                    </span>
+
+                </div>
+
+
+                <div class="resource-grid">
+
+
+                    <!-- 证监会 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="证监会 中国证监会 监管 证券 监管机构"
+                        href="https://www.csrc.gov.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                监
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    中国证监会
+                                </h4>
+
+                                <p>
+                                    中国证券监督管理委员会
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 上交所 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="上海证券交易所 上交所 沪市 SSE 股票"
+                        href="https://www.sse.com.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                沪
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    上海证券交易所
+                                </h4>
+
+                                <p>
+                                    沪市证券交易与市场信息
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 深交所 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="深圳证券交易所 深交所 深市 SZSE 股票"
+                        href="https://www.szse.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                深
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    深圳证券交易所
+                                </h4>
+
+                                <p>
+                                    深市证券交易与市场信息
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 上期所 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="上海期货交易所 上期所 SHFE 期货 商品期货"
+                        href="https://www.shfe.com.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                期
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    上海期货交易所
+                                </h4>
+
+                                <p>
+                                    商品期货与衍生品市场资料
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 上海清算所 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="上海清算所 清算 结算 SHCH 金融市场"
+                        href="https://www.shclearing.com.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                清
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    上海清算所
+                                </h4>
+
+                                <p>
+                                    金融市场清算与结算信息
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 中证指数 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="中证指数 CSI 指数 中证 A500 指数体系"
+                        href="https://www.csindex.com.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                指
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    中证指数
+                                </h4>
+
+                                <p>
+                                    中证指数体系与指数资料
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 国证指数 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="国证指数 CNI 深圳证券信息 指数"
+                        href="https://www.cnindex.com.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                国
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    国证指数
+                                </h4>
+
+                                <p>
+                                    国证系列指数与指数资料
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+             行业资料
+        ================================================== -->
+
+            <div class="resource-group">
+
+
+                <div class="resource-group-header">
+
+                    <div>
+
+                        <span class="resource-group-eyebrow">
+                            INDUSTRY SOURCES
+                        </span>
+
+                        <h3>
+                            行业资料
+                        </h3>
+
+                    </div>
+
+
+                    <span>
+                        02
+                    </span>
+
+                </div>
+
+
+                <div class="resource-grid">
+
+
+                    <!-- 光伏 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="中国光伏行业协会 光伏 CPIA 光伏行业 产业链 组件 电池"
+                        href="https://www.chinapv.org.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                光
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    中国光伏行业协会
+                                </h4>
+
+                                <p>
+                                    光伏产业数据、政策与行业资料
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 工程机械 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="中国工程机械工业协会 工程机械 挖掘机 装载机 工程机械行业"
+                        href="https://www.cncma.org/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                机
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    中国工程机械工业协会
+                                </h4>
+
+                                <p>
+                                    工程机械行业数据与产业资料
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 畜牧 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="中国畜牧业协会 畜牧 饲料 氨基酸 猪 鸡 养殖 原料价格"
+                        href="https://www.caaa.cn/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                农
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    中国畜牧业协会
+                                </h4>
+
+                                <p>
+                                    畜牧产业、饲料与行业市场资料
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+             专题资料
+        ================================================== -->
+
+            <div class="resource-group">
+
+
+                <div class="resource-group-header">
+
+                    <div>
+
+                        <span class="resource-group-eyebrow">
+                            SPECIAL TOPICS
+                        </span>
+
+                        <h3>
+                            专题资料
+                        </h3>
+
+                    </div>
+
+
+                    <span>
+                        03
+                    </span>
+
+                </div>
+
+
+                <div class="resource-grid">
+
+
+                    <!-- 商业航天 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="商业航天 国家航天局 航天 政策 2025 2027 行动计划"
+                        href="https://www.cnsa.gov.cn/n6758823/n6758839/c10719382/content.html" target="_blank"
+                        rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                航
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    商业航天政策
+                                </h4>
+
+                                <p>
+                                    国家航天局商业航天行动计划
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 人民币汇率 -->
+
+                    <a class="resource-card" data-category="resource"
+                        data-keywords="人民币 汇率 美元 欧元 日元 外汇 Trading Economics"
+                        href="https://tradingeconomics.com/currency" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                ¥
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    人民币汇率
+                                </h4>
+
+                                <p>
+                                    人民币及主要货币汇率数据
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                    <!-- 光模块 -->
+
+                    <a class="resource-card" data-category="resource" data-keywords="光模块 光通信 华为 光纤 光器件 800G 400G"
+                        href="https://support.huaweicloud.com/" target="_blank" rel="noopener">
+
+                        <div class="resource-card-main">
+
+                            <span class="resource-icon">
+                                光
+                            </span>
+
+
+                            <div>
+
+                                <h4>
+                                    光模块专题
+                                </h4>
+
+                                <p>
+                                    光模块与光通信技术资料
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <span class="resource-arrow">
+                            ↗
+                        </span>
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
          工具能力说明
     ====================================================== -->
 
@@ -1337,13 +1917,6 @@
         }
 
 
-        // function goDocument() {
-
-        //     window.location.href =
-        //         `../document/`;
-
-        // }
-
         function goTrade() {
 
             window.location.href =
@@ -1367,12 +1940,14 @@
         const toolSearch =
             document.getElementById('toolSearch');
 
+
         const clearToolSearch =
             document.getElementById('clearToolSearch');
 
+
         const toolCards =
             document.querySelectorAll(
-                '.tool-card, .calculator-card'
+                '.tool-card, .calculator-card, .resource-card'
             );
 
 
