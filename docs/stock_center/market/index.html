@@ -2617,55 +2617,42 @@
         /* =========================================================
         页面导航
         ========================================================= */
+        function goHome(page = "home") {
+            window.location.href =
+                `../?page=${page}`;
+        }
+
+
 
         function navigatePage(page) {
-
             const routes = {
-
                 market: "../market",
-
                 stock: "../stock/",
-
                 news: "../news/",
-
                 research: "../research/",
-
                 trade: "../trade/",
-
                 tools: "../tools/",
-
                 document: "../document/"
 
             };
 
 
             if (page === "ai-chat") {
-
                 window.location.href =
                     "../?page=ai-chat";
-
                 return;
 
             }
 
-
             const url = routes[page];
-
-
             if (!url) {
-
                 console.error(
                     "未知页面:",
                     page
                 );
-
                 return;
-
             }
-
-
             window.location.href = url;
-
         }
 
 
@@ -2675,9 +2662,7 @@
         ========================================================= */
 
         function updateMarketTime() {
-
             const now = new Date();
-
             const date = now.toLocaleDateString(
                 "zh-CN",
                 {
