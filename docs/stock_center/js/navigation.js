@@ -8,7 +8,7 @@ function navigatePage(page) {
     const routes = {
 
         home: "../",
-        market: "../?page=market",
+        market: "../market",
         stock: "../stock/",
         news: "../news/",
         research: "../research/",

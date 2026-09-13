@@ -374,7 +374,7 @@
    市场研究
 ========================================================= */
 
-.market-grid {
+.home-grid {
 
     display: grid;
 
@@ -1364,7 +1364,7 @@
 
 @media (max-width: 1200px) {
 
-    .market-grid {
+    .home-grid {
 
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
@@ -1534,7 +1534,7 @@
     }
 
 
-    .market-grid {
+    .home-grid {
 
         grid-template-columns: 1fr;
 

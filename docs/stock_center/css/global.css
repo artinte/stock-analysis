@@ -410,7 +410,7 @@ textarea:focus-visible {
     font-size: 13px;
 }
 
-.market-status {
+.home-status {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -439,10 +439,10 @@ textarea:focus-visible {
 
 
 /* =========================================================
-   Market indices
+   home indices
 ========================================================= */
 
-.market-indices {
+.home-indices {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
 
@@ -458,13 +458,13 @@ textarea:focus-visible {
     margin-bottom: 18px;
 }
 
-.market-index {
+.home-index {
     padding: 19px 22px;
 
     border-right: 1px solid var(--line);
 }
 
-.market-index:last-child {
+.home-index:last-child {
     border-right: 0;
 }
 
@@ -529,10 +529,10 @@ textarea:focus-visible {
 
 
 /* =========================================================
-   Main market grid
+   Main home grid
 ========================================================= */
 
-.market-main-grid {
+.home-main-grid {
     display: grid;
     grid-template-columns: 1.35fr 1fr;
 
@@ -600,10 +600,10 @@ textarea:focus-visible {
 
 
 /* =========================================================
-   Market heat
+   home heat
 ========================================================= */
 
-.market-overview {
+.home-overview {
     padding: 25px 22px;
 
     display: flex;
@@ -611,11 +611,11 @@ textarea:focus-visible {
     gap: 38px;
 }
 
-.market-number {
+.home-number {
     min-width: 100px;
 }
 
-.market-number strong {
+.home-number strong {
     display: block;
 
     font-family:
@@ -630,7 +630,7 @@ textarea:focus-visible {
     font-weight: 650;
 }
 
-.market-number span {
+.home-number span {
     display: block;
 
     margin-top: 7px;
@@ -680,7 +680,7 @@ textarea:focus-visible {
     font-size: 10px;
 }
 
-.market-stats {
+.home-stats {
     padding: 15px 22px;
 
     display: grid;
@@ -689,21 +689,21 @@ textarea:focus-visible {
     border-top: 1px solid var(--line);
 }
 
-.market-stats div {
+.home-stats div {
     padding-right: 15px;
 
     border-right: 1px solid var(--line);
 }
 
-.market-stats div:not(:first-child) {
+.home-stats div:not(:first-child) {
     padding-left: 15px;
 }
 
-.market-stats div:last-child {
+.home-stats div:last-child {
     border-right: 0;
 }
 
-.market-stats strong {
+.home-stats strong {
     display: block;
 
     font-family:
@@ -715,7 +715,7 @@ textarea:focus-visible {
     font-size: 15px;
 }
 
-.market-stats span {
+.home-stats span {
     display: block;
 
     margin-top: 2px;
@@ -727,10 +727,10 @@ textarea:focus-visible {
 
 
 /* =========================================================
-   AI market panel
+   AI home panel
 ========================================================= */
 
-.ai-market-panel {
+.ai-home-panel {
     background:
         linear-gradient(135deg,
             #111827 0%,
@@ -741,15 +741,15 @@ textarea:focus-visible {
     color: #ffffff;
 }
 
-.ai-market-panel .panel-heading {
+.ai-home-panel .panel-heading {
     border-color: rgba(255, 255, 255, 0.08);
 }
 
-.ai-market-panel .panel-heading h2 {
+.ai-home-panel .panel-heading h2 {
     color: #ffffff;
 }
 
-.ai-market-panel .panel-heading span {
+.ai-home-panel .panel-heading span {
     color: #7f8da3;
 }
 
@@ -770,18 +770,18 @@ textarea:focus-visible {
     letter-spacing: 0.7px;
 }
 
-.ai-market-content {
+.ai-home-content {
     padding: 24px 22px 16px;
 }
 
-.ai-market-content h3 {
+.ai-home-content h3 {
     margin: 0 0 10px;
 
     font-size: 18px;
     font-weight: 650;
 }
 
-.ai-market-content p {
+.ai-home-content p {
     margin: 0;
 
     color: #aeb9c8;
@@ -2096,19 +2096,19 @@ textarea:focus-visible {
         margin-left: auto;
     }
 
-    .market-indices {
+    .home-indices {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .market-index:nth-child(2) {
+    .home-index:nth-child(2) {
         border-right: 0;
     }
 
-    .market-index:nth-child(-n + 2) {
+    .home-index:nth-child(-n + 2) {
         border-bottom: 1px solid var(--line);
     }
 
-    .market-main-grid,
+    .home-main-grid,
     .two-column {
         grid-template-columns: 1fr;
     }
@@ -2143,32 +2143,32 @@ textarea:focus-visible {
         flex-direction: column;
     }
 
-    .market-indices {
+    .home-indices {
         grid-template-columns: 1fr;
     }
 
-    .market-index {
+    .home-index {
         border-right: 0;
         border-bottom: 1px solid var(--line);
     }
 
-    .market-index:last-child {
+    .home-index:last-child {
         border-bottom: 0;
     }
 
-    .market-overview {
+    .home-overview {
         flex-direction: column;
         align-items: flex-start;
         gap: 18px;
     }
 
-    .market-stats {
+    .home-stats {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
     }
 
-    .market-stats div,
-    .market-stats div:not(:first-child) {
+    .home-stats div,
+    .home-stats div:not(:first-child) {
         padding: 0;
 
         border: 0;

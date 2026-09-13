@@ -1015,6 +1015,15 @@ app.mount(
     name="js",
 )
 
+app.mount(
+    "/market",
+    StaticFiles(
+        directory=FRONTEND_DIR / "market",
+        html=True,
+    ),
+    name="market",
+)
+
 
 app.mount(
     "/stock",

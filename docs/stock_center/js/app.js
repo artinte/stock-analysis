@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     bindAIInput();
 
     const params = new URLSearchParams(window.location.search);
-    const page = params.get("page") || "market";
+    const page = params.get("page") || "home";
 
     switchMainPage(page);
 
@@ -44,6 +44,7 @@ function switchMainPage(page) {
 
     const targetMap = {
 
+        "home": "homePage",
         "market": "marketPage",
         "stock": "stockPage",
         "news": "newsPage",
@@ -958,7 +959,7 @@ function renderIndex(index) {
         .split('.')[0];
 
     const card = document.querySelector(
-        `.market-index[data-index="${code}"]`
+        `.home-index[data-index="${code}"]`
     );
 
     if (!card) {
@@ -1091,7 +1092,7 @@ async function loadIndices() {
 
         const indexElements =
             document.querySelectorAll(
-                '.market-index[data-index]'
+                '.home-index[data-index]'
             );
 
         const symbols = Array.from(indexElements)
@@ -1190,6 +1191,11 @@ document.addEventListener(
 
 
 function navigateMainPage(page) {
+    if (page == 'market') {
+        window.location.href = './market';
+        return;
+    }
+
     if (page === 'stock') {
         window.location.href = './stock/';
         return;

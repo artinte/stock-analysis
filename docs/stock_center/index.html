@@ -20,7 +20,7 @@
 
         <div class="topbar-inner">
 
-            <div class="brand" onclick="switchMainPage('market')">
+            <div class="brand" onclick="switchMainPage('home')">
 
                 <div class="brand-mark">
                     S
@@ -41,7 +41,11 @@
 
             <nav class="main-nav">
 
-                <button class="nav-item active" data-page="market" onclick="switchMainPage('market')">
+                <button class="nav-item active" data-page="home" onclick="switchMainPage('home')">
+                    首页
+                </button>
+
+                <button class="nav-item" data-page="market" onclick="navigateMainPage('market')">
                     市场
                 </button>
 
@@ -114,14 +118,14 @@
      市场
 ========================================================= -->
 
-        <section id="marketPage" class="main-page">
+        <section id="homePage" class="main-page">
 
             <div class="page-heading">
 
                 <div>
 
                     <div class="page-eyebrow">
-                        MARKET OVERVIEW
+                        HOME OVERVIEW
                     </div>
 
                     <h1>
@@ -134,7 +138,7 @@
 
                 </div>
 
-                <div class="market-status">
+                <div class="home-status">
 
                     <span class="status-light"></span>
 
@@ -153,9 +157,9 @@
 
             <!-- ================= 指数 ================= -->
 
-            <section class="market-indices">
+            <section class="home-indices">
 
-                <div class="market-index" data-index="000001">
+                <div class="home-index" data-index="000001">
 
                     <div class="index-top">
                         <span class="index-name">上证指数</span>
@@ -174,7 +178,7 @@
                 </div>
 
 
-                <div class="market-index" data-index="399001">
+                <div class="home-index" data-index="399001">
 
                     <div class="index-top">
                         <span class="index-name">深证成指</span>
@@ -193,7 +197,7 @@
                 </div>
 
 
-                <div class="market-index" data-index="399006">
+                <div class="home-index" data-index="399006">
 
                     <div class="index-top">
                         <span class="index-name">创业板指</span>
@@ -212,7 +216,7 @@
                 </div>
 
 
-                <div class="market-index" data-index="000688">
+                <div class="home-index" data-index="000688">
 
                     <div class="index-top">
                         <span class="index-name">科创50</span>
@@ -235,18 +239,18 @@
 
             <!-- ================= 主行情区域 ================= -->
 
-            <section class="market-main-grid">
+            <section class="home-main-grid">
 
 
                 <!-- 左边 -->
 
-                <div class="panel market-panel">
+                <div class="panel home-panel">
 
                     <div class="panel-heading">
 
                         <div>
                             <h2>市场行情</h2>
-                            <span>MARKET DATA</span>
+                            <span>HOME DATA</span>
                         </div>
 
                         <button class="panel-action">
@@ -256,9 +260,9 @@
                     </div>
 
 
-                    <div class="market-overview">
+                    <div class="home-overview">
 
-                        <div class="market-number">
+                        <div class="home-number">
 
                             <strong>
                                 72
@@ -292,7 +296,7 @@
                     </div>
 
 
-                    <div class="market-stats">
+                    <div class="home-stats">
 
                         <div>
                             <strong class="positive">
@@ -336,7 +340,7 @@
 
                 <!-- 右边 AI -->
 
-                <div class="panel ai-market-panel">
+                <div class="panel ai-home-panel">
 
                     <div class="panel-heading">
 
@@ -348,7 +352,7 @@
                             </h2>
 
                             <span>
-                                AI MARKET INSIGHT
+                                AI HOME INSIGHT
                             </span>
 
                         </div>
@@ -360,7 +364,7 @@
                     </div>
 
 
-                    <div class="ai-market-content">
+                    <div class="ai-home-content">
 
                         <h3>
                             当前市场整体偏强

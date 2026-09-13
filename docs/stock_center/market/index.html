@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>STOCK LAB - 全球市场</title>
+
+    <meta name="description" content="STOCK LAB 全球金融市场数据中心">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* =========================================================
+           STOCK LAB - GLOBAL MARKET
+        ========================================================= */
+
+        .market-page {
+            min-height: 100vh;
+            background: #f5f6f8;
+            color: #17191c;
+        }
+
+        .market-container {
+            width: min(1440px, calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        /* =========================================================
+           Header
+        ========================================================= */
+
+        .market-header {
+            background: #ffffff;
+            border-bottom: 1px solid #e8e9ec;
+        }
+
+        .market-header-inner {
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .market-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .market-brand-mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: #111318;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .04em;
+        }
+
+        .market-brand-text {
+            line-height: 1.1;
+        }
+
+        .market-brand-title {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .08em;
+        }
+
+        .market-brand-subtitle {
+            margin-top: 4px;
+            font-size: 11px;
+            color: #8a8f98;
+            letter-spacing: .08em;
+        }
+
+        .market-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .market-nav a {
+            padding: 9px 13px;
+            border-radius: 7px;
+            text-decoration: none;
+            color: #666b74;
+            font-size: 13px;
+            transition: all .2s ease;
+        }
+
+        .market-nav a:hover {
+            color: #111318;
+            background: #f2f3f5;
+        }
+
+        .market-nav a.active {
+            color: #111318;
+            background: #eef0f3;
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           Hero
+        ========================================================= */
+
+        .market-hero {
+            padding: 42px 0 30px;
+        }
+
+        .market-hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 30px;
+        }
+
+        .market-kicker {
+            margin-bottom: 10px;
+            font-size: 11px;
+            color: #8b9099;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
+
+        .market-title {
+            margin: 0;
+            font-size: 34px;
+            line-height: 1.15;
+            letter-spacing: -.025em;
+            font-weight: 700;
+        }
+
+        .market-description {
+            margin: 12px 0 0;
+            color: #777c85;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .market-time {
+            text-align: right;
+            color: #888d96;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .market-time strong {
+            display: block;
+            color: #25282d;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           Market Status
+        ========================================================= */
+
+        .market-status {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 34px;
+        }
+
+        .status-card {
+            background: #ffffff;
+            border: 1px solid #e8e9ec;
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+
+        .status-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .status-card-label {
+            color: #858a93;
+            font-size: 12px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2e9b68;
+        }
+
+        .status-card-value {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.02em;
+        }
+
+        .status-card-desc {
+            margin-top: 5px;
+            color: #92969e;
+            font-size: 11px;
+        }
+
+        /* =========================================================
+           Section
+        ========================================================= */
+
+        .market-section {
+            margin-bottom: 38px;
+        }
+
+        .market-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 14px;
+        }
+
+        .market-section-title {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 700;
+            letter-spacing: -.01em;
+        }
+
+        .market-section-subtitle {
+            margin-top: 5px;
+            color: #92969e;
+            font-size: 11px;
+        }
+
+        .market-section-link {
+            color: #777c85;
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .market-section-link:hover {
+            color: #111318;
+        }
+
+        /* =========================================================
+           Market Grid
+        ========================================================= */
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .market-card {
+            background: #ffffff;
+            border: 1px solid #e7e8eb;
+            border-radius: 11px;
+            padding: 17px 18px;
+            transition:
+                transform .2s ease,
+                border-color .2s ease,
+                box-shadow .2s ease;
+        }
+
+        .market-card:hover {
+            transform: translateY(-2px);
+            border-color: #d8dbe0;
+            box-shadow: 0 8px 24px rgba(20, 24, 32, .05);
+        }
+
+        .market-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .market-card-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .market-card-symbol {
+            margin-top: 4px;
+            color: #999da5;
+            font-size: 10px;
+            letter-spacing: .03em;
+        }
+
+        .market-card-price {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -.025em;
+        }
+
+        .market-card-change {
+            margin-top: 5px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .market-card-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f1f3;
+            color: #969aa2;
+            font-size: 10px;
+        }
+
+        .up {
+            color: #d84a4a;
+        }
+
+        .down {
+            color: #25845b;
+        }
+
+        .flat {
+            color: #777c85;
+        }
+
+        /* =========================================================
+           Wide Cards
+        ========================================================= */
+
+        .market-grid-wide {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .wide-card {
+            background: #ffffff;
+            border: 1px solid #e7e8eb;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .wide-card-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 17px;
+        }
+
+        .wide-card-title strong {
+            font-size: 14px;
+        }
+
+        .wide-card-title span {
+            color: #999da5;
+            font-size: 10px;
+        }
+
+        .wide-main {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .wide-price {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -.03em;
+        }
+
+        .wide-change {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .wide-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .wide-stat {
+            padding: 10px;
+            background: #f7f8f9;
+            border-radius: 8px;
+        }
+
+        .wide-stat-label {
+            color: #999da5;
+            font-size: 10px;
+        }
+
+        .wide-stat-value {
+            margin-top: 5px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           Table
+        ========================================================= */
+
+        .market-table-wrap {
+            background: #ffffff;
+            border: 1px solid #e7e8eb;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .market-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .market-table th {
+            padding: 13px 16px;
+            background: #fafbfc;
+            border-bottom: 1px solid #e8e9ec;
+            color: #8c919a;
+            font-size: 10px;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .market-table th:first-child,
+        .market-table td:first-child {
+            text-align: left;
+        }
+
+        .market-table td {
+            padding: 15px 16px;
+            border-bottom: 1px solid #f0f1f3;
+            color: #34373c;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .market-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .instrument-name {
+            font-weight: 600;
+        }
+
+        .instrument-symbol {
+            margin-top: 3px;
+            color: #999da5;
+            font-size: 10px;
+        }
+
+        /* =========================================================
+           Commodity Highlight
+        ========================================================= */
+
+        .commodity-highlight {
+            display: grid;
+            grid-template-columns: 1.35fr 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .commodity-main {
+            position: relative;
+            overflow: hidden;
+            background: #17191d;
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .commodity-main::after {
+            content: "";
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            right: -50px;
+            bottom: -70px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 50%;
+        }
+
+        .commodity-main-label {
+            color: #aeb3bb;
+            font-size: 11px;
+        }
+
+        .commodity-main-name {
+            margin-top: 8px;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .commodity-main-price {
+            margin-top: 26px;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -.03em;
+        }
+
+        .commodity-main-change {
+            margin-top: 6px;
+            color: #d4d8dd;
+            font-size: 12px;
+        }
+
+        .commodity-card {
+            background: #ffffff;
+            border: 1px solid #e7e8eb;
+            border-radius: 12px;
+            padding: 18px;
+        }
+
+        .commodity-card-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .commodity-card-symbol {
+            margin-top: 4px;
+            color: #999da5;
+            font-size: 10px;
+        }
+
+        .commodity-card-price {
+            margin-top: 23px;
+            font-size: 21px;
+            font-weight: 700;
+        }
+
+        .commodity-card-change {
+            margin-top: 5px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           Watchlist
+        ========================================================= */
+
+        .watchlist {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+        }
+
+        .watch-item {
+            background: #ffffff;
+            border: 1px solid #e7e8eb;
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .watch-item-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .watch-item-symbol {
+            margin-top: 3px;
+            color: #999da5;
+            font-size: 9px;
+        }
+
+        .watch-item-price {
+            margin-top: 15px;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .watch-item-change {
+            margin-top: 4px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* =========================================================
+           Footer
+        ========================================================= */
+
+        .market-footer {
+            margin-top: 55px;
+            padding: 28px 0 45px;
+            border-top: 1px solid #e5e6e9;
+            color: #92969e;
+            font-size: 11px;
+        }
+
+        .market-footer-inner {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        /* =========================================================
+           Responsive
+        ========================================================= */
+
+        @media (max-width: 1100px) {
+
+            .market-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .market-grid-wide {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .commodity-highlight {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .watchlist {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+
+            .market-container {
+                width: min(100% - 28px, 680px);
+            }
+
+            .market-nav {
+                display: none;
+            }
+
+            .market-hero-top {
+                display: block;
+            }
+
+            .market-time {
+                margin-top: 15px;
+                text-align: left;
+            }
+
+            .market-status {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .market-grid,
+            .market-grid-wide,
+            .commodity-highlight {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .watchlist {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            .market-title {
+                font-size: 28px;
+            }
+
+            .market-status,
+            .market-grid,
+            .market-grid-wide,
+            .commodity-highlight,
+            .watchlist {
+                grid-template-columns: 1fr;
+            }
+
+            .wide-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .market-table-wrap {
+                overflow-x: auto;
+            }
+
+            .market-table {
+                min-width: 680px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="market-page">
+
+        <!-- =========================================================
+         Header
+    ========================================================== -->
+
+        <header class="market-header">
+
+            <div class="market-container market-header-inner">
+
+                <a href="../" class="market-brand" style="text-decoration:none;color:inherit;">
+
+                    <div class="market-brand-mark">
+                        SL
+                    </div>
+
+                    <div class="market-brand-text">
+
+                        <div class="market-brand-title">
+                            STOCK LAB
+                        </div>
+
+                        <div class="market-brand-subtitle">
+                            GLOBAL MARKET
+                        </div>
+
+                    </div>
+
+                </a>
+
+
+                <nav class="market-nav">
+
+                    <a href="../" class="active">
+                        市场
+                    </a>
+
+                    <a href="../stock/">
+                        股票
+                    </a>
+
+                    <a href="../news/">
+                        资讯
+                    </a>
+
+                    <a href="../research/">
+                        AI研究
+                    </a>
+
+                    <a href="../trade/">
+                        交易
+                    </a>
+
+                    <a href="../tools/">
+                        工具
+                    </a>
+
+                    <a href="../document/">
+                        学习文档
+                    </a>
+
+                </nav>
+
+            </div>
+
+        </header>
+
+
+        <main>
+
+            <!-- =====================================================
+             Hero
+        ====================================================== -->
+
+            <section class="market-hero">
+
+                <div class="market-container">
+
+                    <div class="market-hero-top">
+
+                        <div>
+
+                            <div class="market-kicker">
+                                GLOBAL FINANCIAL MARKETS
+                            </div>
+
+                            <h1 class="market-title">
+                                全球市场
+                            </h1>
+
+                            <p class="market-description">
+                                一站查看全球股票、指数、外汇、商品、期货与加密资产。
+                            </p>
+
+                        </div>
+
+
+                        <div class="market-time">
+
+                            <strong id="marketDate">
+                                2026-09-13
+                            </strong>
+
+                            <span id="marketTime">
+                                Market overview
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Market Status
+        ====================================================== -->
+
+            <section>
+
+                <div class="market-container">
+
+                    <div class="market-status">
+
+                        <div class="status-card">
+
+                            <div class="status-card-top">
+
+                                <span class="status-card-label">
+                                    全球市场
+                                </span>
+
+                                <span class="status-dot"></span>
+
+                            </div>
+
+                            <div class="status-card-value">
+                                交易中
+                            </div>
+
+                            <div class="status-card-desc">
+                                Global Market
+                            </div>
+
+                        </div>
+
+
+                        <div class="status-card">
+
+                            <div class="status-card-top">
+
+                                <span class="status-card-label">
+                                    股票市场
+                                </span>
+
+                                <span class="status-dot"></span>
+
+                            </div>
+
+                            <div class="status-card-value">
+                                6 / 9
+                            </div>
+
+                            <div class="status-card-desc">
+                                Major Markets
+                            </div>
+
+                        </div>
+
+
+                        <div class="status-card">
+
+                            <div class="status-card-top">
+
+                                <span class="status-card-label">
+                                    商品市场
+                                </span>
+
+                                <span class="status-dot"></span>
+
+                            </div>
+
+                            <div class="status-card-value">
+                                24H
+                            </div>
+
+                            <div class="status-card-desc">
+                                Commodities
+                            </div>
+
+                        </div>
+
+
+                        <div class="status-card">
+
+                            <div class="status-card-top">
+
+                                <span class="status-card-label">
+                                    加密市场
+                                </span>
+
+                                <span class="status-dot"></span>
+
+                            </div>
+
+                            <div class="status-card-value">
+                                24 / 7
+                            </div>
+
+                            <div class="status-card-desc">
+                                Crypto Market
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Global Indices
+        ====================================================== -->
+
+            <section class="market-section">
+
+                <div class="market-container">
+
+                    <div class="market-section-header">
+
+                        <div>
+
+                            <h2 class="market-section-title">
+                                全球主要指数
+                            </h2>
+
+                            <div class="market-section-subtitle">
+                                GLOBAL INDICES
+                            </div>
+
+                        </div>
+
+                        <a href="#" class="market-section-link">
+                            查看全部 →
+                        </a>
+
+                    </div>
+
+
+                    <div class="market-grid">
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        上证指数
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        SSE Composite · 000001.SH
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                3,387.20
+                            </div>
+
+                            <div class="market-card-change up">
+                                +0.62%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>中国</span>
+                                <span>上海</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        恒生指数
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        HANG SENG · ^HSI
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                26,348.32
+                            </div>
+
+                            <div class="market-card-change up">
+                                +1.12%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>中国香港</span>
+                                <span>HKEX</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        标普 500
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        S&P 500 · ^GSPC
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                6,584.29
+                            </div>
+
+                            <div class="market-card-change up">
+                                +0.38%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>美国</span>
+                                <span>NYSE / NASDAQ</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        纳斯达克
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        NASDAQ · ^IXIC
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                22,043.08
+                            </div>
+
+                            <div class="market-card-change up">
+                                +0.74%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>美国</span>
+                                <span>NASDAQ</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        日经 225
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        NIKKEI 225 · ^N225
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                44,768.25
+                            </div>
+
+                            <div class="market-card-change down">
+                                -0.21%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>日本</span>
+                                <span>TSE</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        韩国综合指数
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        KOSPI · ^KS11
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                3,412.18
+                            </div>
+
+                            <div class="market-card-change up">
+                                +0.86%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>韩国</span>
+                                <span>KRX</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        德国 DAX
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        DAX · ^GDAXI
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                23,814.60
+                            </div>
+
+                            <div class="market-card-change up">
+                                +0.31%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>德国</span>
+                                <span>Xetra</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        英国富时 100
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        FTSE 100 · ^FTSE
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                9,201.15
+                            </div>
+
+                            <div class="market-card-change down">
+                                -0.18%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>英国</span>
+                                <span>LSE</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Global Stocks
+        ====================================================== -->
+
+            <section class="market-section">
+
+                <div class="market-container">
+
+                    <div class="market-section-header">
+
+                        <div>
+
+                            <h2 class="market-section-title">
+                                全球核心股票
+                            </h2>
+
+                            <div class="market-section-subtitle">
+                                GLOBAL STOCKS
+                            </div>
+
+                        </div>
+
+                        <a href="../stock/" class="market-section-link">
+                            股票研究 →
+                        </a>
+
+                    </div>
+
+
+                    <div class="market-table-wrap">
+
+                        <table class="market-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        股票
+                                    </th>
+
+                                    <th>
+                                        市场
+                                    </th>
+
+                                    <th>
+                                        最新价
+                                    </th>
+
+                                    <th>
+                                        涨跌幅
+                                    </th>
+
+                                    <th>
+                                        市值
+                                    </th>
+
+                                    <th>
+                                        状态
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            NVIDIA
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            NVDA
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        US
+                                    </td>
+
+                                    <td>
+                                        178.32
+                                    </td>
+
+                                    <td class="up">
+                                        +1.82%
+                                    </td>
+
+                                    <td>
+                                        $4.3T
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            Apple
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            AAPL
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        US
+                                    </td>
+
+                                    <td>
+                                        241.67
+                                    </td>
+
+                                    <td class="up">
+                                        +0.54%
+                                    </td>
+
+                                    <td>
+                                        $3.6T
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            Microsoft
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            MSFT
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        US
+                                    </td>
+
+                                    <td>
+                                        512.18
+                                    </td>
+
+                                    <td class="down">
+                                        -0.26%
+                                    </td>
+
+                                    <td>
+                                        $3.8T
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            SK Hynix
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            000660.KS
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        KR
+                                    </td>
+
+                                    <td>
+                                        386,500
+                                    </td>
+
+                                    <td class="up">
+                                        +2.31%
+                                    </td>
+
+                                    <td>
+                                        ₩281T
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            台积电
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            2330.TW
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        TW
+                                    </td>
+
+                                    <td>
+                                        1,215.00
+                                    </td>
+
+                                    <td class="up">
+                                        +1.25%
+                                    </td>
+
+                                    <td>
+                                        NT$31.5T
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Commodities
+        ====================================================== -->
+
+            <section class="market-section">
+
+                <div class="market-container">
+
+                    <div class="market-section-header">
+
+                        <div>
+
+                            <h2 class="market-section-title">
+                                大宗商品
+                            </h2>
+
+                            <div class="market-section-subtitle">
+                                COMMODITIES
+                            </div>
+
+                        </div>
+
+                        <a href="#" class="market-section-link">
+                            商品市场 →
+                        </a>
+
+                    </div>
+
+
+                    <div class="commodity-highlight">
+
+                        <!-- Copper -->
+
+                        <div class="commodity-main">
+
+                            <div class="commodity-main-label">
+                                INDUSTRIAL METAL
+                            </div>
+
+                            <div class="commodity-main-name">
+                                铜 · COMEX Copper
+                            </div>
+
+                            <div class="commodity-main-price">
+                                $4.62
+                            </div>
+
+                            <div class="commodity-main-change">
+                                +1.36% · USD / lb
+                            </div>
+
+                        </div>
+
+
+                        <!-- Gold -->
+
+                        <div class="commodity-card">
+
+                            <div class="commodity-card-name">
+                                黄金
+                            </div>
+
+                            <div class="commodity-card-symbol">
+                                Gold · XAU/USD
+                            </div>
+
+                            <div class="commodity-card-price">
+                                $3,584.20
+                            </div>
+
+                            <div class="commodity-card-change up">
+                                +0.82%
+                            </div>
+
+                        </div>
+
+
+                        <!-- Silver -->
+
+                        <div class="commodity-card">
+
+                            <div class="commodity-card-name">
+                                白银
+                            </div>
+
+                            <div class="commodity-card-symbol">
+                                Silver · XAG/USD
+                            </div>
+
+                            <div class="commodity-card-price">
+                                $41.28
+                            </div>
+
+                            <div class="commodity-card-change up">
+                                +1.47%
+                            </div>
+
+                        </div>
+
+
+                        <!-- Aluminum -->
+
+                        <div class="commodity-card">
+
+                            <div class="commodity-card-name">
+                                铝
+                            </div>
+
+                            <div class="commodity-card-symbol">
+                                LME Aluminum
+                            </div>
+
+                            <div class="commodity-card-price">
+                                $2,641.50
+                            </div>
+
+                            <div class="commodity-card-change down">
+                                -0.42%
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Energy
+        ====================================================== -->
+
+            <section class="market-section">
+
+                <div class="market-container">
+
+                    <div class="market-section-header">
+
+                        <div>
+
+                            <h2 class="market-section-title">
+                                能源
+                            </h2>
+
+                            <div class="market-section-subtitle">
+                                ENERGY
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="market-grid-wide">
+
+                        <div class="wide-card">
+
+                            <div class="wide-card-title">
+
+                                <strong>
+                                    WTI 原油
+                                </strong>
+
+                                <span>
+                                    CL=F
+                                </span>
+
+                            </div>
+
+                            <div class="wide-main">
+
+                                <div class="wide-price">
+                                    $63.82
+                                </div>
+
+                                <div class="wide-change up">
+                                    +0.73%
+                                </div>
+
+                            </div>
+
+                            <div class="wide-grid">
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        OPEN
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        63.41
+                                    </div>
+                                </div>
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        HIGH
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        64.22
+                                    </div>
+                                </div>
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        LOW
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        62.95
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="wide-card">
+
+                            <div class="wide-card-title">
+
+                                <strong>
+                                    Brent 原油
+                                </strong>
+
+                                <span>
+                                    BZ=F
+                                </span>
+
+                            </div>
+
+                            <div class="wide-main">
+
+                                <div class="wide-price">
+                                    $67.18
+                                </div>
+
+                                <div class="wide-change up">
+                                    +0.51%
+                                </div>
+
+                            </div>
+
+                            <div class="wide-grid">
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        OPEN
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        66.74
+                                    </div>
+                                </div>
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        HIGH
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        67.46
+                                    </div>
+                                </div>
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        LOW
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        66.28
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="wide-card">
+
+                            <div class="wide-card-title">
+
+                                <strong>
+                                    天然气
+                                </strong>
+
+                                <span>
+                                    NG=F
+                                </span>
+
+                            </div>
+
+                            <div class="wide-main">
+
+                                <div class="wide-price">
+                                    $2.91
+                                </div>
+
+                                <div class="wide-change down">
+                                    -1.16%
+                                </div>
+
+                            </div>
+
+                            <div class="wide-grid">
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        OPEN
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        2.94
+                                    </div>
+                                </div>
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        HIGH
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        2.98
+                                    </div>
+                                </div>
+
+                                <div class="wide-stat">
+                                    <div class="wide-stat-label">
+                                        LOW
+                                    </div>
+                                    <div class="wide-stat-value">
+                                        2.86
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Foreign Exchange
+        ====================================================== -->
+
+            <section class="market-section">
+
+                <div class="market-container">
+
+                    <div class="market-section-header">
+
+                        <div>
+
+                            <h2 class="market-section-title">
+                                外汇
+                            </h2>
+
+                            <div class="market-section-subtitle">
+                                FOREIGN EXCHANGE
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="market-grid">
+
+                        <div class="market-card">
+
+                            <div class="market-card-name">
+                                USD / CNY
+                            </div>
+
+                            <div class="market-card-symbol">
+                                美元人民币
+                            </div>
+
+                            <div class="market-card-price">
+                                7.1284
+                            </div>
+
+                            <div class="market-card-change down">
+                                -0.12%
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-name">
+                                EUR / USD
+                            </div>
+
+                            <div class="market-card-symbol">
+                                欧元美元
+                            </div>
+
+                            <div class="market-card-price">
+                                1.1718
+                            </div>
+
+                            <div class="market-card-change up">
+                                +0.21%
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-name">
+                                USD / JPY
+                            </div>
+
+                            <div class="market-card-symbol">
+                                美元日元
+                            </div>
+
+                            <div class="market-card-price">
+                                147.42
+                            </div>
+
+                            <div class="market-card-change down">
+                                -0.34%
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-name">
+                                USD / KRW
+                            </div>
+
+                            <div class="market-card-symbol">
+                                美元韩元
+                            </div>
+
+                            <div class="market-card-price">
+                                1,391.20
+                            </div>
+
+                            <div class="market-card-change down">
+                                -0.28%
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Crypto
+        ====================================================== -->
+
+            <section class="market-section">
+
+                <div class="market-container">
+
+                    <div class="market-section-header">
+
+                        <div>
+
+                            <h2 class="market-section-title">
+                                加密资产
+                            </h2>
+
+                            <div class="market-section-subtitle">
+                                CRYPTO
+                            </div>
+
+                        </div>
+
+                        <a href="#" class="market-section-link">
+                            Crypto Market →
+                        </a>
+
+                    </div>
+
+
+                    <div class="market-grid">
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        Bitcoin
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        BTC / USDT
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                $114,280
+                            </div>
+
+                            <div class="market-card-change up">
+                                +2.18%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>Binance</span>
+                                <span>24H</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        Ethereum
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        ETH / USDT
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                $4,381
+                            </div>
+
+                            <div class="market-card-change up">
+                                +3.42%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>Binance</span>
+                                <span>24H</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        Solana
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        SOL / USDT
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                $248.12
+                            </div>
+
+                            <div class="market-card-change up">
+                                +4.16%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>Binance</span>
+                                <span>24H</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="market-card">
+
+                            <div class="market-card-header">
+
+                                <div>
+
+                                    <div class="market-card-name">
+                                        BNB
+                                    </div>
+
+                                    <div class="market-card-symbol">
+                                        BNB / USDT
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="market-card-price">
+                                $958.24
+                            </div>
+
+                            <div class="market-card-change down">
+                                -0.63%
+                            </div>
+
+                            <div class="market-card-meta">
+                                <span>Binance</span>
+                                <span>24H</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Futures
+        ====================================================== -->
+
+            <section class="market-section">
+
+                <div class="market-container">
+
+                    <div class="market-section-header">
+
+                        <div>
+
+                            <h2 class="market-section-title">
+                                全球期货
+                            </h2>
+
+                            <div class="market-section-subtitle">
+                                FUTURES
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="market-table-wrap">
+
+                        <table class="market-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        合约
+                                    </th>
+
+                                    <th>
+                                        市场
+                                    </th>
+
+                                    <th>
+                                        最新价
+                                    </th>
+
+                                    <th>
+                                        涨跌幅
+                                    </th>
+
+                                    <th>
+                                        交易单位
+                                    </th>
+
+                                    <th>
+                                        状态
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            沪铜
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            SHFE · CU0
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        SHFE
+                                    </td>
+
+                                    <td>
+                                        78,420
+                                    </td>
+
+                                    <td class="up">
+                                        +0.58%
+                                    </td>
+
+                                    <td>
+                                        元 / 吨
+                                    </td>
+
+                                    <td>
+                                        CLOSED
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            COMEX Copper
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            COMEX · HG
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        COMEX
+                                    </td>
+
+                                    <td>
+                                        4.62
+                                    </td>
+
+                                    <td class="up">
+                                        +1.36%
+                                    </td>
+
+                                    <td>
+                                        USD / lb
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            LME Copper
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            LME · CAD
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        LME
+                                    </td>
+
+                                    <td>
+                                        10,184
+                                    </td>
+
+                                    <td class="up">
+                                        +0.74%
+                                    </td>
+
+                                    <td>
+                                        USD / ton
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            黄金期货
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            COMEX · GC
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        COMEX
+                                    </td>
+
+                                    <td>
+                                        3,584.20
+                                    </td>
+
+                                    <td class="up">
+                                        +0.82%
+                                    </td>
+
+                                    <td>
+                                        USD / oz
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+
+                                        <div class="instrument-name">
+                                            WTI Crude Oil
+                                        </div>
+
+                                        <div class="instrument-symbol">
+                                            NYMEX · CL
+                                        </div>
+
+                                    </td>
+
+                                    <td>
+                                        NYMEX
+                                    </td>
+
+                                    <td>
+                                        63.82
+                                    </td>
+
+                                    <td class="up">
+                                        +0.73%
+                                    </td>
+
+                                    <td>
+                                        USD / bbl
+                                    </td>
+
+                                    <td>
+                                        OPEN
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================================
+             Watchlist
+        ====================================================== -->
+
+            <section class="market-section">
+
+                <div class="market-container">
+
+                    <div class="market-section-header">
+
+                        <div>
+
+                            <h2 class="market-section-title">
+                                我的市场关注
+                            </h2>
+
+                            <div class="market-section-subtitle">
+                                WATCHLIST
+                            </div>
+
+                        </div>
+
+                        <a href="#" class="market-section-link">
+                            管理关注 →
+                        </a>
+
+                    </div>
+
+
+                    <div class="watchlist">
+
+                        <div class="watch-item">
+
+                            <div class="watch-item-name">
+                                贵州茅台
+                            </div>
+
+                            <div class="watch-item-symbol">
+                                600519.SH
+                            </div>
+
+                            <div class="watch-item-price">
+                                1,468.00
+                            </div>
+
+                            <div class="watch-item-change up">
+                                +0.82%
+                            </div>
+
+                        </div>
+
+
+                        <div class="watch-item">
+
+                            <div class="watch-item-name">
+                                NVIDIA
+                            </div>
+
+                            <div class="watch-item-symbol">
+                                NVDA
+                            </div>
+
+                            <div class="watch-item-price">
+                                178.32
+                            </div>
+
+                            <div class="watch-item-change up">
+                                +1.82%
+                            </div>
+
+                        </div>
+
+
+                        <div class="watch-item">
+
+                            <div class="watch-item-name">
+                                铜
+                            </div>
+
+                            <div class="watch-item-symbol">
+                                COMEX · HG
+                            </div>
+
+                            <div class="watch-item-price">
+                                4.62
+                            </div>
+
+                            <div class="watch-item-change up">
+                                +1.36%
+                            </div>
+
+                        </div>
+
+
+                        <div class="watch-item">
+
+                            <div class="watch-item-name">
+                                黄金
+                            </div>
+
+                            <div class="watch-item-symbol">
+                                XAU/USD
+                            </div>
+
+                            <div class="watch-item-price">
+                                3,584.20
+                            </div>
+
+                            <div class="watch-item-change up">
+                                +0.82%
+                            </div>
+
+                        </div>
+
+
+                        <div class="watch-item">
+
+                            <div class="watch-item-name">
+                                BTC
+                            </div>
+
+                            <div class="watch-item-symbol">
+                                BTC/USDT
+                            </div>
+
+                            <div class="watch-item-price">
+                                114,280
+                            </div>
+
+                            <div class="watch-item-change up">
+                                +2.18%
+                            </div>
+
+                        </div>
+
+
+                        <div class="watch-item">
+
+                            <div class="watch-item-name">
+                                原油
+                            </div>
+
+                            <div class="watch-item-symbol">
+                                WTI · CL
+                            </div>
+
+                            <div class="watch-item-price">
+                                63.82
+                            </div>
+
+                            <div class="watch-item-change up">
+                                +0.73%
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <!-- =========================================================
+         Footer
+    ========================================================== -->
+
+        <footer class="market-footer">
+
+            <div class="market-container market-footer-inner">
+
+                <span>
+                    STOCK LAB · Global Market
+                </span>
+
+                <span>
+                    Market data may be delayed. For research purposes only.
+                </span>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <script>
+
+        /* =========================================================
+           Market Page
+        ========================================================= */
+
+        function updateMarketTime() {
+
+            const now = new Date();
+
+            const date = now.toLocaleDateString(
+                "zh-CN",
+                {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit"
+                }
+            );
+
+            const time = now.toLocaleTimeString(
+                "zh-CN",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false
+                }
+            );
+
+            const dateElement =
+                document.getElementById("marketDate");
+
+            const timeElement =
+                document.getElementById("marketTime");
+
+            if (dateElement) {
+                dateElement.textContent = date;
+            }
+
+            if (timeElement) {
+                timeElement.textContent =
+                    `Last updated ${time}`;
+            }
+        }
+
+
+        updateMarketTime();
+
+        setInterval(
+            updateMarketTime,
+            1000
+        );
+
+    </script>
+
+</body>
+
+</html>
