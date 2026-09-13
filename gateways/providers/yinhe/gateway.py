@@ -11,7 +11,7 @@ import tgw
 
 from common.enums.quote_level import QuoteLevel
 from core.models.stock import Stock
-from gateways.data_gateway import StockDataGateway
+from gateways.stock_data_gateway import StockDataGateway
 from common.constants import Interval, TEN_THOUSAND
 from core.models.financial.financial import IncomeStatement
 from core.models.financial.financial import CashFlow

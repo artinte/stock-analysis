@@ -12,7 +12,7 @@ from core.models.financial.balance_sheet import BalanceSheet
 from core.models.financial.cash_flow import CashFlow
 from core.models.industry_profile import IndustryProfile
 from common.enums.quote_level import QuoteLevel
-from gateways.data_gateway import StockDataGateway
+from gateways.stock_data_gateway import StockDataGateway
 from gateways.registry import GatewayRegistry
 from gateways.services.industry_service import IndustryService
 
