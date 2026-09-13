@@ -43,6 +43,7 @@ uvicorn service.api:app --reload
 
 * 银河证券
 * 腾讯
+* Binance（加密货币）
 * 其他数据源可按统一接口继续接入
 
 提供股票行情、K 线、财务数据、估值、行业信息等数据。
