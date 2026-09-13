@@ -10,6 +10,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from service.stock_financial_service import StockFinancialService
 from gateways.data_manager import DataManager
+from core.models.crypto.quote import CryptoQuote
+from core.models.crypto.kline import CryptoKline
 
 # ============================================================
 # 全局数据管理器
@@ -34,13 +36,14 @@ async def lifespan(app: FastAPI):
     print()
     print("=" * 60)
     print("正在启动股票数据服务...")
-    print("数据源：yinhe")
+    print("股票数据源：yinhe")
+    print("加密货币数据源: binance")
     print("=" * 60)
 
     try:
         data = DataManager("yinhe")
         data.start()
-        
+
         financial_service = StockFinancialService(data)
 
         print("✅ 股票数据服务启动成功")
@@ -120,11 +123,14 @@ def health_check():
     检查 API 和数据服务是否正常。
     """
 
+    manager = data
+
     return {
         "success": True,
         "api": "running",
-        "data_source": "yinhe",
-        "data_manager": data is not None,
+        "stock_provider": (manager.stock_provider if manager is not None else None),
+        "crypto_provider": (manager.crypto_provider if manager is not None else None),
+        "data_manager": manager is not None,
     }
 
 
@@ -485,9 +491,7 @@ def get_kline(
                 "暂无K线数据",
             )
 
-        print(
-            f"  获取到 {len(klines)} 根K线"
-        )
+        print(f"  获取到 {len(klines)} 根K线")
 
         result = []
 
@@ -496,9 +500,7 @@ def get_kline(
             result.append(
                 {
                     "timestamp": (
-                        item.timestamp.isoformat()
-                        if item.timestamp
-                        else None
+                        item.timestamp.isoformat() if item.timestamp else None
                     ),
                     "open": item.open,
                     "high": item.high,
@@ -513,16 +515,8 @@ def get_kline(
             symbol,
             {
                 "interval": interval,
-                "start_time": (
-                    start_time.isoformat()
-                    if start_time
-                    else None
-                ),
-                "end_time": (
-                    end_time.isoformat()
-                    if end_time
-                    else None
-                ),
+                "start_time": (start_time.isoformat() if start_time else None),
+                "end_time": (end_time.isoformat() if end_time else None),
                 "data": result,
             },
         )
@@ -536,10 +530,7 @@ def get_kline(
 
     except Exception as exc:
 
-        print(
-            f"❌ K线获取失败："
-            f"{symbol} -> {exc}"
-        )
+        print(f"❌ K线获取失败：" f"{symbol} -> {exc}")
 
         return failure(
             symbol,
@@ -1093,6 +1084,7 @@ def index():
 
     return FileResponse(FRONTEND_DIR / "index.html")
 
+
 @app.get("/api/stock/{symbol}/financial")
 def get_stock_financial(symbol: str):
 
@@ -1106,13 +1098,278 @@ def get_stock_financial(symbol: str):
 
     except Exception as exc:
 
-        print(
-            f"❌ 获取财务数据失败: "
-            f"{symbol} - {exc}"
-        )
+        print(f"❌ 获取财务数据失败: " f"{symbol} - {exc}")
 
         return {
             "success": False,
             "message": str(exc),
             "data": None,
         }
+
+
+# =========================================================
+# Crypto：加密货币行情
+# =========================================================
+
+
+@app.get("/api/crypto/quote/{symbol:path}")
+def get_crypto_quote(symbol: str):
+    """
+    获取加密货币实时行情。
+
+    示例：
+
+        /api/crypto/quote/BTC/USDT
+
+    或：
+
+        /api/crypto/quote/BTC-USDT
+    """
+
+    symbol = symbol.strip().upper()
+
+    print(f"₿ 获取加密货币行情：{symbol}")
+
+    try:
+        manager = require_data()
+
+        quote = manager.get_crypto_quote(symbol)
+
+        if quote is None:
+            return failure(
+                symbol,
+                "未获取到加密货币行情",
+            )
+        else:
+            print(quote)
+
+        return success(
+            symbol,
+            {
+                "symbol": quote.symbol,
+                "exchange": quote.exchange,
+                "lastPrice": quote.last_price,
+                "prevClose": quote.prev_close,
+                "openPrice": quote.open_price,
+                "highPrice": quote.high_price,
+                "lowPrice": quote.low_price,
+                "change": quote.change,
+                "changePercent": quote.change_percent,
+                "volume": quote.volume,
+                "amount": quote.amount,
+                "tradeCount": quote.trade_count,
+                "source": quote.source,
+                "timestamp": quote.timestamp,
+            },
+        )
+
+    except NotImplementedError:
+
+        return failure(
+            symbol,
+            "当前数据源暂未实现加密货币行情接口",
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 加密货币行情获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "加密货币行情暂不可用",
+        )
+
+
+@app.get("/api/crypto/quotes")
+def get_crypto_quotes(
+    symbols: str = Query(
+        ...,
+        description="交易对，逗号分隔，例如 BTC/USDT,ETH/USDT,BNB/USDT",
+    ),
+):
+    """
+    批量获取加密货币行情。
+
+    示例：
+
+        /api/crypto/quotes?symbols=BTC/USDT,ETH/USDT,BNB/USDT
+    """
+
+    symbol_list = [item.strip().upper() for item in symbols.split(",") if item.strip()]
+
+    if not symbol_list:
+        return {
+            "success": False,
+            "message": "未指定交易对",
+            "data": [],
+        }
+
+    print(f"₿ 批量获取加密货币行情：" f"{', '.join(symbol_list)}")
+
+    try:
+        manager = require_data()
+
+        quotes = manager.get_crypto_quotes(symbol_list)
+
+        result = []
+
+        for quote in quotes:
+            result.append(
+                {
+                    "symbol": quote.symbol,
+                    "exchange": quote.exchange,
+                    "lastPrice": quote.last_price,
+                    "prevClose": quote.prev_close,
+                    "openPrice": quote.open_price,
+                    "highPrice": quote.high_price,
+                    "lowPrice": quote.low_price,
+                    "change": quote.change,
+                    "changePercent": quote.change_percent,
+                    "volume": quote.volume,
+                    "amount": quote.amount,
+                    "tradeCount": quote.trade_count,
+                    "source": quote.source,
+                    "timestamp": quote.timestamp,
+                }
+            )
+
+        return {
+            "success": True,
+            "data": result,
+        }
+
+    except Exception as exc:
+
+        print(f"❌ 批量获取加密货币行情失败：" f"{exc}")
+
+        return {
+            "success": False,
+            "message": "获取加密货币行情失败",
+            "data": [],
+        }
+
+
+# =========================================================
+# Crypto：K线
+# =========================================================
+
+
+@app.get("/api/crypto/kline/{symbol:path}")
+def get_crypto_kline(
+    symbol: str,
+    interval: str = Query(
+        "1d",
+        description="K线周期，例如 1m/5m/15m/30m/1h/4h/1d/1w",
+    ),
+    limit: int = Query(
+        100,
+        ge=1,
+        le=1000,
+        description="K线数量",
+    ),
+):
+    """
+    获取加密货币 K 线。
+    """
+
+    symbol = symbol.strip().upper()
+
+    print(f"📊 获取加密货币K线：" f"{symbol} " f"interval={interval} " f"limit={limit}")
+
+    try:
+        manager = require_data()
+
+        klines = manager.get_crypto_klines(
+            symbol=symbol,
+            interval=interval,
+            limit=limit,
+        )
+
+        if not klines:
+            return failure(
+                symbol,
+                "暂无加密货币K线数据",
+            )
+
+        result = []
+
+        for item in klines:
+            result.append(
+                {
+                    "timestamp": (
+                        item.timestamp.isoformat() if item.timestamp else None
+                    ),
+                    "open": item.open,
+                    "high": item.high,
+                    "low": item.low,
+                    "close": item.close,
+                    "volume": item.volume,
+                    "amount": item.amount,
+                    "closeTime": (
+                        item.close_time.isoformat() if item.close_time else None
+                    ),
+                    "tradeCount": item.trade_count,
+                }
+            )
+
+        return success(
+            symbol,
+            {
+                "interval": interval,
+                "data": result,
+            },
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 加密货币K线获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "加密货币K线数据暂不可用",
+        )
+
+
+# =========================================================
+# Crypto：订单簿
+# =========================================================
+
+
+@app.get("/api/crypto/order-book/{symbol:path}")
+def get_crypto_order_book(
+    symbol: str,
+    limit: int = Query(
+        20,
+        ge=1,
+        le=100,
+    ),
+):
+    """
+    获取加密货币订单簿。
+    """
+
+    symbol = symbol.strip().upper()
+
+    print(f"📖 获取加密货币订单簿：" f"{symbol} limit={limit}")
+
+    try:
+        manager = require_data()
+
+        order_book = manager.get_crypto_order_book(
+            symbol=symbol,
+            limit=limit,
+        )
+
+        return success(
+            symbol,
+            order_book,
+        )
+
+    except Exception as exc:
+
+        print(f"❌ 加密货币订单簿获取失败：" f"{symbol} -> {exc}")
+
+        return failure(
+            symbol,
+            "加密货币订单簿暂不可用",
+        )
