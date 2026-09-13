@@ -11,6 +11,8 @@
 
     <link rel="stylesheet" href="../css/style.css">
 
+    <link rel="stylesheet" href="../css/global.css">
+
     <style>
         /* =========================================================
            STOCK LAB - GLOBAL MARKET
@@ -685,73 +687,123 @@
 
 <body>
 
-    <div class="market-page">
+    <header class="topbar">
 
-        <!-- =========================================================
-         Header
-    ========================================================== -->
+        <div class="topbar-inner">
 
-        <header class="market-header">
 
-            <div class="market-container market-header-inner">
+            <!-- 品牌 -->
 
-                <a href="../" class="market-brand" style="text-decoration:none;color:inherit;">
+            <div class="brand" onclick="goHome('home')">
 
-                    <div class="market-brand-mark">
-                        SL
+                <div class="brand-mark">
+                    S
+                </div>
+
+
+                <div class="brand-text">
+
+                    <div class="brand-name">
+                        STOCK LAB
                     </div>
 
-                    <div class="market-brand-text">
-
-                        <div class="market-brand-title">
-                            STOCK LAB
-                        </div>
-
-                        <div class="market-brand-subtitle">
-                            GLOBAL MARKET
-                        </div>
-
+                    <div class="brand-subtitle">
+                        股票研究中心
                     </div>
 
-                </a>
-
-
-                <nav class="market-nav">
-
-                    <a href="../" class="active">
-                        市场
-                    </a>
-
-                    <a href="../stock/">
-                        股票
-                    </a>
-
-                    <a href="../news/">
-                        资讯
-                    </a>
-
-                    <a href="../research/">
-                        AI研究
-                    </a>
-
-                    <a href="../trade/">
-                        交易
-                    </a>
-
-                    <a href="../tools/">
-                        工具
-                    </a>
-
-                    <a href="../document/">
-                        学习文档
-                    </a>
-
-                </nav>
+                </div>
 
             </div>
 
-        </header>
 
+            <!-- 主导航 -->
+
+            <nav class="main-nav">
+
+                <button class="nav-item" onclick="goHome('home')">
+                    首页
+                </button>
+
+                <button class="nav-item active">
+                    市场
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('stock')">
+                    股票
+                </button>
+
+                <button class="nav-item" onclick="navigatePage('news')">
+                    资讯
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('research')">
+                    AI研究
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('trade')">
+                    交易
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('tools')">
+                    工具
+                </button>
+
+
+                <button class="nav-item" onclick="navigatePage('document')">
+                    学习文档
+                </button>
+
+            </nav>
+
+
+            <!-- 右侧 -->
+
+            <div class="header-right">
+
+
+                <button class="ai-top-button" onclick="goHome('ai-chat')">
+
+                    <span>
+                        ✦
+                    </span>
+
+                    AI 投研助手
+
+                </button>
+
+
+                <div class="global-search">
+
+                    <span class="search-icon">
+                        ⌕
+                    </span>
+
+
+                    <input id="searchInput" autocomplete="off" placeholder="搜索股票 / 代码">
+
+
+                    <button id="searchBtn" type="button">
+                        查询
+                    </button>
+
+
+                    <div id="searchDropdown" class="search-dropdown">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <div class="market-page">
 
         <main>
 
@@ -2561,6 +2613,62 @@
 
 
     <script>
+
+        /* =========================================================
+        页面导航
+        ========================================================= */
+
+        function navigatePage(page) {
+
+            const routes = {
+
+                market: "../market",
+
+                stock: "../stock/",
+
+                news: "../news/",
+
+                research: "../research/",
+
+                trade: "../trade/",
+
+                tools: "../tools/",
+
+                document: "../document/"
+
+            };
+
+
+            if (page === "ai-chat") {
+
+                window.location.href =
+                    "../?page=ai-chat";
+
+                return;
+
+            }
+
+
+            const url = routes[page];
+
+
+            if (!url) {
+
+                console.error(
+                    "未知页面:",
+                    page
+                );
+
+                return;
+
+            }
+
+
+            window.location.href = url;
+
+        }
+
+
 
         /* =========================================================
            Market Page
