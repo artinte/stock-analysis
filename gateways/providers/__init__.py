@@ -20,9 +20,6 @@ Provider 的注册由各自的 gateway.py
 from .akshare.gateway import AkShareGateway
 from .yinhe.gateway import YinheGateway
 from .tencent.gateway import TencentGateway
+from .binance.gateway import BinanceGateway
 
-__all__ = [
-    "AkShareGateway",
-    "YinheGateway",
-    "TencentGateway"
-]
+__all__ = ["AkShareGateway", "YinheGateway", "TencentGateway" "BinanceGateway"]

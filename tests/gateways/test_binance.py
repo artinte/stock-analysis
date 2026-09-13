@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from core.models.crypto.asset import CryptoAsset
-from gateways.providers.binance.gateway import BinanceGateway
-
+from gateways.data_manager import DataManager
 
 """
 运行：
+
 python -m tests.gateways.test_binance
 """
+
 
 def run_asset_test() -> None:
     print()
@@ -16,7 +17,7 @@ def run_asset_test() -> None:
     print("=" * 60)
 
     asset = CryptoAsset(
-        symbol="BTCUSDT",
+        symbol="BTC/USDT",
         name="Bitcoin",
         base_currency="BTC",
         quote_currency="USDT",
@@ -26,27 +27,28 @@ def run_asset_test() -> None:
     asset.display()
 
 
-def run_quote_test(gateway: BinanceGateway) -> None:
+def run_quote_test(manager: DataManager) -> None:
     print()
     print("=" * 60)
-    print("测试：fetch_quote")
+    print("测试：get_crypto_quote")
     print("=" * 60)
 
-    quote = gateway.fetch_quote("BTCUSDT")
+    quote = manager.get_crypto_quote("BTC/USDT")
+
     quote.display()
 
 
-def run_quotes_test(gateway: BinanceGateway) -> None:
+def run_quotes_test(manager: DataManager) -> None:
     print()
     print("=" * 60)
-    print("测试：fetch_quotes")
+    print("测试：get_crypto_quotes")
     print("=" * 60)
 
-    quotes = gateway.fetch_quotes(
+    quotes = manager.get_crypto_quotes(
         [
-            "BTCUSDT",
-            "ETHUSDT",
-            "BNBUSDT",
+            "BTC/USDT",
+            "ETH/USDT",
+            "BNB/USDT",
         ]
     )
 
@@ -54,14 +56,14 @@ def run_quotes_test(gateway: BinanceGateway) -> None:
         quote.display()
 
 
-def run_klines_test(gateway: BinanceGateway) -> None:
+def run_klines_test(manager: DataManager) -> None:
     print()
     print("=" * 60)
-    print("测试：fetch_klines")
+    print("测试：get_crypto_klines")
     print("=" * 60)
 
-    klines = gateway.fetch_klines(
-        "BTCUSDT",
+    klines = manager.get_crypto_klines(
+        symbol="BTC/USDT",
         interval="1d",
         limit=5,
     )
@@ -70,14 +72,14 @@ def run_klines_test(gateway: BinanceGateway) -> None:
         kline.display()
 
 
-def run_order_book_test(gateway: BinanceGateway) -> None:
+def run_order_book_test(manager: DataManager) -> None:
     print()
     print("=" * 60)
-    print("测试：fetch_order_book")
+    print("测试：get_crypto_order_book")
     print("=" * 60)
 
-    order_book = gateway.fetch_order_book(
-        "BTCUSDT",
+    order_book = manager.get_crypto_order_book(
+        symbol="BTC/USDT",
         limit=5,
     )
 
@@ -86,28 +88,22 @@ def run_order_book_test(gateway: BinanceGateway) -> None:
 
     print("    买盘:")
     for item in order_book["bids"]:
-        print(
-            f"        价格: {item['price']:<15} "
-            f"数量: {item['quantity']}"
-        )
+        print(f"        价格: {item['price']:<15} " f"数量: {item['quantity']}")
 
     print()
     print("    卖盘:")
     for item in order_book["asks"]:
-        print(
-            f"        价格: {item['price']:<15} "
-            f"数量: {item['quantity']}"
-        )
+        print(f"        价格: {item['price']:<15} " f"数量: {item['quantity']}")
 
 
-def run_trades_test(gateway: BinanceGateway) -> None:
+def run_trades_test(manager: DataManager) -> None:
     print()
     print("=" * 60)
-    print("测试：fetch_trades")
+    print("测试：get_crypto_trades")
     print("=" * 60)
 
-    trades = gateway.fetch_trades(
-        "BTCUSDT",
+    trades = manager.get_crypto_trades(
+        symbol="BTC/USDT",
         limit=5,
     )
 
@@ -123,16 +119,21 @@ def run_trades_test(gateway: BinanceGateway) -> None:
 
 
 def main() -> None:
-    gateway = BinanceGateway()
+    manager = DataManager()
 
-    run_asset_test()
-    run_quote_test(gateway)
-    run_quotes_test(gateway)
-    run_klines_test(gateway)
-    run_order_book_test(gateway)
-    run_trades_test(gateway)
+    try:
+        manager.start()
+
+        run_asset_test()
+        run_quote_test(manager)
+        run_quotes_test(manager)
+        run_klines_test(manager)
+        run_order_book_test(manager)
+        run_trades_test(manager)
+
+    finally:
+        manager.stop()
 
 
 if __name__ == "__main__":
     main()
-

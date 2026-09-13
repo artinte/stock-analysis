@@ -1,7 +1,8 @@
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from typing import Any
+
+from core.models.crypto.kline import CryptoKline
+from core.models.crypto.quote import CryptoQuote
 
 
 class CryptoDataGateway(ABC):
@@ -11,7 +12,7 @@ class CryptoDataGateway(ABC):
     def fetch_quote(
         self,
         symbol: str,
-    ) -> dict[str, Any]:
+    ) -> CryptoQuote:
         """获取最新行情。"""
         raise NotImplementedError
 
@@ -19,7 +20,7 @@ class CryptoDataGateway(ABC):
     def fetch_quotes(
         self,
         symbols: list[str],
-    ) -> list[dict[str, Any]]:
+    ) -> list[CryptoQuote]:
         """批量获取行情。"""
         raise NotImplementedError
 
@@ -29,7 +30,7 @@ class CryptoDataGateway(ABC):
         symbol: str,
         interval: str = "1d",
         limit: int = 100,
-    ) -> list[dict[str, Any]]:
+    ) -> list[CryptoKline]:
         """获取历史 K 线。"""
         raise NotImplementedError
 

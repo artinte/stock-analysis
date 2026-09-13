@@ -1,5 +1,6 @@
 from typing import Type
 
+from gateways.crypto_data_gateway import CryptoDataGateway
 from gateways.stock_data_gateway import StockDataGateway
 
 
@@ -54,10 +55,11 @@ class GatewayRegistry:
 
             if not issubclass(
                 gateway_class,
-                StockDataGateway,
+                (StockDataGateway, CryptoDataGateway),
             ):
                 raise TypeError(
-                    f"{gateway_class.__name__} " f"必须继承 StockDataGateway"
+                    f"{gateway_class.__name__} "
+                    f"必须继承 StockDataGateway 或 CryptoDataGateway"
                 )
 
             if provider_name in cls._gateways:

@@ -5,18 +5,22 @@ from typing import Any
 
 from core.models.crypto.kline import CryptoKline
 from core.models.crypto.quote import CryptoQuote
+from gateways.crypto_data_gateway import CryptoDataGateway
 from gateways.providers.binance.client import BinanceClient
+from gateways.registry import GatewayRegistry
 
-
-class BinanceGateway:
+@GatewayRegistry.register("binance")
+class BinanceGateway(CryptoDataGateway):
     """Binance 加密货币数据 Gateway。"""
 
     name = "binance"
 
     def __init__(
         self,
+        config: dict | None = None,
         client: BinanceClient | None = None,
     ) -> None:
+        self.config = config or {}
         self.client = client or BinanceClient()
 
     @staticmethod

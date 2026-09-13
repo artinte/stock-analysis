@@ -18,6 +18,7 @@ from core.models.industry_profile import IndustryProfile
 from core.models.crypto.quote import CryptoQuote
 from core.models.crypto.kline import CryptoKline
 
+from gateways.crypto_data_gateway import CryptoDataGateway
 from gateways.registry import GatewayRegistry
 from gateways.stock_data_gateway import StockDataGateway
 from gateways.services.industry_service import IndustryService
@@ -75,7 +76,7 @@ class DataManager:
         # --------------------------------------------------
         self.crypto_provider = crypto_provider_name.strip().lower()
 
-        self.crypto_gateway = GatewayRegistry.create(
+        self.crypto_gateway: CryptoDataGateway = GatewayRegistry.create(
             self.crypto_provider,
             self.config,
         )
@@ -368,8 +369,8 @@ class DataManager:
 
         示例：
 
-            manager.get_crypto_quote("BTCUSDT")
-            manager.get_crypto_quote("ETHUSDT")
+            manager.get_crypto_quote("BTC/USDT")
+            manager.get_crypto_quote("ETH/USDT")
         """
 
         return self.crypto_gateway.fetch_quote(symbol)
@@ -382,85 +383,59 @@ class DataManager:
         批量获取加密货币实时行情。
         """
 
-        fetch_quotes = getattr(
-            self.crypto_gateway,
-            "fetch_quotes",
-            None,
-        )
-
-        if callable(fetch_quotes):
-            return fetch_quotes(symbols)
-
-        return [
-            self.crypto_gateway.fetch_quote(symbol)
-            for symbol in symbols
-        ]
-
-    def get_crypto_kline(
-        self,
-        symbol: str,
-        interval: str = "1h",
-        start_time=None,
-        end_time=None,
-        limit: int = 500,
-    ) -> list[CryptoKline]:
-        """
-        获取加密货币 K 线。
-
-        示例：
-
-            manager.get_crypto_kline(
-                symbol="BTCUSDT",
-                interval="1h",
-                limit=200,
-            )
-        """
-
-        return self.crypto_gateway.fetch_kline(
-            symbol=symbol,
-            interval=interval,
-            start_time=start_time,
-            end_time=end_time,
-            limit=limit,
-        )
+        return self.crypto_gateway.fetch_quotes(symbols)
 
     def get_crypto_klines(
         self,
-        symbols: list[str],
-        interval: str = "1h",
-        start_time=None,
-        end_time=None,
-        limit: int = 500,
-    ):
+        symbol: str,
+        interval: str = "1d",
+        limit: int = 100,
+    ) -> list[CryptoKline]:
         """
-        批量获取加密货币 K 线。
+        获取加密货币历史 K 线。
+
+        示例：
+
+            manager.get_crypto_klines(
+                symbol="BTC/USDT",
+                interval="1d",
+                limit=100,
+            )
         """
 
-        fetch_klines = getattr(
-            self.crypto_gateway,
-            "fetch_klines",
-            None,
+        return self.crypto_gateway.fetch_klines(
+            symbol=symbol,
+            interval=interval,
+            limit=limit,
         )
 
-        if callable(fetch_klines):
-            return fetch_klines(
-                symbols=symbols,
-                interval=interval,
-                start_time=start_time,
-                end_time=end_time,
-                limit=limit,
-            )
+    def get_crypto_order_book(
+        self,
+        symbol: str,
+        limit: int = 20,
+    ) -> dict:
+        """
+        获取加密货币订单簿。
+        """
 
-        return [
-            self.get_crypto_kline(
-                symbol=symbol,
-                interval=interval,
-                start_time=start_time,
-                end_time=end_time,
-                limit=limit,
-            )
-            for symbol in symbols
-        ]
+        return self.crypto_gateway.fetch_order_book(
+            symbol=symbol,
+            limit=limit,
+        )
+
+    def get_crypto_trades(
+        self,
+        symbol: str,
+        limit: int = 100,
+    ) -> list[dict]:
+        """
+        获取加密货币最近成交记录。
+        """
+
+        return self.crypto_gateway.fetch_trades(
+            symbol=symbol,
+            limit=limit,
+        )
 
     # ======================================================
     # 行业服务
