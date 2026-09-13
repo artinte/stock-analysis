@@ -1,0 +1,2269 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>底部确认分析 - STOCK LAB</title>
+
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/bottom_confirmation.css">
+
+    <style>
+        /* =========================================================
+           STOCK LAB - 底部确认分析
+        ========================================================= */
+
+        .bottom-page {
+            width: min(1400px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: 32px 0 80px;
+        }
+
+
+        /* =========================================================
+           页面头部
+        ========================================================= */
+
+        .bottom-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 32px;
+
+            margin-bottom: 28px;
+            padding: 36px 40px;
+
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+        }
+
+        .bottom-header-main {
+            min-width: 0;
+        }
+
+        .bottom-eyebrow {
+            margin-bottom: 8px;
+
+            color: var(--accent-color);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .bottom-title {
+            margin: 0;
+
+            color: var(--text-color);
+            font-size: 30px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .bottom-description {
+            max-width: 820px;
+            margin: 12px 0 0;
+
+            color: var(--muted-text);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .bottom-header-side {
+            flex: 0 0 auto;
+
+            min-width: 180px;
+            padding: 18px 20px;
+
+            background: var(--page-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .bottom-header-side-label {
+            margin-bottom: 6px;
+
+            color: var(--muted-text);
+            font-size: 12px;
+        }
+
+        .bottom-header-side-value {
+            color: var(--text-color);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .bottom-header-side-desc {
+            margin-top: 4px;
+
+            color: var(--muted-text);
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
+           主体布局
+        ========================================================= */
+
+        .bottom-layout {
+            display: grid;
+            grid-template-columns: 360px minmax(0, 1fr);
+            gap: 24px;
+
+            align-items: start;
+        }
+
+
+        /* =========================================================
+           参数设置
+        ========================================================= */
+
+        .bottom-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+        }
+
+        .bottom-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 20px 22px;
+
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .bottom-panel-title {
+            margin: 0;
+
+            color: var(--text-color);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .bottom-panel-subtitle {
+            margin-top: 4px;
+
+            color: var(--muted-text);
+            font-size: 12px;
+        }
+
+        .bottom-panel-body {
+            padding: 20px 22px;
+        }
+
+
+        /* =========================================================
+           股票池
+        ========================================================= */
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            margin-bottom: 12px;
+
+            color: var(--text-color);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .stock-pool-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .pool-option {
+            position: relative;
+        }
+
+        .pool-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .pool-option label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 42px;
+            padding: 8px 12px;
+
+            color: var(--muted-text);
+            background: var(--page-bg);
+
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+
+            font-size: 13px;
+            cursor: pointer;
+
+            transition:
+                color 0.2s ease,
+                background 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .pool-option input:checked+label {
+            color: var(--accent-color);
+            background: color-mix(in srgb,
+                    var(--accent-color) 8%,
+                    var(--page-bg));
+            border-color: var(--accent-color);
+        }
+
+
+        /* =========================================================
+           参数输入
+        ========================================================= */
+
+        .parameter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .parameter-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 110px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .parameter-info {
+            min-width: 0;
+        }
+
+        .parameter-name {
+            color: var(--text-color);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .parameter-desc {
+            margin-top: 3px;
+
+            color: var(--muted-text);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .parameter-input {
+            width: 100%;
+            height: 38px;
+            padding: 0 10px;
+
+            box-sizing: border-box;
+
+            color: var(--text-color);
+            background: var(--page-bg);
+
+            border: 1px solid var(--border-color);
+            border-radius: 7px;
+
+            outline: none;
+
+            font-size: 13px;
+            text-align: right;
+
+            transition: border-color 0.2s ease;
+        }
+
+        .parameter-input:focus {
+            border-color: var(--accent-color);
+        }
+
+
+        /* =========================================================
+           参数分组
+        ========================================================= */
+
+        .condition-group {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .condition-group:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+        .condition-group-title {
+            margin-bottom: 12px;
+
+            color: var(--text-color);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+
+
+        /* =========================================================
+           操作按钮
+        ========================================================= */
+
+        .bottom-actions {
+            display: flex;
+            gap: 8px;
+
+            margin-top: 24px;
+        }
+
+        .bottom-button {
+            flex: 1;
+
+            min-height: 42px;
+            padding: 0 16px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .bottom-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .bottom-button-primary {
+            color: #ffffff;
+            background: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        .bottom-button-secondary {
+            color: var(--text-color);
+            background: var(--page-bg);
+            border: 1px solid var(--border-color);
+        }
+
+
+        /* =========================================================
+           结果区域
+        ========================================================= */
+
+        .result-panel {
+            min-width: 0;
+        }
+
+        .result-summary {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+
+            margin-bottom: 16px;
+        }
+
+        .summary-card {
+            padding: 17px 18px;
+
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .summary-label {
+            color: var(--muted-text);
+            font-size: 11px;
+        }
+
+        .summary-value {
+            margin-top: 7px;
+
+            color: var(--text-color);
+            font-size: 23px;
+            font-weight: 700;
+        }
+
+        .summary-desc {
+            margin-top: 4px;
+
+            color: var(--muted-text);
+            font-size: 11px;
+        }
+
+
+        /* =========================================================
+           结果表格
+        ========================================================= */
+
+        .result-table-wrap {
+            overflow-x: auto;
+
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+
+            font-size: 13px;
+        }
+
+        .result-table th {
+            padding: 13px 14px;
+
+            color: var(--muted-text);
+            background: var(--page-bg);
+
+            border-bottom: 1px solid var(--border-color);
+
+            font-size: 11px;
+            font-weight: 600;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .result-table td {
+            padding: 14px;
+
+            color: var(--text-color);
+
+            border-bottom: 1px solid var(--border-color);
+
+            white-space: nowrap;
+        }
+
+        .result-table tbody tr {
+            cursor: pointer;
+
+            transition:
+                background 0.15s ease;
+        }
+
+        .result-table tbody tr:hover {
+            background: color-mix(in srgb,
+                    var(--accent-color) 4%,
+                    var(--panel-bg));
+        }
+
+        .result-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .stock-name {
+            font-weight: 650;
+        }
+
+        .stock-code {
+            margin-left: 5px;
+
+            color: var(--muted-text);
+            font-size: 11px;
+        }
+
+        .industry-text {
+            max-width: 220px;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        /* =========================================================
+           信号状态
+        ========================================================= */
+
+        .signal-badge {
+            display: inline-flex;
+            align-items: center;
+
+            min-height: 26px;
+            padding: 0 9px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .signal-buy {
+            color: #15803d;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .signal-watch {
+            color: #b45309;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+        }
+
+        .signal-none {
+            color: var(--muted-text);
+            background: var(--page-bg);
+            border: 1px solid var(--border-color);
+        }
+
+
+        /* =========================================================
+           详情区域
+        ========================================================= */
+
+        .detail-panel {
+            display: none;
+
+            margin-top: 16px;
+        }
+
+        .detail-panel.active {
+            display: block;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 18px 20px;
+
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .detail-stock {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .detail-stock-name {
+            color: var(--text-color);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .detail-stock-code {
+            color: var(--muted-text);
+            font-size: 12px;
+        }
+
+        .detail-close {
+            padding: 6px 10px;
+
+            color: var(--muted-text);
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+
+            cursor: pointer;
+        }
+
+
+        /* =========================================================
+           条件确认
+        ========================================================= */
+
+        .condition-result {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+
+            padding: 20px;
+        }
+
+        .condition-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 11px 12px;
+
+            background: var(--page-bg);
+            border-radius: 7px;
+        }
+
+        .condition-item-name {
+            color: var(--muted-text);
+            font-size: 12px;
+        }
+
+        .condition-item-value {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .condition-pass {
+            color: #15803d;
+        }
+
+        .condition-fail {
+            color: #b91c1c;
+        }
+
+
+        /* =========================================================
+           图表占位
+        ========================================================= */
+
+        .chart-area {
+            margin: 0 20px 20px;
+
+            min-height: 320px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            color: var(--muted-text);
+
+            background: var(--page-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+        }
+
+        .chart-placeholder {
+            text-align: center;
+        }
+
+        .chart-placeholder-title {
+            margin-bottom: 6px;
+
+            color: var(--text-color);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .chart-placeholder-desc {
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
+           空状态 / 加载状态
+        ========================================================= */
+
+        .result-empty {
+            padding: 60px 20px;
+
+            color: var(--muted-text);
+
+            text-align: center;
+        }
+
+        .result-empty-title {
+            margin-bottom: 7px;
+
+            color: var(--text-color);
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .result-empty-desc {
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .loading {
+            padding: 50px 20px;
+
+            color: var(--muted-text);
+
+            text-align: center;
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           响应式
+        ========================================================= */
+
+        @media (max-width: 1100px) {
+
+            .bottom-layout {
+                grid-template-columns: 320px minmax(0, 1fr);
+            }
+
+            .result-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 900px) {
+
+            .bottom-header {
+                flex-direction: column;
+            }
+
+            .bottom-header-side {
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .bottom-layout {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 640px) {
+
+            .bottom-page {
+                width: min(100% - 24px, 1400px);
+                padding-top: 20px;
+            }
+
+            .bottom-header {
+                padding: 26px 22px;
+            }
+
+            .bottom-title {
+                font-size: 24px;
+            }
+
+            .result-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .parameter-row {
+                grid-template-columns: minmax(0, 1fr) 90px;
+            }
+
+            .condition-result {
+                grid-template-columns: 1fr;
+            }
+
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- =========================================================
+         顶部导航
+    ========================================================= -->
+
+    <header class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-main">
+                STOCK LAB
+            </div>
+
+            <div class="brand-sub">
+                股票研究中心
+            </div>
+
+        </div>
+
+
+        <nav class="main-nav">
+
+            <button class="nav-item" data-page="home" onclick="navigateMainPage('home')">
+                首页
+            </button>
+
+            <button class="nav-item" data-page="market" onclick="navigateMainPage('market')">
+                市场
+            </button>
+
+            <button class="nav-item" data-page="stock" onclick="navigateMainPage('stock')">
+                股票
+            </button>
+
+            <button class="nav-item" data-page="news" onclick="navigateMainPage('news')">
+                资讯
+            </button>
+
+            <button class="nav-item" data-page="ai" onclick="navigateMainPage('ai')">
+                AI研究
+            </button>
+
+            <button class="nav-item" data-page="trade" onclick="navigateMainPage('trade')">
+                交易
+            </button>
+
+            <button class="nav-item active" data-page="tools" onclick="navigateMainPage('tools')">
+                工具
+            </button>
+
+            <button class="nav-item" data-page="document" onclick="navigateMainPage('document')">
+                学习文档
+            </button>
+
+        </nav>
+
+
+        <div class="topbar-actions">
+
+            <button class="ai-entry" onclick="openAI()">
+                AI 投研助手
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         页面主体
+    ========================================================= -->
+
+    <main class="bottom-page">
+
+
+        <!-- =====================================================
+             页面头部
+        ===================================================== -->
+
+        <section class="bottom-header">
+
+            <div class="bottom-header-main">
+
+                <div class="bottom-eyebrow">
+                    STOCK RESEARCH TOOL
+                </div>
+
+                <h1 class="bottom-title">
+                    底部确认分析
+                </h1>
+
+                <p class="bottom-description">
+                    从“接飞刀”到“顺风车”的逻辑重构。
+                    通过历史跌幅、RSI 探底、均线重新站上以及估值条件，
+                    判断一只股票是否已经从持续下跌阶段进入相对稳定的确认阶段。
+                </p>
+
+            </div>
+
+
+            <div class="bottom-header-side">
+
+                <div class="bottom-header-side-label">
+                    当前股票池
+                </div>
+
+                <div class="bottom-header-side-value" id="poolCount">
+                    0
+                </div>
+
+                <div class="bottom-header-side-desc">
+                    等待扫描
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             左侧参数 + 右侧结果
+        ===================================================== -->
+
+        <div class="bottom-layout">
+
+
+            <!-- =================================================
+                 左侧：条件设置
+            ================================================= -->
+
+            <aside class="bottom-panel">
+
+                <div class="bottom-panel-header">
+
+                    <div>
+
+                        <h2 class="bottom-panel-title">
+                            条件设置
+                        </h2>
+
+                        <div class="bottom-panel-subtitle">
+                            调整分析模型参数
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="bottom-panel-body">
+
+
+                    <!-- 股票池 -->
+
+                    <div class="form-section">
+
+                        <div class="form-section-title">
+                            股票池
+                        </div>
+
+
+                        <div class="stock-pool-grid">
+
+                            <div class="pool-option">
+
+                                <input type="radio" id="poolWatchlist" name="stockPool" value="watchlist" checked>
+
+                                <label for="poolWatchlist">
+                                    自选股
+                                </label>
+
+                            </div>
+
+
+                            <div class="pool-option">
+
+                                <input type="radio" id="poolAshare" name="stockPool" value="ashare">
+
+                                <label for="poolAshare">
+                                    全部 A 股
+                                </label>
+
+                            </div>
+
+
+                            <div class="pool-option">
+
+                                <input type="radio" id="poolIndex" name="stockPool" value="index">
+
+                                <label for="poolIndex">
+                                    指数成分
+                                </label>
+
+                            </div>
+
+
+                            <div class="pool-option">
+
+                                <input type="radio" id="poolIndustry" name="stockPool" value="industry">
+
+                                <label for="poolIndustry">
+                                    行业股票
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         数据范围
+                    ================================================= -->
+
+                    <div class="condition-group">
+
+                        <div class="condition-group-title">
+                            数据范围
+                        </div>
+
+
+                        <div class="parameter-list">
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        历史数据周期
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        用于获取历史 K 线数据
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="analysisDays" type="number" min="30" max="3650"
+                                    value="180">
+
+                            </div>
+
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        回撤观察窗口
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        计算阶段高点到当前价格的跌幅
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="drawdownWindow" type="number" min="20" max="500"
+                                    value="120">
+
+                            </div>
+
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        最大回撤阈值
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        达到该跌幅后形成底部背景
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="drawdownThreshold" type="number" min="5" max="80"
+                                    step="1" value="30">
+
+                            </div>
+
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        回撤记忆天数
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        最近多少天内曾出现过深度回撤
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="drawdownMemoryDays" type="number" min="10" max="250"
+                                    value="60">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         RSI
+                    ================================================= -->
+
+                    <div class="condition-group">
+
+                        <div class="condition-group-title">
+                            RSI 探底
+                        </div>
+
+
+                        <div class="parameter-list">
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        RSI 周期
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        RSI 默认计算周期
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="rsiWindow" type="number" min="2" max="60" value="14">
+
+                            </div>
+
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        探底阈值
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        RSI 低于该值视为进入底部区域
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="rsiBottomThreshold" type="number" min="10" max="60"
+                                    value="40">
+
+                            </div>
+
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        底部记忆天数
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        最近多少天内出现过 RSI 探底
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="rsiBottomDays" type="number" min="5" max="120"
+                                    value="30">
+
+                            </div>
+
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        RSI 当前下限
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        当前 RSI 必须高于该值
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="rsiLower" type="number" min="10" max="60" value="40">
+
+                            </div>
+
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        RSI 当前上限
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        当前 RSI 必须低于该值
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="rsiUpper" type="number" min="40" max="80" value="50">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         均线
+                    ================================================= -->
+
+                    <div class="condition-group">
+
+                        <div class="condition-group-title">
+                            均线确认
+                        </div>
+
+
+                        <div class="parameter-list">
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        MA 周期
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        当前价格必须重新站上该均线
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="maWindow" type="number" min="5" max="120" value="20">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         估值
+                    ================================================= -->
+
+                    <div class="condition-group">
+
+                        <div class="condition-group-title">
+                            估值过滤
+                        </div>
+
+
+                        <div class="parameter-list">
+
+                            <div class="parameter-row">
+
+                                <div class="parameter-info">
+
+                                    <div class="parameter-name">
+                                        PE TTM 上限
+                                    </div>
+
+                                    <div class="parameter-desc">
+                                        PE 高于该值的股票不进入结果
+                                    </div>
+
+                                </div>
+
+                                <input class="parameter-input" id="peLimit" type="number" min="1" max="500" step="1"
+                                    value="50">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         操作
+                    ================================================= -->
+
+                    <div class="bottom-actions">
+
+                        <button class="bottom-button bottom-button-secondary" type="button" onclick="resetParameters()">
+                            恢复默认
+                        </button>
+
+                        <button class="bottom-button bottom-button-primary" type="button" id="scanButton"
+                            onclick="runAnalysis()">
+                            开始扫描
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+
+            <!-- =================================================
+                 右侧：结果
+            ================================================= -->
+
+            <section class="result-panel">
+
+
+                <!-- =================================================
+                     汇总
+                ================================================= -->
+
+                <div class="result-summary">
+
+                    <div class="summary-card">
+
+                        <div class="summary-label">
+                            扫描股票
+                        </div>
+
+                        <div class="summary-value" id="summaryTotal">
+                            0
+                        </div>
+
+                        <div class="summary-desc">
+                            当前股票池
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <div class="summary-label">
+                            底部确认
+                        </div>
+
+                        <div class="summary-value" id="summaryBuy">
+                            0
+                        </div>
+
+                        <div class="summary-desc">
+                            满足全部条件
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <div class="summary-label">
+                            观察中
+                        </div>
+
+                        <div class="summary-value" id="summaryWatch">
+                            0
+                        </div>
+
+                        <div class="summary-desc">
+                            部分条件满足
+                        </div>
+
+                    </div>
+
+
+                    <div class="summary-card">
+
+                        <div class="summary-label">
+                            最后扫描
+                        </div>
+
+                        <div class="summary-value" id="summaryTime" style="font-size: 16px;">
+                            —
+                        </div>
+
+                        <div class="summary-desc">
+                            数据更新时间
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     结果表格
+                ================================================= -->
+
+                <div class="result-table-wrap">
+
+                    <div id="resultContent" class="result-empty">
+
+                        <div class="result-empty-title">
+                            等待扫描
+                        </div>
+
+                        <div class="result-empty-desc">
+                            设置分析条件后，点击“开始扫描”。
+                            <br>
+                            系统将按照回撤、RSI、均线和 PE TTM 条件筛选股票。
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     个股详情
+                ================================================= -->
+
+                <div class="bottom-panel detail-panel" id="detailPanel">
+
+                    <div class="detail-header">
+
+                        <div class="detail-stock">
+
+                            <div class="detail-stock-name" id="detailStockName">
+                                —
+                            </div>
+
+                            <div class="detail-stock-code" id="detailStockCode">
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <button class="detail-close" type="button" onclick="closeDetail()">
+                            关闭
+                        </button>
+
+                    </div>
+
+
+                    <!-- 条件确认 -->
+
+                    <div class="condition-result" id="conditionResult">
+                    </div>
+
+
+                    <!-- K线图 -->
+
+                    <div class="chart-area">
+
+                        <div class="chart-placeholder">
+
+                            <div class="chart-placeholder-title">
+                                K 线与 RSI 图表
+                            </div>
+
+                            <div class="chart-placeholder-desc">
+                                这里可以直接复用股票详情页现有 K 线组件。
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================================
+         JS
+    ========================================================= -->
+
+    <script src="../js/navigation.js"></script>
+
+
+    <script>
+
+        /* =========================================================
+           默认参数
+        ========================================================= */
+
+        const DEFAULT_PARAMETERS = {
+
+            analysisDays: 180,
+
+            drawdownWindow: 120,
+
+            drawdownThreshold: 30,
+
+            drawdownMemoryDays: 60,
+
+            rsiWindow: 14,
+
+            rsiBottomThreshold: 40,
+
+            rsiBottomDays: 30,
+
+            rsiLower: 40,
+
+            rsiUpper: 50,
+
+            maWindow: 20,
+
+            peLimit: 50
+
+        };
+
+
+        let currentResults = [];
+
+
+        /* =========================================================
+           获取分析参数
+        ========================================================= */
+
+        function getParameters() {
+
+            const pool = document.querySelector(
+                'input[name="stockPool"]:checked'
+            );
+
+
+            return {
+
+                stock_pool: pool
+                    ? pool.value
+                    : "watchlist",
+
+                analysis_days: Number(
+                    document.getElementById("analysisDays").value
+                ),
+
+                drawdown_window: Number(
+                    document.getElementById("drawdownWindow").value
+                ),
+
+                drawdown_threshold:
+                    Number(
+                        document.getElementById(
+                            "drawdownThreshold"
+                        ).value
+                    ) / 100,
+
+                drawdown_memory_days: Number(
+                    document.getElementById(
+                        "drawdownMemoryDays"
+                    ).value
+                ),
+
+                rsi_window: Number(
+                    document.getElementById("rsiWindow").value
+                ),
+
+                rsi_bottom_threshold: Number(
+                    document.getElementById(
+                        "rsiBottomThreshold"
+                    ).value
+                ),
+
+                rsi_bottom_days: Number(
+                    document.getElementById(
+                        "rsiBottomDays"
+                    ).value
+                ),
+
+                rsi_lower: Number(
+                    document.getElementById("rsiLower").value
+                ),
+
+                rsi_upper: Number(
+                    document.getElementById("rsiUpper").value
+                ),
+
+                ma_window: Number(
+                    document.getElementById("maWindow").value
+                ),
+
+                pe_limit: Number(
+                    document.getElementById("peLimit").value
+                )
+
+            };
+
+        }
+
+
+        /* =========================================================
+           恢复默认参数
+        ========================================================= */
+
+        function resetParameters() {
+
+            document.getElementById("analysisDays").value =
+                DEFAULT_PARAMETERS.analysisDays;
+
+            document.getElementById("drawdownWindow").value =
+                DEFAULT_PARAMETERS.drawdownWindow;
+
+            document.getElementById("drawdownThreshold").value =
+                DEFAULT_PARAMETERS.drawdownThreshold;
+
+            document.getElementById("drawdownMemoryDays").value =
+                DEFAULT_PARAMETERS.drawdownMemoryDays;
+
+            document.getElementById("rsiWindow").value =
+                DEFAULT_PARAMETERS.rsiWindow;
+
+            document.getElementById("rsiBottomThreshold").value =
+                DEFAULT_PARAMETERS.rsiBottomThreshold;
+
+            document.getElementById("rsiBottomDays").value =
+                DEFAULT_PARAMETERS.rsiBottomDays;
+
+            document.getElementById("rsiLower").value =
+                DEFAULT_PARAMETERS.rsiLower;
+
+            document.getElementById("rsiUpper").value =
+                DEFAULT_PARAMETERS.rsiUpper;
+
+            document.getElementById("maWindow").value =
+                DEFAULT_PARAMETERS.maWindow;
+
+            document.getElementById("peLimit").value =
+                DEFAULT_PARAMETERS.peLimit;
+
+        }
+
+
+        /* =========================================================
+           开始扫描
+        ========================================================= */
+
+        async function runAnalysis() {
+
+            const button =
+                document.getElementById("scanButton");
+
+            const content =
+                document.getElementById("resultContent");
+
+
+            const parameters = getParameters();
+
+
+            button.disabled = true;
+            button.textContent = "正在扫描";
+
+
+            content.innerHTML = `
+                <div class="loading">
+                    正在获取行情并计算分析条件，请稍候……
+                </div>
+            `;
+
+
+            try {
+
+                const response = await fetch(
+                    "/api/tools/bottom-confirmation",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(parameters)
+                    }
+                );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        `HTTP ${response.status}`
+                    );
+
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                if (!result.success) {
+
+                    throw new Error(
+                        result.message ||
+                        "底部确认分析失败"
+                    );
+
+                }
+
+
+                currentResults =
+                    result.data || [];
+
+
+                renderResults(
+                    currentResults
+                );
+
+
+                updateSummary(
+                    currentResults
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "底部确认分析失败:",
+                    error
+                );
+
+
+                /*
+                 * 后端接口尚未接通时，
+                 * 保留一个明确的错误状态，
+                 * 不伪造真实股票分析结果。
+                 */
+
+                content.innerHTML = `
+                    <div class="result-empty">
+
+                        <div class="result-empty-title">
+                            暂时无法完成扫描
+                        </div>
+
+                        <div class="result-empty-desc">
+                            ${escapeHtml(error.message)}
+                            <br>
+                            请确认 FastAPI 已提供
+                            /api/tools/bottom-confirmation 接口。
+                        </div>
+
+                    </div>
+                `;
+
+
+                updateSummary([]);
+
+            } finally {
+
+                button.disabled = false;
+                button.textContent = "开始扫描";
+
+            }
+
+        }
+
+
+        /* =========================================================
+           渲染结果
+        ========================================================= */
+
+        function renderResults(results) {
+
+            const container =
+                document.getElementById(
+                    "resultContent"
+                );
+
+
+            if (!results.length) {
+
+                container.innerHTML = `
+                    <div class="result-empty">
+
+                        <div class="result-empty-title">
+                            没有符合条件的股票
+                        </div>
+
+                        <div class="result-empty-desc">
+                            可以适当放宽回撤、RSI 或 PE TTM 条件后重新扫描。
+                        </div>
+
+                    </div>
+                `;
+
+                return;
+
+            }
+
+
+            const rows =
+                results.map(
+                    (item, index) => {
+
+                        const signal =
+                            getSignalInfo(item);
+
+
+                        return `
+
+                            <tr
+                                onclick="showDetail(${index})"
+                            >
+
+                                <td>
+
+                                    <div class="stock-name">
+                                        ${escapeHtml(
+                            item.name || "-"
+                        )}
+
+                                        <span class="stock-code">
+                                            ${escapeHtml(
+                            item.symbol || "-"
+                        )}
+                                        </span>
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+                                    <div class="industry-text">
+                                        ${escapeHtml(
+                            item.industry || "-"
+                        )}
+                                    </div>
+                                </td>
+
+
+                                <td>
+                                    ${formatNumber(
+                            item.price,
+                            2
+                        )}
+                                </td>
+
+
+                                <td>
+                                    ${formatNumber(
+                            item.rsi,
+                            1
+                        )}
+                                </td>
+
+
+                                <td>
+                                    ${formatNumber(
+                            item.ma,
+                            2
+                        )}
+                                </td>
+
+
+                                <td>
+                                    ${formatPercent(
+                            item.drawdown
+                        )}
+                                </td>
+
+
+                                <td>
+                                    ${formatNumber(
+                            item.pe_ttm,
+                            2
+                        )}
+                                </td>
+
+
+                                <td>
+
+                                    <span
+                                        class="
+                                            signal-badge
+                                            ${signal.className}
+                                        "
+                                    >
+                                        ${signal.text}
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+                        `;
+
+                    }
+                ).join("");
+
+
+            container.innerHTML = `
+
+                <table class="result-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                股票
+                            </th>
+
+                            <th>
+                                行业
+                            </th>
+
+                            <th>
+                                现价
+                            </th>
+
+                            <th>
+                                RSI
+                            </th>
+
+                            <th>
+                                MA
+                            </th>
+
+                            <th>
+                                回撤
+                            </th>
+
+                            <th>
+                                PE TTM
+                            </th>
+
+                            <th>
+                                状态
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        ${rows}
+
+                    </tbody>
+
+                </table>
+
+            `;
+
+        }
+
+
+        /* =========================================================
+           更新统计
+        ========================================================= */
+
+        function updateSummary(results) {
+
+            const total =
+                results.length;
+
+
+            const buy =
+                results.filter(
+                    item => item.buy_signal === true
+                ).length;
+
+
+            const watch =
+                results.filter(
+                    item =>
+                        item.buy_signal !== true &&
+                        item.watch_signal === true
+                ).length;
+
+
+            document.getElementById(
+                "summaryTotal"
+            ).textContent = total;
+
+
+            document.getElementById(
+                "summaryBuy"
+            ).textContent = buy;
+
+
+            document.getElementById(
+                "summaryWatch"
+            ).textContent = watch;
+
+
+            document.getElementById(
+                "summaryTime"
+            ).textContent = total
+                    ? formatTime(new Date())
+                    : "—";
+
+
+            document.getElementById(
+                "poolCount"
+            ).textContent = total;
+
+        }
+
+
+        /* =========================================================
+           信号状态
+        ========================================================= */
+
+        function getSignalInfo(item) {
+
+            if (item.buy_signal === true) {
+
+                return {
+                    text: "底部确认",
+                    className: "signal-buy"
+                };
+
+            }
+
+
+            if (item.watch_signal === true) {
+
+                return {
+                    text: "观察",
+                    className: "signal-watch"
+                };
+
+            }
+
+
+            return {
+                text: "未确认",
+                className: "signal-none"
+            };
+
+        }
+
+
+        /* =========================================================
+           查看股票详情
+        ========================================================= */
+
+        function showDetail(index) {
+
+            const item =
+                currentResults[index];
+
+
+            if (!item) {
+                return;
+            }
+
+
+            document.getElementById(
+                "detailPanel"
+            ).classList.add("active");
+
+
+            document.getElementById(
+                "detailStockName"
+            ).textContent =
+                item.name || "-";
+
+
+            document.getElementById(
+                "detailStockCode"
+            ).textContent =
+                item.symbol || "-";
+
+
+            renderConditionResult(item);
+
+
+            document.getElementById(
+                "detailPanel"
+            ).scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+
+        /* =========================================================
+           条件确认
+        ========================================================= */
+
+        function renderConditionResult(item) {
+
+            const container =
+                document.getElementById(
+                    "conditionResult"
+                );
+
+
+            const conditions = [
+
+                {
+                    name: "历史深度回撤",
+                    pass: item.had_deep_drop,
+                    value:
+                        item.had_deep_drop
+                            ? "满足"
+                            : "未满足"
+                },
+
+                {
+                    name: "近期 RSI 探底",
+                    pass: item.in_bottom_area,
+                    value:
+                        item.in_bottom_area
+                            ? "满足"
+                            : "未满足"
+                },
+
+                {
+                    name: "站上 MA",
+                    pass: item.is_above_ma20,
+                    value:
+                        item.is_above_ma20
+                            ? "满足"
+                            : "未满足"
+                },
+
+                {
+                    name: "RSI 当前区间",
+                    pass:
+                        item.rsi > getNumber("rsiLower") &&
+                        item.rsi < getNumber("rsiUpper"),
+                    value:
+                        formatNumber(item.rsi, 1)
+                },
+
+                {
+                    name: "PE TTM",
+                    pass:
+                        item.pe_ttm != null &&
+                        item.pe_ttm <
+                        getNumber("peLimit"),
+                    value:
+                        formatNumber(item.pe_ttm, 2)
+                },
+
+                {
+                    name: "最终信号",
+                    pass:
+                        item.buy_signal === true,
+                    value:
+                        item.buy_signal
+                            ? "底部确认"
+                            : "未确认"
+                }
+
+            ];
+
+
+            container.innerHTML =
+                conditions.map(
+                    condition => `
+
+                        <div class="condition-item">
+
+                            <span class="condition-item-name">
+                                ${condition.name}
+                            </span>
+
+                            <span
+                                class="
+                                    condition-item-value
+                                    ${condition.pass
+                            ? "condition-pass"
+                            : "condition-fail"
+                        }
+                                "
+                            >
+                                ${condition.value}
+                            </span>
+
+                        </div>
+
+                    `
+                ).join("");
+
+        }
+
+
+        /* =========================================================
+           关闭详情
+        ========================================================= */
+
+        function closeDetail() {
+
+            document.getElementById(
+                "detailPanel"
+            ).classList.remove("active");
+
+        }
+
+
+        /* =========================================================
+           工具函数
+        ========================================================= */
+
+        function getNumber(id) {
+
+            return Number(
+                document.getElementById(id).value
+            );
+
+        }
+
+
+        function formatNumber(value, digits = 2) {
+
+            if (
+                value === null ||
+                value === undefined ||
+                Number.isNaN(Number(value))
+            ) {
+
+                return "-";
+
+            }
+
+
+            return Number(value).toFixed(digits);
+
+        }
+
+
+        function formatPercent(value) {
+
+            if (
+                value === null ||
+                value === undefined ||
+                Number.isNaN(Number(value))
+            ) {
+
+                return "-";
+
+            }
+
+
+            return (
+                Number(value) * 100
+            ).toFixed(1) + "%";
+
+        }
+
+
+        function formatTime(date) {
+
+            return date.toLocaleTimeString(
+                "zh-CN",
+                {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit"
+                }
+            );
+
+        }
+
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+
+        }
+
+
+        /* =========================================================
+           初始化
+        ========================================================= */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                /*
+                 * 页面初始化时不自动扫描。
+                 * 避免用户打开工具页面就立即请求大量行情数据。
+                 */
+
+                console.log(
+                    "底部确认分析工具已加载"
+                );
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
