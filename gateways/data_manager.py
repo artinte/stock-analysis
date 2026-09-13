@@ -1,6 +1,9 @@
-from abc import abstractmethod
+from __future__ import annotations
+
 from datetime import date
 from typing import Optional
+
+from common.enums.quote_level import QuoteLevel
 
 from core.models.financial.income_statement import IncomeStatement
 from core.models.financial.financial import Financial
@@ -11,232 +14,154 @@ from core.models.industry import Industry
 from core.models.financial.balance_sheet import BalanceSheet
 from core.models.financial.cash_flow import CashFlow
 from core.models.industry_profile import IndustryProfile
-from common.enums.quote_level import QuoteLevel
-from gateways.stock_data_gateway import StockDataGateway
+
+from core.models.crypto.quote import CryptoQuote
+from core.models.crypto.kline import CryptoKline
+
 from gateways.registry import GatewayRegistry
+from gateways.stock_data_gateway import StockDataGateway
 from gateways.services.industry_service import IndustryService
-
-"""
-
-股票数据统一管理层。
-
-DataManager 是整个股票数据模块对上层业务提供的统一入口，
-负责屏蔽不同数据源之间的实现差异。上层业务不需要直接依赖
-AkShare、银河证券或其他具体数据源，只需要通过 DataManager
-获取股票基础信息、行情、K 线、估值等标准化数据。
-
-整体架构：
-
-    上层业务
-        │
-        ▼
-    DataManager
-        │
-        ▼
-    StockDataGateway
-        │
-        ├── AkShareGateway
-        ├── YinheGateway
-        └── 其他数据源
-                │
-                ▼
-            第三方数据接口
-
-核心职责：
-
-1. 统一数据源入口
-
-    DataManager 对外提供统一的数据访问接口，例如：
-
-        manager.get_stock()
-        manager.get_quote()
-        manager.get_quotes()
-        manager.get_kline()
-        manager.get_valuation()
-
-    上层业务无需关心当前使用的是哪个数据源。
-
-2. 管理数据源生命周期
-
-    DataManager 负责数据源的启动、停止以及运行状态检查：
-
-        manager.start()
-        manager.stop()
-        manager.health_check()
-
-    具体的登录、连接、初始化和注销逻辑由对应的
-    StockDataGateway 实现负责。
-
-3. 支持多数据源切换
-
-    DataManager 通过 provider_name 选择具体数据源：
-
-        DataManager(provider_name="akshare")
-        DataManager(provider_name="yinhe")
-
-    数据源实例由 GatewayRegistry 统一创建。
-
-    因此新增数据源时，不需要修改 DataManager，
-    只需要实现新的 StockDataGateway 并注册到 GatewayRegistry。
-
-4. 隔离第三方数据源依赖
-
-    DataManager 不应该包含具体数据源的实现细节。
-
-    例如：
-
-        AkShare 的接口调用
-        银河证券的登录逻辑
-        AmazingData 的字段处理
-
-    都应该放在对应的 Gateway 中。
-
-    DataManager 只负责调用统一接口并向上层返回结果。
-
-5. 与数据模型和分析模块解耦
-
-    DataManager 的职责是“获取数据”，而不是“分析数据”。
-
-    因此以下功能不应该放在 DataManager 中：
-
-        - 技术指标计算
-        - MACD / RSI / BOLL 等指标分析
-        - PE / PB / PS 深度分析
-        - 股票评分
-        - 投资逻辑分析
-        - AI 分析
-
-    这些功能应该由独立的 indicators、analysis 等模块负责。
-
-推荐的数据处理流程：
-
-    DataManager
-        │
-        │ 获取原始/标准化数据
-        ▼
-    models
-        │
-        ├── Kline
-        ├── Valuation
-        └── 其他统一数据模型
-        │
-        ▼
-    indicators
-        │
-        ├── MA
-        ├── MACD
-        ├── RSI
-        ├── BOLL
-        └── Williams
-        │
-        ▼
-    analysis
-        │
-        ├── ValuationAnalyzer
-        ├── TechnicalAnalyzer
-        └── 其他分析模块
-
-设计原则：
-
-    DataManager 负责：“从哪里获取数据”
-    Gateway 负责：“如何从具体数据源获取数据”
-    Model 负责：“数据应该以什么形式表达”
-
-    Indicators 负责：“如何计算技术指标”
-    Analysis 负责：“如何分析这些数据”
-
-这种分层可以避免业务代码与具体数据源产生强耦合，同时方便后续增加新的数据源、替换数据接口以及进行单元测试。
-
-数据源注册机制：
-
-    DataManager
-        ↓
-    GatewayRegistry.create(provider_name)
-        ↓
-    创建对应 Gateway
-        ↓
-    gateway.login()
-        ↓
-    gateway.fetch_xxx()
-
-具体 Gateway 通常通过装饰器自动注册：
-
-    @GatewayRegistry.register("akshare")
-    class AkShareGateway(...):
-        ...
-
-    @GatewayRegistry.register("yinhe")
-    class YinheGateway(...):
-        ...
-
-DataManager 本身不需要知道具体 Gateway 的实现细节。
-
-扩展新的数据源时，推荐遵循以下方式：
-
-    1. 创建新的 Gateway
-    2. 继承 StockDataGateway
-    3. 实现统一接口
-    4. 使用 GatewayRegistry 注册
-    5. 在数据源模块中完成第三方接口适配
-
-例如：
-
-    @GatewayRegistry.register("xxx")
-    class XxxGateway(StockDataGateway):
-        ...
-
-之后即可通过：
-
-    manager = DataManager(
-        provider_name="xxx",
-        config=config,
-    )
-
-使用新的数据源，而无需修改 DataManager 的核心代码。
-
-注意：
-
-    DataManager 不应该直接 import 并调用具体的数据源 SDK。
-    所有第三方数据源依赖都应该封装在 providers 目录下的
-    Gateway 实现中。
-
-这样可以保证 DataManager 长期保持稳定，
-使整个数据访问层具备较好的可扩展性、可维护性和可测试性。
-"""
 
 
 class DataManager:
     """
-    股票数据统一管理器。
+    统一数据管理器。
+
+    DataManager 对上层业务提供统一的数据访问入口，
+    屏蔽不同数据源和不同资产类型的实现细节。
+
+    支持的资产类型：
+
+    - 股票：stock
+    - 加密货币：crypto
+
+    支持的数据源示例：
+
+    - yinhe
+    - akshare
+    - binance
+
+    设计原则：
+
+    - 股票 Gateway 只负责股票数据
+    - Crypto Gateway 只负责加密货币数据
+    - DataManager 负责统一调度
+    - FastAPI 不直接实例化具体 Gateway
     """
 
-    DEFAULT_PROVIDER = "yinhe"
+    DEFAULT_STOCK_PROVIDER = "yinhe"
+    DEFAULT_CRYPTO_PROVIDER = "binance"
 
     def __init__(
         self,
-        provider_name: str = DEFAULT_PROVIDER,
+        provider_name: str = DEFAULT_STOCK_PROVIDER,
         config: Optional[dict] = None,
+        crypto_provider_name: str = DEFAULT_CRYPTO_PROVIDER,
     ):
-        self.provider = provider_name.strip().lower()
-
         self.config = config or {}
 
-        self.gateway: StockDataGateway = GatewayRegistry.create(
-            self.provider,
+        # --------------------------------------------------
+        # 股票 Gateway
+        # --------------------------------------------------
+        self.stock_provider = provider_name.strip().lower()
+
+        self.stock_gateway: StockDataGateway = GatewayRegistry.create(
+            self.stock_provider,
             self.config,
         )
 
+        # --------------------------------------------------
+        # 加密货币 Gateway
+        # --------------------------------------------------
+        self.crypto_provider = crypto_provider_name.strip().lower()
+
+        self.crypto_gateway = GatewayRegistry.create(
+            self.crypto_provider,
+            self.config,
+        )
+
+        # --------------------------------------------------
         # 行业服务
+        # --------------------------------------------------
         self.industry = IndustryService()
 
+    # ======================================================
+    # 生命周期管理
+    # ======================================================
+
     def start(self) -> bool:
-        return self.gateway.login(self.config)
+        """
+        启动数据源。
+
+        股票数据源和加密货币数据源分别启动。
+        某些数据源可能不需要登录，例如 Binance 公共行情接口。
+        """
+
+        stock_started = self.stock_gateway.login(self.config)
+
+        crypto_started = True
+
+        # 某些 Crypto Gateway 可能不需要登录。
+        # 如果 Gateway 实现了 login，则调用它。
+        login_method = getattr(self.crypto_gateway, "login", None)
+
+        if callable(login_method):
+            crypto_started = login_method(self.config)
+
+        return bool(stock_started and crypto_started)
 
     def stop(self) -> None:
-        self.gateway.logout()
+        """
+        停止所有数据源。
+        """
+
+        logout_method = getattr(self.stock_gateway, "logout", None)
+
+        if callable(logout_method):
+            logout_method()
+
+        crypto_logout_method = getattr(
+            self.crypto_gateway,
+            "logout",
+            None,
+        )
+
+        if callable(crypto_logout_method):
+            crypto_logout_method()
 
     def health_check(self) -> bool:
-        return self.gateway.health_check()
+        """
+        检查所有数据源是否正常。
+
+        只有股票和加密货币数据源都正常时才返回 True。
+        """
+
+        stock_health = True
+        crypto_health = True
+
+        stock_health_method = getattr(
+            self.stock_gateway,
+            "health_check",
+            None,
+        )
+
+        if callable(stock_health_method):
+            stock_health = bool(stock_health_method())
+
+        crypto_health_method = getattr(
+            self.crypto_gateway,
+            "health_check",
+            None,
+        )
+
+        if callable(crypto_health_method):
+            crypto_health = bool(crypto_health_method())
+
+        return stock_health and crypto_health
+
+    # ======================================================
+    # 股票数据
+    # ======================================================
 
     def get_stock(
         self,
@@ -244,14 +169,9 @@ class DataManager:
     ) -> Stock:
         """
         获取股票基础信息。
-
-        Args:
-            symbol: 股票代码。
-
-        Returns:
-            Stock: 股票基础信息。
         """
-        return self.gateway.fetch_stock(symbol)
+
+        return self.stock_gateway.fetch_stock(symbol)
 
     def get_stocks(
         self,
@@ -260,21 +180,36 @@ class DataManager:
         """
         批量获取股票基础信息。
         """
-        return self.gateway.fetch_stocks(symbols)
+
+        return self.stock_gateway.fetch_stocks(symbols)
 
     def get_quote(
         self,
         symbol: str,
         level: QuoteLevel = QuoteLevel.LEVEL_1,
     ) -> Quote:
-        return self.gateway.fetch_quote(symbol, level)
+        """
+        获取股票实时行情。
+        """
+
+        return self.stock_gateway.fetch_quote(
+            symbol,
+            level,
+        )
 
     def get_quotes(
         self,
         symbols: list[str],
         level: QuoteLevel = QuoteLevel.LEVEL_1,
     ):
-        return self.gateway.fetch_quotes(symbols, level)
+        """
+        批量获取股票实时行情。
+        """
+
+        return self.stock_gateway.fetch_quotes(
+            symbols,
+            level,
+        )
 
     def get_kline(
         self,
@@ -284,7 +219,11 @@ class DataManager:
         end_time=None,
         limit: int = 1000,
     ):
-        return self.gateway.fetch_kline(
+        """
+        获取股票 K 线。
+        """
+
+        return self.stock_gateway.fetch_kline(
             symbol=symbol,
             interval=interval,
             start_time=start_time,
@@ -300,7 +239,11 @@ class DataManager:
         end_time=None,
         limit: int = 1000,
     ):
-        return self.gateway.fetch_klines(
+        """
+        批量获取股票 K 线。
+        """
+
+        return self.stock_gateway.fetch_klines(
             symbols=symbols,
             interval=interval,
             start_time=start_time,
@@ -317,79 +260,10 @@ class DataManager:
         end_quarter: Optional[int] = None,
     ) -> list[IncomeStatement]:
         """
-        获取指定股票的利润表数据。
-
-        按财务报告期的“年份 + 季度”进行查询。
-        查询范围为闭区间，开始季度和结束季度均包含在结果中。
-
-        参数：
-            symbol:
-                股票代码，例如：
-                    "600519.SH"
-
-            start_year:
-                起始财务年度。
-                与 start_quarter 配合使用。
-                不指定时，表示不限制起始时间。
-
-            start_quarter:
-                起始财务季度。
-                可选值：
-                    1：第一季度
-                    2：第二季度
-                    3：第三季度
-                    4：第四季度
-
-            end_year:
-                结束财务年度。
-                与 end_quarter 配合使用。
-                不指定时，表示不限制结束时间。
-
-            end_quarter:
-                结束财务季度。
-                可选值：
-                    1：第一季度
-                    2：第二季度
-                    3：第三季度
-                    4：第四季度
-
-        查询示例：
-
-            不指定任何时间：
-                获取全部历史利润表数据。
-
-            指定开始季度：
-                start_year=2025,
-                start_quarter=2
-
-                获取 2025Q2 至最新季度的数据。
-
-            指定结束季度：
-                end_year=2025,
-                end_quarter=3
-
-                获取历史数据至 2025Q3。
-
-            指定完整范围：
-                start_year=2024,
-                start_quarter=3,
-                end_year=2025,
-                end_quarter=2
-
-                获取：
-                    2024Q3
-                    2024Q4
-                    2025Q1
-                    2025Q2
-
-                其中开始季度和结束季度均包含。
-
-        返回：
-            list[IncomeStatement]:
-                符合查询条件的利润表数据。
-                如果没有匹配数据，则返回空列表。
+        获取利润表。
         """
-        return self.gateway.fetch_income_statement(
+
+        return self.stock_gateway.fetch_income_statement(
             symbol,
             start_year,
             start_quarter,
@@ -406,78 +280,10 @@ class DataManager:
         end_quarter: Optional[int] = None,
     ) -> list[BalanceSheet]:
         """
-        获取指定股票的资产负债表数据。
-
-        按财务报告期的“年份 + 季度”进行查询。
-
-        查询范围为闭区间，开始季度和结束季度均包含在结果中。
-        如果不指定结束时间，默认以当前最新的财报时间作为结束点。
-
-        参数：
-            symbol:
-                股票代码，例如：
-                    "600519.SH"
-
-            start_year:
-                起始财务年度。
-                与 start_quarter 配合使用。
-                不指定时，表示不限制起始时间。
-
-            start_quarter:
-                起始财务季度。
-                可选值：
-                    1：第一季度（一季报/时点值）
-                    2：第二季度（半年报/时点值）
-                    3：第三季度（三季报/时点值）
-                    4：第四季度（年报/时点值）
-
-            end_year:
-                结束财务年度。
-                与 end_quarter 配合使用。
-                不指定时，默认使用当前最新可用的财务年度。
-
-            end_quarter:
-                结束财务季度。
-                可选值同上。
-                不指定时，默认使用当前最新可用的财务季度。
-
-        查询示例：
-
-            不指定任何时间：
-                获取从最远历史数据至当前最新时间的所有资产负债表数据。
-
-            指定开始季度：
-                start_year=2025,
-                start_quarter=2
-
-                获取 2025Q2 至当前最新季度的数据。
-
-            指定结束季度：
-                end_year=2025,
-                end_quarter=3
-
-                获取历史数据至 2025Q3。
-
-            指定完整范围：
-                start_year=2024,
-                start_quarter=3,
-                end_year=2025,
-                end_quarter=2
-
-                获取：
-                    2024Q3
-                    2024Q4
-                    2025Q1
-                    2025Q2
-
-                其中开始季度和结束季度均包含。
-
-        返回：
-            list[BalanceSheet]:
-                符合查询条件的资产负债表数据列表。
-                如果没有匹配数据，则返回空列表。
+        获取资产负债表。
         """
-        return self.gateway.fetch_balance_sheet(
+
+        return self.stock_gateway.fetch_balance_sheet(
             symbol,
             start_year,
             start_quarter,
@@ -494,78 +300,10 @@ class DataManager:
         end_quarter: Optional[int] = None,
     ) -> list[CashFlow]:
         """
-        获取指定股票的现金流量表数据。
-
-        按财务报告期的“年份 + 季度”进行查询。
-
-        查询范围为闭区间，开始季度和结束季度均包含在结果中。
-        如果不指定结束时间，默认以当前最新的财报时间作为结束点。
-
-        参数：
-            symbol:
-                股票代码，例如：
-                    "600519.SH"
-
-            start_year:
-                起始财务年度。
-                与 start_quarter 配合使用。
-                不指定时，表示不限制起始时间。
-
-            start_quarter:
-                起始财务季度。
-                可选值：
-                    1：第一季度
-                    2：第二季度
-                    3：第三季度
-                    4：第四季度
-
-            end_year:
-                结束财务年度。
-                与 end_quarter 配合使用。
-                不指定时，默认使用当前最新可用的财务年度。
-
-            end_quarter:
-                结束财务季度。
-                可选值同上。
-                不指定时，默认使用当前最新可用的财务季度。
-
-        查询示例：
-
-            不指定任何时间：
-                获取从最远历史数据至当前最新时间的所有现金流量表数据。
-
-            指定开始季度：
-                start_year=2025,
-                start_quarter=2
-
-                获取 2025Q2 至当前最新季度的数据。
-
-            指定结束季度：
-                end_year=2025,
-                end_quarter=3
-
-                获取历史数据至 2025Q3。
-
-            指定完整范围：
-                start_year=2024,
-                start_quarter=3,
-                end_year=2025,
-                end_quarter=2
-
-                获取：
-                    2024Q3
-                    2024Q4
-                    2025Q1
-                    2025Q2
-
-                其中开始季度和结束季度均包含。
-
-        返回：
-            list[CashFlowStatement]:
-                符合查询条件的现金流量表数据列表。
-                如果没有匹配数据，则返回空列表。
+        获取现金流量表。
         """
-        return self.gateway.fetch_cash_flow(
+
+        return self.stock_gateway.fetch_cash_flow(
             symbol,
             start_year,
             start_quarter,
@@ -581,19 +319,11 @@ class DataManager:
         end_year: Optional[int] = None,
         end_quarter: Optional[int] = None,
     ) -> list[Financial]:
-        """获取指定标的财务数据（如利润表、资产负债表、现金流量表等）。
-
-        该接口通常用于基本面选股策略、多因子模型的定期财务因子计算。数据源更新频率
-        通常为季度（季报/年报）或每日维护。
-
-        Args:
-            symbol: 证券代码（例如: "SH.600000" 或 "AAPL.US"）。
-
-        Raises:
-            ValueError: 当输入的 symbol 格式非法时抛出。
-            GatewayError: 当底层行情网关连接失败或无权访问该数据时抛出。
         """
-        return self.gateway.fetch_financial(
+        获取综合财务数据。
+        """
+
+        return self.stock_gateway.fetch_financial(
             symbol,
             start_year,
             start_quarter,
@@ -605,7 +335,11 @@ class DataManager:
         self,
         symbol: str,
     ) -> Valuation:
-        return self.gateway.fetch_valuation(symbol)
+        """
+        获取股票估值数据。
+        """
+
+        return self.stock_gateway.fetch_valuation(symbol)
 
     def get_etf_composition(
         self,
@@ -614,31 +348,130 @@ class DataManager:
     ):
         """
         获取 ETF 成分及申赎信息。
-
-        Args:
-            symbol: ETF 代码，例如 510300.SH、159919.SZ。
-            trade_date: 交易日期，None 表示最新数据。
-
-        Returns:
-            ETF 成分及申赎信息。
         """
-        return self.gateway.fetch_etf_composition(
+
+        return self.stock_gateway.fetch_etf_composition(
             symbol,
             trade_date,
         )
 
-    @classmethod
-    def available_providers(
-        cls,
-    ) -> list[str]:
-        return GatewayRegistry.names()
+    # ======================================================
+    # 加密货币数据
+    # ======================================================
+
+    def get_crypto_quote(
+        self,
+        symbol: str,
+    ) -> CryptoQuote:
+        """
+        获取加密货币实时行情。
+
+        示例：
+
+            manager.get_crypto_quote("BTCUSDT")
+            manager.get_crypto_quote("ETHUSDT")
+        """
+
+        return self.crypto_gateway.fetch_quote(symbol)
+
+    def get_crypto_quotes(
+        self,
+        symbols: list[str],
+    ) -> list[CryptoQuote]:
+        """
+        批量获取加密货币实时行情。
+        """
+
+        fetch_quotes = getattr(
+            self.crypto_gateway,
+            "fetch_quotes",
+            None,
+        )
+
+        if callable(fetch_quotes):
+            return fetch_quotes(symbols)
+
+        return [
+            self.crypto_gateway.fetch_quote(symbol)
+            for symbol in symbols
+        ]
+
+    def get_crypto_kline(
+        self,
+        symbol: str,
+        interval: str = "1h",
+        start_time=None,
+        end_time=None,
+        limit: int = 500,
+    ) -> list[CryptoKline]:
+        """
+        获取加密货币 K 线。
+
+        示例：
+
+            manager.get_crypto_kline(
+                symbol="BTCUSDT",
+                interval="1h",
+                limit=200,
+            )
+        """
+
+        return self.crypto_gateway.fetch_kline(
+            symbol=symbol,
+            interval=interval,
+            start_time=start_time,
+            end_time=end_time,
+            limit=limit,
+        )
+
+    def get_crypto_klines(
+        self,
+        symbols: list[str],
+        interval: str = "1h",
+        start_time=None,
+        end_time=None,
+        limit: int = 500,
+    ):
+        """
+        批量获取加密货币 K 线。
+        """
+
+        fetch_klines = getattr(
+            self.crypto_gateway,
+            "fetch_klines",
+            None,
+        )
+
+        if callable(fetch_klines):
+            return fetch_klines(
+                symbols=symbols,
+                interval=interval,
+                start_time=start_time,
+                end_time=end_time,
+                limit=limit,
+            )
+
+        return [
+            self.get_crypto_kline(
+                symbol=symbol,
+                interval=interval,
+                start_time=start_time,
+                end_time=end_time,
+                limit=limit,
+            )
+            for symbol in symbols
+        ]
+
+    # ======================================================
+    # 行业服务
+    # ======================================================
 
     def get_industry(
         self,
         symbol: str,
     ) -> Industry:
         return self.industry.get_industry(symbol)
-    
+
     def get_industries(
         self,
         symbols: list[str],
@@ -650,3 +483,11 @@ class DataManager:
         industry: Industry,
     ) -> IndustryProfile:
         return self.industry.get_industry_profile(industry)
+
+    # ======================================================
+    # Provider 信息
+    # ======================================================
+
+    @classmethod
+    def available_providers(cls) -> list[str]:
+        return GatewayRegistry.names()

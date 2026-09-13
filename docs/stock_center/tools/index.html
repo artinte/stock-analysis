@@ -1741,20 +1741,16 @@
         <!-- =====================================================
          底部 CTA
     ====================================================== -->
-
         <section class="tool-bottom-cta">
-
             <div>
 
                 <div class="section-eyebrow">
                     STOCK LAB RESEARCH
                 </div>
 
-
                 <h2>
                     从一个问题开始你的研究
                 </h2>
-
 
                 <p>
                     不确定应该使用什么工具？
@@ -1778,11 +1774,7 @@
             </div>
 
         </section>
-
-
     </main>
-
-
     <script>
 
 
@@ -1790,27 +1782,14 @@
            页面导航
         ========================================================= */
 
-        function goHome(page = 'market') {
-
+        function goHome(page = 'home') {
             window.location.href =
                 `../?page=${page}`;
-
         }
-
-
-        function goTrade() {
-
-            window.location.href =
-                `../trade/`;
-
-        }
-
 
         function openIndustry() {
-
             window.location.href =
                 './industry.html';
-
         }
 
 
@@ -1967,7 +1946,7 @@
     <!-- 加载公共 Header -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            loadComponent("#site-header", "../components/header.html", "document");
+            loadComponent("#site-header", "../components/header.html", "tools");
         });
     </script>
 
