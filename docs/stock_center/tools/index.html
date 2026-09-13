@@ -25,124 +25,7 @@
      顶部导航
 ========================================================= -->
 
-    <header class="topbar">
-
-        <div class="topbar-inner">
-
-
-            <!-- 品牌 -->
-
-            <div class="brand" onclick="goHome('home')">
-
-                <div class="brand-mark">
-                    S
-                </div>
-
-
-                <div class="brand-text">
-
-                    <div class="brand-name">
-                        STOCK LAB
-                    </div>
-
-
-                    <div class="brand-subtitle">
-                        股票研究中心
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- 主导航 -->
-
-            <nav class="main-nav">
-
-                <button class="nav-item" onclick="goHome('home')">
-                    首页
-                </button>
-
-
-                <button class="nav-item" data-page="market" onclick="navigatePage('market')">
-                    市场
-                </button>
-
-
-                <button class="nav-item" onclick="navigatePage('stock')">
-                    股票
-                </button>
-
-
-                <button class="nav-item" onclick="navigatePage('news')">
-                    资讯
-                </button>
-
-
-                <button class="nav-item" onclick="navigatePage('research')">
-                    AI研究
-                </button>
-
-
-                <button class="nav-item" data-page="trade" onclick="navigatePage('trade')">
-                    交易
-                </button>
-
-
-                <button class="nav-item active" data-page="tools">
-                    工具
-                </button>
-
-
-                <button class="nav-item" data-page="document" onclick="navigatePage('document')">
-                    学习文档
-                </button>
-
-            </nav>
-
-
-            <!-- 右侧 -->
-
-            <div class="header-right">
-
-
-                <button class="ai-top-button" onclick="goHome('ai-chat')">
-
-                    <span>
-                        ✦
-                    </span>
-
-                    AI 投研助手
-
-                </button>
-
-
-                <div class="global-search">
-
-                    <span class="search-icon">
-                        ⌕
-                    </span>
-
-
-                    <input id="searchInput" autocomplete="off" placeholder="搜索股票 / 代码">
-
-
-                    <button id="searchBtn">
-                        查询
-                    </button>
-
-
-                    <div id="searchDropdown" class="search-dropdown">
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
-
+    <div id="site-header"></div>
 
     <!-- =========================================================
      工具中心
@@ -379,11 +262,10 @@
 
             <div class="tool-grid">
 
-
                 <!-- 01 -->
 
                 <article class="tool-card tool-card-featured" data-category="research"
-                    data-keywords="股票研究 股票 行情 财务 估值 行业 新闻 公告" onclick="goHome('stock')">
+                    data-keywords="行业 行业查询 股票行业 行业分类 所属行业 产业" onclick="openIndustry()">
 
                     <div class="tool-card-top">
 
@@ -399,69 +281,8 @@
 
 
                     <div class="tool-icon">
-                        ◇
-                    </div>
-
-
-                    <div class="tool-card-body">
-
-                        <div class="tool-card-category">
-                            STOCK RESEARCH
-                        </div>
-
-
-                        <h3>
-                            股票研究
-                        </h3>
-
-
-                        <p>
-                            输入股票代码或名称，
-                            从实时行情、财务数据、估值、
-                            行业、ETF、新闻与公告等多个维度
-                            建立完整的个股研究视图。
-                        </p>
-
-                    </div>
-
-
-                    <div class="tool-card-footer">
-
-                        <span>
-                            综合研究入口
-                        </span>
-
-                        <strong>
-                            开始研究 →
-                        </strong>
-
-                    </div>
-
-                </article>
-
-
-                <!-- 02 -->
-
-                <article class="tool-card tool-card-featured" data-category="research"
-                    data-keywords="行业 行业查询 股票行业 行业分类 所属行业 产业" onclick="openIndustry()">
-
-                    <div class="tool-card-top">
-
-                        <span class="tool-number">
-                            02
-                        </span>
-
-                        <span class="tool-status active">
-                            AVAILABLE
-                        </span>
-
-                    </div>
-
-
-                    <div class="tool-icon">
                         ◎
                     </div>
-
 
                     <div class="tool-card-body">
 
@@ -492,6 +313,66 @@
 
                         <strong>
                             查看行业 →
+                        </strong>
+
+                    </div>
+
+                </article>
+
+
+                <!-- 02 -->
+
+                <article class="tool-card tool-card-featured" data-category="research"
+                    data-keywords="底部确认 接飞刀 顺风车 RSI 回撤 MA20 均线 超跌 探底 股票筛选"
+                    onclick="window.location.href='./bottom_confirmation.html'">
+
+                    <div class="tool-card-top">
+
+                        <span class="tool-number">
+                            02
+                        </span>
+
+                        <span class="tool-status active">
+                            AVAILABLE
+                        </span>
+
+                    </div>
+
+
+                    <div class="tool-icon">
+                        ↘
+                    </div>
+
+
+                    <div class="tool-card-body">
+
+                        <div class="tool-card-category">
+                            BOTTOM CONFIRMATION
+                        </div>
+
+
+                        <h3>
+                            底部确认分析
+                        </h3>
+
+
+                        <p>
+                            根据历史回撤、RSI 探底、
+                            均线确认与 PE TTM 等条件，
+                            筛选已经经历明显调整并出现底部确认信号的股票。
+                        </p>
+
+                    </div>
+
+
+                    <div class="tool-card-footer">
+
+                        <span>
+                            条件化选股工具
+                        </span>
+
+                        <strong>
+                            开始分析 →
                         </strong>
 
                     </div>
@@ -2080,6 +1961,15 @@
 
     </script>
 
+    <!-- 公共组件加载器 -->
+    <script src="../js/components.js"></script>
+
+    <!-- 加载公共 Header -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("#site-header", "../components/header.html", "document");
+        });
+    </script>
 
 </body>
 
