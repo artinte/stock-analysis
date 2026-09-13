@@ -15,7 +15,6 @@
     <!-- 学习文档页面样式 -->
     <link rel="stylesheet" href="../css/document.css">
 
-
     <script src="../js/navigation.js"></script>
 
 </head>
@@ -28,125 +27,7 @@
      顶部导航
 ========================================================= -->
 
-    <header class="topbar">
-
-        <div class="topbar-inner">
-
-
-            <!-- 品牌 -->
-
-            <div class="brand" onclick="goHome()">
-
-                <div class="brand-mark">
-                    S
-                </div>
-
-                <div class="brand-text">
-
-                    <div class="brand-name">
-                        STOCK LAB
-                    </div>
-
-                    <div class="brand-subtitle">
-                        股票研究中心
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- 主导航 -->
-
-            <nav class="main-nav">
-
-                <button class="nav-item" data-page="market" onclick="goHome('home')">
-                    首页
-                </button>
-
-                <button class="nav-item" data-page="market" onclick="navigatePage('market')">
-                    市场
-                </button>
-
-
-                <button class="nav-item" data-page="stock" onclick="navigatePage('stock')">
-                    股票
-                </button>
-
-
-                <button class="nav-item" data-page="news" onclick="navigatePage('news')">
-                    资讯
-                </button>
-
-
-                <button class="nav-item" data-page="research" onclick="navigatePage('research')">
-                    AI研究
-                </button>
-
-
-                <button class="nav-item" data-page="trade" onclick="navigatePage('trade')">
-                    交易
-                </button>
-
-
-                <button class="nav-item" data-page="tools" onclick="navigatePage('tools')">
-                    工具
-                </button>
-
-
-                <button class="nav-item active" data-page="document">
-                    学习文档
-                </button>
-
-            </nav>
-
-
-            <!-- 右侧 -->
-
-            <div class="header-right">
-
-
-                <!-- AI 投研助手 -->
-
-                <button class="ai-top-button" onclick="goHome('ai-chat')">
-
-                    <span>
-                        ✦
-                    </span>
-
-                    AI 投研助手
-
-                </button>
-
-
-                <!-- 全局搜索 -->
-
-                <div class="global-search">
-
-                    <span class="search-icon">
-                        ⌕
-                    </span>
-
-
-                    <input id="searchInput" autocomplete="off" placeholder="搜索股票 / 代码">
-
-
-                    <button id="searchBtn">
-                        查询
-                    </button>
-
-
-                    <div id="searchDropdown" class="search-dropdown"></div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </header>
-
-
+    <div id="site-header"></div>
 
     <!-- =========================================================
      学习文档主体
@@ -754,7 +635,13 @@
 
     </script>
 
+    <script src="../js/components.js"></script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("#site-header", "../components/header.html");
+        });
+    </script>
 </body>
 
 </html>
