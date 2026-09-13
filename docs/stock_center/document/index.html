@@ -4,7 +4,6 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>学习文档 - STOCK LAB</title>
@@ -14,9 +13,6 @@
 
     <!-- 学习文档页面样式 -->
     <link rel="stylesheet" href="../css/document.css">
-
-    <script src="../js/navigation.js"></script>
-
 </head>
 
 
@@ -41,38 +37,25 @@
     ====================================================== -->
 
         <section class="document-hero">
-
-
             <div class="document-hero-content">
-
                 <h1>
                     学习中心
                 </h1>
-
                 <p>
                     股票研究、行情数据、技术分析、基本面、量化与 AI 研究知识库
                 </p>
-
             </div>
 
 
             <!-- 文档搜索 -->
-
             <div class="document-search">
-
                 <div class="document-search-box">
-
                     <span class="search-icon">
                         🔍
                     </span>
-
-
                     <input id="documentSearch" type="text" autocomplete="off" placeholder="搜索文档、指标、接口、策略...">
-
                 </div>
-
             </div>
-
         </section>
 
 
@@ -82,12 +65,8 @@
     ====================================================== -->
 
         <section class="document-section">
-
-
             <div class="section-header">
-
                 <div>
-
                     <h2>
                         学习内容
                     </h2>
@@ -95,17 +74,14 @@
                     <p>
                         从股票基础开始，逐步进入专业研究与量化分析
                     </p>
-
                 </div>
-
             </div>
-
-
 
             <div class="document-grid">
 
                 <!-- 股票基础 -->
-                <article class="document-card" data-keywords="股票基础 A股 股票 市场 基础 入门">
+                <a href="./stock_basic/index.html" class="document-card" data-keywords="股票基础 A股 股票 市场 基础 入门">
+
                     <div class="document-card-icon">
                         📈
                     </div>
@@ -123,13 +99,8 @@
                             从股票的起源、基本概念到 A 股市场与交易制度，
                             系统建立股票投资所需的基础知识。
                         </p>
-
-                        <a href="./stock_basic/index.html">
-                            开始学习 →
-                        </a>
                     </div>
-                </article>
-
+                </a>
 
 
                 <!-- 行情数据 -->
@@ -635,11 +606,17 @@
 
     </script>
 
+
+    <!-- 全局导航功能 -->
+    <script src="../js/navigation.js"></script>
+
+    <!-- 公共组件加载器 -->
     <script src="../js/components.js"></script>
 
+    <!-- 加载公共 Header -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            loadComponent("#site-header", "../components/header.html");
+            loadComponent("#site-header", "../components/header.html", "document");
         });
     </script>
 </body>
