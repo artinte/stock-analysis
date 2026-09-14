@@ -1,0 +1,2803 @@
+<!doctype html>
+
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description"
+        content="STOCK LAB 行情数据课程，从实时行情、历史行情、K线、Tick、盘口、成交量、涨跌停、公司行为、除权除息、复权，到数据源、统一数据模型、数据质量和行情基础设施。">
+
+    <title>行情数据｜STOCK LAB</title>
+
+    <link rel="stylesheet" href="../../css/article.css">
+
+</head>
+
+
+<body>
+
+
+    <main class="article-page">
+
+
+        <!-- =====================================================
+         返回
+    ====================================================== -->
+
+        <a class="back-link" href="../index.html">
+            ← 返回学习文档
+        </a>
+
+
+        <div class="article-layout">
+
+
+            <!-- =================================================
+             主内容
+        ================================================== -->
+
+            <article class="article-main">
+
+
+                <!-- =================================================
+                 页面头部
+            ================================================== -->
+
+                <header class="article-header">
+
+
+                    <div class="article-eyebrow">
+                        MARKET DATA
+                    </div>
+
+
+                    <h1>
+                        行情数据
+                    </h1>
+
+
+                    <p class="article-lead">
+
+                        从实时行情、历史行情、K 线、Tick、盘口、
+                        成交量与成交额，到分红、除权除息、复权、
+                        数据源、统一数据模型和行情基础设施，
+                        系统理解股票行情数据的结构、含义以及它在股票研究系统中的作用。
+
+                    </p>
+
+
+                    <div class="article-meta">
+
+
+                        <span class="article-meta-item">
+                            18 篇系统课程
+                        </span>
+
+
+                        <span class="article-meta-item">
+                            入门 → 进阶
+                        </span>
+
+
+                        <span class="article-meta-item">
+                            股票行情数据
+                        </span>
+
+
+                        <span class="article-meta-item">
+                            STOCK LAB
+                        </span>
+
+
+                    </div>
+
+
+                </header>
+
+
+
+                <!-- =================================================
+                 课程说明
+            ================================================== -->
+
+                <section class="article-section" id="overview">
+
+
+                    <div class="section-kicker">
+                        COURSE OVERVIEW
+                    </div>
+
+
+                    <h2>
+                        这套课程学什么？
+                    </h2>
+
+
+                    <p>
+
+                        股票行情是股票研究系统最基础的数据之一。
+
+                        你每天看到的最新价、涨跌幅、成交量、
+                        成交额、K 线和盘口数据，本质上都属于行情数据。
+
+                    </p>
+
+
+                    <p>
+
+                        但行情数据并不只是一个“股票当前多少钱”。
+
+                        如果进一步研究，就会遇到历史行情、
+                        K 线周期、Tick、逐笔成交、买卖盘口、
+                        涨停跌停、集合竞价、分红、除权除息、
+                        复权以及不同数据源之间的数据差异。
+
+                    </p>
+
+
+                    <p>
+
+                        因此，这套课程会按照：
+
+                        <strong>
+                            行情基础 → 历史行情 → 价格与成交 →
+                            公司行为 → 数据系统
+                        </strong>
+
+                        的顺序展开。
+
+                    </p>
+
+
+                    <div class="article-note">
+
+
+                        <strong>
+                            学习目标
+                        </strong>
+
+
+                        学完 18 篇文章后，你应该不仅能够看懂股票行情页面，
+                        还能够理解行情数据为什么这样变化，
+                        知道不同数据之间的关系，
+                        并能够进一步理解一个行情数据系统是如何构建的。
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                 第一阶段
+            ================================================== -->
+
+                <section class="article-section" id="stage-1">
+
+
+                    <div class="section-kicker">
+                        STAGE 01
+                    </div>
+
+
+                    <h2>
+                        第一阶段：认识行情数据
+                    </h2>
+
+
+                    <p>
+
+                        第一阶段解决最基础的问题：
+
+                        <strong>
+                            股票行情到底是什么？
+                        </strong>
+
+                    </p>
+
+
+                    <p>
+
+                        先从最常见的行情数据开始，
+                        理解实时行情、行情字段和交易状态，
+                        为后面的历史行情和数据系统打基础。
+
+                    </p>
+
+
+                    <div class="learning-roadmap">
+
+
+                        <!-- 01 -->
+
+                        <div class="stage-card" id="lesson-01">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 01
+                                    </div>
+
+
+                                    <h3>
+                                        什么是股票行情数据？
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        从最基本的数据开始理解行情。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    入门
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        01
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            股票行情数据是什么？
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解股票代码、交易市场、价格、
+                                            成交以及行情数据的基本结构，
+                                            建立对 Market Data 的整体认识。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./01_market_data_basics.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 20 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 02 -->
+
+                        <div class="stage-card" id="lesson-02">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 02
+                                    </div>
+
+
+                                    <h3>
+                                        什么是实时行情？
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        理解股票当前价格是如何被记录的。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    入门
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        02
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            最新价、开盘价与收盘价
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解实时行情中的最新价、
+                                            昨收、开盘、最高、最低以及
+                                            行情数据在交易时间内如何变化。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./02_realtime_quote.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 20 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 03 -->
+
+                        <div class="stage-card" id="lesson-03">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 03
+                                    </div>
+
+
+                                    <h3>
+                                        行情字段详解
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        学会看懂行情页面中的各种数字。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    入门
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        03
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            价格、涨跌、成交量与市值
+                                        </h4>
+
+
+                                        <p>
+
+                                            系统理解最新价、涨跌、
+                                            涨跌幅、成交量、成交额、
+                                            换手率、市值、PE、PB 等常见字段。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./03_quote_fields.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 25 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 04 -->
+
+                        <div class="stage-card" id="lesson-04">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 04
+                                    </div>
+
+
+                                    <h3>
+                                        股票交易状态
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        理解一只股票当前是否处于正常交易。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    基础
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        04
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            开市、停牌、复牌与交易状态
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解交易状态、停牌、复牌、
+                                            非交易时间以及为什么行情数据
+                                            不能简单地认为永远有效。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./04_trading_status.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 20 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                 第二阶段
+            ================================================== -->
+
+                <section class="article-section" id="stage-2">
+
+
+                    <div class="section-kicker">
+                        STAGE 02
+                    </div>
+
+
+                    <h2>
+                        第二阶段：理解历史行情与 K 线
+                    </h2>
+
+
+                    <p>
+
+                        实时行情描述的是“现在”，
+                        而股票研究通常需要回答“过去发生了什么”。
+
+                    </p>
+
+
+                    <p>
+
+                        因此这一阶段开始学习历史行情、
+                        K 线、不同时间周期、Tick 和盘口数据。
+
+                    </p>
+
+
+                    <div class="learning-roadmap">
+
+
+                        <!-- 05 -->
+
+                        <div class="stage-card" id="lesson-05">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 05
+                                    </div>
+
+
+                                    <h3>
+                                        什么是历史行情？
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        从时间维度理解股票行情。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    基础
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        05
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            历史价格与历史成交
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解实时行情与历史行情的区别，
+                                            以及如何按照交易日期保存和查询
+                                            股票历史价格与成交数据。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./05_historical_data.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 20 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 06 -->
+
+                        <div class="stage-card" id="lesson-06">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 06
+                                    </div>
+
+
+                                    <h3>
+                                        什么是 K 线？
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        用 OHLC 理解一根 K 线。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    基础
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        06
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            Open、High、Low、Close
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解开盘价、最高价、最低价、
+                                            收盘价以及一根 K 线是如何由
+                                            市场成交数据形成的。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./06_kline_basics.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 25 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 07 -->
+
+                        <div class="stage-card" id="lesson-07">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 07
+                                    </div>
+
+
+                                    <h3>
+                                        K 线周期
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        理解不同时间粒度的行情数据。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    基础
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        07
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            分钟线、日线、周线与月线
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解 1 分钟、5 分钟、15 分钟、
+                                            30 分钟、60 分钟、日线、周线和月线，
+                                            以及不同周期之间的关系。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./07_kline_periods.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 25 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 08 -->
+
+                        <div class="stage-card" id="lesson-08">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 08
+                                    </div>
+
+
+                                    <h3>
+                                        Tick、逐笔成交与盘口
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        从更细粒度观察市场交易。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    进阶
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        08
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            Tick、逐笔成交、买卖盘与 L1/L2
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解 Tick、逐笔成交、买一卖一、
+                                            委托盘口、Level-1 和 Level-2
+                                            行情之间的区别。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./08_tick_order_book.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            进阶
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 30 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                 第三阶段
+            ================================================== -->
+
+                <section class="article-section" id="stage-3">
+
+
+                    <div class="section-kicker">
+                        STAGE 03
+                    </div>
+
+
+                    <h2>
+                        第三阶段：理解价格与成交
+                    </h2>
+
+
+                    <p>
+
+                        股票行情最终都会回到两个最核心的问题：
+
+                        <strong>
+                            价格如何变化？
+                        </strong>
+
+                        <strong>
+                            市场成交了多少？
+                        </strong>
+
+                    </p>
+
+
+                    <p>
+
+                        这一阶段进一步理解涨跌、
+                        涨跌停、成交量、成交额、
+                        换手率以及竞价机制。
+
+                    </p>
+
+
+                    <div class="learning-roadmap">
+
+
+                        <!-- 09 -->
+
+                        <div class="stage-card" id="lesson-09">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 09
+                                    </div>
+
+
+                                    <h3>
+                                        股票价格、涨跌与涨跌幅
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        理解股票价格最基本的变化方式。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    基础
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        09
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            昨收、最新价、涨跌与涨跌幅
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解股票价格如何计算涨跌，
+                                            为什么涨跌幅通常以昨收为基准，
+                                            以及价格和百分比之间的关系。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./09_price_change.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 20 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 10 -->
+
+                        <div class="stage-card" id="lesson-10">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 10
+                                    </div>
+
+
+                                    <h3>
+                                        涨停、跌停与价格限制
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        理解股票价格变化的边界。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    基础
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        10
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            涨停价、跌停价与交易限制
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解涨停、跌停、价格限制以及
+                                            不同市场和特殊交易制度下的
+                                            价格变化范围。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./10_price_limits.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 25 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 11 -->
+
+                        <div class="stage-card" id="lesson-11">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 11
+                                    </div>
+
+
+                                    <h3>
+                                        成交量、成交额与换手率
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        从成交数据理解市场交易活跃程度。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    基础
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        11
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            Volume、Amount、Turnover 与量比
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解成交量、成交额、换手率、
+                                            量比以及这些数据之间的关系，
+                                            建立对市场成交活跃程度的认识。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./11_volume_amount_turnover.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 25 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 12 -->
+
+                        <div class="stage-card" id="lesson-12">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 12
+                                    </div>
+
+
+                                    <h3>
+                                        集合竞价与连续竞价
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        理解股票交易过程中价格如何形成。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    进阶
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        12
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            开盘、收盘与连续交易
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解集合竞价、连续竞价、
+                                            开盘价、收盘价以及订单如何
+                                            参与股票价格形成。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./12_auction_trading.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            进阶
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 30 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                 第四阶段
+            ================================================== -->
+
+                <section class="article-section" id="stage-4">
+
+
+                    <div class="section-kicker">
+                        STAGE 04
+                    </div>
+
+
+                    <h2>
+                        第四阶段：公司行为、除权除息与复权
+                    </h2>
+
+
+                    <p>
+
+                        股票价格并不只会因为市场买卖而变化。
+
+                        分红、送股、转增、配股等公司行为，
+                        都可能改变股票价格或者股份结构。
+
+                    </p>
+
+
+                    <p>
+
+                        如果不了解这些概念，
+                        就很容易错误理解历史行情，
+                        甚至把除权除息造成的价格变化误认为股票真的大跌。
+
+                    </p>
+
+
+                    <div class="learning-roadmap">
+
+
+                        <!-- 13 -->
+
+                        <div class="stage-card" id="lesson-13">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 13
+                                    </div>
+
+
+                                    <h3>
+                                        分红、送股与公司行为
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        理解公司行为为什么会影响股票价格。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    基础
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        13
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            现金分红、送股、转增与配股
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解现金分红、送股、转增、
+                                            配股、拆股等常见公司行为，
+                                            以及它们为什么会影响股票行情。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./13_dividend_corporate_actions.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            基础
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 25 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 14 -->
+
+                        <div class="stage-card" id="lesson-14">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 14
+                                    </div>
+
+
+                                    <h3>
+                                        除权除息
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        理解公司行为之后的价格调整。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    进阶
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        14
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            除权、除息与除权除息日
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解除权、除息、除权除息日、
+                                            除权价以及为什么股票在某一天
+                                            看起来会突然发生价格变化。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./14_ex_rights_ex_dividend.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            进阶
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 25 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 15 -->
+
+                        <div class="stage-card" id="lesson-15">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 15
+                                    </div>
+
+
+                                    <h3>
+                                        什么是复权？
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        解决历史价格不可直接比较的问题。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    进阶
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        15
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            不复权、前复权与后复权
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解复权因子、前复权、后复权、
+                                            不复权以及为什么技术分析和历史
+                                            收益计算经常需要使用复权数据。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./15_adjustment.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            进阶
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 30 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                 第五阶段
+            ================================================== -->
+
+                <section class="article-section" id="stage-5">
+
+
+                    <div class="section-kicker">
+                        STAGE 05
+                    </div>
+
+
+                    <h2>
+                        第五阶段：构建行情数据系统
+                    </h2>
+
+
+                    <p>
+
+                        最后从“理解行情数据”进入“构建行情系统”。
+
+                    </p>
+
+
+                    <p>
+
+                        这一阶段对应真正的软件开发：
+                        数据从哪里来、
+                        如何统一、
+                        如何校验、
+                        如何通过 API 提供给股票研究系统。
+
+                    </p>
+
+
+                    <div class="learning-roadmap">
+
+
+                        <!-- 16 -->
+
+                        <div class="stage-card" id="lesson-16">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 16
+                                    </div>
+
+
+                                    <h3>
+                                        行情数据源
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        股票行情数据究竟从哪里来。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    进阶
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        16
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            交易所、券商与第三方数据源
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解交易所、券商、第三方服务、
+                                            开源数据等不同行情来源，
+                                            以及不同数据源之间为什么会存在差异。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./16_data_sources.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            进阶
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 25 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 17 -->
+
+                        <div class="stage-card" id="lesson-17">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 17
+                                    </div>
+
+
+                                    <h3>
+                                        统一行情数据模型与数据质量
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        把不同来源的数据变成系统可以使用的数据。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    进阶
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        17
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            Symbol、Quote、Kline 与数据标准化
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解统一数据模型、字段命名、
+                                            股票代码、时间格式、缺失值、
+                                            重复数据和异常行情等数据质量问题。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./17_unified_data_model.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            进阶
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 30 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <!-- 18 -->
+
+                        <div class="stage-card" id="lesson-18">
+
+
+                            <div class="stage-header">
+
+
+                                <div class="stage-title-wrap">
+
+
+                                    <div class="stage-number">
+                                        LESSON 18
+                                    </div>
+
+
+                                    <h3>
+                                        行情 API 与数据基础设施
+                                    </h3>
+
+
+                                    <div class="stage-description">
+                                        把行情数据真正接入股票研究系统。
+                                    </div>
+
+
+                                </div>
+
+
+                                <span class="stage-count">
+                                    进阶
+                                </span>
+
+
+                            </div>
+
+
+                            <div class="lesson-list">
+
+
+                                <div class="lesson-item">
+
+
+                                    <div class="lesson-number">
+                                        18
+                                    </div>
+
+
+                                    <div class="lesson-content">
+
+
+                                        <h4>
+                                            Gateway、Manager、API 与行情服务
+                                        </h4>
+
+
+                                        <p>
+
+                                            理解数据 Gateway、Manager、
+                                            API、数据获取、标准化、缓存和前端展示，
+                                            最终构建一个完整的行情数据基础设施。
+
+                                        </p>
+
+
+                                        <a class="lesson-link" href="./18_market_data_infrastructure.html">
+                                            阅读文章 →
+                                        </a>
+
+
+                                    </div>
+
+
+                                    <div class="lesson-info">
+
+
+                                        <span class="lesson-level">
+                                            进阶
+                                        </span>
+
+
+                                        <span class="lesson-time">
+                                            约 35 分钟
+                                        </span>
+
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                 学习方法
+            ================================================== -->
+
+                <section class="article-section" id="method">
+
+
+                    <div class="section-kicker">
+                        STUDY METHOD
+                    </div>
+
+
+                    <h2>
+                        建议这样学习
+                    </h2>
+
+
+                    <p>
+
+                        不建议一次把 18 篇文章全部读完。
+
+                        行情数据有一个特点：
+                        很多概念只有放到真实行情数据中才能真正理解。
+
+                    </p>
+
+
+                    <div class="study-principles">
+
+
+                        <div class="principle-card">
+
+
+                            <div class="principle-icon">
+                                01
+                            </div>
+
+
+                            <h4>
+                                先理解数据，再理解指标
+                            </h4>
+
+
+                            <p>
+
+                                先弄清楚价格、成交量、成交额、
+                                K 线等数据是什么，再去理解技术指标。
+
+                            </p>
+
+
+                        </div>
+
+
+
+                        <div class="principle-card">
+
+
+                            <div class="principle-icon">
+                                02
+                            </div>
+
+
+                            <h4>
+                                用真实股票练习
+                            </h4>
+
+
+                            <p>
+
+                                学完一个概念以后，
+                                尝试在真实股票的行情页面中寻找对应的数据。
+
+                            </p>
+
+
+                        </div>
+
+
+
+                        <div class="principle-card">
+
+
+                            <div class="principle-icon">
+                                03
+                            </div>
+
+
+                            <h4>
+                                不要忽略公司行为
+                            </h4>
+
+
+                            <p>
+
+                                研究历史价格时，
+                                一定要注意分红、除权除息和复权，
+                                否则很容易误读历史行情。
+
+                            </p>
+
+
+                        </div>
+
+
+
+                        <div class="principle-card">
+
+
+                            <div class="principle-icon">
+                                04
+                            </div>
+
+
+                            <h4>
+                                最后再进入数据系统
+                            </h4>
+
+
+                            <p>
+
+                                先理解行情数据本身，
+                                再学习数据源、数据模型、Gateway 和 API，
+                                会更容易理解系统架构。
+
+                            </p>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                 完成检查
+            ================================================== -->
+
+                <section class="article-section" id="checklist">
+
+
+                    <div class="section-kicker">
+                        CHECKLIST
+                    </div>
+
+
+                    <h2>
+                        学完以后，你应该能够回答这些问题
+                    </h2>
+
+
+                    <div class="checklist">
+
+
+                        <div class="checklist-item">
+                            我知道股票行情数据是什么，以及实时行情和历史行情有什么区别。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我能够看懂最新价、开高低、涨跌幅、成交量、成交额和换手率。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我理解一根 K 线是如何由 OHLC 数据构成的。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我知道分钟线、日线、周线和月线有什么区别。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我知道 Tick、逐笔成交、盘口、Level-1 和 Level-2 大致是什么。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我理解涨停、跌停以及股票价格的限制机制。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我知道集合竞价和连续竞价是如何影响价格形成的。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我理解分红、送股、转增、配股等公司行为。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我理解除权除息为什么会造成历史价格变化。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我知道什么是不复权、前复权和后复权。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我知道行情数据可以从哪些数据源获得。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我理解为什么需要统一行情数据模型和数据质量标准。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我能够理解 Gateway、Manager 和行情 API 在系统中的作用。
+                        </div>
+
+
+                        <div class="checklist-item">
+                            我能够把行情数据理解为一个完整的数据基础设施，而不仅仅是一个价格数字。
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+
+
+            </article>
+
+
+
+            <!-- =====================================================
+             右侧目录
+        ====================================================== -->
+
+            <aside class="article-toc">
+
+
+                <div class="toc-label">
+                    CONTENTS
+                </div>
+
+
+                <div class="toc-title">
+                    行情数据
+                </div>
+
+
+                <ul class="toc-list">
+
+
+                    <li>
+                        <a href="#overview">
+                            课程概览
+                        </a>
+                    </li>
+
+
+
+                    <li class="toc-stage">
+                        第一阶段 · 认识行情数据
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-01">
+                            01 · 什么是股票行情数据
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-02">
+                            02 · 什么是实时行情
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-03">
+                            03 · 行情字段详解
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-04">
+                            04 · 股票交易状态
+                        </a>
+                    </li>
+
+
+
+                    <li class="toc-stage">
+                        第二阶段 · 历史行情与 K 线
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-05">
+                            05 · 什么是历史行情
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-06">
+                            06 · 什么是 K 线
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-07">
+                            07 · K 线周期
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-08">
+                            08 · Tick、逐笔成交与盘口
+                        </a>
+                    </li>
+
+
+
+                    <li class="toc-stage">
+                        第三阶段 · 价格与成交
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-09">
+                            09 · 股票价格、涨跌与涨跌幅
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-10">
+                            10 · 涨停、跌停与价格限制
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-11">
+                            11 · 成交量、成交额与换手率
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-12">
+                            12 · 集合竞价与连续竞价
+                        </a>
+                    </li>
+
+
+
+                    <li class="toc-stage">
+                        第四阶段 · 公司行为与复权
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-13">
+                            13 · 分红、送股与公司行为
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-14">
+                            14 · 除权除息
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-15">
+                            15 · 什么是复权
+                        </a>
+                    </li>
+
+
+
+                    <li class="toc-stage">
+                        第五阶段 · 构建行情数据系统
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-16">
+                            16 · 行情数据源
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-17">
+                            17 · 统一数据模型与数据质量
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#lesson-18">
+                            18 · 行情 API 与数据基础设施
+                        </a>
+                    </li>
+
+
+
+                    <li class="toc-stage">
+                        学习方法
+                    </li>
+
+
+                    <li>
+                        <a href="#method">
+                            学习建议
+                        </a>
+                    </li>
+
+
+                    <li>
+                        <a href="#checklist">
+                            完成检查
+                        </a>
+                    </li>
+
+
+                </ul>
+
+
+                <div class="toc-footer">
+
+                    STOCK LAB
+                    <br>
+                    股票研究与投资学习
+
+                </div>
+
+
+            </aside>
+
+
+        </div>
+
+
+
+        <!-- =====================================================
+         Footer
+    ====================================================== -->
+
+        <footer class="page-footer">
+
+            STOCK LAB · 股票研究中心
+
+        </footer>
+
+
+    </main>
+
+
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const tocLinks =
+                    document.querySelectorAll(
+                        ".toc-list a"
+                    );
+
+                const sections = [];
+
+
+                tocLinks.forEach(
+                    link => {
+
+                        const id =
+                            link.getAttribute(
+                                "href"
+                            );
+
+
+                        if (
+                            !id ||
+                            !id.startsWith("#")
+                        ) {
+                            return;
+                        }
+
+
+                        const section =
+                            document.querySelector(
+                                id
+                            );
+
+
+                        if (section) {
+
+                            sections.push({
+                                element: section,
+                                link: link
+                            });
+
+                        }
+
+                    }
+                );
+
+
+                if (!sections.length) {
+                    return;
+                }
+
+
+                const observer =
+                    new IntersectionObserver(
+                        entries => {
+
+
+                            entries.forEach(
+                                entry => {
+
+
+                                    if (
+                                        !entry.isIntersecting
+                                    ) {
+                                        return;
+                                    }
+
+
+                                    sections.forEach(
+                                        item => {
+
+                                            item.link.classList.remove(
+                                                "active"
+                                            );
+
+                                        }
+                                    );
+
+
+                                    const current =
+                                        sections.find(
+                                            item =>
+                                                item.element ===
+                                                entry.target
+                                        );
+
+
+                                    if (current) {
+
+                                        current.link.classList.add(
+                                            "active"
+                                        );
+
+                                    }
+
+
+                                }
+                            );
+
+
+                        },
+                        {
+
+                            root: null,
+
+                            /*
+                             * 把视口划成一个阅读区域。
+                             * 当前章节进入这个区域时，
+                             * 就认为正在阅读。
+                             */
+
+                            rootMargin:
+                                "-15% 0px -65% 0px",
+
+                            threshold:
+                                0
+
+                        }
+                    );
+
+
+                sections.forEach(
+                    item => {
+
+                        observer.observe(
+                            item.element
+                        );
+
+                    }
+                );
+
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>
