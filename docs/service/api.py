@@ -8,7 +8,7 @@ from typing import Any
 from fastapi import FastAPI, Query
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from service.stock_financial_service import StockFinancialService
+from docs.service.stock_financial_service import StockFinancialService
 from infra.data_manager import DataManager
 from core.models.crypto.quote import CryptoQuote
 from core.models.crypto.kline import CryptoKline
