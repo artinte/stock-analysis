@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from dotenv import dotenv_values
-from gateways.data_manager import DataManager
+from infra.data_manager import DataManager
 from models.constants import Interval
 import requests
 import pandas as pd

@@ -75,7 +75,6 @@ MONITOR_CHANNELS = {
     # 汽车 / 新能源 / 自动驾驶
     # =========================================================
     "Tesla": "UC5WjFrtBdufl6CZojX3D8dQ",
-    "BYD Global": "UCHlKiZpRUfYpxgiNrFzpjbA",
     "Volkswagen": "UC0US_GEXVmwMH04OMcNuhpQ",
     "Ford Motor Company": "UCKA96UxTdgFBwGZMGZ-135w",
     # =========================================================

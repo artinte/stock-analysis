@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader, Dataset
 from sklearn.preprocessing import RobustScaler
 from datetime import datetime, timedelta
 from dotenv import dotenv_values
-from gateways.data_manager import DataManager
+from infra.data_manager import DataManager
 from models.constants import Interval
 
 

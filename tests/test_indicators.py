@@ -2,13 +2,13 @@ import datetime
 import os
 from dotenv import load_dotenv
 import pandas
-from gateways.analysis.valuation_analyzer import ValuationAnalyzer
-from gateways.data_manager import DataManager
-from gateways.providers.yinhe.gateway import YinheGateway
-from gateways.indicators.volatility import calculate_bollinger_bands
-from gateways.indicators.macd import calculate_macd
-from gateways.indicators.moving_average import calculate_moving_averages
-from gateways.indicators.momentum import calculate_rsi, calculate_williams
+from infra.analysis.valuation_analyzer import ValuationAnalyzer
+from infra.data_manager import DataManager
+from infra.providers.yinhe.gateway import YinheGateway
+from infra.indicators.volatility import calculate_bollinger_bands
+from infra.indicators.macd import calculate_macd
+from infra.indicators.moving_average import calculate_moving_averages
+from infra.indicators.momentum import calculate_rsi, calculate_williams
 
 if __name__ == "__main__":
     load_dotenv()

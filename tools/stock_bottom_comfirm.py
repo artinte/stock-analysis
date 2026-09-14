@@ -5,8 +5,8 @@ from matplotlib import pyplot as plt
 from datetime import datetime, timedelta
 from dotenv import dotenv_values
 
-from gateways.data_manager import DataManager
-from gateways.pe_type import PEType
+from infra.data_manager import DataManager
+from infra.pe_type import PEType
 from models.constants import Interval
 from tools.watchlists import Watchlists
 from utils.download_csindex import get_csindex_industry_data

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from common.constants import Interval
-from gateways.data_manager import DataManager
+from infra.data_manager import DataManager
 from utils.stock_mapping import exchange_name
 
 """

@@ -1,7 +1,7 @@
 import argparse
 
-from gateways import DataManager, GatewayRegistry
-from gateways.models.constants import SHARES_PER_100M
+from infra import DataManager, GatewayRegistry
+from infra.models.constants import SHARES_PER_100M
 
 """
 股票实时监控与数据源测试工具。
