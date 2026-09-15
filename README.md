@@ -1,6 +1,6 @@
 
 
-# Stock Analysis
+# Stock Lab
 
 > 面向个人开发者与量化研究团队的行情分析与量化选股工具。
 
@@ -14,12 +14,12 @@
 
 项目的目标是将股票研究过程中涉及的数据采集、信息分析、交易管理和结果展示统一起来，同时保持各模块之间的独立性，方便后续扩展和维护。
 
-👉 点击 [股票研究中心](https://artinte.github.io/stock-analysis/index.html) 进入项目首页，查看行情、财务、估值、行业、资讯、AI 研究等功能介绍与项目详情。
+👉 点击 [股票研究中心](https://artinte.github.io/stock-lab/index.html) 进入项目首页，查看行情、财务、估值、行业、资讯、AI 研究等功能介绍与项目详情。
 目前 GitHub Pages 仅提供静态页面展示，部分数据与交互功能需要本地运行项目后使用。
 
-👉 点击 [学习文档](https://artinte.github.io/stock-analysis/document/index.html) 进入股票投资学习文档，从股票基础开始，逐步学习股票市场、公司分析、财务报表、估值方法、投资风险以及个人投资框架。
+👉 点击 [学习文档](https://artinte.github.io/stock-lab/document/index.html) 进入股票投资学习文档，从股票基础开始，逐步学习股票市场、公司分析、财务报表、估值方法、投资风险以及个人投资框架。
 
-或者进入 `stock-analysis` 目录运行：
+或者进入 `stock-lab` 目录运行：
 
 ```
 pip install -r requirements.txt
@@ -90,7 +90,7 @@ uvicorn service.api:app --reload
 
 ### 5. 页面展示
 
-通过 `docs/` 和 `gui/` 提供数据展示和交互界面，用于查看：
+通过 `docs/` 提供数据展示和交互界面，用于查看：
 
 * 股票行情
 * K 线
@@ -150,7 +150,7 @@ uvicorn service.api:app --reload
 通过独立测试保证各模块能够正常运行，同时降低后续扩展和修改的风险。
 
 
-[股票行业分类查看](https://artinte.github.io/stock-analysis/industry.html)
+[股票行业分类查看](https://artinte.github.io/stock-lab/industry.html)
 
 <a id="table-of-contents"></a>
 
@@ -199,7 +199,7 @@ uvicorn service.api:app --reload
 
 # 📌 项目简介
 
-**Stock Analysis** 是一款面向个人开发者与量化研究团队打造的**行情分析与量化选股工具**。
+**Stock Lab** 是一款面向个人开发者与量化研究团队打造的**行情分析与量化选股工具**。
 
 项目围绕：
 
@@ -521,7 +521,7 @@ PE(TTM) < 40
 一个基本的项目结构如下：
 
 ```text
-stock-analysis/
+stock-lab/
 │
 ├── crawler/
 │   ├── spiders/
@@ -607,7 +607,7 @@ Stock Analysis
 
 ## `docs`
 
-提供网站 [教学实践](https://artinte.github.io/stock-analysis/)
+提供网站 [教学实践](https://artinte.github.io/stock-lab/)
 
 ---
 
@@ -1102,7 +1102,7 @@ T+5: 1245.81 (幅度: -6.82%)
 
 # 📚 学习与扩展
 
-项目后续计划逐步增加股票量化与金融数据分析相关 [教程](https://artinte.github.io/stock-analysis/#tutorial) ，包括：
+项目后续计划逐步增加股票量化与金融数据分析相关 [教程](https://artinte.github.io/stock-lab/#tutorial) ，包括：
 
 ## 基础指标
 
@@ -1170,7 +1170,7 @@ T+5: 1245.81 (幅度: -6.82%)
 ## ⚠️ 法律免责声明与风险提示 (Disclaimer)
 
 ### 1. 合规与免责 (Legal & Compliance)
-* **非投资建议**：本项目（`stock-analysis`）及其相关代码仅供**学术研究、技术交流与量化策略测试**使用，不构成任何形式的投资建议、财务顾问意见或交易指引。
+* **非投资建议**：本项目（`stock-lab`）及其相关代码仅供**学术研究、技术交流与量化策略测试**使用，不构成任何形式的投资建议、财务顾问意见或交易指引。
 * **风险自负**：股市有风险，投资需谨慎。投资者基于本项目提供的代码、数据、策略或 AI 生成的报告所做出的任何投资决策，其产生的直接或间接盈亏及法律责任均由使用者自行承担，本项目开发者及贡献者不承担任何责任。
 
 ### 2. 爬虫与自动化行为约束 (Crawler & Automation Usage)
